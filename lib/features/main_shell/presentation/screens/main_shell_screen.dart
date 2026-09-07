@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import '../../../../core/widgets/utility/exit_app_alert.dart';
 import 'main_shell_mobile_view.dart';
 import 'main_shell_tab_view.dart';

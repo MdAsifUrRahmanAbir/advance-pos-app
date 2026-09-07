@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:template_test/features/profile/presentation/widgets/settings_tile.dart';
+import 'package:advance_pos_app/features/profile/presentation/widgets/settings_tile.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/settings_group.dart';
 

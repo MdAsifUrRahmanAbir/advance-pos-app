@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/theme/app_theme.dart';
-import 'package:template_test/routes/app_router.dart';
+import 'package:advance_pos_app/core/theme/app_theme.dart';
+import 'package:advance_pos_app/routes/app_router.dart';
 
 import 'core/network/connectivity_banner.dart';
 import 'core/observers/riverpod_logging_observer.dart';
@@ -39,7 +39,7 @@ class PosApp extends ConsumerWidget {
     final themeMode = ref.watch(themeControllerProvider);
 
     return MaterialApp.router(
-      title: 'POS System',
+      title: 'POS',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

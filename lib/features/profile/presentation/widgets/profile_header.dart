@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:template_test/core/constants/app_strings.dart';
-// import 'package:template_test/core/widgets/common/app_header_bar.dart';
+// import 'package:advance_pos_app/core/constants/app_strings.dart';
+// import 'package:advance_pos_app/core/widgets/common/app_header_bar.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/status_badge.dart';

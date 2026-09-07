@@ -3,7 +3,7 @@
 
 // --- lib/features/activity/data/repositories/activity_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final activityRepositoryProvider = Provider<ActivityRepository>((ref) {
   return ActivityRepository(ref.watch(apiClientProvider));
@@ -135,7 +135,7 @@ class _ActivityMobileViewState extends ConsumerState<ActivityMobileView> {
 // --- lib/features/activity/presentation/screens/activity_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'activity_mobile_view.dart';
 import 'activity_tab_view.dart';
 
@@ -1196,7 +1196,7 @@ class AuditLogEntryCard extends StatelessWidget {
 
 // --- lib/features/cart/data/repositories/cart_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final cartRepositoryProvider = Provider<CartRepository>((ref) {
   return CartRepository(ref.watch(apiClientProvider));
@@ -1237,7 +1237,7 @@ class CartMobileView extends ConsumerWidget {
 // --- lib/features/cart/presentation/screens/cart_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'cart_mobile_view.dart';
 import 'cart_tab_view.dart';
 
@@ -1290,7 +1290,7 @@ class CartItemTile extends ConsumerWidget {
 
 // --- lib/features/change_password/data/repositories/change_password_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final changePasswordRepositoryProvider = Provider<ChangePasswordRepository>((ref) {
   return ChangePasswordRepository(ref.watch(apiClientProvider));
@@ -1481,7 +1481,7 @@ class ChangePasswordMobileView extends ConsumerWidget {
 // --- lib/features/change_password/presentation/screens/change_password_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'change_password_mobile_view.dart';
 import 'change_password_tab_view.dart';
 
@@ -2102,7 +2102,7 @@ class EditProfilePhotoSection extends StatelessWidget {
 
 // --- lib/features/forgot_password/data/repositories/forgot_password_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final forgotPasswordRepositoryProvider = Provider<ForgotPasswordRepository>((ref) {
   return ForgotPasswordRepository(ref.watch(apiClientProvider));
@@ -2181,7 +2181,7 @@ class ForgotPasswordMobileView extends ConsumerWidget {
 // --- lib/features/forgot_password/presentation/screens/forgot_password_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'forgot_password_mobile_view.dart';
 import 'forgot_password_tab_view.dart';
 
@@ -2395,7 +2395,7 @@ class ForgotPasswordHeader extends StatelessWidget {
 
 // --- lib/features/help_support/data/repositories/help_support_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final helpSupportRepositoryProvider = Provider<HelpSupportRepository>((ref) {
   return HelpSupportRepository(ref.watch(apiClientProvider));
@@ -2543,7 +2543,7 @@ class HelpSupportMobileView extends ConsumerWidget {
 // --- lib/features/help_support/presentation/screens/help_support_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'help_support_mobile_view.dart';
 import 'help_support_tab_view.dart';
 
@@ -2754,7 +2754,7 @@ class FaqItem extends StatelessWidget {
 
 // --- lib/features/home/data/repositories/home_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final homeRepositoryProvider = Provider<HomeRepository>((ref) {
   return HomeRepository(ref.watch(apiClientProvider));
@@ -3004,7 +3004,7 @@ class HomeMobileView extends ConsumerWidget {
 // --- lib/features/home/presentation/screens/home_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'home_mobile_view.dart';
 import 'home_tab_view.dart';
 
@@ -3432,7 +3432,7 @@ class UserModel {
 
 // --- lib/features/login/data/repositories/login_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 
 final loginRepositoryProvider = Provider<LoginRepository>((ref) {
@@ -3610,7 +3610,7 @@ class LoginMobileView extends ConsumerWidget {
 // --- lib/features/login/presentation/screens/login_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 // import '../../../../core/widgets/common/custom_app_bar.dart';
 import 'login_mobile_view.dart';
 import 'login_tab_view.dart';
@@ -3939,7 +3939,7 @@ class MainShellMobileView extends ConsumerWidget {
 // --- lib/features/main_shell/presentation/screens/main_shell_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'main_shell_mobile_view.dart';
 import 'main_shell_tab_view.dart';
 
@@ -4068,7 +4068,7 @@ class ShellTabBody extends StatelessWidget {
 
 // --- lib/features/notifications/data/repositories/notification_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
   return NotificationRepository(ref.watch(apiClientProvider));
@@ -4206,7 +4206,7 @@ class _NotificationsMobileViewState extends ConsumerState<NotificationsMobileVie
 // --- lib/features/notifications/presentation/screens/notifications_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'notifications_mobile_view.dart';
 import 'notifications_tab_view.dart';
 
@@ -5521,7 +5521,7 @@ class OrderStatusBadgeWidget extends StatelessWidget {
 
 // --- lib/features/otp_verification/data/repositories/otp_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final otpRepositoryProvider = Provider<OtpRepository>((ref) {
   return OtpRepository(ref.watch(apiClientProvider));
@@ -5594,7 +5594,7 @@ class OtpVerificationMobileView extends ConsumerWidget {
 // --- lib/features/otp_verification/presentation/screens/otp_verification_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'otp_verification_mobile_view.dart';
 import 'otp_verification_tab_view.dart';
 
@@ -5849,7 +5849,7 @@ class ProductModel {
 
 // --- lib/features/products/data/repositories/product_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final productRepositoryProvider = Provider<ProductRepository>((ref) => ProductRepository(ref.watch(apiClientProvider)));
 
@@ -5860,7 +5860,7 @@ class ProductRepository {
 
 // --- lib/features/products/presentation/controllers/product_controller.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/features/products/data/models/product_model.dart';
+import 'package:advance_pos_app/features/products/data/models/product_model.dart';
 
 class ProductController extends Notifier<AsyncValue<List<ProductModel>>> {
   @override
@@ -5952,7 +5952,7 @@ class _ProductListMobileViewState extends ConsumerState<ProductListMobileView> {
 // --- lib/features/products/presentation/screens/product_list_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'product_list_mobile_view.dart';
 import 'product_list_tab_view.dart';
 
@@ -6216,7 +6216,7 @@ class ProductSearchBar extends StatelessWidget {
 
 // --- lib/features/profile/data/repositories/profile_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final profileRepositoryProvider = Provider<ProfileRepository>((ref) {
   return ProfileRepository(ref.watch(apiClientProvider));
@@ -6295,7 +6295,7 @@ class ProfileMobileView extends ConsumerWidget {
 // --- lib/features/profile/presentation/screens/profile_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'profile_mobile_view.dart';
 import 'profile_tab_view.dart';
 
@@ -6361,8 +6361,8 @@ class ProfileTabView extends ConsumerWidget {
 
 // --- lib/features/profile/presentation/widgets/profile_header.dart ---
 import 'package:flutter/material.dart';
-// import 'package:template_test/core/constants/app_strings.dart';
-// import 'package:template_test/core/widgets/common/app_header_bar.dart';
+// import 'package:advance_pos_app/core/constants/app_strings.dart';
+// import 'package:advance_pos_app/core/widgets/common/app_header_bar.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/widgets/common/status_badge.dart';
@@ -6408,7 +6408,7 @@ class ProfileHeader extends StatelessWidget {
 
 // --- lib/features/profile/presentation/widgets/profile_settings_sections.dart ---
 import 'package:flutter/material.dart';
-import 'package:template_test/features/profile/presentation/widgets/settings_tile.dart';
+import 'package:advance_pos_app/features/profile/presentation/widgets/settings_tile.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/settings_group.dart';
 
@@ -6606,7 +6606,7 @@ class SettingsTile extends StatelessWidget {
 
 // --- lib/features/register/data/repositories/register_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final registerRepositoryProvider = Provider<RegisterRepository>((ref) {
   return RegisterRepository(ref.watch(apiClientProvider));
@@ -6831,7 +6831,7 @@ class RegisterMobileView extends ConsumerWidget {
 // --- lib/features/register/presentation/screens/register_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'register_mobile_view.dart';
 import 'register_tab_view.dart';
 
@@ -7120,7 +7120,7 @@ class RegisterHeader extends StatelessWidget {
 
 // --- lib/features/reset_password/data/repositories/reset_password_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final resetPasswordRepositoryProvider = Provider<ResetPasswordRepository>((ref) {
   return ResetPasswordRepository(ref.watch(apiClientProvider));
@@ -7310,7 +7310,7 @@ class ResetPasswordMobileView extends ConsumerWidget {
 // --- lib/features/reset_password/presentation/screens/reset_password_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'reset_password_mobile_view.dart';
 import 'reset_password_tab_view.dart';
 
@@ -7527,7 +7527,7 @@ class ResetPasswordHeader extends StatelessWidget {
 
 // --- lib/features/search/data/repositories/search_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final searchRepositoryProvider = Provider<SearchRepository>((ref) {
   return SearchRepository(ref.watch(apiClientProvider));
@@ -7568,7 +7568,7 @@ class SearchMobileView extends ConsumerWidget {
 // --- lib/features/search/presentation/screens/search_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'search_mobile_view.dart';
 import 'search_tab_view.dart';
 
@@ -7621,7 +7621,7 @@ class SearchResultItem extends ConsumerWidget {
 
 // --- lib/features/settings/data/repositories/settings_repository.dart ---
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SettingsRepository(ref.watch(apiClientProvider));
@@ -7858,7 +7858,7 @@ class SettingsMobileView extends ConsumerWidget {
 // --- lib/features/settings/presentation/screens/settings_screen.dart ---
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'settings_mobile_view.dart';
 import 'settings_tab_view.dart';
 

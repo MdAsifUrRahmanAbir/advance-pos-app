@@ -6,6 +6,6 @@
 class AssetsRes {
   AssetsRes._();
 
-  static const String PROJECT_NAME = 'template_test';
+  static const String PROJECT_NAME = 'advance_pos_app';
   static const String PROJECT_VERSION = '1.0.0+1';
 }

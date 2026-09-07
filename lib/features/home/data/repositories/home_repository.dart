@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/network/api_client.dart';
+import 'package:advance_pos_app/core/network/api_client.dart';
 
 final homeRepositoryProvider = Provider<HomeRepository>((ref) {
   return HomeRepository(ref.watch(apiClientProvider));

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/utils/responsive.dart';
+import 'package:advance_pos_app/core/utils/responsive.dart';
 import 'reset_password_mobile_view.dart';
 import 'reset_password_tab_view.dart';
 

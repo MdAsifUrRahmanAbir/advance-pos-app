@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:template_test/core/constants/app_colors.dart';
-import 'package:template_test/core/constants/app_sizes.dart';
-import 'package:template_test/core/constants/app_strings.dart';
+import 'package:advance_pos_app/core/constants/app_colors.dart';
+import 'package:advance_pos_app/core/constants/app_sizes.dart';
+import 'package:advance_pos_app/core/constants/app_strings.dart';
 
 import 'connectivity_provider.dart';
 
