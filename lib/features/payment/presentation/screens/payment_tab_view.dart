@@ -9,6 +9,7 @@ import '../widgets/payable_amount_card.dart';
 import '../widgets/payment_method_grid.dart';
 import '../widgets/given_amount_field.dart';
 import '../widgets/change_due_banner.dart';
+import '../widgets/payment_top_bar.dart';
 import '../widgets/sales_agent_selector.dart';
 import '../widgets/complete_sale_button.dart';
 
@@ -20,54 +21,60 @@ class PaymentTabView extends ConsumerWidget {
     final state = ref.watch(paymentControllerProvider);
     final controller = ref.read(paymentControllerProvider.notifier);
 
-    return Container(
-      color: AppColors.background,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 480),
-          child: ListView(
-            padding: const EdgeInsets.all(AppSizes.lg),
-            children: [
-              PayableAmountCard(
-                amount: state.payableAmount,
-                saleId: state.saleId,
-                saleDate: state.saleDate,
+    return Column(
+      children: [
+        PaymentTopBar(onBack: () => context.pop()),
+
+        Expanded(
+          // color: AppColors.background,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: ListView(
+                padding: const EdgeInsets.all(AppSizes.lg),
+                children: [
+                  PayableAmountCard(
+                    amount: state.payableAmount,
+                    saleId: state.saleId,
+                    saleDate: state.saleDate,
+                  ),
+                  const SizedBox(height: AppSizes.md),
+                  PaymentMethodGrid(
+                    selected: state.selectedMethod,
+                    onSelected: controller.selectMethod,
+                  ),
+                  const SizedBox(height: AppSizes.md),
+                  GivenAmountField(
+                    amount: state.givenAmount,
+                    onChanged: controller.updateGivenAmount,
+                  ),
+                  const SizedBox(height: AppSizes.md),
+                  ChangeDueBanner(amount: state.changeDue),
+                  const SizedBox(height: AppSizes.md),
+                  SalesAgentSelector(
+                    selectedAgent: state.salesAgent,
+                    agents: state.availableAgents,
+                    onChanged: controller.selectAgent,
+                  ),
+                  const SizedBox(height: AppSizes.md),
+                  CompleteSaleButton(
+                    isEnabled: state.canComplete,
+                    isLoading: state.isProcessing,
+                    onPressed: () async {
+                      final success = await controller.completeSale();
+                      if (success && context.mounted) {
+                        // TODO: navigate to sale-confirmation once
+                        // RouteNames.saleConfirmation exists.
+                        context.go('/home');
+                      }
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSizes.md),
-              PaymentMethodGrid(
-                selected: state.selectedMethod,
-                onSelected: controller.selectMethod,
-              ),
-              const SizedBox(height: AppSizes.md),
-              GivenAmountField(
-                amount: state.givenAmount,
-                onChanged: controller.updateGivenAmount,
-              ),
-              const SizedBox(height: AppSizes.md),
-              ChangeDueBanner(amount: state.changeDue),
-              const SizedBox(height: AppSizes.md),
-              SalesAgentSelector(
-                selectedAgent: state.salesAgent,
-                agents: state.availableAgents,
-                onChanged: controller.selectAgent,
-              ),
-              const SizedBox(height: AppSizes.md),
-              CompleteSaleButton(
-                isEnabled: state.canComplete,
-                isLoading: state.isProcessing,
-                onPressed: () async {
-                  final success = await controller.completeSale();
-                  if (success && context.mounted) {
-                    // TODO: navigate to sale-confirmation once
-                    // RouteNames.saleConfirmation exists.
-                    context.go('/home');
-                  }
-                },
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

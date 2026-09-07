@@ -20,46 +20,58 @@ class NewSaleMobileView extends ConsumerWidget {
     final state = ref.watch(newSaleControllerProvider);
     final controller = ref.read(newSaleControllerProvider.notifier);
 
-    return Container(
-      color: AppColors.background,
-      child: Stack(
-        children: [
-          ListView(
-            padding: const EdgeInsets.fromLTRB(
-              AppSizes.md,
-              AppSizes.md,
-              AppSizes.md,
-              AppSizes.xxl + AppSizes.xl,
+    return Column(
+      children: [
+        NewSaleTopBar(
+          onBack: () => context.pop(),
+          onScanBarcode: () {
+            // TODO: wire barcode scanner
+          },
+        ),
+        Expanded(
+          child: Container(
+            color: AppColors.background,
+            child: Stack(
+              children: [
+                ListView(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSizes.md,
+                    AppSizes.md,
+                    AppSizes.md,
+                    AppSizes.xxl + AppSizes.xl,
+                  ),
+                  children: [
+                    ProductSearchBar(onChanged: controller.updateSearchQuery),
+                    const SizedBox(height: AppSizes.md),
+                    CategoryFilterBar(
+                      selectedCategory: state.selectedCategory,
+                      onCategoryChanged: controller.selectCategory,
+                    ),
+                    const SizedBox(height: AppSizes.md),
+                    ProductGrid(
+                      products: state.filteredProducts,
+                      onAddToCart: controller.addToCart,
+                    ),
+                  ],
+                ),
+                if (state.cartItemCount > 0)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: CartSummaryBar(
+                      itemCount: state.cartItemCount,
+                      total: state.cartTotal,
+                      onTap: () {
+                        context.push(RouteNames.cart);
+                      },
+                    ),
+                  ),
+              ],
             ),
-            children: [
-              ProductSearchBar(onChanged: controller.updateSearchQuery),
-              const SizedBox(height: AppSizes.md),
-              CategoryFilterBar(
-                selectedCategory: state.selectedCategory,
-                onCategoryChanged: controller.selectCategory,
-              ),
-              const SizedBox(height: AppSizes.md),
-              ProductGrid(
-                products: state.filteredProducts,
-                onAddToCart: controller.addToCart,
-              ),
-            ],
           ),
-          if (state.cartItemCount > 0)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: CartSummaryBar(
-                itemCount: state.cartItemCount,
-                total: state.cartTotal,
-                onTap: () {
-                  context.push(RouteNames.cart);
-                },
-              ),
-            ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

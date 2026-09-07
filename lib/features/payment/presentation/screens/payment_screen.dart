@@ -11,7 +11,6 @@ class PaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PaymentTopBar(onBack: () => context.pop()),
       body: Responsive(mobile: PaymentMobileView(), tablet: PaymentTabView()),
     );
   }

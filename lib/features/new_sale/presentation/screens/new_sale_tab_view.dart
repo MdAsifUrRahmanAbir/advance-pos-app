@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../controllers/new_sale_controller.dart';
+import '../widgets/new_sale_top_bar.dart';
 import '../widgets/product_search_bar.dart';
 import '../widgets/category_filter_bar.dart';
 import '../widgets/product_grid.dart';
@@ -17,55 +19,67 @@ class NewSaleTabView extends ConsumerWidget {
     final state = ref.watch(newSaleControllerProvider);
     final controller = ref.read(newSaleControllerProvider.notifier);
 
-    return Container(
-      color: AppColors.background,
-      child: Stack(
-        children: [
-          Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSizes.lg, AppSizes.lg, AppSizes.lg, AppSizes.xxl + AppSizes.xl,
+    return Column(
+      children: [
+        NewSaleTopBar(
+          onBack: () => context.pop(),
+          onScanBarcode: () {
+            // TODO: wire barcode scanner
+          },
+        ),
+        Expanded(
+          child: Container(
+            color: AppColors.background,
+            child: Stack(
+              children: [
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSizes.lg, AppSizes.lg, AppSizes.lg, AppSizes.xxl + AppSizes.xl,
+                      ),
+                      children: [
+                        ProductSearchBar(onChanged: controller.updateSearchQuery),
+                        const SizedBox(height: AppSizes.md),
+                        CategoryFilterBar(
+                          selectedCategory: state.selectedCategory,
+                          onCategoryChanged: controller.selectCategory,
+                        ),
+                        const SizedBox(height: AppSizes.md),
+                        ProductGrid(
+                          products: state.filteredProducts,
+                          onAddToCart: controller.addToCart,
+                          crossAxisCount: 3,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                children: [
-                  ProductSearchBar(onChanged: controller.updateSearchQuery),
-                  const SizedBox(height: AppSizes.md),
-                  CategoryFilterBar(
-                    selectedCategory: state.selectedCategory,
-                    onCategoryChanged: controller.selectCategory,
+                if (state.cartItemCount > 0)
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 640),
+                        child: CartSummaryBar(
+                          itemCount: state.cartItemCount,
+                          total: state.cartTotal,
+                          onTap: () {
+                            // TODO: wire to context.push(RouteNames.cart)
+                            // once the cart route/screen exists.
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                  const SizedBox(height: AppSizes.md),
-                  ProductGrid(
-                    products: state.filteredProducts,
-                    onAddToCart: controller.addToCart,
-                    crossAxisCount: 3,
-                  ),
-                ],
-              ),
+              ],
             ),
           ),
-          if (state.cartItemCount > 0)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 640),
-                  child: CartSummaryBar(
-                    itemCount: state.cartItemCount,
-                    total: state.cartTotal,
-                    onTap: () {
-                      // TODO: wire to context.push(RouteNames.cart)
-                      // once the cart route/screen exists.
-                    },
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

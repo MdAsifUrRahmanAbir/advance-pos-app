@@ -14,10 +14,6 @@ class CartScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: CartTopBar(
-        onBack: () => context.pop(),
-        onClearAll: () => ref.read(cartControllerProvider.notifier).clearAll(),
-      ),
       body: Responsive(
         mobile: const CartMobileView(),
         tablet: const CartTabView(),
