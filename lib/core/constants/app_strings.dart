@@ -275,4 +275,85 @@ class AppStrings {
   static const String exitAppCancel = 'Cancel';
 
   static const String noInternetBannerMessage = 'No internet connection';
+
+  // ---- Added: Stock screen (bottom-nav "Stock" tab placeholder) ----
+  static const String stockTitle = 'Stock';
+  static const String stockEmptyMessage = 'Stock management is coming soon.';
+
+  // --- Home dashboard additions ---
+  static const String appBrandName = 'POS Pro';
+  static const String statusOnline = 'Online';
+  static const String statusOffline = 'Offline';
+
+  static const String periodToday = 'Today';
+  static const String periodWeekly = 'Weekly';
+  static const String periodMonthly = 'Monthly';
+
+  static const String statTodaysSales = "Today's Sales";
+  static const String statCollection = 'Collection';
+  static const String statOrders = 'Orders';
+  static const String statProfit = 'Profit';
+
+  static const String dailyTargetProgress = 'Daily Target Progress';
+  static String dailyTargetSubtitle(String achieved, String target) =>
+      '$achieved of $target target achieved';
+
+  static const String topProductsToday = 'Top Products Today';
+  static String unitsSoldLabel(int units) => '$units units sold';
+
+  static const String recentSales = 'Recent Sales';
+  static String saleMetaLabel(int items, String timeAgo) =>
+      '$items items • $timeAgo';
+
+
+  // --- New Sale / Product search additions ---
+  static const String newSaleTitle = 'New Sale';
+  static const String searchProductHint = 'Search product or scan barcode...';
+
+  static const String categoryAll = 'All';
+  static const String categoryBeverages = 'Beverages';
+  static const String categorySnacks = 'Snacks';
+  static const String categoryGrocery = 'Grocery';
+
+  static String skuLabel(String sku) => 'SKU: $sku';
+  static String viewCartLabel(String total) => 'View Cart — $total';
+
+  // --- Payment additions ---
+  static const String paymentTitle = 'Payment';
+  static const String payableAmountLabel = 'PAYABLE AMOUNT';
+  static const String selectPaymentMethodLabel = 'SELECT PAYMENT METHOD';
+  static const String givenAmountLabel = 'GIVEN AMOUNT';
+  static const String changeDueLabel = 'Change Due';
+  static const String salesAgentLabel = 'SALES AGENT';
+  static const String completeSaleAction = 'Complete Sale';
+
+  static const String paymentMethodCash = 'Cash';
+  static const String paymentMethodBank = 'Bank';
+  static const String paymentMethodCard = 'Card';
+  static const String paymentMethodMobile = 'Mobile';
+
+  static const String errorGivenAmountInsufficient =
+      'Given amount is less than the payable amount.';
+
+
+  // --- Cart review additions ---
+  static const String reviewCartTitle = 'Review Cart';
+  static const String clearAllAction = 'Clear All';
+  static const String swipeToDeleteHint = 'Swipe left on any item to delete';
+
+  static const String customerLabel = 'CUSTOMER';
+  static const String walkInCustomer = 'Walk-In Customer';
+  static const String remarksLabel = 'REMARKS';
+  static const String remarksHint = 'Add remarks...';
+  static const String referenceNoLabel = 'REFERENCE NO';
+  static const String referenceNoHint = 'Invoice / LC...';
+
+  static const String subtotalLabel = 'Subtotal';
+  static String discountLabel(int percent) => 'Discount ($percent%)';
+  static String vatTaxLabel(int percent) => 'VAT / Tax ($percent%)';
+  static const String roundingLabel = 'Rounding';
+  static const String totalPayableLabel = 'Total Payable';
+  static const String proceedToPaymentAction = 'Proceed to Payment';
+
+  static String eachPriceLabel(String price) => '$price each';
 }

@@ -34,8 +34,13 @@ import 'package:advance_pos_app/features/cart/presentation/screens/cart_screen.d
 import '../core/network/connectivity_provider.dart';
 import '../core/observers/logging_observer.dart';
 import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
+import '../features/new_sale/presentation/screens/new_sale_screen.dart';
+import '../features/payment/presentation/screens/payment_screen.dart';
+import '../features/stock_screen/presentation/screens/stock_screen_screen.dart';
 
-final hasCompletedInitialNavigationProvider = StateProvider<bool>((ref) => false);
+final hasCompletedInitialNavigationProvider = StateProvider<bool>(
+  (ref) => false,
+);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final connectivityService = ref.watch(connectivityServiceProvider);
@@ -44,7 +49,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: RouteNames.splash,
     errorBuilder: (context, state) => const NotFoundScreen(),
     observers: [LoggingObserver()],
-    refreshListenable: GoRouterRefreshStream(connectivityService.onStatusChange),
+    refreshListenable: GoRouterRefreshStream(
+      connectivityService.onStatusChange,
+    ),
 
     redirect: (context, state) {
       if (state.matchedLocation == RouteNames.splash) return null;
@@ -161,7 +168,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.analyticsMode,
         builder: (context, state) => const AnalyticsModeScreen(),
       ),
-      GoRoute(path: RouteNames.product, builder: (context, state) => const ProductScreen()),
-  ],
+      GoRoute(
+        path: RouteNames.product,
+        builder: (context, state) => const ProductScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.stockScreen,
+        builder: (context, state) => const StockScreenScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.newSale,
+        builder: (context, state) => const NewSaleScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.payment,
+        builder: (context, state) => const PaymentScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.cart,
+        builder: (context, state) => const CartScreen(),
+      ),
+    ],
   );
 });

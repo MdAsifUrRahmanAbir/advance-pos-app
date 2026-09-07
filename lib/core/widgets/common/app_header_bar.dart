@@ -22,6 +22,11 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
   final String? trailingLabel;
   final VoidCallback? onTrailingTap;
 
+  /// Overrides the trailing text link's color (defaults to
+  /// [AppColors.primary]). Use for destructive actions like "Clear All" /
+  /// "Delete" — pass [AppColors.error]. Has no effect on [trailingIcon].
+  final Color? trailingLabelColor;
+
   const AppHeaderBar({
     super.key,
     required this.title,
@@ -31,6 +36,7 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
     this.trailingIcon,
     this.trailingLabel,
     this.onTrailingTap,
+    this.trailingLabelColor,
   }) : assert(trailingIcon == null || trailingLabel == null,
   'Provide trailingIcon OR trailingLabel, not both');
 
@@ -43,9 +49,16 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
         return InkWell(
           borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           onTap: tap,
-          child: const Padding(
+          child: Container(
             padding: EdgeInsets.all(AppSizes.xs),
-            child: Icon(Icons.arrow_back_ios_new_rounded, size: AppSizes.iconSm, color: AppColors.textPrimary),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              border: Border.all(
+                color: AppColors.borderDark.withValues(alpha: .6),
+                width: .1
+              )
+            ),
+            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: AppColors.textPrimary),
           ),
         );
       case HeaderBackStyle.circle:
@@ -87,7 +100,11 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.all(AppSizes.xs),
           child: Text(
             trailingLabel!,
-            style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600, color: AppColors.primary),
+            style: TextStyle(
+              fontSize: AppSizes.fontSm,
+              fontWeight: FontWeight.w600,
+              color: trailingLabelColor ?? AppColors.primary,
+            ),
           ),
         ),
       );
@@ -108,6 +125,8 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
         // border: const Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (back != null) ...[back, const SizedBox(width: AppSizes.md)],
           Expanded(
@@ -119,6 +138,8 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSizes.xs / 2),
                   Text(subtitle!, style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary)),
+                ]else ...[
+                  SizedBox(height: AppSizes.xs,)
                 ],
               ],
             ),

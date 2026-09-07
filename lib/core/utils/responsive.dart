@@ -10,7 +10,9 @@ class Responsive extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth >= AppSizes.mobileBreakpoint) return SafeArea(child: tablet);
-      return SafeArea(child: mobile);
+      return SafeArea(
+          bottom: false,
+          child: mobile);
     });
   }
 }

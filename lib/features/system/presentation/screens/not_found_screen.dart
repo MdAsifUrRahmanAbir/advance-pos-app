@@ -31,7 +31,7 @@ class NotFoundMobileView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.xl, vertical: AppSizes.xxl),
       child: NotFoundContent(
-        onBackToHome: () => context.go(RouteNames.home),
+        onBackToHome: () => context.go(RouteNames.mainShell),
       ),
     );
   }
@@ -52,7 +52,7 @@ class NotFoundTabView extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(AppSizes.xl),
           child: NotFoundContent(
-            onBackToHome: () => context.go(RouteNames.home),
+            onBackToHome: () => context.go(RouteNames.mainShell),
           ),
         ),
       ),

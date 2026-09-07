@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/constants/app_svgs.dart';
 import '../../../../core/theme/app_color_scheme.dart';
+import '../../../../core/widgets/common/app_svg_icon.dart';
+import '../../../../routes/route_names.dart';
 import '../controllers/main_shell_controller.dart';
 import '../widgets/shell_tab_body.dart';
 import '../widgets/shell_navigation_item.dart';
 
 /// Wider-viewport layout — a side [NavigationRail] instead of a
 /// bottom bar, built from the same [shellNavItems] list so mobile and
-/// tablet always stay in sync when a tab is added or reordered.
+/// tablet always stay in sync when a section is added or reordered.
 class MainShellTabView extends ConsumerWidget {
   const MainShellTabView({super.key});
 
@@ -25,15 +30,34 @@ class MainShellTabView extends ConsumerWidget {
             backgroundColor: context.appColors.surface,
             labelType: NavigationRailLabelType.all,
             indicatorColor: Colors.transparent,
-            selectedIconTheme: const IconThemeData(color: AppColors.primary),
-            unselectedIconTheme: IconThemeData(color: context.appColors.textSecondary),
-            selectedLabelTextStyle: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
-            unselectedLabelTextStyle: TextStyle(color: context.appColors.textSecondary),
+            leading: Padding(
+              padding: const EdgeInsets.only(bottom: AppSizes.lg),
+              child: GestureDetector(
+                onTap: () {
+                  // TODO: replace with a dedicated POS/Sales screen once
+                  // features/pos_sale is built.
+                  context.push(RouteNames.product);
+                },
+                child: Container(
+                  width: AppSizes.xxl - AppSizes.xs,
+                  height: AppSizes.xxl - AppSizes.xs,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(color: AppColors.primary.withValues(alpha: 0.4), blurRadius: AppSizes.lg, offset: const Offset(0, AppSizes.sm)),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: const AppSvgIcon.string(svgString: AppSvgs.plus, size: AppSizes.iconMd, color: AppColors.textWhite),
+                ),
+              ),
+            ),
             destinations: [
               for (final item in shellNavItems)
                 NavigationRailDestination(
-                  icon: Icon(item.icon),
-                  selectedIcon: Icon(item.selectedIcon),
+                  icon: AppSvgIcon.string(svgString: item.svgIcon, size: AppSizes.iconMd, color: context.appColors.textSecondary),
+                  selectedIcon: AppSvgIcon.string(svgString: item.svgIcon, size: AppSizes.iconMd, color: AppColors.primary),
                   label: Text(item.label),
                 ),
             ],

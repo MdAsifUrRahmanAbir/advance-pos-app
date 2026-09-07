@@ -11,6 +11,7 @@ class MainShellScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      extendBody: true,
       body: AppExitAlert(
         child: Responsive(
           mobile: const MainShellMobileView(),
