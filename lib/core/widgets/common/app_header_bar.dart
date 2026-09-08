@@ -54,11 +54,10 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSizes.radiusSm),
               border: Border.all(
-                color: AppColors.borderDark.withValues(alpha: .6),
-                width: .1
+                color: context.appColors.border
               )
             ),
-            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: AppColors.textPrimary),
+            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: context.appColors.textPrimary),
           ),
         );
       case HeaderBackStyle.circle:
@@ -74,21 +73,21 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
               // border: Border.all(color: AppColors.border),
             ),
             alignment: Alignment.center,
-            child: const Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: AppColors.textPrimary),
+            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: context.appColors.textPrimary),
           ),
         );
     }
   }
 
-  Widget? _buildTrailing() {
+  Widget? _buildTrailing(BuildContext context) {
     if (trailingIcon != null) {
       return InkWell(
         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
         onTap: onTrailingTap,
         child: Container(
           padding: const EdgeInsets.all(AppSizes.sm),
-          decoration: BoxDecoration(color: AppColors.background, borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
-          child: Icon(trailingIcon, size: AppSizes.iconSm, color: AppColors.primary),
+          decoration: BoxDecoration(color: context.appColors.background, borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
+          child: Icon(trailingIcon, size: AppSizes.iconSm, color: context.appColors.primary),
         ),
       );
     }
@@ -103,7 +102,7 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
             style: TextStyle(
               fontSize: AppSizes.fontSm,
               fontWeight: FontWeight.w600,
-              color: trailingLabelColor ?? AppColors.primary,
+              color: trailingLabelColor ?? context.appColors.primary,
             ),
           ),
         ),
@@ -115,7 +114,7 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final back = _buildBack(context);
-    final trailing = _buildTrailing();
+    final trailing = _buildTrailing(context);
 
     return Container(
       height: preferredSize.height,

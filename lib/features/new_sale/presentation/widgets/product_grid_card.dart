@@ -1,5 +1,7 @@
+import 'package:advance_pos_app/core/theme/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -31,11 +33,14 @@ class ProductGridCard extends StatelessWidget {
             aspectRatio: 1.5,
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.border,
+                color: context.appColors.background,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                image: DecorationImage(
+                  image: product.imageUrl == null
+                      ? AssetImage(AppAssets.placeholder2)
+                      : NetworkImage(product.imageUrl!),
+                ),
               ),
-              // TODO: wire to CustomNetworkImage(product.imageUrl) once
-              // product images are served by the API.
             ),
           ),
           const SizedBox(height: AppSizes.xs),
@@ -51,7 +56,10 @@ class ProductGridCard extends StatelessWidget {
           ),
           Text(
             AppStrings.skuLabel(product.sku),
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: AppSizes.fontXs,
+            ),
           ),
           const SizedBox(height: AppSizes.xs),
           Row(
@@ -74,7 +82,11 @@ class ProductGridCard extends StatelessWidget {
                     color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.add, size: AppSizes.iconSm, color: Colors.white),
+                  child: const Icon(
+                    Icons.add,
+                    size: AppSizes.iconSm,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
@@ -22,6 +23,9 @@ class StockScreenMobileView extends StatelessWidget {
         // (repository + model) once inventory management is built —
         // this tab is currently a placeholder so the bottom-nav section
         // is fully wired end to end.
+
+        SizedBox(height: AppSizes.bottomNavBarHeight)
+
       ],
     );
   }

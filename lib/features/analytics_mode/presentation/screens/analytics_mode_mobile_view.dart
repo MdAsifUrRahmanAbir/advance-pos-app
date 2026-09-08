@@ -57,10 +57,15 @@ class AnalyticsMobileView extends ConsumerWidget {
                     CategoryShare(label: 'My', percent: 10, color: AppColors.shimmerHighlight),
                   ],
                 ),
+
+                SizedBox(height: AppSizes.bottomNavBarHeight)
+
               ],
             ),
           ),
         ),
+
+
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:advance_pos_app/core/theme/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
@@ -29,8 +30,8 @@ class CartSummaryBar extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(AppSizes.md),
-        decoration: const BoxDecoration(
-          color: AppColors.primary,
+        decoration: BoxDecoration(
+          color: context.appColors.primary,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(AppSizes.radiusLg),
             topRight: Radius.circular(AppSizes.radiusLg),
@@ -49,8 +50,8 @@ class CartSummaryBar extends StatelessWidget {
                   ),
                   child: Text(
                     '$itemCount',
-                    style: const TextStyle(
-                      color: AppColors.primary,
+                    style: TextStyle(
+                      color: context.appColors.primary,
                       fontSize: AppSizes.fontSm,
                       fontWeight: FontWeight.w800,
                     ),

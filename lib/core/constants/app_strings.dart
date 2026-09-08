@@ -356,4 +356,36 @@ class AppStrings {
   static const String proceedToPaymentAction = 'Proceed to Payment';
 
   static String eachPriceLabel(String price) => '$price each';
+
+  // --- Payment success sheet additions ---
+  static const String paymentCollectedTitle = 'Payment Collected';
+  static String paymentCollectedSubtitle(String amount) => 'Amount received: $amount';
+
+  static const String receiptSaleIdLabel = 'Sale ID';
+  static const String receiptDateLabel = 'Date';
+  static const String receiptPaymentMethodLabel = 'Payment Method';
+  static const String receiptItemsLabel = 'Items';
+
+  static const String actionNewSale = 'New Sale';
+  static const String actionGoToDashboard = 'Go to Dashboard';
+  static const String actionShareReceipt = 'Share Receipt';
+  static const String actionPrintReceipt = 'Print Receipt';
+
+
+  // --- Receipt share/print additions ---
+  static const String sharingReceipt = 'Preparing receipt...';
+  static const String shareFailedMessage = 'Could not share the receipt. Please try again.';
+
+  static const String selectPrinterTitle = 'Select Printer';
+  static const String noPrintersFoundMessage = 'No paired Bluetooth printers found.';
+  static const String pairPrinterHint = 'Pair a thermal printer in your device Bluetooth settings first.';
+  static const String scanningForPrinters = 'Scanning for paired printers...';
+  static const String printingReceipt = 'Printing...';
+  static const String printFailedMessage = 'Could not print the receipt. Check the printer connection.';
+  static const String printSuccessMessage = 'Receipt sent to printer.';
+
+  static const String receiptStoreNamePlaceholder = 'POS Pro'; // TODO: source from store settings once available
+  static const String receiptThankYouLine = 'Thank you for your purchase!';
+
+
 }

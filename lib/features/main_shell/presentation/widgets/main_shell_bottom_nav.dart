@@ -32,24 +32,30 @@ class MainShellBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final notchRadius = PosFabButton.diameter / 2 + _notchGap;
+    final notchRadius = PosFabButton.diameter / 2 + _notchGap + 5;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(
         _horizontalMargin,
         0,
         _horizontalMargin,
-        // Extra bottom margin only when there's no system gesture inset,
-        // so the pill doesn't sit flush against the very edge on
-        // devices without a home indicator.
-        MediaQuery.paddingOf(context).bottom > 0 ? AppSizes.sm : AppSizes.md,
+        MediaQuery.paddingOf(context).bottom > 0 ? AppSizes.md : AppSizes.md,
       ),
       child: SizedBox(
         height: _barHeight,
         child: ClipPath(
-          clipper: _NotchedPillClipper(notchRadius: notchRadius, cornerRadius: _barHeight / 2),
+          clipper: _NotchedPillClipper(notchRadius: 0, cornerRadius: _barHeight / 2),
           child: Container(
-            color: context.appColors.surface,
+            decoration: BoxDecoration(
+              color: context.appColors.border,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                  offset: const Offset(0, -3),
+                ),
+              ],            ),
             child: SafeArea(
               top: false,
               bottom: false,

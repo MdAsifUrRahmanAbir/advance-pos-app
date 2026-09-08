@@ -1,3 +1,5 @@
+import 'package:advance_pos_app/core/constants/app_assets.dart';
+import 'package:advance_pos_app/core/theme/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -13,31 +15,32 @@ class PosFabButton extends StatelessWidget {
 
   const PosFabButton({super.key, this.onTap});
 
-  static const double diameter = AppSizes.xxl - AppSizes.xs; // 44
+  static const double diameter = AppSizes.xxl - AppSizes.sm; // 44
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: diameter,
-        height: diameter,
+        width: diameter + 10,
+        height: diameter + 10,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: context.appColors.primary,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.45),
+              color: context.appColors.primary.withValues(alpha: 0.45),
               blurRadius: AppSizes.lg,
               offset: const Offset(0, AppSizes.sm),
             ),
           ],
         ),
         alignment: Alignment.center,
-        child: const AppSvgIcon.string(
-          svgString: AppSvgs.plus,
+        child: AppSvgIcon(
+          // svgString: AppSvgs.plus,
           size: AppSizes.iconMd,
           color: AppColors.textWhite,
+          assetPath: AppAssets.posSale,
         ),
       ),
     );

@@ -9,12 +9,10 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: Scaffold(
-        body: Responsive(
-          mobile: const HomeMobileView(),
-          tablet: const HomeTabView(),
-        ),
+    return Scaffold(
+      body: Responsive(
+        mobile: const HomeMobileView(),
+        tablet: const HomeTabView(),
       ),
     );
   }

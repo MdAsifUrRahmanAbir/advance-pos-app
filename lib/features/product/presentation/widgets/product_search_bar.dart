@@ -8,9 +8,9 @@ import '../../../../core/widgets/common/icon_button.dart';
 /// Search input + a filter/sort icon button beside it.
 class ProductSearchBar extends StatelessWidget {
   final ValueChanged<String>? onChanged;
-  final VoidCallback? onFilterTap;
+  final VoidCallback? onScanTap;
 
-  const ProductSearchBar({super.key, this.onChanged, this.onFilterTap});
+  const ProductSearchBar({super.key, this.onChanged, this.onScanTap});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +30,8 @@ class ProductSearchBar extends StatelessWidget {
             border: Border.all(color: context.appColors.border),
           ),
           child: AppIconButton(
-            icon: Icons.tune_rounded,
-            onPressed: onFilterTap,
+            icon: Icons.qr_code_scanner_rounded,
+            onPressed: onScanTap,
           ),
         ),
       ],

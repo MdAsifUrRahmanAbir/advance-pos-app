@@ -1,19 +1,35 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Required: every Dio API call needs this -->
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Required: powers your NoInternetScreen / connectivity checks -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Required for image picking (AvatarPhotoPicker, product image uploads) -->
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- Photo/gallery access — Android 13+ (API 33+) uses granular media permissions -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
-    <!-- Photo/gallery access — Android 12 and below -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Bluetooth — required for thermal printer discovery/connection -->
+    <!-- Android 12+ (API 31+) runtime-permission model -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Android 11 and below — legacy Bluetooth permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <!-- Legacy Bluetooth scanning on Android <12 requires location permission
+         even though the app doesn't use GPS — this is an OS-level quirk, not
+         an actual location feature. neverForLocation flag above avoids this
+         requirement on Android 12+. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="30" />
+
+    <!-- Declares Bluetooth as optional hardware — app installs fine on
+         devices without Bluetooth; printing simply won't be available. -->
+    <uses-feature android:name="android.hardware.bluetooth"
+        android:required="false" />
 
     <application
         android:label="template_test"

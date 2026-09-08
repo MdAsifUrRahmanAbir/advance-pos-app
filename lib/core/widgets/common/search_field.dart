@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:advance_pos_app/core/constants/app_colors.dart';
 import 'package:advance_pos_app/core/constants/app_sizes.dart';
 import 'package:advance_pos_app/core/widgets/common/icon_button.dart';
 
@@ -39,7 +38,7 @@ class SearchField extends StatelessWidget {
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: hintText,
-        prefixIcon: const Icon(Icons.search, size: AppSizes.iconMd),
+        prefixIcon: const Icon(Icons.search, size: AppSizes.iconSm),
         suffixIcon: onClear == null
             ? null
             : AppIconButton(
@@ -49,19 +48,20 @@ class SearchField extends StatelessWidget {
                 iconSize: AppSizes.iconSm,
               ),
         filled: true,
+
         fillColor: context.appColors.surface,
         contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusFull),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusFull),
-          borderSide: const BorderSide(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          borderSide: BorderSide(color: context.appColors.border),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSizes.radiusFull),
-          borderSide: const BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          borderSide: BorderSide(color: context.appColors.primary),
         ),
       ),
     );

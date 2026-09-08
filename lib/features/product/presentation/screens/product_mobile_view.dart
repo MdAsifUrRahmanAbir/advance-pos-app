@@ -32,25 +32,26 @@ class ProductMobileView extends ConsumerWidget {
 
     return Column(
       children: [
-        const AppHeaderBar(title: AppStrings.productsTitle, backStyle: HeaderBackStyle.chevron,),
+        const AppHeaderBar(title: AppStrings.productsTitle, backStyle: HeaderBackStyle.none,),
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSizes.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                ProductSearchBar(
+                  onChanged: controller.updateSearchQuery,
+                  onScanTap: () {
+                    // TODO: open product filter options
+                  },
+                ),
+                const SizedBox(height: AppSizes.md),
                 ProductCategoryTabs(
                   selected: state.selectedCategory,
                   onChanged: controller.selectCategory,
                 ),
                 const SizedBox(height: AppSizes.md),
-                ProductSearchBar(
-                  onChanged: controller.updateSearchQuery,
-                  onFilterTap: () {
-                    // TODO: open product filter options
-                  },
-                ),
-                const SizedBox(height: AppSizes.md),
+
                 _buildBody(
                   isInitialLoading: isInitialLoading,
                   hasError: hasError,
@@ -104,22 +105,23 @@ class ProductMobileView extends ConsumerWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: AppSizes.md,
       mainAxisSpacing: AppSizes.md,
-      childAspectRatio: 0.65,
+      childAspectRatio: 0.8,
       children: items,
     ).skeletonizer(enabled: isInitialLoading);
   }
 
   ProductCardItem _mapToCard(ResultDatum item) {
-    final price = double.parse(item.salePrice) ?? 0;
-    print("--------------------");
-    // print(item);
-    print(item.salePrice);
-    print(price.toStringAsFixed(2));
-    print( CurrencyFormatter.format(price));
+    final price = double.parse(item.salePrice);
+    // print("--------------------");
+    // // print(item);
+    // print(item.salePrice);
+    // print(price.toStringAsFixed(2));
+    // print( CurrencyFormatter.format(price));
     return ProductCardItem(
       category: item.category,
       name: item.name,
       price: CurrencyFormatter.format(price),
+      // imageUrl: ,
       // TODO: wire real stock status once the API exposes it —
       // defaulting to inStock so the UI doesn't fabricate a warning state.
       stockStatus: ProductStockStatus.inStock,

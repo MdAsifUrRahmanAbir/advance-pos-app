@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 /// Presentation-layer shape until the real product API is wired via
-/// add_api_feature.py — at that point this maps from the real ProductModel.
+/// add_api_feature.py — at that point this maps from the real ProductModel
+/// (`barcode` mirrors `ResultDatum.barcode`/`systemBarcode`).
 @immutable
 class ProductItem {
   final String id;
@@ -9,6 +10,7 @@ class ProductItem {
   final String sku;
   final double price;
   final String categoryKey; // 'beverages' | 'snacks' | 'grocery'
+  final String? barcode;
   final String? imageUrl;
 
   const ProductItem({
@@ -17,8 +19,26 @@ class ProductItem {
     required this.sku,
     required this.price,
     required this.categoryKey,
+    this.barcode,
     this.imageUrl,
   });
+}
+
+/// One line in the cart — a [product] plus how many of it were added.
+/// Kept separate from [ProductItem] itself so the product catalog stays
+/// immutable/shared while cart quantity is per-sale, mutable state.
+@immutable
+class CartLineItem {
+  final ProductItem product;
+  final int quantity;
+
+  const CartLineItem({required this.product, required this.quantity});
+
+  double get lineTotal => product.price * quantity;
+
+  CartLineItem copyWith({int? quantity}) {
+    return CartLineItem(product: product, quantity: quantity ?? this.quantity);
+  }
 }
 
 @immutable
@@ -28,8 +48,7 @@ class NewSaleState {
   final String searchQuery;
   final String selectedCategory; // 'all' | 'beverages' | 'snacks' | 'grocery'
   final List<ProductItem> allProducts;
-  final int cartItemCount;
-  final double cartTotal;
+  final List<CartLineItem> cartItems;
 
   const NewSaleState({
     this.isLoading = false,
@@ -37,8 +56,7 @@ class NewSaleState {
     this.searchQuery = '',
     this.selectedCategory = 'all',
     this.allProducts = const [],
-    this.cartItemCount = 0,
-    this.cartTotal = 0,
+    this.cartItems = const [],
   });
 
   factory NewSaleState.initial() => const NewSaleState();
@@ -54,14 +72,19 @@ class NewSaleState {
     }).toList();
   }
 
+  /// Derived from [cartItems] so quantity/line data and the badge/total
+  /// shown on [CartSummaryBar] can never drift apart.
+  int get cartItemCount => cartItems.fold(0, (sum, line) => sum + line.quantity);
+
+  double get cartTotal => cartItems.fold(0.0, (sum, line) => sum + line.lineTotal);
+
   NewSaleState copyWith({
     bool? isLoading,
     String? errorMessage,
     String? searchQuery,
     String? selectedCategory,
     List<ProductItem>? allProducts,
-    int? cartItemCount,
-    double? cartTotal,
+    List<CartLineItem>? cartItems,
   }) {
     return NewSaleState(
       isLoading: isLoading ?? this.isLoading,
@@ -69,8 +92,7 @@ class NewSaleState {
       searchQuery: searchQuery ?? this.searchQuery,
       selectedCategory: selectedCategory ?? this.selectedCategory,
       allProducts: allProducts ?? this.allProducts,
-      cartItemCount: cartItemCount ?? this.cartItemCount,
-      cartTotal: cartTotal ?? this.cartTotal,
+      cartItems: cartItems ?? this.cartItems,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/custom_card.dart';
@@ -48,14 +49,16 @@ class ProductCardItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 1.05,
+            aspectRatio: 1.5,
             child: Container(
               decoration: BoxDecoration(
                 color: context.appColors.background,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                image: imageUrl != null
-                    ? DecorationImage(image: NetworkImage(imageUrl!), fit: BoxFit.cover)
-                    : null,
+                image: DecorationImage(
+                  image: imageUrl == null
+                      ? AssetImage(AppAssets.placeholder2)
+                      : NetworkImage(imageUrl!),
+                ),
               ),
             ),
           ),

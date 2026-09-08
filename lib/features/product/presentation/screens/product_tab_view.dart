@@ -65,7 +65,7 @@ class ProductTabView extends ConsumerWidget {
                     // ─────────────────────────────────────────────
                     ProductSearchBar(
                       onChanged: controller.updateSearchQuery,
-                      onFilterTap: () {
+                      onScanTap: () {
                         // TODO: open product filter options
                       },
                     ),

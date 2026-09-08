@@ -4,6 +4,7 @@ import '../constants/app_colors.dart';
 
 @immutable
 class AppColorScheme extends ThemeExtension<AppColorScheme> {
+  final Color primary;
   final Color background;
   final Color surface;
   final Color textPrimary;
@@ -13,6 +14,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   final Color divider;
 
   const AppColorScheme({
+    required this.primary,
     required this.background,
     required this.surface,
     required this.textPrimary,
@@ -23,6 +25,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   });
 
   static const light = AppColorScheme(
+    primary: AppColors.primary,
     background: AppColors.background,
     surface: AppColors.surface,
     textPrimary: AppColors.textPrimary,
@@ -33,6 +36,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   );
 
   static const dark = AppColorScheme(
+    primary: AppColors.primaryDark,
     background: AppColors.backgroundDark,
     surface: AppColors.surfaceDarkMode,
     textPrimary: AppColors.textPrimaryDark,
@@ -44,6 +48,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
 
   @override
   AppColorScheme copyWith({
+    Color? primary,
     Color? background,
     Color? surface,
     Color? textPrimary,
@@ -53,6 +58,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
     Color? divider,
   }) {
     return AppColorScheme(
+      primary: primary ?? this.primary,
       background: background ?? this.background,
       surface: surface ?? this.surface,
       textPrimary: textPrimary ?? this.textPrimary,
@@ -67,6 +73,7 @@ class AppColorScheme extends ThemeExtension<AppColorScheme> {
   AppColorScheme lerp(ThemeExtension<AppColorScheme>? other, double t) {
     if (other is! AppColorScheme) return this;
     return AppColorScheme(
+      primary: Color.lerp(primary, other.primary, t)!,
       background: Color.lerp(background, other.background, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,

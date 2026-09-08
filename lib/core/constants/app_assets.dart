@@ -9,6 +9,10 @@ class AppAssets {
 
   static const String onboardSVG = 'assets/clip/onboard.svg';
   static const String welcome = 'assets/clip/welcome.svg';
+  static const String posSale = 'assets/clip/pose_sale.svg';
+
+  static const String placeholder = 'assets/clip/placeholder.png';
+  static const String placeholder2 = 'assets/clip/placeholder2.png';
 
   static const String aa = '';
 

@@ -19,6 +19,19 @@ extension PaymentMethodX on PaymentMethod {
 }
 
 @immutable
+class ReceiptLineItem {
+  final String name;
+  final int quantity;
+  final double lineTotal;
+
+  const ReceiptLineItem({
+    required this.name,
+    required this.quantity,
+    required this.lineTotal,
+  });
+}
+
+@immutable
 class PaymentState {
   final bool isProcessing;
   final String? errorMessage;
@@ -33,6 +46,14 @@ class PaymentState {
   final String salesAgent;
   final List<String> availableAgents;
 
+  final List<ReceiptLineItem> receiptItems;
+
+  // --- Independent concurrent operations (multi-flag pattern, §4) ---
+  final bool isSharing;
+  final bool isPrinting;
+  final String? shareError;
+  final String? printError;
+
   const PaymentState({
     this.isProcessing = false,
     this.errorMessage,
@@ -43,6 +64,11 @@ class PaymentState {
     this.givenAmount = 0,
     this.salesAgent = '',
     this.availableAgents = const [],
+    this.receiptItems = const [],
+    this.isSharing = false,
+    this.isPrinting = false,
+    this.shareError,
+    this.printError,
   });
 
   double get changeDue => givenAmount - payableAmount;
@@ -58,6 +84,11 @@ class PaymentState {
     double? givenAmount,
     String? salesAgent,
     List<String>? availableAgents,
+    List<ReceiptLineItem>? receiptItems,
+    bool? isSharing,
+    bool? isPrinting,
+    String? shareError,
+    String? printError,
   }) {
     return PaymentState(
       isProcessing: isProcessing ?? this.isProcessing,
@@ -69,6 +100,11 @@ class PaymentState {
       givenAmount: givenAmount ?? this.givenAmount,
       salesAgent: salesAgent ?? this.salesAgent,
       availableAgents: availableAgents ?? this.availableAgents,
+      receiptItems: receiptItems ?? this.receiptItems,
+      isSharing: isSharing ?? this.isSharing,
+      isPrinting: isPrinting ?? this.isPrinting,
+      shareError: shareError,
+      printError: printError,
     );
   }
 }

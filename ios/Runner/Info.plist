@@ -66,5 +66,15 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+	<key>NSCameraUsageDescription</key>
+    <string>Camera access is needed to scan product barcodes.</string>
+
+    <!-- Bluetooth — required for thermal printer discovery/connection -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>POS Pro uses Bluetooth to connect to your thermal receipt printer.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>POS Pro uses Bluetooth to connect to your thermal receipt printer.</string>
+
 </dict>
 </plist>

@@ -43,6 +43,7 @@ class ProfileMobileView extends ConsumerWidget {
                 ],
               ),
             ),
+            SizedBox(height: AppSizes.bottomNavBarHeight)
           ],
         ),
       ),
