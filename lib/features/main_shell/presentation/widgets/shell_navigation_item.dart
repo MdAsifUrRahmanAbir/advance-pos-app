@@ -7,17 +7,19 @@ import '../../../../core/constants/app_svgs.dart';
 /// consumer updates together.
 class ShellNavItemData {
   final String svgIcon;
+  final String selectedIcon;
   final String label;
 
   const ShellNavItemData({
     required this.svgIcon,
+    required this.selectedIcon,
     required this.label,
   });
 }
 
 const List<ShellNavItemData> shellNavItems = [
-  ShellNavItemData(svgIcon: AppSvgs.home, label: 'Home'),
-  ShellNavItemData(svgIcon: AppSvgs.stock, label: 'Stock'),
-  ShellNavItemData(svgIcon: AppSvgs.report, label: 'Report'),
-  ShellNavItemData(svgIcon: AppSvgs.more, label: 'More'),
+  ShellNavItemData(svgIcon: AppSvgs.home, label: 'Home', selectedIcon: AppSvgs.selectedHome),
+  ShellNavItemData(svgIcon: AppSvgs.stock, label: 'Stock', selectedIcon: AppSvgs.selectedStock),
+  ShellNavItemData(svgIcon: AppSvgs.invoices, label: 'Invoice', selectedIcon: AppSvgs.selectedInvoices),
+  ShellNavItemData(svgIcon: AppSvgs.more, label: 'More', selectedIcon: AppSvgs.more),
 ];

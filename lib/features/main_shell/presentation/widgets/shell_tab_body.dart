@@ -1,6 +1,6 @@
+import 'package:advance_pos_app/features/invoices/presentation/screens/invoices_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../home/presentation/screens/home_screen.dart';
-import '../../../analytics_mode/presentation/screens/analytics_mode_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
 import '../../../stock/presentation/screens/stock_screen.dart';
 
@@ -13,7 +13,8 @@ class ShellTabBody extends StatelessWidget {
     HomeScreen(),
     StockScreen(),
     // ProductScreen(),
-    AnalyticsModeScreen(),
+    // AnalyticsModeScreen(),
+    InvoicesScreen(),
     ProfileScreen(),
   ];
 

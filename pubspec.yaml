@@ -26,7 +26,7 @@ dependencies:
   share_plus: ^13.3.0
   esc_pos_utils: ^1.1.0
   print_bluetooth_thermal:
-  permission_handler: ^13.0.2
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

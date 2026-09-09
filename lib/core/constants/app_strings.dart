@@ -388,4 +388,43 @@ class AppStrings {
   static const String receiptThankYouLine = 'Thank you for your purchase!';
 
 
+  // ---- Added: Stock report screen card tiles + filters ----
+  static const String stockFilterAll = 'All';
+  static const String stockFilterInStock = 'In Stock';
+  static const String stockFilterLowStock = 'Low Stock';
+  static const String stockFilterOutOfStock = 'Out of Stock';
+  static const String stockFilterSlowMoving = 'Slow Moving';
+  static const String stockStatusInStock = 'In Stock';
+  static const String stockStatusLowStock = 'Low Stock';
+  static const String stockStatusOutOfStock = 'Out of Stock';
+  static const String stockStatusSlowMoving = 'Slow Moving';
+  static const String stockQuantityLabel = 'Stock';
+  static const String sellingPriceLabel = 'Selling Price';
+  static const String stockSkuPrefix = 'SKU: ';
+  static const String stockBarcodePrefix = 'Barcode: ';
+  static const String stockCategoryLabel = 'Category';
+  static const String stockSkuLabel = 'SKU';
+  static const String stockBarcodeLabel = 'Barcode';
+  static const String showInfo = 'Show Info';
+
+
+  // ---- Added: Invoices screen ----
+  static const String invoicesTitle = 'Invoices';
+  static const String invoiceSearchHint = 'Search invoice # or customer...';
+  static const String invoicesEmptyMessage = 'No invoices match this filter.';
+  static const String invoicesFoundSuffix = 'invoices found';
+  static const String invoiceFilterAll = 'All';
+  static const String invoiceStatusPaid = 'Paid';
+  static const String invoiceStatusDue = 'Due';
+  static const String invoiceStatusPartial = 'Partial';
+  static const String invoiceStatusOverdue = 'Overdue';
+  static const String invoiceItemsSuffix = 'items';
+  static const String invoiceDateLabel = 'Date';
+  static const String invoiceDueDateLabel = 'Due';
+  static const String invoiceTotalLabel = 'Total';
+  static const String invoicePaidLabel = 'Paid';
+  static const String invoiceDueLabel = 'Due';
+  static const String invoiceTotalDueLabel = 'Total Due';
+  static const String invoiceShareAction = 'Share';
+  static const String invoiceDownloadAction = 'Download';
 }

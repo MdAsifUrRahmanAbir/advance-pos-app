@@ -100,7 +100,7 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppSvgIcon.string(svgString: item.svgIcon, size: AppSizes.iconMd, color: color),
+          AppSvgIcon.string(svgString: active ? item.selectedIcon : item.svgIcon, size: AppSizes.iconMd, color: color),
           const SizedBox(height: AppSizes.xs / 2),
           Text(
             item.label,
