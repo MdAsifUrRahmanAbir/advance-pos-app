@@ -36,7 +36,7 @@ import '../core/observers/logging_observer.dart';
 import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
 import '../features/new_sale/presentation/screens/new_sale_screen.dart';
 import '../features/payment/presentation/screens/payment_screen.dart';
-import '../features/stock_screen/presentation/screens/stock_screen_screen.dart';
+import '../features/stock/presentation/screens/stock_screen.dart';
 
 final hasCompletedInitialNavigationProvider = StateProvider<bool>(
   (ref) => false,
@@ -173,8 +173,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ProductScreen(),
       ),
       GoRoute(
-        path: RouteNames.stockScreen,
-        builder: (context, state) => const StockScreenScreen(),
+        path: RouteNames.stock,
+        builder: (context, state) => const StockScreen(),
       ),
       GoRoute(
         path: RouteNames.newSale,

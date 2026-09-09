@@ -1,7 +1,6 @@
 import 'package:advance_pos_app/core/theme/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 

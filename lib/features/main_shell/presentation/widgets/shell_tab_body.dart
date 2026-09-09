@@ -1,9 +1,8 @@
-import 'package:advance_pos_app/features/product/presentation/screens/product_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../home/presentation/screens/home_screen.dart';
 import '../../../analytics_mode/presentation/screens/analytics_mode_screen.dart';
 import '../../../profile/presentation/screens/profile_screen.dart';
-import '../../../stock_screen/presentation/screens/stock_screen_screen.dart';
+import '../../../stock/presentation/screens/stock_screen.dart';
 
 class ShellTabBody extends StatelessWidget {
   final int selectedIndex;
@@ -12,8 +11,8 @@ class ShellTabBody extends StatelessWidget {
 
   static const _screens = [
     HomeScreen(),
-    // StockScreenScreen(),
-    ProductScreen(),
+    StockScreen(),
+    // ProductScreen(),
     AnalyticsModeScreen(),
     ProfileScreen(),
   ];

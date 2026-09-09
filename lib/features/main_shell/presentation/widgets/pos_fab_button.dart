@@ -3,7 +3,6 @@ import 'package:advance_pos_app/core/theme/app_color_scheme.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_svgs.dart';
 import '../../../../core/widgets/common/app_svg_icon.dart';
 
 /// Circular POS/Sales trigger, handed to `Scaffold.floatingActionButton`

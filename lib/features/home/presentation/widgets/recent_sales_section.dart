@@ -63,7 +63,7 @@ class _RecentSaleCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(AppSizes.xs),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.1),
+                      color: AppColors.success.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     ),
                     child: Icon(

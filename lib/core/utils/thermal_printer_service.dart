@@ -4,13 +4,6 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../features/payment/presentation/states/payment_state.dart';
 
-/// ESC/POS receipt formatting + Bluetooth thermal-printer transport.
-///
-/// ⚠️ Assumes Bluetooth ESC/POS hardware (via print_bluetooth_thermal).
-/// If actual printers are USB/LAN or a vendor SDK (Epson ePOS, Star
-/// Micronics, etc.), only `_buildReceiptBytes` (pure ESC/POS formatting)
-/// carries over — the scan/connect/send methods below need to be
-/// swapped for that vendor's transport API.
 class ThermalPrinterService {
   const ThermalPrinterService._();
 

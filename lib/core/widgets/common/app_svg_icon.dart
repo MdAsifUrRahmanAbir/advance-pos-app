@@ -56,7 +56,7 @@ class AppSvgIcon extends StatelessWidget {
   /// is more convenient than a bundled asset file.
   const AppSvgIcon.string({
     super.key,
-    required String svgString,
+    required String this.svgString,
     this.size = AppSizes.iconMd,
     this.width,
     this.height,
@@ -64,8 +64,7 @@ class AppSvgIcon extends StatelessWidget {
     this.multicolor = false,
     this.fit = BoxFit.contain,
     this.placeholder,
-  })  : svgString = svgString,
-        networkUrl = null,
+  })  : networkUrl = null,
         assetPath = '';
 
   @override

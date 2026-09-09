@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import '../../../../core/utils/responsive.dart';
-import '../widgets/payment_top_bar.dart';
 import 'payment_mobile_view.dart';
 import 'payment_tab_view.dart';
 

@@ -31,7 +31,7 @@ class RouteNames {
   static const String orderList = '/order_list';
   static const String analyticsMode = '/analytics_mode';
   static const String product = '/product';
-  static const String stockScreen = '/stock_screen';
+  static const String stock = '/stock_screen';
   static const String newSale = '/new_sale';
   static const String payment = '/payment';
 }
