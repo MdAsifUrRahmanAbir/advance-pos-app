@@ -43,25 +43,31 @@ class NewSaleMobileView extends ConsumerWidget {
           onBack: () => context.pop(),
           onScanBarcode: () => _handleScanBarcode(context, ref),
         ),
-
+        const SizedBox(height: AppSizes.md),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: ProductSearchBar(onChanged: controller.updateSearchQuery),
+        ),
+        const SizedBox(height: AppSizes.sm),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: CategoryFilterBar(
+            selectedCategory: state.selectedCategory,
+            onCategoryChanged: controller.selectCategory,
+          ),
+        ),
+        const SizedBox(height: AppSizes.sm),
         Expanded(
           child: Stack(
             children: [
               ListView(
                 padding: const EdgeInsets.fromLTRB(
                   AppSizes.md,
-                  AppSizes.md,
+                  0,
                   AppSizes.md,
                   AppSizes.xxl + AppSizes.xl,
                 ),
                 children: [
-                  ProductSearchBar(onChanged: controller.updateSearchQuery),
-                  const SizedBox(height: AppSizes.md),
-                  CategoryFilterBar(
-                    selectedCategory: state.selectedCategory,
-                    onCategoryChanged: controller.selectCategory,
-                  ),
-                  const SizedBox(height: AppSizes.md),
                   ProductGrid(
                     products: state.filteredProducts,
                     onAddToCart: controller.addToCart,

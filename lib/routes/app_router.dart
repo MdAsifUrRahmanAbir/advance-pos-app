@@ -1,3 +1,4 @@
+import 'package:advance_pos_app/features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
 import 'package:advance_pos_app/features/invoices/presentation/screens/invoices_screen.dart';
 import 'package:advance_pos_app/features/product/presentation/screens/product_screen.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -190,6 +191,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const CartScreen(),
       ),
       GoRoute(path: RouteNames.invoices, builder: (context, state) => const InvoicesScreen()),
-  ],
+
+      GoRoute(
+        path: RouteNames.invoiceDetail,
+        builder: (context, state) => InvoiceDetailScreen(invoiceId: state.extra as String),
+      ),  ],
   );
 });

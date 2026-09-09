@@ -35,4 +35,5 @@ class RouteNames {
   static const String newSale = '/new_sale';
   static const String payment = '/payment';
   static const String invoices = '/invoices';
+  static const String invoiceDetail = '/invoice_detail';
 }

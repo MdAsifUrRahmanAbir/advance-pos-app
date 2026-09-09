@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
@@ -30,21 +31,24 @@ class InvoicesMobileView extends ConsumerWidget {
     return Column(
       children: [
         AppHeaderBar(title: AppStrings.invoicesTitle),
+        const SizedBox(height: AppSizes.md),
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppSizes.md, AppSizes.sm, AppSizes.md, 0),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: SearchField(
             hintText: AppStrings.invoiceSearchHint,
             controller: controller.searchController,
             onChanged: controller.updateSearchQuery,
           ),
         ),
+        const SizedBox(height: AppSizes.sm),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: InvoiceFilterTabs(selected: state.selectedStatus, onChanged: controller.selectStatus),
         ),
+        const SizedBox(height: AppSizes.sm),
         if (invoices.isNotEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -54,11 +58,12 @@ class InvoicesMobileView extends ConsumerWidget {
                 ),
                 Text(
                   '${AppStrings.invoiceTotalDueLabel}: ${CurrencyFormatter.format(state.totalDue, symbol: '৳')}',
-                  style: const TextStyle(fontSize: AppSizes.fontXs, fontWeight: FontWeight.w700, color: Colors.red),
+                  style: const TextStyle(fontSize: AppSizes.fontXs, fontWeight: FontWeight.w700, color: AppColors.error),
                 ),
               ],
             ),
           ),
+        const SizedBox(height: AppSizes.xs),
         Expanded(
           child: invoices.isEmpty
               ? EmptyState(
@@ -69,7 +74,7 @@ class InvoicesMobileView extends ConsumerWidget {
               : CustomRefreshWrapper(
             onRefresh: controller.refresh,
             child: ListView.separated(
-              padding: const EdgeInsets.all(AppSizes.md),
+              padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.md),
               physics: const AlwaysScrollableScrollPhysics(),
               itemCount: invoices.length,
               separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),

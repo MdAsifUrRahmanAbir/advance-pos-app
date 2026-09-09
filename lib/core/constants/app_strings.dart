@@ -427,4 +427,29 @@ class AppStrings {
   static const String invoiceTotalDueLabel = 'Total Due';
   static const String invoiceShareAction = 'Share';
   static const String invoiceDownloadAction = 'Download';
+
+  // ---- Added: Invoice detail screen ----
+  static const String invoiceDetailTitle = 'Invoice Details';
+  static const String invoiceInfoSectionTitle = 'Cash Sale Information';
+  static const String invoiceProductsSectionTitle = 'Products';
+  static const String invoiceActivityLogTitle = 'Activity Log';
+  static const String invoiceBillNoLabel = 'Bill No.';
+  static const String invoiceCustomerLabel = 'Customer';
+  static const String invoiceMobileLabel = 'Mobile No.';
+  static const String invoiceNationalIdLabel = 'National ID';
+  static const String invoiceSalesByLabel = 'Sales By';
+  static const String invoiceBranchLabel = 'Branch';
+  static const String invoiceVatNoLabel = 'VAT Invoice No.';
+  static const String invoicePaymentSystemLabel = 'Payment System';
+  static const String invoicePaymentAccountLabel = 'Payment Account';
+  static const String invoiceSubtotalLabel = 'Subtotal';
+  static const String invoiceDiscountLabel = 'Discount';
+  static const String invoiceVatLabel = 'VAT';
+  static const String invoiceTotalPayableLabel = 'Total Payable';
+  static const String invoiceRemarksLabel = 'Remarks';
+  static const String invoiceSerialNoLabel = 'Serial No';
+  static const String invoiceTotalQuantityLabel = 'Total Quantity';
+  static const String invoiceTotalAmountLabel = 'Total Amount';
+  static const String invoicePrintAction = 'Print Receipt';
+  static const String invoicePayDuesAction = 'Pay Dues';
 }
