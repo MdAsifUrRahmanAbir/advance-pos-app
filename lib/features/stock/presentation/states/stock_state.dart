@@ -1,3 +1,4 @@
+import '../../data/models/stocks_model.dart';
 import 'package:flutter/foundation.dart';
 
 /// Health/status of a stock line — drives the colored dot + label and
@@ -40,6 +41,13 @@ class StockState {
   final String searchQuery;
   final String selectedStatus; // 'all' | one of StockStatus.name
   final List<StockItem> allItems;
+  final StocksModel? stocksModel;
+  final bool isStocksLoading;
+
+  // --- pagination additions ---
+  final int currentStart;   // offset already fetched (for next `start`)
+  final bool isLoadingMore; // independent flag — loading page 2+, not initial fetch
+  final bool hasMore;       // false once recordsFiltered is fully loaded
 
   const StockState({
     this.isLoading = false,
@@ -47,6 +55,11 @@ class StockState {
     this.searchQuery = '',
     this.selectedStatus = 'all',
     this.allItems = const [],
+    this.stocksModel,
+    this.isStocksLoading = false,
+    this.currentStart = 0,
+    this.isLoadingMore = false,
+    this.hasMore = true,
   });
 
   factory StockState.initial() => const StockState();
@@ -68,6 +81,11 @@ class StockState {
     String? searchQuery,
     String? selectedStatus,
     List<StockItem>? allItems,
+    StocksModel? stocksModel,
+    bool? isStocksLoading,
+    int? currentStart,
+    bool? isLoadingMore,
+    bool? hasMore,
   }) {
     return StockState(
       isLoading: isLoading ?? this.isLoading,
@@ -75,6 +93,11 @@ class StockState {
       searchQuery: searchQuery ?? this.searchQuery,
       selectedStatus: selectedStatus ?? this.selectedStatus,
       allItems: allItems ?? this.allItems,
+      stocksModel: stocksModel ?? this.stocksModel,
+      isStocksLoading: isStocksLoading ?? this.isStocksLoading,
+      currentStart: currentStart ?? this.currentStart,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }

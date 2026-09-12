@@ -1,4 +1,3 @@
-import 'package:advance_pos_app/core/widgets/utility/widget_padding_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -9,14 +8,45 @@ import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
+import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../controllers/stock_controller.dart';
+import '../states/stock_state.dart';
 import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
 import '../widgets/stock_filter_tabs.dart';
+import '../widgets/stock_list_skeleton.dart';
 import '../widgets/stock_search_bar.dart';
 
-class StockMobileView extends ConsumerWidget {
+class StockMobileView extends ConsumerStatefulWidget {
   const StockMobileView({super.key});
+
+  @override
+  ConsumerState<StockMobileView> createState() => _StockMobileViewState();
+}
+
+class _StockMobileViewState extends ConsumerState<StockMobileView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Trigger loadMore when within 200px of the bottom.
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      ref.read(stockControllerProvider.notifier).loadMore();
+    }
+  }
 
   void _showInfo(BuildContext context, dynamic item) {
     CustomBottomSheet.show<void>(context, child: StockDetailSheet(item: item));
@@ -37,10 +67,12 @@ class StockMobileView extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
     final controller = ref.read(stockControllerProvider.notifier);
     final items = state.filteredItems;
+
+    final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 
     return Column(
       children: [
@@ -67,7 +99,9 @@ class StockMobileView extends ConsumerWidget {
         ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
-          child: items.isEmpty
+          child: isInitialLoad
+              ? const StockListSkeleton(itemCount: 6)
+              : items.isEmpty
               ? EmptyState(
             title: AppStrings.stockTitle,
             message: AppStrings.stockEmptyMessage,
@@ -75,20 +109,32 @@ class StockMobileView extends ConsumerWidget {
           )
               : CustomRefreshWrapper(
             onRefresh: controller.refresh,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: items.length,
-              separatorBuilder: (_, _) =>
-              const SizedBox(height: AppSizes.sm + AppSizes.xs),
-              itemBuilder: (context, index) {
-                final item = items[index];
-                return StockCardTile(
-                  item: item,
-                  onShowInfo: () => _showInfo(context, item),
-                );
-              },
-            ).paddingOnly(bottom: AppSizes.bottomNavBarHeight),
+            child: ListView(
+              controller: _scrollController,
+              children: [
+                ListView.separated(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  separatorBuilder: (_, _) =>
+                  const SizedBox(height: AppSizes.sm + AppSizes.xs),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return StockCardTile(
+                      item: item,
+                      onShowInfo: () => _showInfo(context, item),
+                    );
+                  },
+                ),
+                if (state.isLoadingMore)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: AppSizes.md),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                SizedBox(height: AppSizes.bottomNavBarHeight / 2),
+              ],
+            ),
           ),
         ),
       ],

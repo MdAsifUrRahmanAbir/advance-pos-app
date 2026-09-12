@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/currency_formatter.dart';
-import '../../../../core/widgets/common/custom_app_bar.dart';
+import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
@@ -18,33 +18,45 @@ import '../widgets/invoice_products_card.dart';
 
 /// Same content as [InvoiceDetailMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
-class InvoiceDetailTabView extends ConsumerWidget {
+class InvoiceDetailTabView extends ConsumerStatefulWidget {
   final String invoiceId;
 
   const InvoiceDetailTabView({super.key, required this.invoiceId});
 
-  Future<void> _handlePayDues(BuildContext context, WidgetRef ref, double amountDue, String invoiceNumber) async {
+  @override
+  ConsumerState<InvoiceDetailTabView> createState() => _InvoiceDetailTabViewState();
+}
+
+class _InvoiceDetailTabViewState extends ConsumerState<InvoiceDetailTabView> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(
+          () => ref.read(invoiceDetailControllerProvider.notifier).loadInvoice(widget.invoiceId),
+    );
+  }
+
+  Future<void> _handlePayDues(double amountDue, String invoiceNumber) async {
     final confirmed = await CustomAlertDialog.confirm(
       context,
       title: AppStrings.invoicePayDuesAction,
       message: 'Record full payment of ${CurrencyFormatter.format(amountDue, symbol: '৳')} for $invoiceNumber?',
       confirmText: AppStrings.invoicePayDuesAction,
     );
-    if (confirmed != true || !context.mounted) return;
+    if (confirmed != true || !mounted) return;
 
     final success = await ref.read(invoiceDetailControllerProvider.notifier).payDues();
-    if (!context.mounted) return;
+    if (!mounted) return;
     CustomSnackbar.show(context, success ? 'Payment recorded for $invoiceNumber' : 'Could not record payment');
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.read(invoiceDetailControllerProvider.notifier).loadInvoice(invoiceId);
+  Widget build(BuildContext context) {
     final state = ref.watch(invoiceDetailControllerProvider);
 
     return Column(
       children: [
-        CustomAppBar(title: AppStrings.invoiceDetailTitle, onBackTap: () => context.pop()),
+        AppHeaderBar(title: AppStrings.invoiceDetailTitle, onBackTap: () => context.pop(), backStyle: HeaderBackStyle.chevron,),
         Expanded(
           child: Center(
             child: ConstrainedBox(
@@ -53,7 +65,7 @@ class InvoiceDetailTabView extends ConsumerWidget {
                 InvoiceDetailState(isLoading: true, invoice: null) => const CustomLoader(),
                 InvoiceDetailState(errorMessage: final err?, invoice: null) => ErrorState(
                   message: err,
-                  onRetry: () => ref.read(invoiceDetailControllerProvider.notifier).loadInvoice(invoiceId),
+                  onRetry: () => ref.read(invoiceDetailControllerProvider.notifier).retry(),
                 ),
                 InvoiceDetailState(invoice: final invoice?) => SingleChildScrollView(
                   padding: const EdgeInsets.all(AppSizes.lg),
@@ -76,7 +88,7 @@ class InvoiceDetailTabView extends ConsumerWidget {
         if (state.invoice != null)
           InvoiceDetailActions(
             invoice: state.invoice!,
-            onPayDues: () => _handlePayDues(context, ref, state.invoice!.amountDue, state.invoice!.invoiceNumber),
+            onPayDues: () => _handlePayDues(state.invoice!.amountDue, state.invoice!.invoiceNumber),
           ),
       ],
     );

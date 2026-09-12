@@ -5,6 +5,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_row.dart';
+import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
 
 class ProfileMobileView extends ConsumerWidget {
@@ -30,9 +31,16 @@ class ProfileMobileView extends ConsumerWidget {
                 0,
                 AppSizes.md,
                 0,
-              ),              child: Column(
+              ),
+              child: Column(
                 children: [
                   const ProfileStatsRow(projects: '24', tasks: '156', rating: '4.8'),
+                  const SizedBox(height: AppSizes.lg),
+                  ProfileReportsSection(
+                    onStockReportTap: () => context.push(RouteNames.error),
+                    onSalesReportTap: () => context.push(RouteNames.maintenance),
+                    onAllReportTap: () => context.push(RouteNames.notFound),
+                  ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileSettingsSections(
                     onPersonalInfoTap: () => context.push(RouteNames.editProfile),
@@ -40,10 +48,12 @@ class ProfileMobileView extends ConsumerWidget {
                     onPrivacyTap: () => context.push(RouteNames.termsPrivacy),
                     onHelpCenterTap: () => context.push(RouteNames.helpSupport),
                   ),
+
+                  const SizedBox(height: AppSizes.bottomNavBarHeight),
+
                 ],
               ),
             ),
-            SizedBox(height: AppSizes.bottomNavBarHeight)
           ],
         ),
       ),

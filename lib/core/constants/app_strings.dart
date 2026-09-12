@@ -452,4 +452,28 @@ class AppStrings {
   static const String invoiceTotalAmountLabel = 'Total Amount';
   static const String invoicePrintAction = 'Print Receipt';
   static const String invoicePayDuesAction = 'Pay Dues';
+
+  // ---- Added: Profile "More" screen — Reports section ----
+  static const String reportsSection = 'REPORTS';
+  static const String stockReportTitle = 'Stock Report';
+  static const String stockReportSubtitle = 'Inventory levels, low/out-of-stock items';
+  static const String salesReportTitle = 'Sales Report';
+  static const String salesReportSubtitle = 'Daily and periodic sales summaries';
+  static const String salesReportEmptyMessage = 'Sales reporting is coming soon.';
+  static const String allReportTitle = 'All Report';
+  static const String allReportSubtitle = 'Combined revenue, expenses & category breakdown';
+
+
+  // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
+  static const String todayRevenueLabel = 'Today\'s Revenue';
+  static const String todayOrdersLabel = 'Today\'s Orders';
+  static const String todayProfitLabel = 'Today\'s Profit';
+  static const String todayItemsSoldLabel = 'Items Sold';
+  static const String todaySalesTrendTitle = 'Today\'s Sales Trend';
+  static const String recentSalesTitle = 'Recent Sales';
+  static const String topProductsTodayTitle = 'Top Products Today';
+  static const String seeAllLabel = 'See All';
+
+
+
 }

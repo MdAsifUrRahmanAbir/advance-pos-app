@@ -12,10 +12,13 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
   @override
   InvoiceDetailState build() => const InvoiceDetailState();
 
-  /// Loads the invoice for [invoiceId] if it isn't already loaded (or if
-  /// a different invoice was previously loaded into this provider
-  /// instance). Safe to call from the view's `build()` every frame — it
-  /// only actually fetches once per [invoiceId].
+  /// Fetches the invoice for [invoiceId]. Call this from the view's
+  /// `initState` (deferred via `Future.microtask`), NOT from `build()` —
+  /// `initState` itself still counts as "building" to Riverpod, so the
+  /// first `state = ...` line below must run after the current
+  /// synchronous call stack unwinds, which `Future.microtask` guarantees.
+  /// Skips re-fetching if this exact [invoiceId] is already
+  /// loaded/loading.
   Future<void> loadInvoice(String invoiceId) async {
     if (state.loadedInvoiceId == invoiceId && (state.invoice != null || state.isLoading)) {
       return;
@@ -30,14 +33,20 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
     }
   }
 
+  Future<void> retry() {
+    final id = state.loadedInvoiceId;
+    if (id == null) return Future.value();
+    // Force a re-fetch by clearing the cached id first.
+    state = state.copyWith(loadedInvoiceId: null);
+    return loadInvoice(id);
+  }
+
   Future<bool> payDues() async {
-    final invoice = state.invoice;
-    if (invoice == null) return false;
+    if (state.invoice == null) return false;
 
     // TODO: wire to invoiceDetailRepositoryProvider.recordPayment(...)
-    // once the backend supports it — currently just marks it paid
-    // locally so the UI reflects the action without a real mutation.
-    state = state.copyWith(isLoading: false);
+    // once the backend supports it — currently a no-op success signal
+    // since there's no real mutation path yet.
     return true;
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/utils/error_mapper.dart';
+import '../../data/models/stocks_model.dart';
+import '../../data/repositories/stock_repository.dart';
 import '../states/stock_state.dart';
 
 final stockControllerProvider =
@@ -9,14 +12,18 @@ NotifierProvider.autoDispose<StockController, StockState>(StockController.new);
 class StockController extends Notifier<StockState> {
   late final TextEditingController searchController;
 
+  StockRepository get _repository => ref.read(stockRepositoryProvider);
+
+  static const int _pageLength = 15;
+
   @override
   StockState build() {
     searchController = TextEditingController();
     ref.onDispose(() => searchController.dispose());
 
-    // TODO: wire to stockRepositoryProvider.getStockReport() once the
-    // stock/data/repositories layer is ready. Currently mock data.
-    return StockState.initial().copyWith(allItems: _mockItems);
+    Future.microtask(getStocks);
+
+    return StockState.initial();
   }
 
   void selectStatus(String statusKey) {
@@ -31,20 +38,38 @@ class StockController extends Notifier<StockState> {
     state = state.copyWith(searchQuery: query);
   }
 
+  /// Pull-to-refresh: resets pagination and refetches from start=0.
   Future<void> refresh() async {
-    // TODO: replace with a real repository re-fetch.
-    state = state.copyWith(allItems: _mockItems);
+    await getStocks(reset: true);
   }
 
-  /// Resolves a scanned barcode against [StockState.allItems] — no
-  /// separate repository call needed just to resolve a scanned code.
-  /// Fills [searchController]/`searchQuery` with the raw code either
-  /// way (which also narrows [StockState.filteredItems] down to the
-  /// match, if any), and sets [StockState.errorMessage] to exactly
-  /// "Product not found." on a miss. Unlike New Sale, a match here is
-  /// NOT added to a cart — Stock is a report screen, so the caller is
-  /// expected to show the matched item's info (e.g. open
-  /// [StockDetailSheet]) rather than perform a sale action.
+  /// Infinite-scroll continuation: fetches the next page and appends.
+  /// No-op if already loading or no more pages exist — call this from
+  /// a ScrollController listener near the list's bottom edge.
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || state.isStocksLoading || !state.hasMore) return;
+
+    state = state.copyWith(isLoadingMore: true, errorMessage: null);
+    try {
+      final nextStart = state.currentStart + _pageLength;
+      final stocks = await _repository.getStocks(start: nextStart, length: _pageLength);
+      final newItems = _mapToStockItems(stocks);
+
+      state = state.copyWith(
+        isLoadingMore: false,
+        stocksModel: stocks,
+        allItems: [...state.allItems, ...newItems],
+        currentStart: nextStart,
+        hasMore: (nextStart + newItems.length) < stocks.recordsFiltered,
+      );
+    } catch (error) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: getErrorMessage(error),
+      );
+    }
+  }
+
   StockItem? handleScannedCode(String code) {
     final match = state.allItems
         .where((item) => item.barcode == code || item.sku == code)
@@ -56,68 +81,64 @@ class StockController extends Notifier<StockState> {
     return match;
   }
 
-  static const _mockItems = [
-    StockItem(
-      id: 's1',
-      name: 'Winner Men Shirt',
-      category: 'Clothing',
-      sku: 'CL-001',
-      barcode: '8901030111111',
-      quantity: 12,
-      sellingPrice: 860.00,
-      status: StockStatus.inStock,
-    ),
-    StockItem(
-      id: 's2',
-      name: 'Classic Denim Jeans',
-      category: 'Clothing',
-      sku: 'CL-014',
-      barcode: '8901030111128',
-      quantity: 4,
-      sellingPrice: 1450.00,
-      status: StockStatus.lowStock,
-      lowStockThreshold: 8,
-    ),
-    StockItem(
-      id: 's3',
-      name: 'Fresh Milk 1L',
-      category: 'Grocery',
-      sku: 'MK-1002',
-      barcode: '8901030123457',
-      quantity: 0,
-      sellingPrice: 60.00,
-      status: StockStatus.outOfStock,
-    ),
-    StockItem(
-      id: 's4',
-      name: 'Wool Winter Coat',
-      category: 'Clothing',
-      sku: 'CL-022',
-      barcode: '8901030111135',
-      quantity: 27,
-      sellingPrice: 3200.00,
-      status: StockStatus.slowMoving,
-    ),
-    StockItem(
-      id: 's5',
-      name: 'Wheat Bread',
-      category: 'Grocery',
-      sku: 'BR-5001',
-      barcode: '8901030123458',
-      quantity: 34,
-      sellingPrice: 40.00,
-      status: StockStatus.inStock,
-    ),
-    StockItem(
-      id: 's6',
-      name: 'Apple Soda',
-      category: 'Beverages',
-      sku: 'SD-0091',
-      barcode: '8901030123460',
-      quantity: 6,
-      sellingPrice: 30.00,
-      status: StockStatus.lowStock,
-      lowStockThreshold: 10,
-    ),
-  ];
+  // ───────────────────────────────────────────────
+  // GET (initial load or full reset)
+  // ───────────────────────────────────────────────
+  /// [reset] clears existing items and refetches from start=0 — used by
+  /// both the initial build() call and pull-to-refresh.
+  Future<bool> getStocks({bool reset = false}) async {
+    state = state.copyWith(
+      isStocksLoading: true,
+      errorMessage: null,
+      allItems: reset ? [] : state.allItems,
+      currentStart: reset ? 0 : state.currentStart,
+      hasMore: reset ? true : state.hasMore,
+    );
+    try {
+      final stocks = await _repository.getStocks(start: 0, length: _pageLength);
+      final newItems = _mapToStockItems(stocks);
+
+      state = state.copyWith(
+        isStocksLoading: false,
+        stocksModel: stocks,
+        allItems: newItems,
+        currentStart: 0,
+        hasMore: newItems.length < stocks.recordsFiltered,
+      );
+      return true;
+    } catch (error) {
+      state = state.copyWith(
+        isStocksLoading: false,
+        errorMessage: getErrorMessage(error),
+      );
+      return false;
+    }
+  }
+
+  List<StockItem> _mapToStockItems(StocksModel stocks) {
+    return stocks.resultData.map((result) {
+      final product = result.product.product;
+      final stock = result.product.stock;
+      final quantity = stock.organizationStock;
+
+      return StockItem(
+        id: result.product.id.toString(),
+        name: product.name,
+        sku: product.skuCode,
+        barcode: product.barcode.isNotEmpty ? product.barcode : product.sysBarcode,
+        quantity: quantity,
+        status: _mapStatus(quantity, null),
+        category: 'Uncategorized', // TODO: not available from this endpoint
+        sellingPrice: 0.0,          // TODO: not available from this endpoint
+      );
+    }).toList();
+  }
+
+  StockStatus _mapStatus(int quantity, int? lowStockThreshold) {
+    if (quantity <= 0) return StockStatus.outOfStock;
+    if (lowStockThreshold != null && quantity <= lowStockThreshold) {
+      return StockStatus.lowStock;
+    }
+    return StockStatus.inStock;
+  }
 }

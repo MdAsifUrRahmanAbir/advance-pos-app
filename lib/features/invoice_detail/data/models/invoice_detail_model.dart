@@ -1,9 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-/// Payment status of an invoice — drives the badge color on the detail
-/// screen. Kept as this feature's own enum (not imported from
-/// `features/invoices`) so `invoice_detail` has zero dependency on
-/// another feature's data shape.
 enum InvoiceDetailStatus { paid, due, partial, overdue }
 
 @immutable

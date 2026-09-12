@@ -5,6 +5,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
 import '../widgets/profile_stats_row.dart';
+import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
 
 /// Same content as [ProfileMobileView], centered in a fixed-width
@@ -29,11 +30,19 @@ class ProfileTabView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.xl),
                 const ProfileStatsRow(projects: '24', tasks: '156', rating: '4.8'),
                 const SizedBox(height: AppSizes.xl),
+                ProfileReportsSection(
+                  onStockReportTap: () => context.push(RouteNames.error),
+                  onSalesReportTap: () => context.push(RouteNames.maintenance),
+                  onAllReportTap: () => context.push(RouteNames.notFound),
+                ),
+                const SizedBox(height: AppSizes.xl),
                 ProfileSettingsSections(
                   onPersonalInfoTap: () => context.go(RouteNames.editProfile),
                   onSettingsTap: () => context.push(RouteNames.settings),
-                  // onNotificationSettingsTap: () => context.go(RouteNames.notifications),
                 ),
+                const SizedBox(height: AppSizes.bottomNavBarHeight),
+
+
               ],
             ),
           ),
