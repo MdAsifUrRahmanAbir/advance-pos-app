@@ -1,35 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_color_scheme.dart';
-import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/search_field.dart';
-import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
+import '../../../../core/widgets/utility/error_state.dart';
+import '../../../../routes/route_names.dart';
+import '../../data/model/invoices_model.dart';
 import '../controllers/invoices_controller.dart';
 import '../widgets/invoice_card_item.dart';
-import '../widgets/invoice_detail_sheet.dart';
-import '../widgets/invoice_filter_tabs.dart';
 
 /// Same content as [InvoicesMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
-class InvoicesTabView extends ConsumerWidget {
+class InvoicesTabView extends ConsumerStatefulWidget {
   const InvoicesTabView({super.key});
 
-  void _openDetail(BuildContext context, invoice) {
-    CustomBottomSheet.show<void>(context, child: InvoiceDetailSheet(invoice: invoice));
+  @override
+  ConsumerState<InvoicesTabView> createState() => _InvoicesTabViewState();
+}
+
+class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      ref.read(invoicesControllerProvider.notifier).loadMore();
+    }
+  }
+
+  void _openDetail(BuildContext context, ResultDatum invoice) {
+    context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(invoicesControllerProvider);
     final controller = ref.read(invoicesControllerProvider.notifier);
-    final invoices = state.filteredInvoices;
+    final isInitialLoading = state.isInvoicesLoading && state.allItems.isEmpty;
+    final hasError = state.errorMessage != null && state.allItems.isEmpty;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppHeaderBar(title: AppStrings.invoicesTitle, backStyle: HeaderBackStyle.chevron),
         Expanded(
@@ -47,43 +74,28 @@ class InvoicesTabView extends ConsumerWidget {
                       onChanged: controller.updateSearchQuery,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSizes.lg),
-                    child: InvoiceFilterTabs(selected: state.selectedStatus, onChanged: controller.selectStatus),
-                  ),
-                  if (invoices.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(AppSizes.lg, 0, AppSizes.lg, AppSizes.sm),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '${invoices.length} ${AppStrings.invoicesFoundSuffix}',
-                            style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
-                          ),
-                          Text(
-                            '${AppStrings.invoiceTotalDueLabel}: ${CurrencyFormatter.format(state.totalDue, symbol: '৳')}',
-                            style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
-                          ),
-                        ],
-                      ),
-                    ),
+                  const SizedBox(height: AppSizes.md),
                   Expanded(
-                    child: invoices.isEmpty
-                        ? EmptyState(
-                      title: AppStrings.invoicesTitle,
-                      message: AppStrings.invoicesEmptyMessage,
-                      icon: Icons.receipt_long_outlined,
-                    )
+                    child: hasError
+                        ? ErrorState(message: state.errorMessage ?? AppStrings.errorOccurred, onRetry: () => controller.getInvoices(reset: true))
+                        : (!isInitialLoading && state.allItems.isEmpty)
+                        ? EmptyState(title: AppStrings.invoicesTitle, message: AppStrings.invoicesEmptyMessage, icon: Icons.receipt_long_outlined)
                         : CustomRefreshWrapper(
                       onRefresh: controller.refresh,
                       child: ListView.separated(
+                        controller: _scrollController,
                         padding: const EdgeInsets.fromLTRB(AppSizes.lg, 0, AppSizes.lg, AppSizes.lg),
                         physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: invoices.length,
+                        itemCount: state.allItems.length + (state.hasMore ? 1 : 0),
                         separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),
                         itemBuilder: (context, index) {
-                          final invoice = invoices[index];
+                          if (index >= state.allItems.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: AppSizes.md),
+                              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                            );
+                          }
+                          final invoice = state.allItems[index];
                           return InvoiceCardItem(invoice: invoice, onTap: () => _openDetail(context, invoice));
                         },
                       ),

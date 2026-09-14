@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/custom_filter_bar.dart';
 
-/// All / Paid / Due / Partial / Overdue filter for the invoice list.
-/// Same thin-wrapper pattern as [StockFilterTabs] / [OrderFilterTabs].
+/// All / Paid / Due / Partial filter — status is derived client-side
+/// per-page (see [InvoiceStatusBadge.statusOf]) since the API returns
+/// no status field, so this filters only the currently loaded page.
 class InvoiceFilterTabs extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
@@ -13,14 +13,13 @@ class InvoiceFilterTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomFilterBar<String>(
-      filters: const ['all', 'paid', 'due', 'partial', 'overdue'],
+      filters: const ['all', 'paid', 'due', 'partial'],
       selectedFilters: {selected},
       labelBuilder: (f) => switch (f) {
-        'all' => AppStrings.invoiceFilterAll,
-        'paid' => AppStrings.invoiceStatusPaid,
-        'due' => AppStrings.invoiceStatusDue,
-        'partial' => AppStrings.invoiceStatusPartial,
-        _ => AppStrings.invoiceStatusOverdue,
+        'all' => 'All',
+        'paid' => 'Paid',
+        'due' => 'Due',
+        _ => 'Partial',
       },
       onSelected: onChanged,
     );

@@ -1,51 +1,49 @@
 import 'package:flutter/foundation.dart';
-import '../../data/model/invoice_model.dart';
+import '../../data/model/invoices_model.dart';
 
 @immutable
 class InvoicesState {
-  final bool isLoading;
+  final bool isInvoicesLoading;
+  final bool isLoadingMore;
   final String? errorMessage;
   final String searchQuery;
-  final String selectedStatus; // 'all' | one of InvoiceStatus.name
-  final List<InvoiceItem> allInvoices;
+  final InvoicesModel? invoicesModel;
+  final List<ResultDatum> allItems;
+  final int currentStart;
+  final bool hasMore;
 
   const InvoicesState({
-    this.isLoading = false,
+    this.isInvoicesLoading = false,
+    this.isLoadingMore = false,
     this.errorMessage,
     this.searchQuery = '',
-    this.selectedStatus = 'all',
-    this.allInvoices = const [],
+    this.invoicesModel,
+    this.allItems = const [],
+    this.currentStart = 0,
+    this.hasMore = true,
   });
 
   factory InvoicesState.initial() => const InvoicesState();
 
-  List<InvoiceItem> get filteredInvoices {
-    return allInvoices.where((invoice) {
-      final matchesStatus = selectedStatus == 'all' || invoice.status.name == selectedStatus;
-      final matchesQuery = searchQuery.isEmpty ||
-          invoice.invoiceNumber.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          invoice.customerName.toLowerCase().contains(searchQuery.toLowerCase());
-      return matchesStatus && matchesQuery;
-    }).toList();
-  }
-
-  /// Sum of every filtered invoice's outstanding balance — shown as a
-  /// quick "Total Due" summary above the list.
-  double get totalDue => filteredInvoices.fold(0.0, (sum, invoice) => sum + invoice.amountDue);
-
   InvoicesState copyWith({
-    bool? isLoading,
+    bool? isInvoicesLoading,
+    bool? isLoadingMore,
     String? errorMessage,
     String? searchQuery,
-    String? selectedStatus,
-    List<InvoiceItem>? allInvoices,
+    InvoicesModel? invoicesModel,
+    List<ResultDatum>? allItems,
+    int? currentStart,
+    bool? hasMore,
   }) {
     return InvoicesState(
-      isLoading: isLoading ?? this.isLoading,
+      isInvoicesLoading: isInvoicesLoading ?? this.isInvoicesLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage,
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedStatus: selectedStatus ?? this.selectedStatus,
-      allInvoices: allInvoices ?? this.allInvoices,
+      invoicesModel: invoicesModel ?? this.invoicesModel,
+      allItems: allItems ?? this.allItems,
+      currentStart: currentStart ?? this.currentStart,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }

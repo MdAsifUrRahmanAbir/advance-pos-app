@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/model/invoice_model.dart';
+
+import '../../../../core/utils/error_mapper.dart';
+import '../../data/model/invoices_model.dart';
+import '../../data/repositories/invoices_repository.dart';
 import '../states/invoices_state.dart';
 
 final invoicesControllerProvider =
@@ -9,18 +12,18 @@ NotifierProvider.autoDispose<InvoicesController, InvoicesState>(InvoicesControll
 class InvoicesController extends Notifier<InvoicesState> {
   late final TextEditingController searchController;
 
+  InvoicesRepository get _repository => ref.read(invoicesRepositoryProvider);
+
+  static const int _pageLength = 15;
+
   @override
   InvoicesState build() {
     searchController = TextEditingController();
     ref.onDispose(() => searchController.dispose());
 
-    // TODO: wire to invoicesRepositoryProvider.getInvoices() once the
-    // invoices/data/repositories layer is ready. Currently mock data.
-    return InvoicesState.initial().copyWith(allInvoices: _mockInvoices);
-  }
+    Future.microtask(getInvoices);
 
-  void selectStatus(String statusKey) {
-    state = state.copyWith(selectedStatus: statusKey);
+    return InvoicesState.initial();
   }
 
   void updateSearchQuery(String query) {
@@ -29,66 +32,74 @@ class InvoicesController extends Notifier<InvoicesState> {
       selection: TextSelection.collapsed(offset: query.length),
     );
     state = state.copyWith(searchQuery: query);
+    getInvoices(reset: true);
   }
 
+  /// Pull-to-refresh: resets pagination and refetches from start=0.
   Future<void> refresh() async {
-    // TODO: replace with a real repository re-fetch.
-    state = state.copyWith(allInvoices: _mockInvoices);
+    await getInvoices(reset: true);
   }
 
-  static final _mockInvoices = [
-    InvoiceItem(
-      id: 'inv1',
-      invoiceNumber: 'INV-2026-0142',
-      customerName: 'Rahim Traders',
-      date: DateTime(2026, 2, 20),
-      status: InvoiceStatus.paid,
-      amountPaid: 3300,
-      lineItems: const [
-        InvoiceLineItem(name: 'Winner Men Shirt', quantity: 3, unitPrice: 860),
-        InvoiceLineItem(name: 'Classic Denim Jeans', quantity: 0, unitPrice: 1450),
-      ],
-    ),
-    InvoiceItem(
-      id: 'inv2',
-      invoiceNumber: 'INV-2026-0143',
-      customerName: 'Karim Store',
-      date: DateTime(2026, 2, 21),
-      dueDate: DateTime(2026, 3, 7),
-      status: InvoiceStatus.due,
-      amountPaid: 0,
-      lineItems: const [
-        InvoiceLineItem(name: 'Wool Winter Coat', quantity: 1, unitPrice: 3200),
-      ],
-    ),
-    InvoiceItem(
-      id: 'inv3',
-      invoiceNumber: 'INV-2026-0144',
-      customerName: 'Fatema General Store',
-      date: DateTime(2026, 2, 18),
-      dueDate: DateTime(2026, 2, 25),
-      status: InvoiceStatus.overdue,
-      amountPaid: 200,
-      lineItems: const [
-        InvoiceLineItem(name: 'Fresh Milk 1L', quantity: 10, unitPrice: 60),
-        InvoiceLineItem(name: 'Wheat Bread', quantity: 5, unitPrice: 40),
-      ],
-    ),
-    InvoiceItem(
-      id: 'inv4',
-      invoiceNumber: 'INV-2026-0145',
-      customerName: 'Anik Enterprise',
-      date: DateTime(2026, 2, 22),
-      dueDate: DateTime(2026, 3, 8),
-      status: InvoiceStatus.partial,
-      amountPaid: 500,
-      lineItems: const [
-        InvoiceLineItem(name: 'Apple Soda', quantity: 20, unitPrice: 30),
-        InvoiceLineItem(name: 'Organic Eggs', quantity: 5, unitPrice: 120),
-      ],
-    ),
-  ];
+  /// Infinite-scroll continuation: fetches the next page and appends.
+  /// No-op if already loading or no more pages exist — call this from
+  /// a ScrollController listener near the list's bottom edge.
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore) return;
 
+    state = state.copyWith(isLoadingMore: true, errorMessage: null);
+    try {
+      final nextStart = state.currentStart + _pageLength;
+      final invoices = await _repository.getInvoices(
+        start: nextStart,
+        length: _pageLength,
+        search: state.searchQuery,
+      );
 
+      state = state.copyWith(
+        isLoadingMore: false,
+        invoicesModel: invoices,
+        allItems: [...state.allItems, ...invoices.resultData],
+        currentStart: nextStart,
+        hasMore: (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
+      );
+    } catch (error) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: getErrorMessage(error),
+      );
+    }
+  }
 
+  // ───────────────────────────────────────────────
+  // GET (initial load or full reset)
+  // ───────────────────────────────────────────────
+  /// [reset] clears existing items and refetches from start=0 — used by
+  /// both the initial build() call, pull-to-refresh, and search changes.
+  Future<bool> getInvoices({bool reset = false}) async {
+    state = state.copyWith(
+      isInvoicesLoading: true,
+      errorMessage: null,
+      allItems: reset ? [] : state.allItems,
+      currentStart: reset ? 0 : state.currentStart,
+      hasMore: reset ? true : state.hasMore,
+    );
+    try {
+      final invoices = await _repository.getInvoices(start: 0, length: _pageLength, search: state.searchQuery);
+
+      state = state.copyWith(
+        isInvoicesLoading: false,
+        invoicesModel: invoices,
+        allItems: invoices.resultData,
+        currentStart: 0,
+        hasMore: invoices.resultData.length < invoices.recordsFiltered,
+      );
+      return true;
+    } catch (error) {
+      state = state.copyWith(
+        isInvoicesLoading: false,
+        errorMessage: getErrorMessage(error),
+      );
+      return false;
+    }
+  }
 }
