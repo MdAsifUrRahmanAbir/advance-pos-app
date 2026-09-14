@@ -45,7 +45,7 @@ class StockState {
   final bool isStocksLoading;
 
   // --- pagination additions ---
-  final int currentStart;   // offset already fetched (for next `start`)
+  final int currentStart;
   final bool isLoadingMore; // independent flag — loading page 2+, not initial fetch
   final bool hasMore;       // false once recordsFiltered is fully loaded
 

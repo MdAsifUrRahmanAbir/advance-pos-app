@@ -13,4 +13,8 @@ class ApiEndpoints {
   // Stock /stock/view/
   static const String stocks = "/product_stock";
   static String stocksDetails(String id) => "/product_stock/view/$id";
+
+  // Stock /stock/view/
+  static const String invoices = "/sales?length=15";
+  static String invoiceDetails(String id) => "/sales/view/$id";
 }
