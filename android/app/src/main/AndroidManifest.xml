@@ -32,7 +32,7 @@
         android:required="false" />
 
     <application
-        android:label="template_test"
+        android:label="Advance POS"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
