@@ -8,7 +8,6 @@ class RouteNames {
   static const String resetPassword = '/reset-password';
   static const String mainShell = '/main';
   static const String home = '/home';
-  static const String activity = '/activity';
   static const String search = '/search';
   static const String notifications = '/notifications';
   static const String profile = '/profile';
@@ -27,9 +26,7 @@ class RouteNames {
   static const String editProfile = '/edit_profile';
   static const String dashboard = '/dashboard';
   static const String termsPrivacy = '/terms_privacy';
-  static const String auditLog = '/audit_log';
   static const String orderList = '/order_list';
-  static const String analyticsMode = '/analytics_mode';
   static const String product = '/product';
   static const String stock = '/stock_screen';
   static const String newSale = '/new_sale';

@@ -2,9 +2,7 @@ import 'package:advance_pos_app/features/invoice_detail/presentation/screens/inv
 import 'package:advance_pos_app/features/invoices/presentation/screens/invoices_screen.dart';
 import 'package:advance_pos_app/features/product/presentation/screens/product_screen.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:advance_pos_app/features/analytics_mode/presentation/screens/analytics_mode_screen.dart';
 import 'package:advance_pos_app/features/order_list/presentation/screens/order_list_screen.dart';
-import 'package:advance_pos_app/features/audit_log/presentation/screens/audit_log_screen.dart';
 import 'package:advance_pos_app/features/terms_privacy/presentation/screens/terms_privacy_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +15,6 @@ import 'package:advance_pos_app/features/forgot_password/presentation/screens/fo
 import 'package:advance_pos_app/features/reset_password/presentation/screens/reset_password_screen.dart';
 import 'package:advance_pos_app/features/main_shell/presentation/screens/main_shell_screen.dart';
 import 'package:advance_pos_app/features/home/presentation/screens/home_screen.dart';
-import 'package:advance_pos_app/features/activity/presentation/screens/activity_screen.dart';
 import 'package:advance_pos_app/features/search/presentation/screens/search_screen.dart';
 import 'package:advance_pos_app/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:advance_pos_app/features/profile/presentation/screens/profile_screen.dart';
@@ -102,10 +99,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const MainShellScreen(),
       ),
       GoRoute(path: RouteNames.home, builder: (_, _) => const HomeScreen()),
-      GoRoute(
-        path: RouteNames.activity,
-        builder: (_, _) => const ActivityScreen(),
-      ),
       GoRoute(path: RouteNames.search, builder: (_, _) => const SearchScreen()),
       GoRoute(
         path: RouteNames.notifications,
@@ -158,18 +151,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.termsPrivacy,
         builder: (context, state) => const TermsPrivacyScreen(),
       ),
-      GoRoute(
-        path: RouteNames.auditLog,
-        builder: (context, state) => const AuditLogScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.orderList,
         builder: (context, state) => const OrderListScreen(),
       ),
-      GoRoute(
-        path: RouteNames.analyticsMode,
-        builder: (context, state) => const AnalyticsModeScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.product,
         builder: (context, state) => const ProductScreen(),
