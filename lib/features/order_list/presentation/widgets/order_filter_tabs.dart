@@ -20,7 +20,8 @@ class OrderFilterTabs extends ConsumerWidget {
         'completed' => AppStrings.orderTabCompleted,
         _ => AppStrings.orderTabCancelled,
       },
-      onSelected: (f) => ref.read(orderListControllerProvider.notifier).selectFilter(f),
+      onSelected: (f) =>
+          ref.read(orderListControllerProvider.notifier).selectFilter(f),
     );
   }
 }

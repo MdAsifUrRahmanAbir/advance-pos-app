@@ -37,15 +37,14 @@ class RegisterMobileView extends ConsumerWidget {
                             // once the register/data/repositories layer is ready.
                             context.push(RouteNames.otpVerification);
                           },
-                          onTermsTap: () => context.push(RouteNames.termsPrivacy),
+                          onTermsTap: () =>
+                              context.push(RouteNames.termsPrivacy),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: AppSizes.lg),
-                  LoginPrompt(
-                    onLoginTap: () => context.go(RouteNames.login),
-                  ),
+                  LoginPrompt(onLoginTap: () => context.go(RouteNames.login)),
                 ],
               ),
             ),

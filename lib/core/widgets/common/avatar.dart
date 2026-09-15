@@ -25,10 +25,18 @@ class AppAvatar extends StatelessWidget {
       child: imageUrl != null
           ? null
           : Text(
-              (label?.trim().isNotEmpty ?? false) ? label!.trim()[0].toUpperCase() : '?',
-              style: TextStyle(color: AppColors.primary, fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700),
+              (label?.trim().isNotEmpty ?? false)
+                  ? label!.trim()[0].toUpperCase()
+                  : '?',
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: AppSizes.fontXl,
+                fontWeight: FontWeight.w700,
+              ),
             ),
     );
-    return onTap == null ? avatar : GestureDetector(onTap: onTap, child: avatar);
+    return onTap == null
+        ? avatar
+        : GestureDetector(onTap: onTap, child: avatar);
   }
 }

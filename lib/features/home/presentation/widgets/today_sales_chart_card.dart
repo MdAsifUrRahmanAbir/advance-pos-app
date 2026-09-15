@@ -25,12 +25,20 @@ class TodaySalesChartCard extends StatelessWidget {
         children: [
           Text(
             AppStrings.todaySalesTrendTitle,
-            style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+            style: TextStyle(
+              fontSize: AppSizes.fontMd,
+              fontWeight: FontWeight.w700,
+              color: context.appColors.textPrimary,
+            ),
           ),
           const SizedBox(height: AppSizes.md),
           MultiLineChart(
             series: [
-              ChartSeries(label: AppStrings.todayRevenueLabel, color: AppColors.primary, values: hourlyRevenue),
+              ChartSeries(
+                label: AppStrings.todayRevenueLabel,
+                color: AppColors.primary,
+                values: hourlyRevenue,
+              ),
             ],
             yAxisLabels: const ['5k', '2.5k', '0'],
             xAxisLabels: hourlyLabels,

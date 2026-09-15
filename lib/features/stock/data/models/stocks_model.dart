@@ -24,7 +24,9 @@ class StocksModel {
     recordsTotal: json["recordsTotal"],
     recordsFiltered: json["recordsFiltered"],
     recordsShowing: json["recordsShowing"],
-    resultData: List<ResultDatum>.from(json["resultData"].map((x) => ResultDatum.fromJson(x))),
+    resultData: List<ResultDatum>.from(
+      json["resultData"].map((x) => ResultDatum.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,20 +44,14 @@ class ResultDatum {
   final int sl;
   final ResultDatumProduct product;
 
-  ResultDatum({
-    required this.sl,
-    required this.product,
-  });
+  ResultDatum({required this.sl, required this.product});
 
   factory ResultDatum.fromJson(Map<String, dynamic> json) => ResultDatum(
     sl: json["sl"],
     product: ResultDatumProduct.fromJson(json["product"]),
   );
 
-  Map<String, dynamic> toJson() => {
-    "sl": sl,
-    "product": product.toJson(),
-  };
+  Map<String, dynamic> toJson() => {"sl": sl, "product": product.toJson()};
 }
 
 class ResultDatumProduct {
@@ -69,11 +65,12 @@ class ResultDatumProduct {
     required this.stock,
   });
 
-  factory ResultDatumProduct.fromJson(Map<String, dynamic> json) => ResultDatumProduct(
-    id: json["id"],
-    product: ProductProduct.fromJson(json["product"]),
-    stock: Stock.fromJson(json["stock"]),
-  );
+  factory ResultDatumProduct.fromJson(Map<String, dynamic> json) =>
+      ResultDatumProduct(
+        id: json["id"],
+        product: ProductProduct.fromJson(json["product"]),
+        stock: Stock.fromJson(json["stock"]),
+      );
 
   Map<String, dynamic> toJson() => {
     "id": id,
@@ -114,14 +111,13 @@ class Stock {
   final int organizationStock;
   final List<BranchStock> branchStock;
 
-  Stock({
-    required this.organizationStock,
-    required this.branchStock,
-  });
+  Stock({required this.organizationStock, required this.branchStock});
 
   factory Stock.fromJson(Map<String, dynamic> json) => Stock(
     organizationStock: json["organization_stock"],
-    branchStock: List<BranchStock>.from(json["branch_stock"].map((x) => BranchStock.fromJson(x))),
+    branchStock: List<BranchStock>.from(
+      json["branch_stock"].map((x) => BranchStock.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {

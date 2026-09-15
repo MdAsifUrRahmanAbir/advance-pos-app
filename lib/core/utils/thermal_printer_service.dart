@@ -62,14 +62,20 @@ class ThermalPrinterService {
     final generator = Generator(PaperSize.mm58, profile);
     final bytes = <int>[];
 
-    bytes.addAll(generator.text(
-      storeName,
-      styles: const PosStyles(align: PosAlign.center, bold: true, height: PosTextSize.size2, width: PosTextSize.size2),
-    ));
-    bytes.addAll(generator.text(
-      saleDate,
-      styles: const PosStyles(align: PosAlign.center),
-    ));
+    bytes.addAll(
+      generator.text(
+        storeName,
+        styles: const PosStyles(
+          align: PosAlign.center,
+          bold: true,
+          height: PosTextSize.size2,
+          width: PosTextSize.size2,
+        ),
+      ),
+    );
+    bytes.addAll(
+      generator.text(saleDate, styles: const PosStyles(align: PosAlign.center)),
+    );
     bytes.addAll(generator.hr());
 
     bytes.addAll(generator.text('Sale ID: $saleId'));
@@ -77,39 +83,57 @@ class ThermalPrinterService {
     bytes.addAll(generator.hr());
 
     for (final item in items) {
-      bytes.addAll(generator.row([
-        PosColumn(text: '${item.quantity}x ${item.name}', width: 8),
-        PosColumn(
-          text: item.lineTotal.toStringAsFixed(2),
-          width: 4,
-          styles: const PosStyles(align: PosAlign.right),
-        ),
-      ]));
+      bytes.addAll(
+        generator.row([
+          PosColumn(text: '${item.quantity}x ${item.name}', width: 8),
+          PosColumn(
+            text: item.lineTotal.toStringAsFixed(2),
+            width: 4,
+            styles: const PosStyles(align: PosAlign.right),
+          ),
+        ]),
+      );
     }
     bytes.addAll(generator.hr());
 
-    bytes.addAll(generator.row([
-      PosColumn(text: 'Total', width: 8, styles: const PosStyles(bold: true)),
-      PosColumn(
-        text: total.toStringAsFixed(2),
-        width: 4,
-        styles: const PosStyles(align: PosAlign.right, bold: true),
-      ),
-    ]));
-    bytes.addAll(generator.row([
-      PosColumn(text: 'Given', width: 8),
-      PosColumn(text: givenAmount.toStringAsFixed(2), width: 4, styles: const PosStyles(align: PosAlign.right)),
-    ]));
-    bytes.addAll(generator.row([
-      PosColumn(text: 'Change', width: 8),
-      PosColumn(text: changeDue.toStringAsFixed(2), width: 4, styles: const PosStyles(align: PosAlign.right)),
-    ]));
+    bytes.addAll(
+      generator.row([
+        PosColumn(text: 'Total', width: 8, styles: const PosStyles(bold: true)),
+        PosColumn(
+          text: total.toStringAsFixed(2),
+          width: 4,
+          styles: const PosStyles(align: PosAlign.right, bold: true),
+        ),
+      ]),
+    );
+    bytes.addAll(
+      generator.row([
+        PosColumn(text: 'Given', width: 8),
+        PosColumn(
+          text: givenAmount.toStringAsFixed(2),
+          width: 4,
+          styles: const PosStyles(align: PosAlign.right),
+        ),
+      ]),
+    );
+    bytes.addAll(
+      generator.row([
+        PosColumn(text: 'Change', width: 8),
+        PosColumn(
+          text: changeDue.toStringAsFixed(2),
+          width: 4,
+          styles: const PosStyles(align: PosAlign.right),
+        ),
+      ]),
+    );
 
     bytes.addAll(generator.hr());
-    bytes.addAll(generator.text(
-      'Thank you for your purchase!',
-      styles: const PosStyles(align: PosAlign.center),
-    ));
+    bytes.addAll(
+      generator.text(
+        'Thank you for your purchase!',
+        styles: const PosStyles(align: PosAlign.center),
+      ),
+    );
     bytes.addAll(generator.feed(2));
     bytes.addAll(generator.cut());
 

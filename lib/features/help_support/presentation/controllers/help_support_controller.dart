@@ -7,4 +7,7 @@ class HelpSupportController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final helpSupportControllerProvider = NotifierProvider<HelpSupportController, AsyncValue<void>>(HelpSupportController.new);
+final helpSupportControllerProvider =
+    NotifierProvider<HelpSupportController, AsyncValue<void>>(
+      HelpSupportController.new,
+    );

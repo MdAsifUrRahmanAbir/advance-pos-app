@@ -32,7 +32,11 @@ class DashboardStatCard extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
-                child: Icon(data.icon, size: AppSizes.iconSm, color: AppColors.primary),
+                child: Icon(
+                  data.icon,
+                  size: AppSizes.iconSm,
+                  color: AppColors.primary,
+                ),
               ),
               if (data.trendLabel != null)
                 StatusBadge(
@@ -47,7 +51,10 @@ class DashboardStatCard extends StatelessWidget {
           const SizedBox(height: AppSizes.sm),
           Text(
             data.label,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontSm),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: AppSizes.fontSm,
+            ),
           ),
           const SizedBox(height: 2),
           Text(

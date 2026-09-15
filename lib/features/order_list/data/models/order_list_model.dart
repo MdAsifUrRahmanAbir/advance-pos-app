@@ -4,12 +4,8 @@ class OrderListModel {
   OrderListModel({this.id});
 
   factory OrderListModel.fromJson(Map<String, dynamic> json) {
-    return OrderListModel(
-      id: json['id'],
-    );
+    return OrderListModel(id: json['id']);
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-  };
+  Map<String, dynamic> toJson() => {'id': id};
 }

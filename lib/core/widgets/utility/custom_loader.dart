@@ -10,7 +10,13 @@ class CustomLoader extends StatelessWidget {
   final String? label;
   final bool overlay;
 
-  const CustomLoader({super.key, this.size, this.color, this.label, this.overlay = false});
+  const CustomLoader({
+    super.key,
+    this.size,
+    this.color,
+    this.label,
+    this.overlay = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +33,21 @@ class CustomLoader extends StatelessWidget {
         ),
         if (label != null) ...[
           const SizedBox(height: AppSizes.md),
-          Text(label!, style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontSm)),
+          Text(
+            label!,
+            style: TextStyle(
+              color: context.appColors.textSecondary,
+              fontSize: AppSizes.fontSm,
+            ),
+          ),
         ],
       ],
     );
     return overlay
-        ? ColoredBox(color: AppColors.background.withValues(alpha: 0.72), child: Center(child: loader))
+        ? ColoredBox(
+            color: AppColors.background.withValues(alpha: 0.72),
+            child: Center(child: loader),
+          )
         : Center(child: loader);
   }
 }

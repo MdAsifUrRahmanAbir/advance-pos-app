@@ -7,7 +7,9 @@ import '../../data/repositories/invoices_repository.dart';
 import '../states/invoices_state.dart';
 
 final invoicesControllerProvider =
-NotifierProvider.autoDispose<InvoicesController, InvoicesState>(InvoicesController.new);
+    NotifierProvider.autoDispose<InvoicesController, InvoicesState>(
+      InvoicesController.new,
+    );
 
 class InvoicesController extends Notifier<InvoicesState> {
   late final TextEditingController searchController;
@@ -44,7 +46,8 @@ class InvoicesController extends Notifier<InvoicesState> {
   /// No-op if already loading or no more pages exist — call this from
   /// a ScrollController listener near the list's bottom edge.
   Future<void> loadMore() async {
-    if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore) return;
+    if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore)
+      return;
 
     state = state.copyWith(isLoadingMore: true, errorMessage: null);
     try {
@@ -60,7 +63,8 @@ class InvoicesController extends Notifier<InvoicesState> {
         invoicesModel: invoices,
         allItems: [...state.allItems, ...invoices.resultData],
         currentStart: nextStart,
-        hasMore: (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
+        hasMore:
+            (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
       );
     } catch (error) {
       state = state.copyWith(
@@ -84,7 +88,11 @@ class InvoicesController extends Notifier<InvoicesState> {
       hasMore: reset ? true : state.hasMore,
     );
     try {
-      final invoices = await _repository.getInvoices(start: 0, length: _pageLength, search: state.searchQuery);
+      final invoices = await _repository.getInvoices(
+        start: 0,
+        length: _pageLength,
+        search: state.searchQuery,
+      );
 
       state = state.copyWith(
         isInvoicesLoading: false,

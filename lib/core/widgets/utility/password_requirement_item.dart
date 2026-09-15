@@ -30,7 +30,9 @@ class PasswordRequirementItem extends StatelessWidget {
             height: AppSizes.iconSm + AppSizes.xs,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: met ? AppColors.success.withValues(alpha: 0.12) : AppColors.divider,
+              color: met
+                  ? AppColors.success.withValues(alpha: 0.12)
+                  : AppColors.divider,
             ),
             alignment: Alignment.center,
             child: Icon(
@@ -45,7 +47,9 @@ class PasswordRequirementItem extends StatelessWidget {
             style: TextStyle(
               fontSize: AppSizes.fontSm,
               fontWeight: FontWeight.w500,
-              color: met ? context.appColors.textPrimary : context.appColors.textSecondary,
+              color: met
+                  ? context.appColors.textPrimary
+                  : context.appColors.textSecondary,
             ),
           ),
         ],

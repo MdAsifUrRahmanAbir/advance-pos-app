@@ -37,40 +37,50 @@ class HelpSupportTabView extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: AppSizes.xl),
-                     Text(
+                    Text(
                       AppStrings.faqSectionTitle,
-                      style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                      style: TextStyle(
+                        fontSize: AppSizes.fontLg,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF0F172A),
+                      ),
                     ),
                     const SizedBox(height: AppSizes.md),
                     const FaqItem(
                       initiallyExpanded: true,
                       question: 'How do I reset my API credentials?',
-                      answer: "You can reset your API credentials by navigating to Settings > "
+                      answer:
+                          "You can reset your API credentials by navigating to Settings > "
                           "Connected Apps > Developer Keys and clicking on 'Regenerate API Key'. "
                           "Make sure to update your production nodes immediately after generation.",
                     ),
                     const SizedBox(height: AppSizes.sm + AppSizes.xs),
                     const FaqItem(
                       question: 'Where can I download server diagnostic logs?',
-                      answer: 'Go to Activity Logs, select a node, and tap the export icon to '
+                      answer:
+                          'Go to Activity Logs, select a node, and tap the export icon to '
                           'download a full diagnostic bundle.',
                     ),
                     const SizedBox(height: AppSizes.sm + AppSizes.xs),
                     const FaqItem(
                       question: 'How to setup SSO for my workspace?',
-                      answer: 'Navigate to Settings > Security > Two-Factor Auth and follow the '
+                      answer:
+                          'Navigate to Settings > Security > Two-Factor Auth and follow the '
                           'SSO provider setup wizard.',
                     ),
                     const SizedBox(height: AppSizes.sm + AppSizes.xs),
                     const FaqItem(
-                      question: 'Can I invite external stakeholders to channels?',
-                      answer: 'Yes — workspace admins can invite guest members with restricted '
+                      question:
+                          'Can I invite external stakeholders to channels?',
+                      answer:
+                          'Yes — workspace admins can invite guest members with restricted '
                           'channel-level access from the Members panel.',
                     ),
                     const SizedBox(height: AppSizes.sm + AppSizes.xs),
                     const FaqItem(
                       question: 'How are database cluster backups scheduled?',
-                      answer: 'Backups run daily at 02:00 UTC by default; the schedule can be '
+                      answer:
+                          'Backups run daily at 02:00 UTC by default; the schedule can be '
                           'changed under Settings > General.',
                     ),
                     const SizedBox(height: AppSizes.xl),
@@ -81,9 +91,13 @@ class HelpSupportTabView extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: AppSizes.xl),
-                     Text(
+                    Text(
                       AppStrings.contactSupportTitle,
-                      style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700, color: Color(0xFF0F172A)),
+                      style: TextStyle(
+                        fontSize: AppSizes.fontLg,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF0F172A),
+                      ),
                     ),
                     const SizedBox(height: AppSizes.md),
                     Row(

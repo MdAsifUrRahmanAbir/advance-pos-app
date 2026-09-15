@@ -15,12 +15,7 @@ class ProfileMobileView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          0,
-          0,
-          0,
-          AppSizes.xl,
-        ),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSizes.xl),
         child: Column(
           children: [
             const ProfileHeader(name: 'Alex Johnson', role: 'Workspace Admin'),
@@ -34,23 +29,28 @@ class ProfileMobileView extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const ProfileStatsRow(projects: '24', tasks: '156', rating: '4.8'),
+                  const ProfileStatsRow(
+                    projects: '24',
+                    tasks: '156',
+                    rating: '4.8',
+                  ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileReportsSection(
                     onStockReportTap: () => context.push(RouteNames.error),
-                    onSalesReportTap: () => context.push(RouteNames.maintenance),
+                    onSalesReportTap: () =>
+                        context.push(RouteNames.maintenance),
                     onAllReportTap: () => context.push(RouteNames.notFound),
                   ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileSettingsSections(
-                    onPersonalInfoTap: () => context.push(RouteNames.editProfile),
+                    onPersonalInfoTap: () =>
+                        context.push(RouteNames.editProfile),
                     onSettingsTap: () => context.push(RouteNames.settings),
                     onPrivacyTap: () => context.push(RouteNames.termsPrivacy),
                     onHelpCenterTap: () => context.push(RouteNames.helpSupport),
                   ),
 
                   const SizedBox(height: AppSizes.bottomNavBarHeight),
-
                 ],
               ),
             ),

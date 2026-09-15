@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/status_badge.dart';
 import '../../data/model/invoices_model.dart';
 
@@ -14,8 +15,8 @@ class InvoiceStatusBadge extends StatelessWidget {
   const InvoiceStatusBadge({super.key, required this.invoice, this.compact = true});
 
   static InvoiceComputedStatus statusOf(ResultDatum invoice) {
-    final paid = double.tryParse(invoice.paidAmount) ?? 0;
-    final payable = double.tryParse(invoice.totalPayableAmount) ?? 0;
+    final paid = parseAmount(invoice.paidAmount);
+    final payable = parseAmount(invoice.totalPayableAmount);
     if (payable <= 0 || paid >= payable) return InvoiceComputedStatus.paid;
     if (paid <= 0) return InvoiceComputedStatus.due;
     return InvoiceComputedStatus.partial;

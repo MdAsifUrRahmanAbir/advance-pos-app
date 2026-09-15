@@ -28,7 +28,8 @@ class DateField extends StatelessWidget {
     this.enabled = true,
   });
 
-  String _format(DateTime date) => formatter?.call(date) ?? '${date.day}/${date.month}/${date.year}';
+  String _format(DateTime date) =>
+      formatter?.call(date) ?? '${date.day}/${date.month}/${date.year}';
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,9 @@ class DateField extends StatelessWidget {
       readOnly: true,
       enabled: enabled,
       validator: validator,
-      controller: TextEditingController(text: value == null ? '' : _format(value!)),
+      controller: TextEditingController(
+        text: value == null ? '' : _format(value!),
+      ),
       onTap: !enabled
           ? null
           : () async {
@@ -60,10 +63,16 @@ class DateField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        suffixIcon: const Icon(Icons.calendar_today_outlined, size: AppSizes.iconMd),
+        suffixIcon: const Icon(
+          Icons.calendar_today_outlined,
+          size: AppSizes.iconMd,
+        ),
         filled: true,
         fillColor: context.appColors.surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.md,
+          vertical: AppSizes.sm,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
           borderSide: const BorderSide(color: AppColors.border),

@@ -6,26 +6,29 @@ class InvoiceDetailState {
   final bool isLoading;
   final String? errorMessage;
   final String? loadedInvoiceId;
-  final InvoiceDetailModel? invoice;
+  final InvoiceDetailModel? invoiceDetailModel;
 
   const InvoiceDetailState({
     this.isLoading = false,
     this.errorMessage,
     this.loadedInvoiceId,
-    this.invoice,
+    this.invoiceDetailModel,
   });
+
+  /// Shorthand for the frequently-used nested payload.
+  ResultData? get invoice => invoiceDetailModel?.resultData;
 
   InvoiceDetailState copyWith({
     bool? isLoading,
     String? errorMessage,
     String? loadedInvoiceId,
-    InvoiceDetailModel? invoice,
+    InvoiceDetailModel? invoiceDetailModel,
   }) {
     return InvoiceDetailState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       loadedInvoiceId: loadedInvoiceId ?? this.loadedInvoiceId,
-      invoice: invoice ?? this.invoice,
+      invoiceDetailModel: invoiceDetailModel ?? this.invoiceDetailModel,
     );
   }
 }

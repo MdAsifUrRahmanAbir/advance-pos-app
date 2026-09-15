@@ -20,21 +20,32 @@ class NumberedListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.xs / 2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.sm,
+              vertical: AppSizes.xs / 2,
+            ),
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSizes.radiusSm - 2),
             ),
             child: Text(
               number,
-              style: const TextStyle(color: AppColors.primary, fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontSize: AppSizes.fontSm,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           const SizedBox(width: AppSizes.sm + AppSizes.xs),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary, height: 1.5),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                color: context.appColors.textSecondary,
+                height: 1.5,
+              ),
             ),
           ),
         ],

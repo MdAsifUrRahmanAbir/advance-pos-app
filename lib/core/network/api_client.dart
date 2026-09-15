@@ -20,7 +20,8 @@ class ApiClient {
   /// through [apiClientProvider], which injects the real check.
   final bool Function() _isConnected;
 
-  ApiClient({bool Function()? isConnected}) : _isConnected = isConnected ?? (() => true) {
+  ApiClient({bool Function()? isConnected})
+    : _isConnected = isConnected ?? (() => true) {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -37,35 +38,40 @@ class ApiClient {
     // the logging interceptor (so nothing gets logged as "sent" when it
     // never left the device) and before the auth interceptor (so no token
     // work happens on a request that's about to be rejected anyway).
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        if (!_isConnected()) {
-          handler.reject(
-            DioException(
-              requestOptions: options,
-              type: DioExceptionType.connectionError,
-              error: 'No internet connection — request blocked before dispatch.',
-            ),
-          );
-          return;
-        }
-        return handler.next(options);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (!_isConnected()) {
+            handler.reject(
+              DioException(
+                requestOptions: options,
+                type: DioExceptionType.connectionError,
+                error:
+                    'No internet connection — request blocked before dispatch.',
+              ),
+            );
+            return;
+          }
+          return handler.next(options);
+        },
+      ),
+    );
 
     _dio.interceptors.add(ApiLoggingInterceptor());
 
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        if (_authToken != null && _authToken!.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $_authToken';
-        }
-        return handler.next(options);
-      },
-      onError: (DioException e, handler) {
-        handler.next(e);
-      },
-    ));
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          if (_authToken != null && _authToken!.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $_authToken';
+          }
+          return handler.next(options);
+        },
+        onError: (DioException e, handler) {
+          handler.next(e);
+        },
+      ),
+    );
   }
 
   void setAuthToken(String? token) {
@@ -73,11 +79,11 @@ class ApiClient {
   }
 
   Future<Response> get(
-      String path, {
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       return await _dio.get(
         path,
@@ -91,12 +97,12 @@ class ApiClient {
   }
 
   Future<Response> post(
-      String path, {
-        dynamic data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       return await _dio.post(
         path,
@@ -111,11 +117,11 @@ class ApiClient {
   }
 
   Future<Response> put(
-      String path, {
-        dynamic data,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    dynamic data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       return await _dio.put(
         path,
@@ -129,11 +135,11 @@ class ApiClient {
   }
 
   Future<Response> patch(
-      String path, {
-        dynamic data,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    dynamic data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       return await _dio.patch(
         path,
@@ -147,11 +153,11 @@ class ApiClient {
   }
 
   Future<Response> delete(
-      String path, {
-        dynamic data,
-        Options? options,
-        CancelToken? cancelToken,
-      }) async {
+    String path, {
+    dynamic data,
+    Options? options,
+    CancelToken? cancelToken,
+  }) async {
     try {
       return await _dio.delete(
         path,
@@ -166,13 +172,13 @@ class ApiClient {
 
   /// Upload a single file (photo, document, etc.)
   Future<Response> uploadFile(
-      String path,
-      String filePath, {
-        String fileKey = 'file',
-        Map<String, dynamic>? extraData,
-        ProgressCallback? onSendProgress,
-        CancelToken? cancelToken,
-      }) async {
+    String path,
+    String filePath, {
+    String fileKey = 'file',
+    Map<String, dynamic>? extraData,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
+  }) async {
     try {
       String fileName = filePath.split('/').last;
       FormData formData = FormData.fromMap({
@@ -192,13 +198,13 @@ class ApiClient {
 
   /// Upload multiple files (photos, documents, etc.) in a single request
   Future<Response> uploadFiles(
-      String path,
-      List<String> filePaths, {
-        String fileKey = 'files[]',
-        Map<String, dynamic>? extraData,
-        ProgressCallback? onSendProgress,
-        CancelToken? cancelToken,
-      }) async {
+    String path,
+    List<String> filePaths, {
+    String fileKey = 'files[]',
+    Map<String, dynamic>? extraData,
+    ProgressCallback? onSendProgress,
+    CancelToken? cancelToken,
+  }) async {
     try {
       List<MultipartFile> multipartFiles = [];
       for (String filePath in filePaths) {
@@ -208,10 +214,7 @@ class ApiClient {
         );
       }
 
-      Map<String, dynamic> mapData = {
-        fileKey: multipartFiles,
-        ...?extraData,
-      };
+      Map<String, dynamic> mapData = {fileKey: multipartFiles, ...?extraData};
 
       FormData formData = FormData.fromMap(mapData);
 
@@ -225,5 +228,4 @@ class ApiClient {
       throw ApiException.fromDioError(e);
     }
   }
-
 }

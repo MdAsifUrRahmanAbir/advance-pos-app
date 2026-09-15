@@ -24,7 +24,9 @@ class ProductModel {
     recordsTotal: json["recordsTotal"],
     recordsFiltered: json["recordsFiltered"],
     recordsShowing: json["recordsShowing"],
-    resultData: List<ResultDatum>.from(json["resultData"].map((x) => ResultDatum.fromJson(x))),
+    resultData: List<ResultDatum>.from(
+      json["resultData"].map((x) => ResultDatum.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {

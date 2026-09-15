@@ -97,7 +97,9 @@ class NewSaleTabView extends ConsumerWidget {
                           context,
                           child: CartReviewSheet(
                             onNext: () {
-                              Navigator.of(context).pop(); // close the sheet first
+                              Navigator.of(
+                                context,
+                              ).pop(); // close the sheet first
                               context.push(RouteNames.cart);
                             },
                           ),

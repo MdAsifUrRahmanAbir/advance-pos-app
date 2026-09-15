@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:advance_pos_app/core/network/api_client.dart';
 
-final changePasswordRepositoryProvider = Provider<ChangePasswordRepository>((ref) {
+final changePasswordRepositoryProvider = Provider<ChangePasswordRepository>((
+  ref,
+) {
   return ChangePasswordRepository(ref.watch(apiClientProvider));
 });
 

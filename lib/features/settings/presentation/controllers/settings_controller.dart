@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class SettingsState {
   final bool darkMode;
   final bool pushNotifications;
@@ -25,13 +24,10 @@ class SettingsState {
   }) {
     return SettingsState(
       darkMode: darkMode ?? this.darkMode,
-      pushNotifications:
-      pushNotifications ?? this.pushNotifications,
-      emailNotifications:
-      emailNotifications ?? this.emailNotifications,
+      pushNotifications: pushNotifications ?? this.pushNotifications,
+      emailNotifications: emailNotifications ?? this.emailNotifications,
       smsAlerts: smsAlerts ?? this.smsAlerts,
-      biometricAuth:
-      biometricAuth ?? this.biometricAuth,
+      biometricAuth: biometricAuth ?? this.biometricAuth,
     );
   }
 }
@@ -43,43 +39,29 @@ class SettingsController extends Notifier<SettingsState> {
   }
 
   void setDarkMode(bool value) {
-    state = state.copyWith(
-      darkMode: value,
-    );
+    state = state.copyWith(darkMode: value);
   }
 
   void setPushNotifications(bool value) {
-    state = state.copyWith(
-      pushNotifications: value,
-    );
+    state = state.copyWith(pushNotifications: value);
   }
 
   void setEmailNotifications(bool value) {
-    state = state.copyWith(
-      emailNotifications: value,
-    );
+    state = state.copyWith(emailNotifications: value);
   }
 
   void setSmsAlerts(bool value) {
-    state = state.copyWith(
-      smsAlerts: value,
-    );
+    state = state.copyWith(smsAlerts: value);
   }
 
   void setBiometricAuth(bool value) {
-    state = state.copyWith(
-      biometricAuth: value,
-    );
+    state = state.copyWith(biometricAuth: value);
   }
 
-  Future<void> deleteAccount() async {
-
-  }
+  Future<void> deleteAccount() async {}
 }
 
 final settingsControllerProvider =
-NotifierProvider.autoDispose<
-    SettingsController,
-    SettingsState>(
-  SettingsController.new,
-);
+    NotifierProvider.autoDispose<SettingsController, SettingsState>(
+      SettingsController.new,
+    );

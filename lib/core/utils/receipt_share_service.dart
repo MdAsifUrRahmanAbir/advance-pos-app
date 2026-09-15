@@ -7,10 +7,17 @@ import 'package:share_plus/share_plus.dart';
 class ReceiptShareService {
   const ReceiptShareService._();
 
-  static Future<Uint8List> _captureAsPng(GlobalKey boundaryKey, {double pixelRatio = 3}) async {
-    final boundary = boundaryKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+  static Future<Uint8List> _captureAsPng(
+    GlobalKey boundaryKey, {
+    double pixelRatio = 3,
+  }) async {
+    final boundary =
+        boundaryKey.currentContext?.findRenderObject()
+            as RenderRepaintBoundary?;
     if (boundary == null) {
-      throw StateError('ReceiptShareService: no RepaintBoundary found for the given key.');
+      throw StateError(
+        'ReceiptShareService: no RepaintBoundary found for the given key.',
+      );
     }
     final image = await boundary.toImage(pixelRatio: pixelRatio);
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -34,7 +41,6 @@ class ReceiptShareService {
     );
   }
 }
-
 
 /*
  todo Fix — share_plus iPad anchor requirement

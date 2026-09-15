@@ -24,7 +24,8 @@ class CartMobileView extends ConsumerWidget {
       children: [
         CartTopBar(
           onBack: () => context.pop(),
-          onClearAll: () => ref.read(cartControllerProvider.notifier).clearAll(),
+          onClearAll: () =>
+              ref.read(cartControllerProvider.notifier).clearAll(),
         ),
         Expanded(
           child: Container(
@@ -41,7 +42,11 @@ class CartMobileView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.md),
                 CustomerSelectorRow(
                   selectedCustomer: state.customerName,
-                  customers: const ['Walk-In Customer', 'Rahul Sharma', 'Amit Patel'],
+                  customers: const [
+                    'Walk-In Customer',
+                    'Rahul Sharma',
+                    'Amit Patel',
+                  ],
                   onChanged: controller.updateCustomer,
                   onAddCustomer: () {
                     // TODO: wire to context.push(RouteNames.addCustomer) once

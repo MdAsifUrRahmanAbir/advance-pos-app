@@ -39,7 +39,10 @@ class GivenAmountField extends StatelessWidget {
         const SizedBox(height: AppSizes.xs),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + 4),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.md,
+            vertical: AppSizes.sm + 4,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: AppColors.border),
@@ -50,8 +53,12 @@ class GivenAmountField extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: TextEditingController(text: amount.toStringAsFixed(2)),
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  controller: TextEditingController(
+                    text: amount.toStringAsFixed(2),
+                  ),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: AppSizes.fontXl,
@@ -67,7 +74,11 @@ class GivenAmountField extends StatelessWidget {
               ),
               InkWell(
                 onTap: onOpenKeypad,
-                child: const Icon(Icons.dialpad_rounded, size: AppSizes.iconMd, color: AppColors.textSecondary),
+                child: const Icon(
+                  Icons.dialpad_rounded,
+                  size: AppSizes.iconMd,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),

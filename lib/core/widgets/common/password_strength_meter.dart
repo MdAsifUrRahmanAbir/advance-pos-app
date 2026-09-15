@@ -43,11 +43,18 @@ class PasswordStrengthMeter extends StatelessWidget {
           children: [
             Text(
               'Password Strength',
-              style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textSecondary),
+              style: TextStyle(
+                fontSize: AppSizes.fontXs,
+                color: context.appColors.textSecondary,
+              ),
             ),
             Text(
               _label,
-              style: TextStyle(fontSize: AppSizes.fontXs, color: _color, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: AppSizes.fontXs,
+                color: _color,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),

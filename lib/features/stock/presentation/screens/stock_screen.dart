@@ -9,10 +9,7 @@ class StockScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Responsive(
-        mobile: StockMobileView(),
-        tablet: StockTabView(),
-      ),
+      body: Responsive(mobile: StockMobileView(), tablet: StockTabView()),
     );
   }
 }

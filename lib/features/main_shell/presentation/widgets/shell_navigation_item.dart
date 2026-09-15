@@ -18,8 +18,24 @@ class ShellNavItemData {
 }
 
 const List<ShellNavItemData> shellNavItems = [
-  ShellNavItemData(svgIcon: AppSvgs.home, label: 'Home', selectedIcon: AppSvgs.selectedHome),
-  ShellNavItemData(svgIcon: AppSvgs.stock, label: 'Stock', selectedIcon: AppSvgs.selectedStock),
-  ShellNavItemData(svgIcon: AppSvgs.invoices, label: 'Invoice', selectedIcon: AppSvgs.selectedInvoices),
-  ShellNavItemData(svgIcon: AppSvgs.more, label: 'More', selectedIcon: AppSvgs.more),
+  ShellNavItemData(
+    svgIcon: AppSvgs.home,
+    label: 'Home',
+    selectedIcon: AppSvgs.selectedHome,
+  ),
+  ShellNavItemData(
+    svgIcon: AppSvgs.stock,
+    label: 'Stock',
+    selectedIcon: AppSvgs.selectedStock,
+  ),
+  ShellNavItemData(
+    svgIcon: AppSvgs.invoices,
+    label: 'Invoice',
+    selectedIcon: AppSvgs.selectedInvoices,
+  ),
+  ShellNavItemData(
+    svgIcon: AppSvgs.more,
+    label: 'More',
+    selectedIcon: AppSvgs.more,
+  ),
 ];

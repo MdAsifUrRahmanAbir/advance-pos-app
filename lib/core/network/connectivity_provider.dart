@@ -38,7 +38,9 @@ class ConnectivityStatusController extends Notifier<bool> {
 }
 
 final connectivityStatusProvider =
-NotifierProvider<ConnectivityStatusController, bool>(ConnectivityStatusController.new);
+    NotifierProvider<ConnectivityStatusController, bool>(
+      ConnectivityStatusController.new,
+    );
 
 /// User explicitly chose "Work Offline" on [NoInternetScreen]. While true,
 /// router redirects to the no-internet screen are suppressed even if the
@@ -52,7 +54,9 @@ class OfflineModeController extends Notifier<bool> {
   void disable() => state = false;
 }
 
-final offlineModeProvider = NotifierProvider<OfflineModeController, bool>(OfflineModeController.new);
+final offlineModeProvider = NotifierProvider<OfflineModeController, bool>(
+  OfflineModeController.new,
+);
 
 /// Adapts a Riverpod-exposed stream into a [Listenable] so [GoRouter]'s
 /// `refreshListenable` re-evaluates `redirect` on every connectivity

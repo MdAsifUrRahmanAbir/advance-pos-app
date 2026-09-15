@@ -13,12 +13,19 @@ class SplashBrandText extends StatelessWidget {
       children: [
         Text(
           AppStrings.appName,
-          style: TextStyle(fontSize: AppSizes.fontDisplay, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontDisplay,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         SizedBox(height: AppSizes.xs),
         Text(
           AppStrings.appTagline,
-          style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textSecondary,
+          ),
         ),
       ],
     );

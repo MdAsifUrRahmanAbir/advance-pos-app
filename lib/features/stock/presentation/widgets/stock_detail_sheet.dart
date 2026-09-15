@@ -38,14 +38,24 @@ class StockDetailSheet extends StatelessWidget {
       children: [
         Text(
           item.name,
-          style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontXl,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppSizes.lg),
         _DetailRow(label: AppStrings.stockCategoryLabel, value: item.category),
         _DetailRow(label: AppStrings.stockSkuLabel, value: item.sku),
         _DetailRow(label: AppStrings.stockBarcodeLabel, value: item.barcode),
-        _DetailRow(label: AppStrings.stockQuantityLabel, value: '${item.quantity} ${item.unit}'),
-        _DetailRow(label: AppStrings.sellingPriceLabel, value: CurrencyFormatter.format(item.sellingPrice, symbol: '৳')),
+        _DetailRow(
+          label: AppStrings.stockQuantityLabel,
+          value: '${item.quantity} ${item.unit}',
+        ),
+        _DetailRow(
+          label: AppStrings.sellingPriceLabel,
+          value: CurrencyFormatter.format(item.sellingPrice, symbol: '৳'),
+        ),
         if (note != null) ...[
           const SizedBox(height: AppSizes.md),
           Container(
@@ -57,7 +67,11 @@ class StockDetailSheet extends StatelessWidget {
             ),
             child: Text(
               note,
-              style: const TextStyle(fontSize: AppSizes.fontSm, color: AppColors.warning, height: 1.4),
+              style: const TextStyle(
+                fontSize: AppSizes.fontSm,
+                color: AppColors.warning,
+                height: 1.4,
+              ),
             ),
           ),
         ],
@@ -76,12 +90,27 @@ class _DetailRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.xs + AppSizes.xs / 2),
+      padding: const EdgeInsets.symmetric(
+        vertical: AppSizes.xs + AppSizes.xs / 2,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary)),
-          Text(value, style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600, color: context.appColors.textPrimary)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppSizes.fontSm,
+              color: context.appColors.textSecondary,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: AppSizes.fontSm,
+              fontWeight: FontWeight.w600,
+              color: context.appColors.textPrimary,
+            ),
+          ),
         ],
       ),
     );

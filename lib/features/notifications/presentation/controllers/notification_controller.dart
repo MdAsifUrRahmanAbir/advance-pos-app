@@ -17,4 +17,6 @@ class NotificationController extends Notifier<NotificationsState> {
 }
 
 final notificationControllerProvider =
-NotifierProvider.autoDispose<NotificationController, NotificationsState>(NotificationController.new);
+    NotifierProvider.autoDispose<NotificationController, NotificationsState>(
+      NotificationController.new,
+    );

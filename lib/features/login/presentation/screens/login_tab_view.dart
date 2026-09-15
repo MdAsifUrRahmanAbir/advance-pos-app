@@ -43,12 +43,19 @@ class LoginTabView extends ConsumerWidget {
                                 // TODO: wire to authControllerProvider.login(email, password)
                                 context.go(RouteNames.mainShell);
                               },
-                              onForgotPassword: () => context.push(RouteNames.forgotPassword),
+                              onForgotPassword: () =>
+                                  context.push(RouteNames.forgotPassword),
                             ),
                             const SizedBox(height: AppSizes.lg),
                             SocialLoginSection(
-                              onGoogleTap: () => CustomSnackbar.show(context, 'Google sign-in coming soon'),
-                              onAppleTap: () => CustomSnackbar.show(context, 'Apple sign-in coming soon'),
+                              onGoogleTap: () => CustomSnackbar.show(
+                                context,
+                                'Google sign-in coming soon',
+                              ),
+                              onAppleTap: () => CustomSnackbar.show(
+                                context,
+                                'Apple sign-in coming soon',
+                              ),
                             ),
                           ],
                         ),

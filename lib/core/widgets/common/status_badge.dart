@@ -3,6 +3,7 @@ import '../../constants/app_colors.dart';
 import '../../constants/app_sizes.dart';
 
 enum StatusBadgeType { success, warning, error, info, neutral, primary }
+
 enum StatusBadgeShape { pill, square }
 
 class StatusBadge extends StatelessWidget {
@@ -50,8 +51,12 @@ class StatusBadge extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: isSquare ? 0.1 : 0.12),
-        borderRadius: BorderRadius.circular(isSquare ? AppSizes.radiusSm - 2 : AppSizes.radiusFull),
-        border: isSquare ? null : Border.all(color: color.withValues(alpha: 0.24)),
+        borderRadius: BorderRadius.circular(
+          isSquare ? AppSizes.radiusSm - 2 : AppSizes.radiusFull,
+        ),
+        border: isSquare
+            ? null
+            : Border.all(color: color.withValues(alpha: 0.24)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

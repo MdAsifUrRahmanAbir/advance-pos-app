@@ -44,7 +44,10 @@ class MainShellBottomNav extends StatelessWidget {
       child: SizedBox(
         height: _barHeight,
         child: ClipPath(
-          clipper: _NotchedPillClipper(notchRadius: 0, cornerRadius: _barHeight / 2),
+          clipper: _NotchedPillClipper(
+            notchRadius: 0,
+            cornerRadius: _barHeight / 2,
+          ),
           child: Container(
             decoration: BoxDecoration(
               color: context.appColors.border,
@@ -55,17 +58,46 @@ class MainShellBottomNav extends StatelessWidget {
                   spreadRadius: 2,
                   offset: const Offset(0, -3),
                 ),
-              ],            ),
+              ],
+            ),
             child: SafeArea(
               top: false,
               bottom: false,
               child: Row(
                 children: [
-                  Expanded(child: _NavItem(index: 0, item: shellNavItems[0], selectedIndex: selectedIndex, onSelected: onSelected)),
-                  Expanded(child: _NavItem(index: 1, item: shellNavItems[1], selectedIndex: selectedIndex, onSelected: onSelected)),
+                  Expanded(
+                    child: _NavItem(
+                      index: 0,
+                      item: shellNavItems[0],
+                      selectedIndex: selectedIndex,
+                      onSelected: onSelected,
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavItem(
+                      index: 1,
+                      item: shellNavItems[1],
+                      selectedIndex: selectedIndex,
+                      onSelected: onSelected,
+                    ),
+                  ),
                   SizedBox(width: PosFabButton.diameter + AppSizes.md),
-                  Expanded(child: _NavItem(index: 2, item: shellNavItems[2], selectedIndex: selectedIndex, onSelected: onSelected)),
-                  Expanded(child: _NavItem(index: 3, item: shellNavItems[3], selectedIndex: selectedIndex, onSelected: onSelected)),
+                  Expanded(
+                    child: _NavItem(
+                      index: 2,
+                      item: shellNavItems[2],
+                      selectedIndex: selectedIndex,
+                      onSelected: onSelected,
+                    ),
+                  ),
+                  Expanded(
+                    child: _NavItem(
+                      index: 3,
+                      item: shellNavItems[3],
+                      selectedIndex: selectedIndex,
+                      onSelected: onSelected,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -100,7 +132,11 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppSvgIcon.string(svgString: active ? item.selectedIcon : item.svgIcon, size: AppSizes.iconMd, color: color),
+          AppSvgIcon.string(
+            svgString: active ? item.selectedIcon : item.svgIcon,
+            size: AppSizes.iconMd,
+            color: color,
+          ),
           const SizedBox(height: AppSizes.xs / 2),
           Text(
             item.label,
@@ -125,7 +161,10 @@ class _NotchedPillClipper extends CustomClipper<Path> {
   final double notchRadius;
   final double cornerRadius;
 
-  const _NotchedPillClipper({required this.notchRadius, required this.cornerRadius});
+  const _NotchedPillClipper({
+    required this.notchRadius,
+    required this.cornerRadius,
+  });
 
   @override
   Path getClip(Size size) {
@@ -141,7 +180,12 @@ class _NotchedPillClipper extends CustomClipper<Path> {
       ..lineTo(size.width - cornerRadius, 0)
       ..quadraticBezierTo(size.width, 0, size.width, cornerRadius)
       ..lineTo(size.width, size.height - cornerRadius)
-      ..quadraticBezierTo(size.width, size.height, size.width - cornerRadius, size.height)
+      ..quadraticBezierTo(
+        size.width,
+        size.height,
+        size.width - cornerRadius,
+        size.height,
+      )
       ..lineTo(cornerRadius, size.height)
       ..quadraticBezierTo(0, size.height, 0, size.height - cornerRadius)
       ..close();
@@ -149,5 +193,6 @@ class _NotchedPillClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(covariant _NotchedPillClipper oldClipper) =>
-      oldClipper.notchRadius != notchRadius || oldClipper.cornerRadius != cornerRadius;
+      oldClipper.notchRadius != notchRadius ||
+      oldClipper.cornerRadius != cornerRadius;
 }

@@ -42,14 +42,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                     // border: Border.all(color: AppColors.border),
                   ),
-                  child: const Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: AppColors.textPrimary),
+                  child: const Icon(
+                    Icons.arrow_back_rounded,
+                    size: AppSizes.iconSm,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               )
             else
               sideSpacer,
             Text(
               title,
-              style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                fontWeight: FontWeight.w600,
+                color: context.appColors.textPrimary,
+              ),
             ),
             trailing ?? sideSpacer,
           ],

@@ -7,4 +7,5 @@ class SearchController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final searchControllerProvider = NotifierProvider<SearchController, AsyncValue<void>>(SearchController.new);
+final searchControllerProvider =
+    NotifierProvider<SearchController, AsyncValue<void>>(SearchController.new);

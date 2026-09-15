@@ -20,11 +20,17 @@ class ProfileStatsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(child: SummaryCard(label: 'PROJECTS', value: projects)),
+        Expanded(
+          child: SummaryCard(label: 'PROJECTS', value: projects),
+        ),
         const SizedBox(width: AppSizes.sm + AppSizes.xs),
-        Expanded(child: SummaryCard(label: 'TASKS', value: tasks)),
+        Expanded(
+          child: SummaryCard(label: 'TASKS', value: tasks),
+        ),
         const SizedBox(width: AppSizes.sm + AppSizes.xs),
-        Expanded(child: SummaryCard(label: 'RATING', value: rating)),
+        Expanded(
+          child: SummaryCard(label: 'RATING', value: rating),
+        ),
       ],
     );
   }

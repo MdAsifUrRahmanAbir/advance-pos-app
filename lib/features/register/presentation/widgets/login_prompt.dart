@@ -16,9 +16,12 @@ class LoginPrompt extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-         Text(
+        Text(
           AppStrings.alreadyHaveAccount,
-          style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontSm,
+            color: context.appColors.textSecondary,
+          ),
         ),
         LinkButton(
           label: AppStrings.login,

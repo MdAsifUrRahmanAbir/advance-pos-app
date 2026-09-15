@@ -7,7 +7,11 @@ class ChartSeries {
   final Color color;
   final List<double> values;
 
-  const ChartSeries({required this.label, required this.color, required this.values});
+  const ChartSeries({
+    required this.label,
+    required this.color,
+    required this.values,
+  });
 }
 
 /// Multi-series line chart with horizontal gridlines, y-axis value
@@ -42,7 +46,13 @@ class MultiLineChart extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 for (final label in yAxisLabels)
-                  Text(label, style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textHint)),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: AppSizes.fontXs,
+                      color: AppColors.textHint,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -53,7 +63,10 @@ class MultiLineChart extends StatelessWidget {
                 Expanded(
                   child: CustomPaint(
                     size: Size.infinite,
-                    painter: _MultiLinePainter(series: series, gridLines: yAxisLabels.length),
+                    painter: _MultiLinePainter(
+                      series: series,
+                      gridLines: yAxisLabels.length,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSizes.xs),
@@ -61,7 +74,13 @@ class MultiLineChart extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     for (final label in xAxisLabels)
-                      Text(label, style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textHint)),
+                      Text(
+                        label,
+                        style: const TextStyle(
+                          fontSize: AppSizes.fontXs,
+                          color: AppColors.textHint,
+                        ),
+                      ),
                   ],
                 ),
               ],
@@ -121,5 +140,6 @@ class _MultiLinePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _MultiLinePainter oldDelegate) => oldDelegate.series != series;
+  bool shouldRepaint(covariant _MultiLinePainter oldDelegate) =>
+      oldDelegate.series != series;
 }

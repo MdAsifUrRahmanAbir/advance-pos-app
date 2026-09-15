@@ -58,19 +58,29 @@ class _FaqAccordionItemState extends State<FaqAccordionItem> {
                 AnimatedRotation(
                   turns: _expanded ? 0.5 : 0,
                   duration: const Duration(milliseconds: 180),
-                  child: const Icon(Icons.keyboard_arrow_down_rounded, size: AppSizes.iconSm, color: AppColors.textSecondary),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: AppSizes.iconSm,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
               ],
             ),
           ),
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 180),
-            crossFadeState: _expanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: _expanded
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             firstChild: Padding(
               padding: const EdgeInsets.only(top: AppSizes.sm + AppSizes.xs),
               child: Text(
                 widget.answer,
-                style: const TextStyle(fontSize: AppSizes.fontSm, color: AppColors.textSecondary, height: 1.5),
+                style: const TextStyle(
+                  fontSize: AppSizes.fontSm,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
               ),
             ),
             secondChild: const SizedBox(width: double.infinity),

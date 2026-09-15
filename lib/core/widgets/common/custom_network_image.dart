@@ -41,9 +41,16 @@ class CustomNetworkImage extends StatelessWidget {
           fit: fit,
           fadeInDuration: const Duration(milliseconds: 200),
           placeholder: (_, _) =>
-          placeholder ?? CustomShimmer(height: height ?? AppSizes.xxl, width: width),
-          errorWidget: (_, _, _) => errorWidget ??
-              const Center(child: Icon(Icons.broken_image_outlined, color: AppColors.textHint)),
+              placeholder ??
+              CustomShimmer(height: height ?? AppSizes.xxl, width: width),
+          errorWidget: (_, _, _) =>
+              errorWidget ??
+              const Center(
+                child: Icon(
+                  Icons.broken_image_outlined,
+                  color: AppColors.textHint,
+                ),
+              ),
         ),
       ),
     );

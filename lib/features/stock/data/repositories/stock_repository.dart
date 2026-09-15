@@ -14,11 +14,14 @@ class StockRepository {
   static const int pageLength = 15;
 
   // AUTO-GENERATED API METHOD (patched: added pagination params)
-  Future<StocksModel> getStocks({int start = 0, int length = pageLength}) async {
-    final response = await _apiClient.get(ApiEndpoints.stocks, queryParameters: {
-      "start": "$start",
-      "length": "$length",
-    });
+  Future<StocksModel> getStocks({
+    int start = 0,
+    int length = pageLength,
+  }) async {
+    final response = await _apiClient.get(
+      ApiEndpoints.stocks,
+      queryParameters: {"start": "$start", "length": "$length"},
+    );
     return StocksModel.fromJson(response.data);
   }
 }

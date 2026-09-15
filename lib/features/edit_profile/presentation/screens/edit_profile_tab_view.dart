@@ -16,18 +16,13 @@ class EditProfileTabView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      editProfileControllerProvider.notifier,
-    );
+    final controller = ref.watch(editProfileControllerProvider.notifier);
 
     return Scaffold(
       appBar: EditProfileAppBar(
         onDoneTap: () {
           controller.submit((values) {
-            CustomSnackbar.show(
-              context,
-              'Profile updated successfully',
-            );
+            CustomSnackbar.show(context, 'Profile updated successfully');
 
             context.pop();
           });
@@ -35,16 +30,12 @@ class EditProfileTabView extends ConsumerWidget {
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxWidth: 480,
-          ),
+          constraints: const BoxConstraints(maxWidth: 480),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(AppSizes.xl),
             child: Column(
               children: [
-                const EditProfilePhotoSection(
-                  name: 'Alex Johnson',
-                ),
+                const EditProfilePhotoSection(name: 'Alex Johnson'),
                 EditProfileForm(
                   onSave: (values) {
                     CustomSnackbar.show(

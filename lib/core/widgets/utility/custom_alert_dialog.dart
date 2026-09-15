@@ -21,11 +21,20 @@ class CustomAlertDialog {
         backgroundColor: context.appColors.surface,
         title: Text(title),
         content: Text(message),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusLg)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: Text(cancelText)),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(cancelText),
+          ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: destructive ? AppColors.error : AppColors.primary),
+            style: FilledButton.styleFrom(
+              backgroundColor: destructive
+                  ? AppColors.error
+                  : AppColors.primary,
+            ),
             onPressed: () => Navigator.pop(context, true),
             child: Text(confirmText),
           ),

@@ -8,11 +8,12 @@ class Responsive extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      if (constraints.maxWidth >= AppSizes.mobileBreakpoint) return SafeArea(child: tablet);
-      return SafeArea(
-          bottom: false,
-          child: mobile);
-    });
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth >= AppSizes.mobileBreakpoint)
+          return SafeArea(child: tablet);
+        return SafeArea(bottom: false, child: mobile);
+      },
+    );
   }
 }

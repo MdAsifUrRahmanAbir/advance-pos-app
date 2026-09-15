@@ -17,9 +17,9 @@ class CacheEntry<T> {
   };
 
   static CacheEntry<T> fromJson<T>(
-      Map<String, dynamic> json,
-      T Function(Map<String, dynamic>) fromJsonT,
-      ) {
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJsonT,
+  ) {
     return CacheEntry<T>(
       data: fromJsonT(json['data'] as Map<String, dynamic>),
       cachedAt: DateTime.parse(json['cachedAt'] as String),

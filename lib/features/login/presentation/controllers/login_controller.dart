@@ -7,19 +7,12 @@ import '../../data/repositories/login_repository.dart';
 class LoginFormState {
   final bool rememberMe;
 
-  const LoginFormState({
-    this.rememberMe = false,
-  });
+  const LoginFormState({this.rememberMe = false});
 
-  LoginFormState copyWith({
-    bool? rememberMe,
-  }) {
-    return LoginFormState(
-      rememberMe: rememberMe ?? this.rememberMe,
-    );
+  LoginFormState copyWith({bool? rememberMe}) {
+    return LoginFormState(rememberMe: rememberMe ?? this.rememberMe);
   }
 }
-
 
 /*
 final editProfileControllerProvider = NotifierProvider.autoDispose<EditProfileController, EditProfileState>(
@@ -47,9 +40,7 @@ class LoginController extends Notifier<LoginFormState> {
   }
 
   void setRememberMe(bool value) {
-    state = state.copyWith(
-      rememberMe: value,
-    );
+    state = state.copyWith(rememberMe: value);
   }
 
   String? validateEmail(String? value) {
@@ -75,12 +66,8 @@ class LoginController extends Notifier<LoginFormState> {
   LoginRepository get _repository => ref.read(loginRepositoryProvider);
 
   bool submit(
-      void Function(
-          String email,
-          String password,
-          bool rememberMe,
-          ) onSignIn,
-      ) {
+    void Function(String email, String password, bool rememberMe) onSignIn,
+  ) {
     if (!(formKey.currentState?.validate() ?? false)) {
       return false;
     }
@@ -96,6 +83,6 @@ class LoginController extends Notifier<LoginFormState> {
 }
 
 final loginFormControllerProvider =
-NotifierProvider.autoDispose<LoginController, LoginFormState>(
-  LoginController.new,
-);
+    NotifierProvider.autoDispose<LoginController, LoginFormState>(
+      LoginController.new,
+    );

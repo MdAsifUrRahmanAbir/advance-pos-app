@@ -6,8 +6,6 @@ class SearchResultItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Text('SearchResultItem'),
-    );
+    return Center(child: Text('SearchResultItem'));
   }
 }

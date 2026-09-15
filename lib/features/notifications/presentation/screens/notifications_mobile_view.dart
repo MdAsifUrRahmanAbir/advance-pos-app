@@ -17,14 +17,16 @@ class NotificationsMobileView extends ConsumerWidget {
     NotificationTile(
       category: NotificationCategory.alert,
       title: 'Multiple SSH Failures Detected',
-      description: 'Unauthorized terminal access attempts detected on cluster Node 2.',
+      description:
+          'Unauthorized terminal access attempts detected on cluster Node 2.',
       time: '2m ago',
       isUnread: true,
     ),
     NotificationTile(
       category: NotificationCategory.order,
       title: 'Enterprise Invoice Paid',
-      description: 'ACME Corp completed payment for Invoice #8125 (\$4,500.00).',
+      description:
+          'ACME Corp completed payment for Invoice #8125 (\$4,500.00).',
       time: '1h ago',
       isUnread: true,
     ),
@@ -56,7 +58,9 @@ class NotificationsMobileView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFilter = ref.watch(notificationControllerProvider).selectedFilter;
+    final selectedFilter = ref
+        .watch(notificationControllerProvider)
+        .selectedFilter;
 
     return Column(
       children: [
@@ -64,7 +68,8 @@ class NotificationsMobileView extends ConsumerWidget {
           title: AppStrings.notificationsTitle,
           trailingLabel: AppStrings.markAllAsRead,
           backStyle: HeaderBackStyle.chevron,
-          onTrailingTap: () => ref.read(notificationControllerProvider.notifier).markAllAsRead(),
+          onTrailingTap: () =>
+              ref.read(notificationControllerProvider.notifier).markAllAsRead(),
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -80,8 +85,9 @@ class NotificationsMobileView extends ConsumerWidget {
                   labelBuilder: (filter) => filter == 'all'
                       ? '${AppStrings.filterAll} (12)'
                       : '${AppStrings.filterUnread} (2)',
-                  onSelected: (filter) =>
-                      ref.read(notificationControllerProvider.notifier).selectFilter(filter),
+                  onSelected: (filter) => ref
+                      .read(notificationControllerProvider.notifier)
+                      .selectFilter(filter),
                 ),
                 const SizedBox(height: AppSizes.md),
                 const InfoTipBanner(text: AppStrings.notificationsTip),
@@ -90,7 +96,8 @@ class NotificationsMobileView extends ConsumerWidget {
                   children: [
                     for (final item in _items) ...[
                       item,
-                      if (item != _items.last) const SizedBox(height: AppSizes.md),
+                      if (item != _items.last)
+                        const SizedBox(height: AppSizes.md),
                     ],
                   ],
                 ),

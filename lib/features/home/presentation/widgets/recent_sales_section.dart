@@ -31,7 +31,7 @@ class RecentSalesSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.sm),
         ...sales.map(
-              (sale) => Padding(
+          (sale) => Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.sm),
             child: _RecentSaleCard(data: sale, onTap: () => onTapSale(sale)),
           ),
@@ -102,14 +102,23 @@ class _RecentSaleCard extends StatelessWidget {
                                 data.customerName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: AppSizes.fontXs,
+                                ),
                               ),
                             ),
                           ],
                         ),
                         Text(
-                          AppStrings.saleMetaLabel(data.itemCount, data.timeAgo),
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+                          AppStrings.saleMetaLabel(
+                            data.itemCount,
+                            data.timeAgo,
+                          ),
+                          style: TextStyle(
+                            color: AppColors.textSecondary,
+                            fontSize: AppSizes.fontXs,
+                          ),
                         ),
                       ],
                     ),
@@ -128,7 +137,11 @@ class _RecentSaleCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 4),
-                Icon(Icons.chevron_right_rounded, size: AppSizes.iconSm, color: AppColors.textSecondary),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: AppSizes.iconSm,
+                  color: AppColors.textSecondary,
+                ),
               ],
             ),
           ],

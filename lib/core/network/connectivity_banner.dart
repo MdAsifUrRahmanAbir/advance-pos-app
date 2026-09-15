@@ -33,7 +33,10 @@ class ConnectivityBanner extends ConsumerWidget {
             opacity: isConnected ? 0 : 1,
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + AppSizes.xs / 2),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.md,
+                  vertical: AppSizes.sm + AppSizes.xs / 2,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.error,
                   borderRadius: BorderRadius.circular(AppSizes.radiusFull),
@@ -48,7 +51,11 @@ class ConnectivityBanner extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
-                    Icon(Icons.wifi_off_rounded, size: AppSizes.iconSm, color: AppColors.textWhite),
+                    Icon(
+                      Icons.wifi_off_rounded,
+                      size: AppSizes.iconSm,
+                      color: AppColors.textWhite,
+                    ),
                     SizedBox(width: AppSizes.sm),
                     Flexible(
                       child: Text(

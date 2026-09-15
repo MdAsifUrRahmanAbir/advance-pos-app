@@ -23,9 +23,7 @@ class EditProfileForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      editProfileControllerProvider.notifier,
-    );
+    final controller = ref.watch(editProfileControllerProvider.notifier);
 
     return Form(
       key: controller.formKey,
@@ -55,9 +53,7 @@ class EditProfileForm extends ConsumerWidget {
               controller: controller.phoneController,
               keyboardType: TextInputType.phone,
               prefixIcon: Padding(
-                padding: const EdgeInsets.only(
-                  left: AppSizes.sm,
-                ),
+                padding: const EdgeInsets.only(left: AppSizes.sm),
                 child: Center(
                   widthFactor: 1,
                   child: Text(

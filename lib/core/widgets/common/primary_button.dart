@@ -43,23 +43,34 @@ class PrimaryButton extends StatelessWidget {
           foregroundColor: AppColors.textWhite,
           disabledBackgroundColor: fillColor.withValues(alpha: 0.5),
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
-          textStyle: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          textStyle: const TextStyle(
+            fontSize: AppSizes.fontMd,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         child: loading
             ? const SizedBox(
-          height: AppSizes.iconMd,
-          width: AppSizes.iconMd,
-          child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textWhite),
-        )
+                height: AppSizes.iconMd,
+                width: AppSizes.iconMd,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.textWhite,
+                ),
+              )
             : Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null) ...[Icon(icon, size: AppSizes.iconSm), const SizedBox(width: AppSizes.sm)],
-            Text(label),
-          ],
-        ),
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    Icon(icon, size: AppSizes.iconSm),
+                    const SizedBox(width: AppSizes.sm),
+                  ],
+                  Text(label),
+                ],
+              ),
       ),
     );
   }

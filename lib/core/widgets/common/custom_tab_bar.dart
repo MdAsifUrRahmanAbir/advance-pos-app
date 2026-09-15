@@ -25,7 +25,10 @@ class CustomTabBar extends StatelessWidget {
       unselectedLabelColor: AppColors.textSecondary,
       indicatorColor: AppColors.primary,
       indicatorWeight: AppSizes.xs,
-      labelStyle: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+      labelStyle: const TextStyle(
+        fontSize: AppSizes.fontMd,
+        fontWeight: FontWeight.w600,
+      ),
       tabAlignment: isScrollable ? TabAlignment.start : TabAlignment.fill,
     );
   }

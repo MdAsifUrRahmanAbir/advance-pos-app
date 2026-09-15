@@ -36,11 +36,7 @@ class TimelineIndicator extends StatelessWidget {
           ),
         ),
         if (showLine)
-          Container(
-            width: 2,
-            height: lineHeight,
-            color: AppColors.border,
-          ),
+          Container(width: 2, height: lineHeight, color: AppColors.border),
       ],
     );
   }

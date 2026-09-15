@@ -12,10 +12,7 @@ class BackToLoginLink extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: LinkButton(
-        label: AppStrings.backToLogin,
-        onPressed: onTap,
-      ),
+      child: LinkButton(label: AppStrings.backToLogin, onPressed: onTap),
     );
   }
 }

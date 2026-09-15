@@ -21,7 +21,9 @@ class MiniSparkline extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: CustomPaint(painter: _SparklinePainter(values: values, color: color)),
+      child: CustomPaint(
+        painter: _SparklinePainter(values: values, color: color),
+      ),
     );
   }
 }

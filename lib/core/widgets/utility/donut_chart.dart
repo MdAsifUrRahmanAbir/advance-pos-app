@@ -37,18 +37,28 @@ class DonutChart extends StatelessWidget {
         children: [
           CustomPaint(
             size: Size(size, size),
-            painter: _DonutPainter(segments: segments, strokeWidth: strokeWidth),
+            painter: _DonutPainter(
+              segments: segments,
+              strokeWidth: strokeWidth,
+            ),
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 centerValue,
-                style: const TextStyle(fontSize: AppSizes.fontXxl, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                style: const TextStyle(
+                  fontSize: AppSizes.fontXxl,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
               ),
               Text(
                 centerLabel,
-                style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textSecondary),
+                style: const TextStyle(
+                  fontSize: AppSizes.fontXs,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -90,5 +100,6 @@ class _DonutPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _DonutPainter oldDelegate) => oldDelegate.segments != segments;
+  bool shouldRepaint(covariant _DonutPainter oldDelegate) =>
+      oldDelegate.segments != segments;
 }

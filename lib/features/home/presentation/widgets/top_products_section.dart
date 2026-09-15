@@ -25,10 +25,7 @@ class TopProductsSection extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.sm),
         ...products.asMap().entries.map(
-              (entry) => _TopProductRow(
-            data: entry.value,
-            isAlt: entry.key.isOdd,
-          ),
+          (entry) => _TopProductRow(data: entry.value, isAlt: entry.key.isOdd),
         ),
       ],
     );
@@ -88,7 +85,10 @@ class _TopProductRow extends StatelessWidget {
                       ),
                       Text(
                         AppStrings.unitsSoldLabel(data.unitsSold),
-                        style: TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+                        style: TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: AppSizes.fontXs,
+                        ),
                       ),
                     ],
                   ),

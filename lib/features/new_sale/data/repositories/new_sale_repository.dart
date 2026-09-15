@@ -8,6 +8,4 @@ final newSaleRepositoryProvider = Provider<NewSaleRepository>((ref) {
 class NewSaleRepository {
   final ApiClient _apiClient;
   NewSaleRepository(this._apiClient);
-
-
 }

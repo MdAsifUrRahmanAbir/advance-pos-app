@@ -11,17 +11,19 @@ class OnboardingController extends Notifier<List<OnboardingModel>> {
       OnboardingModel(
         title: 'Analyze Your Performance',
         description:
-        'High-density data metrics and operational insights tailored specifically for growing global enterprises.',
+            'High-density data metrics and operational insights tailored specifically for growing global enterprises.',
         imagePath: 'assets/images/onboarding_analytics.png',
       ),
       OnboardingModel(
         title: 'Manage Inventory in Real Time',
-        description: 'Track stock levels, transfers, and reorder points across every warehouse from one screen.',
+        description:
+            'Track stock levels, transfers, and reorder points across every warehouse from one screen.',
         imagePath: 'assets/images/onboarding_inventory.png',
       ),
       OnboardingModel(
         title: 'Move Faster, Every Day',
-        description: 'Streamlined workflows help your whole team close orders and tasks without the busywork.',
+        description:
+            'Streamlined workflows help your whole team close orders and tasks without the busywork.',
         imagePath: 'assets/images/onboarding_speed.png',
       ),
     ];
@@ -29,4 +31,6 @@ class OnboardingController extends Notifier<List<OnboardingModel>> {
 }
 
 final onboardingControllerProvider =
-NotifierProvider<OnboardingController, List<OnboardingModel>>(OnboardingController.new);
+    NotifierProvider<OnboardingController, List<OnboardingModel>>(
+      OnboardingController.new,
+    );

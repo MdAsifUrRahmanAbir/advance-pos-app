@@ -28,14 +28,22 @@ class SecondaryButton extends StatelessWidget {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.textPrimary,
           side: const BorderSide(color: AppColors.border),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
-          textStyle: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          textStyle: const TextStyle(
+            fontSize: AppSizes.fontMd,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (icon != null) ...[Icon(icon, size: AppSizes.iconSm), const SizedBox(width: AppSizes.sm)],
+            if (icon != null) ...[
+              Icon(icon, size: AppSizes.iconSm),
+              const SizedBox(width: AppSizes.sm),
+            ],
             Text(label),
           ],
         ),

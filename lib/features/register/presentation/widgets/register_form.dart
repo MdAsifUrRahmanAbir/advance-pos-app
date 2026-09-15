@@ -14,11 +14,8 @@ import '../controllers/register_controller.dart';
 
 class RegisterForm extends ConsumerWidget {
   final bool loading;
-  final void Function(
-      String fullName,
-      String email,
-      String password,
-      ) onRegister;
+  final void Function(String fullName, String email, String password)
+  onRegister;
   final VoidCallback? onTermsTap;
 
   const RegisterForm({
@@ -30,13 +27,9 @@ class RegisterForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      registerControllerProvider.notifier,
-    );
+    final controller = ref.watch(registerControllerProvider.notifier);
 
-    final state = ref.watch(
-      registerControllerProvider,
-    );
+    final state = ref.watch(registerControllerProvider);
 
     return Form(
       key: controller.formKey,
@@ -47,9 +40,7 @@ class RegisterForm extends ConsumerWidget {
             label: AppStrings.fullName,
             hint: AppStrings.fullNameHint,
             controller: controller.nameController,
-            prefixIcon: Icon(
-              Icons.person_outline_rounded,
-            ),
+            prefixIcon: Icon(Icons.person_outline_rounded),
             validator: controller.validateName,
           ),
 
@@ -60,9 +51,7 @@ class RegisterForm extends ConsumerWidget {
             hint: AppStrings.registerEmailHint,
             controller: controller.emailController,
             keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icon(
-              Icons.mail_outline_rounded,
-            ),
+            prefixIcon: Icon(Icons.mail_outline_rounded),
             validator: controller.validateEmail,
           ),
 
@@ -80,9 +69,7 @@ class RegisterForm extends ConsumerWidget {
 
           const SizedBox(height: AppSizes.sm),
 
-          PasswordStrengthMeter(
-            strength: controller.passwordStrength(),
-          ),
+          PasswordStrengthMeter(strength: controller.passwordStrength()),
 
           const SizedBox(height: AppSizes.md),
 
@@ -101,13 +88,11 @@ class RegisterForm extends ConsumerWidget {
               PrimaryCheckbox(
                 value: state.agreedToTerms,
                 onChanged: (value) {
-                  controller.setAgreedToTerms(
-                    value ?? false,
-                  );
+                  controller.setAgreedToTerms(value ?? false);
                 },
               ),
 
-               Text(
+              Text(
                 AppStrings.agreeToTermsPrefix,
                 style: TextStyle(
                   fontSize: AppSizes.fontSm,
@@ -131,11 +116,7 @@ class RegisterForm extends ConsumerWidget {
             onPressed: () {
               if (!state.agreedToTerms) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      AppStrings.mustAgreeToTerms,
-                    ),
-                  ),
+                  const SnackBar(content: Text(AppStrings.mustAgreeToTerms)),
                 );
                 return;
               }

@@ -16,9 +16,12 @@ class RegisterPrompt extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-         Text(
+        Text(
           AppStrings.dontHaveAccount,
-          style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontSm,
+            color: context.appColors.textSecondary,
+          ),
         ),
         LinkButton(
           label: AppStrings.register,

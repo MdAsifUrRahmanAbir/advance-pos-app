@@ -51,17 +51,17 @@ class CustomCard extends StatelessWidget {
     final withAccent = accentColor == null
         ? content
         : ClipRRect(
-      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(width: AppSizes.xs / 2 + 2, color: accentColor),
-            Expanded(child: content),
-          ],
-        ),
-      ),
-    );
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(width: AppSizes.xs / 2 + 2, color: accentColor),
+                  Expanded(child: content),
+                ],
+              ),
+            ),
+          );
 
     return Material(
       color: Colors.transparent,

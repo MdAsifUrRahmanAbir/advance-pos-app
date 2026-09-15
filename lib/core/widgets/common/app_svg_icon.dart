@@ -33,8 +33,8 @@ class AppSvgIcon extends StatelessWidget {
     this.multicolor = false,
     this.fit = BoxFit.contain,
     this.placeholder,
-  })  : networkUrl = null,
-        svgString = null;
+  }) : networkUrl = null,
+       svgString = null;
 
   const AppSvgIcon.network({
     super.key,
@@ -46,9 +46,9 @@ class AppSvgIcon extends StatelessWidget {
     this.multicolor = false,
     this.fit = BoxFit.contain,
     this.placeholder,
-  })  : networkUrl = url,
-        assetPath = '',
-        svgString = null;
+  }) : networkUrl = url,
+       assetPath = '',
+       svgString = null;
 
   /// Renders raw SVG source directly (e.g. from [AppSvgs]) — no asset
   /// bundling required. Handy for small inline icon sets like the
@@ -64,8 +64,8 @@ class AppSvgIcon extends StatelessWidget {
     this.multicolor = false,
     this.fit = BoxFit.contain,
     this.placeholder,
-  })  : networkUrl = null,
-        assetPath = '';
+  }) : networkUrl = null,
+       assetPath = '';
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +73,8 @@ class AppSvgIcon extends StatelessWidget {
         ? null
         : ColorFilter.mode(color ?? AppColors.textPrimary, BlendMode.srcIn);
 
-    final fallback = placeholder ??
-        SizedBox(width: width ?? size, height: height ?? size);
+    final fallback =
+        placeholder ?? SizedBox(width: width ?? size, height: height ?? size);
 
     if (svgString != null && svgString!.isNotEmpty) {
       return SvgPicture.string(

@@ -38,7 +38,11 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
       validator: widget.validator,
       onChanged: widget.onChanged,
       obscureText: _obscure,
-      prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textSecondary, size: AppSizes.iconSm),
+      prefixIcon: const Icon(
+        Icons.lock_outline_rounded,
+        color: AppColors.textSecondary,
+        size: AppSizes.iconSm,
+      ),
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,

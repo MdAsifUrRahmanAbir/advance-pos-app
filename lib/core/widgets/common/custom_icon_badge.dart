@@ -35,17 +35,19 @@ class CustomIconBadge extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isFilled ? color.withValues(alpha: 0.1) : context.appColors.surface,
+        color: isFilled
+            ? color.withValues(alpha: 0.1)
+            : context.appColors.surface,
         border: isFilled ? null : Border.all(color: AppColors.border),
         boxShadow: isFilled
             ? null
             : [
-          BoxShadow(
-            color: AppColors.textPrimary.withValues(alpha: 0.02),
-            blurRadius: AppSizes.md,
-            offset: const Offset(0, AppSizes.xs),
-          ),
-        ],
+                BoxShadow(
+                  color: AppColors.textPrimary.withValues(alpha: 0.02),
+                  blurRadius: AppSizes.md,
+                  offset: const Offset(0, AppSizes.xs),
+                ),
+              ],
       ),
       alignment: Alignment.center,
       child: Icon(icon, color: color, size: iconSize),

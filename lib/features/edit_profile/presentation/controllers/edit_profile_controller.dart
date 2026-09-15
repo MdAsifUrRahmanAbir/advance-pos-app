@@ -41,7 +41,8 @@ class EditProfileController extends Notifier<EditProfileState> {
     String email = 'alex.johnson@enterprise.com',
     String phone = '555-0199',
     String designation = 'Workspace Admin',
-    String bio = 'Responsible for managing the enterprise cluster databases, '
+    String bio =
+        'Responsible for managing the enterprise cluster databases, '
         'orchestrating deployments, and setting access token '
         'permissions for the department nodes.',
   }) {
@@ -86,9 +87,7 @@ class EditProfileController extends Notifier<EditProfileState> {
     return formKey.currentState?.validate() ?? false;
   }
 
-  void submit(
-      void Function(Map<String, String> values) onSave,
-      ) {
+  void submit(void Function(Map<String, String> values) onSave) {
     if (!validate()) {
       return;
     }
@@ -98,8 +97,6 @@ class EditProfileController extends Notifier<EditProfileState> {
 }
 
 final editProfileControllerProvider =
-NotifierProvider.autoDispose<
-    EditProfileController,
-    EditProfileState>(
-  EditProfileController.new,
-);
+    NotifierProvider.autoDispose<EditProfileController, EditProfileState>(
+      EditProfileController.new,
+    );

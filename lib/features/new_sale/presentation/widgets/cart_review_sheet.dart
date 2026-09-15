@@ -35,11 +35,18 @@ class CartReviewSheet extends ConsumerWidget {
           children: [
             Text(
               'Cart (${state.cartItemCount})',
-              style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+              style: TextStyle(
+                fontSize: AppSizes.fontXl,
+                fontWeight: FontWeight.w700,
+                color: context.appColors.textPrimary,
+              ),
             ),
             IconButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.close_rounded, color: context.appColors.textSecondary),
+              icon: Icon(
+                Icons.close_rounded,
+                color: context.appColors.textSecondary,
+              ),
             ),
           ],
         ),
@@ -58,7 +65,10 @@ class CartReviewSheet extends ConsumerWidget {
             child: ListView.separated(
               shrinkWrap: true,
               itemCount: state.cartItems.length,
-              separatorBuilder: (_, _) => Divider(height: AppSizes.lg, color: context.appColors.divider),
+              separatorBuilder: (_, _) => Divider(
+                height: AppSizes.lg,
+                color: context.appColors.divider,
+              ),
               itemBuilder: (context, index) {
                 final line = state.cartItems[index];
                 return _CartLineRow(
@@ -76,10 +86,21 @@ class CartReviewSheet extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total', style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textSecondary)),
+              Text(
+                'Total',
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w600,
+                  color: context.appColors.textSecondary,
+                ),
+              ),
               Text(
                 CurrencyFormatter.format(state.cartTotal),
-                style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontXl,
+                  fontWeight: FontWeight.w700,
+                  color: context.appColors.textPrimary,
+                ),
               ),
             ],
           ),
@@ -96,7 +117,11 @@ class _CartLineRow extends StatelessWidget {
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
 
-  const _CartLineRow({required this.line, required this.onIncrease, required this.onDecrease});
+  const _CartLineRow({
+    required this.line,
+    required this.onIncrease,
+    required this.onDecrease,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +135,11 @@ class _CartLineRow extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppSizes.radiusSm),
           ),
           alignment: Alignment.center,
-          child: Icon(Icons.inventory_2_outlined, size: AppSizes.iconSm, color: context.appColors.textHint),
+          child: Icon(
+            Icons.inventory_2_outlined,
+            size: AppSizes.iconSm,
+            color: context.appColors.textHint,
+          ),
         ),
         const SizedBox(width: AppSizes.sm + AppSizes.xs),
         Expanded(
@@ -121,18 +150,29 @@ class _CartLineRow extends StatelessWidget {
                 line.product.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w600,
+                  color: context.appColors.textPrimary,
+                ),
               ),
               const SizedBox(height: AppSizes.xs / 2),
               Text(
                 CurrencyFormatter.format(line.product.price),
-                style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontSm,
+                  color: context.appColors.textSecondary,
+                ),
               ),
             ],
           ),
         ),
         const SizedBox(width: AppSizes.sm),
-        _QtyStepper(quantity: line.quantity, onIncrease: onIncrease, onDecrease: onDecrease),
+        _QtyStepper(
+          quantity: line.quantity,
+          onIncrease: onIncrease,
+          onDecrease: onDecrease,
+        ),
       ],
     );
   }
@@ -143,7 +183,11 @@ class _QtyStepper extends StatelessWidget {
   final VoidCallback onIncrease;
   final VoidCallback onDecrease;
 
-  const _QtyStepper({required this.quantity, required this.onIncrease, required this.onDecrease});
+  const _QtyStepper({
+    required this.quantity,
+    required this.onIncrease,
+    required this.onDecrease,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +205,11 @@ class _QtyStepper extends StatelessWidget {
             child: Text(
               '$quantity',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                fontWeight: FontWeight.w700,
+                color: context.appColors.textPrimary,
+              ),
             ),
           ),
           _stepButton(icon: Icons.add_rounded, onTap: onIncrease),

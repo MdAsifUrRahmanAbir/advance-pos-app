@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../constants/app_sizes.dart';
 import '../../theme/app_color_scheme.dart';
+import '../../utils/widget_animation_extension.dart';
 
 class CustomFilterBar<T> extends StatelessWidget {
   final List<T> filters;
@@ -24,8 +26,11 @@ class CustomFilterBar<T> extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          ...filters.map(
-                (filter) => Padding(
+          ...filters.asMap().entries.map((entry) {
+            final index = entry.key;
+            final filter = entry.value;
+
+            return Padding(
               padding: const EdgeInsets.only(right: AppSizes.sm),
               child: FilterChip(
                 label: Text(labelBuilder(filter)),
@@ -34,9 +39,9 @@ class CustomFilterBar<T> extends StatelessWidget {
                 selectedColor: context.appColors.surface,
                 checkmarkColor: context.appColors.primary,
                 side: BorderSide(color: context.appColors.border),
-              ),
-            ),
-          ),
+              ).fadeSlideIn(delay: (index * 100).ms),
+            );
+          }),
           if (onClear != null)
             ActionChip(
               label: const Text('Clear'),

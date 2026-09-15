@@ -33,12 +33,20 @@ class ContactMethodCard extends StatelessWidget {
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
           Text(
             title,
-            style: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+            style: const TextStyle(
+              fontSize: AppSizes.fontMd,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
           ),
           const SizedBox(height: AppSizes.xs / 2),
           Text(
             actionLabel,
-            style: const TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600, color: AppColors.primary),
+            style: const TextStyle(
+              fontSize: AppSizes.fontSm,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
           ),
         ],
       ),

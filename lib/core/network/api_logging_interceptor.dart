@@ -8,7 +8,8 @@ import '../utils/app_logger.dart';
 class ApiLoggingInterceptor extends Interceptor {
   final Map<RequestOptions, Stopwatch> _stopwatches = {};
 
-  String _fullPath(RequestOptions options) => '${options.baseUrl}${options.path}';
+  String _fullPath(RequestOptions options) =>
+      '${options.baseUrl}${options.path}';
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {

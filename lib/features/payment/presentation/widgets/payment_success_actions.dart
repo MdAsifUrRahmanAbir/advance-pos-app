@@ -86,22 +86,37 @@ class _OutlinedActionButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: AppSizes.sm + 2),
         side: const BorderSide(color: AppColors.border),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        ),
       ),
       child: isLoading
           ? const SizedBox(
-        height: AppSizes.iconSm,
-        width: AppSizes.iconSm,
-        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textSecondary),
-      )
+              height: AppSizes.iconSm,
+              width: AppSizes.iconSm,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.textSecondary,
+              ),
+            )
           : Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: AppSizes.iconSm, color: AppColors.textSecondary),
-          const SizedBox(width: AppSizes.xs),
-          Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontSm)),
-        ],
-      ),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: AppSizes.iconSm,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(width: AppSizes.xs),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: AppSizes.fontSm,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -9,9 +9,19 @@ class ProductCategoryTabs extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const ProductCategoryTabs({super.key, required this.selected, required this.onChanged});
+  const ProductCategoryTabs({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
 
-  static const categories = ['All', 'Electronics', 'Clothing', 'Home', 'Sports'];
+  static const categories = [
+    'All',
+    'Electronics',
+    'Clothing',
+    'Home',
+    'Sports',
+  ];
 
   @override
   Widget build(BuildContext context) {

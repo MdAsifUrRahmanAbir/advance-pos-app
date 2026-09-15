@@ -32,7 +32,7 @@ class NoInternetContent extends StatelessWidget {
           size: AppSizes.xxl * 2 + AppSizes.xl,
         ),
         const SizedBox(height: AppSizes.xl),
-         Text(
+        Text(
           AppStrings.noInternetTitle,
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -42,7 +42,7 @@ class NoInternetContent extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppSizes.sm),
-         Text(
+        Text(
           AppStrings.noInternetSubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(

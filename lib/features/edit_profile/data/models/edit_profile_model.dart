@@ -4,12 +4,8 @@ class EditProfileModel {
   EditProfileModel({this.id});
 
   factory EditProfileModel.fromJson(Map<String, dynamic> json) {
-    return EditProfileModel(
-      id: json['id'],
-    );
+    return EditProfileModel(id: json['id']);
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-  };
+  Map<String, dynamic> toJson() => {'id': id};
 }

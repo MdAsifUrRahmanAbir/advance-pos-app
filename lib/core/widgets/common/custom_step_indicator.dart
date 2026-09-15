@@ -22,7 +22,9 @@ class CustomStepIndicator extends StatelessWidget {
         final active = index == currentStep;
         return AnimatedContainer(
           duration: const Duration(milliseconds: 250),
-          margin: EdgeInsets.only(right: index == stepCount - 1 ? 0 : AppSizes.xs),
+          margin: EdgeInsets.only(
+            right: index == stepCount - 1 ? 0 : AppSizes.xs,
+          ),
           height: AppSizes.sm,
           width: active ? AppSizes.lg : AppSizes.sm,
           decoration: BoxDecoration(

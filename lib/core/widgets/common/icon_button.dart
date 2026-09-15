@@ -30,7 +30,9 @@ class AppIconButton extends StatelessWidget {
       iconSize: iconSize ?? AppSizes.iconMd,
       color: color ?? AppColors.textPrimary,
       style: IconButton.styleFrom(
-        backgroundColor: filled ? (backgroundColor ?? AppColors.primaryLight) : null,
+        backgroundColor: filled
+            ? (backgroundColor ?? AppColors.primaryLight)
+            : null,
         foregroundColor: color ?? AppColors.textPrimary,
         disabledForegroundColor: AppColors.textHint,
         padding: const EdgeInsets.all(AppSizes.sm),

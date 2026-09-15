@@ -26,7 +26,8 @@ class MainShellTabView extends ConsumerWidget {
         children: [
           NavigationRail(
             selectedIndex: selectedIndex,
-            onDestinationSelected: (index) => ref.read(mainShellControllerProvider.notifier).selectTab(index),
+            onDestinationSelected: (index) =>
+                ref.read(mainShellControllerProvider.notifier).selectTab(index),
             backgroundColor: context.appColors.surface,
             labelType: NavigationRailLabelType.all,
             indicatorColor: Colors.transparent,
@@ -45,19 +46,35 @@ class MainShellTabView extends ConsumerWidget {
                     color: AppColors.primary,
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: AppColors.primary.withValues(alpha: 0.4), blurRadius: AppSizes.lg, offset: const Offset(0, AppSizes.sm)),
+                      BoxShadow(
+                        color: AppColors.primary.withValues(alpha: 0.4),
+                        blurRadius: AppSizes.lg,
+                        offset: const Offset(0, AppSizes.sm),
+                      ),
                     ],
                   ),
                   alignment: Alignment.center,
-                  child: const AppSvgIcon.string(svgString: AppSvgs.plus, size: AppSizes.iconMd, color: AppColors.textWhite),
+                  child: const AppSvgIcon.string(
+                    svgString: AppSvgs.plus,
+                    size: AppSizes.iconMd,
+                    color: AppColors.textWhite,
+                  ),
                 ),
               ),
             ),
             destinations: [
               for (final item in shellNavItems)
                 NavigationRailDestination(
-                  icon: AppSvgIcon.string(svgString: item.svgIcon, size: AppSizes.iconMd, color: context.appColors.textSecondary),
-                  selectedIcon: AppSvgIcon.string(svgString: item.svgIcon, size: AppSizes.iconMd, color: AppColors.primary),
+                  icon: AppSvgIcon.string(
+                    svgString: item.svgIcon,
+                    size: AppSizes.iconMd,
+                    color: context.appColors.textSecondary,
+                  ),
+                  selectedIcon: AppSvgIcon.string(
+                    svgString: item.svgIcon,
+                    size: AppSizes.iconMd,
+                    color: AppColors.primary,
+                  ),
                   label: Text(item.label),
                 ),
             ],

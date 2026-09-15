@@ -17,16 +17,17 @@ dependencies:
   dio: ^5.11.0
   flutter_svg: ^2.3.0
   cached_network_image: 4.0.0
-  flutter_secure_storage: ^11.0.0
+  flutter_secure_storage: 11.1.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   connectivity_plus: ^7.3.1
   skeletonizer:
-  mobile_scanner: ^7.4.0
+  mobile_scanner: 7.4.2
   share_plus: ^13.3.0
   esc_pos_utils: ^1.1.0
   print_bluetooth_thermal:
   permission_handler:
+  flutter_animate:
 
 dev_dependencies:
   flutter_test:
@@ -41,6 +42,7 @@ flutter:
 
   assets:
     - assets/clip/
+    - assets/clip/welcome.png
     - assets/icon/
     - assets/logo/
     - assets/logo/advance_pos.png

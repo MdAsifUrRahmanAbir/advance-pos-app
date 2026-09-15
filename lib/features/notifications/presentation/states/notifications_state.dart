@@ -16,7 +16,8 @@ class NotificationsState {
   }) {
     return NotificationsState(
       selectedFilter: selectedFilter ?? this.selectedFilter,
-      isNotificationsLoading: isNotificationsLoading ?? this.isNotificationsLoading,
+      isNotificationsLoading:
+          isNotificationsLoading ?? this.isNotificationsLoading,
       errorMessage: errorMessage,
     );
   }

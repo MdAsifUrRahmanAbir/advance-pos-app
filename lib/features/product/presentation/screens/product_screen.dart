@@ -9,10 +9,7 @@ class ProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Responsive(
-        mobile: ProductMobileView(),
-        tablet: ProductTabView(),
-      ),
+      body: Responsive(mobile: ProductMobileView(), tablet: ProductTabView()),
     );
   }
 }

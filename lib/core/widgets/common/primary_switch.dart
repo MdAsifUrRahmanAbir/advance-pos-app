@@ -25,7 +25,9 @@ class PrimarySwitch extends StatelessWidget {
       activeThumbColor: AppColors.primary,
       title: label == null ? null : Text(label!),
       subtitle: subtitle == null ? null : Text(subtitle!),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+      ),
     );
   }
 }

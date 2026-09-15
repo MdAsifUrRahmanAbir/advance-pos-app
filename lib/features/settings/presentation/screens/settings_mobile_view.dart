@@ -36,7 +36,10 @@ class SettingsMobileView extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppStrings.appTheme, style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            AppStrings.appTheme,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: AppSizes.sm),
           for (final mode in ThemeMode.values)
             RadioOption<ThemeMode>(
@@ -54,9 +57,9 @@ class SettingsMobileView extends ConsumerWidget {
   }
 
   Future<void> _confirmDeleteAccount(
-      BuildContext context,
-      WidgetRef ref,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final confirmed = await CustomAlertDialog.confirm(
       context,
       title: AppStrings.deleteAccount,
@@ -69,7 +72,7 @@ class SettingsMobileView extends ConsumerWidget {
       await ref.read(settingsControllerProvider.notifier).deleteAccount();
 
       await ref.read(authSessionControllerProvider.notifier).logout();
-      if(!context.mounted) return;
+      if (!context.mounted) return;
       context.go(RouteNames.login);
     }
   }
@@ -84,7 +87,10 @@ class SettingsMobileView extends ConsumerWidget {
 
     return Column(
       children: [
-        const AppHeaderBar(title: AppStrings.settingsTitle,         backStyle: HeaderBackStyle.chevron,),
+        const AppHeaderBar(
+          title: AppStrings.settingsTitle,
+          backStyle: HeaderBackStyle.chevron,
+        ),
 
         Expanded(
           child: SingleChildScrollView(
@@ -92,11 +98,11 @@ class SettingsMobileView extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 SettingsTogglesSection(
                   darkMode: themeMode == ThemeMode.dark,
-                  onDarkModeChanged: (val) => themeController
-                      .setThemeMode(val ? ThemeMode.dark : ThemeMode.light),
+                  onDarkModeChanged: (val) => themeController.setThemeMode(
+                    val ? ThemeMode.dark : ThemeMode.light,
+                  ),
 
                   appThemeValue: _themeLabel(themeMode),
                   onAppThemeTap: () => _openThemePicker(context, ref),
@@ -159,9 +165,11 @@ class SettingsMobileView extends ConsumerWidget {
                 SettingsFooterActions(
                   versionLabel: 'v2.4.1 (Build 2026)',
 
-                  onLogOutTap: () async{
-                    await ref.read(authSessionControllerProvider.notifier).logout();
-                    if(!context.mounted) return;
+                  onLogOutTap: () async {
+                    await ref
+                        .read(authSessionControllerProvider.notifier)
+                        .logout();
+                    if (!context.mounted) return;
                     context.go(RouteNames.login);
                   },
 

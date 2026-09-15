@@ -19,10 +19,15 @@ class CustomLabeledDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
           child: Text(
             label,
-            style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+            style: TextStyle(
+              fontSize: AppSizes.fontSm,
+              color: context.appColors.textSecondary,
+            ),
           ),
         ),
-        Expanded(child: Divider(color: context.appColors.divider, thickness: 1)),
+        Expanded(
+          child: Divider(color: context.appColors.divider, thickness: 1),
+        ),
       ],
     );
   }

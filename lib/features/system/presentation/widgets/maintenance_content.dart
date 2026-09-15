@@ -32,16 +32,24 @@ class MaintenanceContent extends StatelessWidget {
           size: AppSizes.xxl * 2 + AppSizes.xl,
         ),
         const SizedBox(height: AppSizes.xl),
-         Text(
+        Text(
           AppStrings.maintenanceTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontXxl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontXxl,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppSizes.sm + AppSizes.xs),
-         Text(
+        Text(
           AppStrings.maintenanceSubtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary, height: 1.5),
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textSecondary,
+            height: 1.5,
+          ),
         ),
         const SizedBox(height: AppSizes.md),
         StatusBadge(text: etaLabel, type: StatusBadgeType.success),

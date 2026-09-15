@@ -4,7 +4,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 
-
 /// Bordered panel showing a small-caps label and monospace error/log
 /// text beneath it. Used on crash/error screens to surface technical
 /// details without displacing the main error messaging.

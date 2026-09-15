@@ -9,7 +9,8 @@ extension WidgetPaddingExtension on Widget {
   }
 
   /// Convenience shortcuts for the common single-value / symmetric cases.
-  Widget paddingAll(double value) => Padding(padding: EdgeInsets.all(value), child: this);
+  Widget paddingAll(double value) =>
+      Padding(padding: EdgeInsets.all(value), child: this);
 
   Widget paddingSymmetric({double horizontal = 0, double vertical = 0}) {
     return Padding(
@@ -18,9 +19,19 @@ extension WidgetPaddingExtension on Widget {
     );
   }
 
-  Widget paddingOnly({double left = 0, double top = 0, double right = 0, double bottom = 0}) {
+  Widget paddingOnly({
+    double left = 0,
+    double top = 0,
+    double right = 0,
+    double bottom = 0,
+  }) {
     return Padding(
-      padding: EdgeInsets.only(left: left, top: top, right: right, bottom: bottom),
+      padding: EdgeInsets.only(
+        left: left,
+        top: top,
+        right: right,
+        bottom: bottom,
+      ),
       child: this,
     );
   }

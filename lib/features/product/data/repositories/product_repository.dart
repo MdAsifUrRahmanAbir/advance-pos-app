@@ -11,12 +11,9 @@ class ProductRepository {
   final ApiClient _apiClient;
   ProductRepository(this._apiClient);
 
-
-
   // AUTO-GENERATED API METHOD
   Future<ProductModel> getProduct() async {
     final response = await _apiClient.get(ApiEndpoints.products);
     return ProductModel.fromJson(response.data);
   }
-
 }

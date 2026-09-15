@@ -13,7 +13,6 @@ class ShellTabBody extends StatelessWidget {
     HomeScreen(),
     StockScreen(),
     // ProductScreen(),
-    // AnalyticsModeScreen(),
     InvoicesScreen(),
     ProfileScreen(),
   ];

@@ -49,8 +49,12 @@ class DashboardTopBar extends StatelessWidget {
           Row(
             children: [
               StatusBadge(
-                text: isOnline ? AppStrings.statusOnline : AppStrings.statusOffline,
-                type: isOnline ? StatusBadgeType.success : StatusBadgeType.neutral,
+                text: isOnline
+                    ? AppStrings.statusOnline
+                    : AppStrings.statusOffline,
+                type: isOnline
+                    ? StatusBadgeType.success
+                    : StatusBadgeType.neutral,
                 compact: true,
               ),
               const SizedBox(width: AppSizes.sm),

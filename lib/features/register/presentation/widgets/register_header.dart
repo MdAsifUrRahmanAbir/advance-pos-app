@@ -9,9 +9,13 @@ class RegisterHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Text(
+    return Text(
       AppStrings.createYourAccount,
-      style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+      style: TextStyle(
+        fontSize: AppSizes.fontXl,
+        fontWeight: FontWeight.w700,
+        color: context.appColors.textPrimary,
+      ),
     );
   }
 }

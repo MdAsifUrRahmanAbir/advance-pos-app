@@ -9,11 +9,7 @@ class SocialLoginSection extends StatelessWidget {
   final VoidCallback? onGoogleTap;
   final VoidCallback? onAppleTap;
 
-  const SocialLoginSection({
-    super.key,
-    this.onGoogleTap,
-    this.onAppleTap,
-  });
+  const SocialLoginSection({super.key, this.onGoogleTap, this.onAppleTap});
 
   @override
   Widget build(BuildContext context) {

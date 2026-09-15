@@ -15,10 +15,10 @@ class NewSaleTopBar extends AppHeaderBar {
     required VoidCallback onBack,
     required VoidCallback onScanBarcode,
   }) : super(
-    title: AppStrings.newSaleTitle,
-    backStyle: HeaderBackStyle.chevron,
-    onBackTap: onBack,
-    trailingIcon: Icons.qr_code_scanner_rounded,
-    onTrailingTap: onScanBarcode,
-  );
+         title: AppStrings.newSaleTitle,
+         backStyle: HeaderBackStyle.chevron,
+         onBackTap: onBack,
+         trailingIcon: Icons.qr_code_scanner_rounded,
+         onTrailingTap: onScanBarcode,
+       );
 }

@@ -39,7 +39,7 @@ class StockCardTile extends StatelessWidget {
         left: AppSizes.lg,
         right: AppSizes.lg,
         top: AppSizes.lg,
-        bottom: AppSizes.sm
+        bottom: AppSizes.sm,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class StockCardTile extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: AppSizes.sm /2),
+                  const SizedBox(height: AppSizes.sm / 2),
                   _StatColumn(
                     label: AppStrings.stockQuantityLabel,
                     value: '${item.quantity} ${item.unit}',
@@ -143,10 +143,7 @@ class StockCardTile extends StatelessWidget {
             children: [
               _StatColumn(
                 label: AppStrings.sellingPriceLabel,
-                value: CurrencyFormatter.format(
-                  item.sellingPrice,
-                  symbol: '৳',
-                ),
+                value: CurrencyFormatter.format(item.sellingPrice, symbol: '৳'),
               ),
               TextButton.icon(
                 onPressed: onShowInfo,
@@ -173,43 +170,49 @@ class _StatColumn extends StatelessWidget {
   final String value;
   final bool isTable;
 
-  const _StatColumn({required this.label, required this.value, this.isTable = true});
+  const _StatColumn({
+    required this.label,
+    required this.value,
+    this.isTable = true,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return isTable ? Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: AppSizes.fontXs,
-            color: context.appColors.textSecondary,
-          ),
-        ),
-        const SizedBox(height: AppSizes.xs / 2),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: AppSizes.fontMd,
-            fontWeight: FontWeight.w700,
-            color: context.appColors.textPrimary,
-          ),
-        ),
-      ],
-    ): Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: AppSizes.fontMd,
-            fontWeight: FontWeight.w700,
-            color: context.appColors.textPrimary,
-          ),
-        ),
-      ],
-    );
+    return isTable
+        ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: AppSizes.fontXs,
+                  color: context.appColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: AppSizes.xs / 2),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w700,
+                  color: context.appColors.textPrimary,
+                ),
+              ),
+            ],
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w700,
+                  color: context.appColors.textPrimary,
+                ),
+              ),
+            ],
+          );
   }
 }

@@ -61,7 +61,10 @@ class DailyTargetProgressCard extends StatelessWidget {
           const SizedBox(height: AppSizes.xs),
           Text(
             AppStrings.dailyTargetSubtitle(achieved, goal),
-            style: TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: AppSizes.fontXs,
+            ),
           ),
         ],
       ),

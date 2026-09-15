@@ -27,7 +27,8 @@ class MainShellMobileView extends ConsumerWidget {
         color: Colors.transparent,
         child: MainShellBottomNav(
           selectedIndex: selectedIndex,
-          onSelected: (index) => ref.read(mainShellControllerProvider.notifier).selectTab(index),
+          onSelected: (index) =>
+              ref.read(mainShellControllerProvider.notifier).selectTab(index),
         ),
       ),
     );

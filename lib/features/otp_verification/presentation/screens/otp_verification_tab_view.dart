@@ -34,7 +34,8 @@ class OtpVerificationTabView extends ConsumerWidget {
                           // TODO: wire to otpControllerProvider.verify(code)
                           context.go(RouteNames.mainShell);
                         },
-                        onResend: () => CustomSnackbar.show(context, 'OTP resent'),
+                        onResend: () =>
+                            CustomSnackbar.show(context, 'OTP resent'),
                       ),
                     ],
                   ),

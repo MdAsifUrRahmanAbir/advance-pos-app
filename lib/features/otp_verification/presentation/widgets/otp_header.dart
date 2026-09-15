@@ -15,16 +15,23 @@ class OtpHeader extends StatelessWidget {
       children: [
         const CustomIconBadge(icon: Icons.error_outline_rounded),
         const SizedBox(height: AppSizes.lg),
-         Text(
+        Text(
           AppStrings.verifyYourAccount,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontXl,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppSizes.sm),
-         Text(
+        Text(
           AppStrings.otpSubtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textSecondary,
+          ),
         ),
       ],
     );

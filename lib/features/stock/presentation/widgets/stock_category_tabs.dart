@@ -9,9 +9,20 @@ class StockCategoryTabs extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const StockCategoryTabs({super.key, required this.selected, required this.onChanged});
+  const StockCategoryTabs({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
 
-  static const categories = ['All',   'Low Stock',   'Out of Stock',   'Best Selling',   'Fast Moving',   'Slow Moving'];
+  static const categories = [
+    'All',
+    'Low Stock',
+    'Out of Stock',
+    'Best Selling',
+    'Fast Moving',
+    'Slow Moving',
+  ];
 
   @override
   Widget build(BuildContext context) {

@@ -6,8 +6,6 @@ class SearchTabView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Text('SearchTabView'),
-    );
+    return Center(child: Text('SearchTabView'));
   }
 }

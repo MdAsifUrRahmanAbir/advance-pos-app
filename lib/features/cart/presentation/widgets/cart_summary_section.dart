@@ -21,7 +21,10 @@ class CartSummarySection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SummaryRow(label: AppStrings.subtotalLabel, value: '₹${state.subtotal.toStringAsFixed(2)}'),
+        _SummaryRow(
+          label: AppStrings.subtotalLabel,
+          value: '₹${state.subtotal.toStringAsFixed(2)}',
+        ),
         _SummaryRow(
           label: AppStrings.discountLabel(state.discountPercent.round()),
           value: '-₹${state.discountAmount.toStringAsFixed(2)}',
@@ -34,7 +37,8 @@ class CartSummarySection extends StatelessWidget {
         ),
         _SummaryRow(
           label: AppStrings.roundingLabel,
-          value: '${state.rounding < 0 ? '-' : '+'}₹${state.rounding.abs().toStringAsFixed(2)}',
+          value:
+              '${state.rounding < 0 ? '-' : '+'}₹${state.rounding.abs().toStringAsFixed(2)}',
           muted: true,
         ),
         const Divider(height: AppSizes.lg, color: AppColors.border),
@@ -93,14 +97,20 @@ class _SummaryRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontSm),
+            style: const TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: AppSizes.fontSm,
+            ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (badge != null) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.xs, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.xs,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(AppSizes.xs),
@@ -119,7 +129,9 @@ class _SummaryRow extends StatelessWidget {
               Text(
                 value,
                 style: TextStyle(
-                  color: valueColor ?? (muted ? AppColors.textSecondary : AppColors.textPrimary),
+                  color:
+                      valueColor ??
+                      (muted ? AppColors.textSecondary : AppColors.textPrimary),
                   fontSize: AppSizes.fontSm,
                   fontWeight: muted ? FontWeight.w400 : FontWeight.w600,
                 ),

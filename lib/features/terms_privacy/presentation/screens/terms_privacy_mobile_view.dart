@@ -17,7 +17,7 @@ class TermsMobileView extends ConsumerWidget {
           title: AppStrings.termsPrivacyTitle,
           subtitle: AppStrings.termsLastUpdated,
           backStyle: HeaderBackStyle.circle,
-          onBackTap: (){
+          onBackTap: () {
             context.pop();
           },
         ),

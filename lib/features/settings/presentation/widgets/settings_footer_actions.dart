@@ -24,7 +24,10 @@ class SettingsFooterActions extends StatelessWidget {
       children: [
         Text(
           versionLabel,
-          style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontSm,
+            color: context.appColors.textSecondary,
+          ),
         ),
         const SizedBox(height: AppSizes.sm + AppSizes.xs),
         SizedBox(
@@ -35,11 +38,16 @@ class SettingsFooterActions extends StatelessWidget {
             style: TextButton.styleFrom(
               backgroundColor: AppColors.error.withValues(alpha: 0.08),
               foregroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
             ),
-            child:  Text(
+            child: Text(
               AppStrings.logOut,
-              style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),
@@ -52,11 +60,16 @@ class SettingsFooterActions extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.error,
               side: const BorderSide(color: AppColors.error),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+              ),
             ),
-            child:  Text(
+            child: Text(
               AppStrings.deleteAccount,
-              style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

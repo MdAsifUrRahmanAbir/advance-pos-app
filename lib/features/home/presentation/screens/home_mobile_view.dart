@@ -54,12 +54,10 @@ class HomeMobileView extends ConsumerWidget {
                 },
               ),
 
-              SizedBox(height: AppSizes.bottomNavBarHeight)
-
+              SizedBox(height: AppSizes.bottomNavBarHeight),
             ],
           ),
         ),
-
       ],
     );
   }

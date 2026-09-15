@@ -40,7 +40,10 @@ class CustomerSelectorRow extends StatelessWidget {
           children: [
             Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.md,
+                  vertical: AppSizes.xs,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.background,
                   border: Border.all(color: AppColors.border),
@@ -50,7 +53,10 @@ class CustomerSelectorRow extends StatelessWidget {
                   child: DropdownButton<String>(
                     value: selectedCustomer.isEmpty ? null : selectedCustomer,
                     isExpanded: true,
-                    icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textSecondary),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: AppColors.textSecondary,
+                    ),
                     style: const TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: AppSizes.fontSm,
@@ -76,7 +82,11 @@ class CustomerSelectorRow extends StatelessWidget {
                   color: AppColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
-                child: const Icon(Icons.add, color: AppColors.primary, size: AppSizes.iconMd - 6),
+                child: const Icon(
+                  Icons.add,
+                  color: AppColors.primary,
+                  size: AppSizes.iconMd - 6,
+                ),
               ),
             ),
           ],

@@ -17,8 +17,6 @@ class ErrorScreen extends StatelessWidget {
   }
 }
 
-
-
 class ErrorMobileView extends StatelessWidget {
   final String? errorDetails;
 
@@ -27,11 +25,15 @@ class ErrorMobileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.xl, vertical: AppSizes.xxl),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.xl,
+        vertical: AppSizes.xxl,
+      ),
       child: ErrorContent(
         // TODO: replace with the real captured exception/stack trace
         // once a crash-reporting provider (e.g. Sentry/Crashlytics) is wired in.
-        errorDetails: errorDetails ??
+        errorDetails:
+            errorDetails ??
             'Error: Cluster_Database_Failed\n'
                 'Code: 0x88F92A\n'
                 'Stack: auth_endpoint.go:124',
@@ -45,8 +47,6 @@ class ErrorMobileView extends StatelessWidget {
     );
   }
 }
-
-
 
 /// Same content as [ErrorMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -64,7 +64,8 @@ class ErrorTabView extends StatelessWidget {
           padding: const EdgeInsets.all(AppSizes.xl),
           child: SingleChildScrollView(
             child: ErrorContent(
-              errorDetails: errorDetails ??
+              errorDetails:
+                  errorDetails ??
                   'Error: Cluster_Database_Failed\n'
                       'Code: 0x88F92A\n'
                       'Stack: auth_endpoint.go:124',

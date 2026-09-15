@@ -30,21 +30,16 @@ class ProductTabView extends ConsumerWidget {
     final isInitialLoading =
         state.isProductLoading && state.productModel == null;
 
-    final hasError =
-        state.errorMessage != null && state.productModel == null;
+    final hasError = state.errorMessage != null && state.productModel == null;
 
     return Column(
       children: [
-        const AppHeaderBar(
-          title: AppStrings.productsTitle,
-        ),
+        const AppHeaderBar(title: AppStrings.productsTitle),
 
         Expanded(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 1100,
-              ),
+              constraints: const BoxConstraints(maxWidth: 1100),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSizes.xl),
                 child: Column(
@@ -110,9 +105,7 @@ class ProductTabView extends ConsumerWidget {
     // ─────────────────────────────────────────────
     if (hasError) {
       return Padding(
-        padding: const EdgeInsets.only(
-          top: AppSizes.xxl,
-        ),
+        padding: const EdgeInsets.only(top: AppSizes.xxl),
         child: ErrorState(
           message: errorMessage ?? AppStrings.errorOccurred,
           onRetry: onRetry,
@@ -126,7 +119,7 @@ class ProductTabView extends ConsumerWidget {
     if (isInitialLoading) {
       final placeholders = List.generate(
         _placeholderCount,
-            (_) => _placeholderCard(),
+        (_) => _placeholderCard(),
       );
 
       return GridView.count(
@@ -137,9 +130,7 @@ class ProductTabView extends ConsumerWidget {
         mainAxisSpacing: AppSizes.md,
         childAspectRatio: 0.72,
         children: placeholders,
-      ).skeletonizer(
-        enabled: true,
-      );
+      ).skeletonizer(enabled: true);
     }
 
     // ─────────────────────────────────────────────
@@ -148,14 +139,11 @@ class ProductTabView extends ConsumerWidget {
     final filteredProducts = products.where((product) {
       final matchesCategory =
           selectedCategory == 'All' ||
-              product.category.toLowerCase() ==
-                  selectedCategory.toLowerCase();
+          product.category.toLowerCase() == selectedCategory.toLowerCase();
 
       final matchesSearch =
           searchQuery.trim().isEmpty ||
-              product.name.toLowerCase().contains(
-                searchQuery.trim().toLowerCase(),
-              );
+          product.name.toLowerCase().contains(searchQuery.trim().toLowerCase());
 
       return matchesCategory && matchesSearch;
     }).toList();
@@ -165,9 +153,7 @@ class ProductTabView extends ConsumerWidget {
     // ─────────────────────────────────────────────
     if (filteredProducts.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.only(
-          top: AppSizes.xxl,
-        ),
+        padding: const EdgeInsets.only(top: AppSizes.xxl),
         child: EmptyState(
           title: 'No products found',
           message: searchQuery.trim().isNotEmpty
@@ -198,9 +184,7 @@ class ProductTabView extends ConsumerWidget {
           },
         ),
 
-        const SizedBox(
-          height: AppSizes.md,
-        ),
+        const SizedBox(height: AppSizes.md),
 
         // ─────────────────────────────────────────
         // PRODUCT COUNT
@@ -208,7 +192,7 @@ class ProductTabView extends ConsumerWidget {
         Center(
           child: Text(
             'Showing ${filteredProducts.length} '
-                'of ${products.length} products',
+            'of ${products.length} products',
             style: TextStyle(
               fontSize: AppSizes.fontSm,
               color: context.appColors.textSecondary,

@@ -12,7 +12,9 @@ class CustomSnackbar {
         content: Text(message, style: TextStyle(color: AppColors.textWhite)),
         backgroundColor: error ? AppColors.error : AppColors.textPrimary,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        ),
         margin: const EdgeInsets.all(AppSizes.md),
       ),
     );

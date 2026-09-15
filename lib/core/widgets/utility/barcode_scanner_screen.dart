@@ -9,7 +9,10 @@ class BarcodeScannerScreen extends StatefulWidget {
 
   static Future<String?> scan(BuildContext context) {
     return Navigator.of(context).push<String>(
-      MaterialPageRoute(builder: (_) => const BarcodeScannerScreen(), fullscreenDialog: true),
+      MaterialPageRoute(
+        builder: (_) => const BarcodeScannerScreen(),
+        fullscreenDialog: true,
+      ),
     );
   }
 
@@ -81,7 +84,10 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSizes.md,
+                vertical: AppSizes.sm,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -90,7 +96,9 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                     onTap: () => Navigator.of(context).pop(),
                   ),
                   _CircleIconButton(
-                    icon: _torchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+                    icon: _torchOn
+                        ? Icons.flash_on_rounded
+                        : Icons.flash_off_rounded,
                     onTap: _toggleTorch,
                   ),
                 ],
@@ -104,7 +112,11 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
             child: Text(
               'Align the barcode within the frame',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textWhite, fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: AppColors.textWhite,
+                fontSize: AppSizes.fontMd,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ],
@@ -127,7 +139,10 @@ class _CircleIconButton extends StatelessWidget {
       child: Container(
         width: AppSizes.xxl - AppSizes.xs,
         height: AppSizes.xxl - AppSizes.xs,
-        decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.5), shape: BoxShape.circle),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.5),
+          shape: BoxShape.circle,
+        ),
         alignment: Alignment.center,
         child: Icon(icon, color: AppColors.textWhite, size: AppSizes.iconMd),
       ),
@@ -152,19 +167,29 @@ class _ScannerErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.no_photography_outlined, color: AppColors.textWhite, size: AppSizes.iconLg * 2),
+            const Icon(
+              Icons.no_photography_outlined,
+              color: AppColors.textWhite,
+              size: AppSizes.iconLg * 2,
+            ),
             const SizedBox(height: AppSizes.md),
             Text(
               error.errorCode == MobileScannerErrorCode.permissionDenied
                   ? 'Camera permission is required to scan barcodes.'
                   : 'Could not start the camera. Please try again.',
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textWhite, fontSize: AppSizes.fontMd),
+              style: const TextStyle(
+                color: AppColors.textWhite,
+                fontSize: AppSizes.fontMd,
+              ),
             ),
             const SizedBox(height: AppSizes.lg),
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text(AppStrings.backToHome, style: TextStyle(color: AppColors.primaryLight)),
+              child: const Text(
+                AppStrings.backToHome,
+                style: TextStyle(color: AppColors.primaryLight),
+              ),
             ),
           ],
         ),
@@ -180,15 +205,25 @@ class _ViewfinderCutoutBorder extends ShapeBorder {
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
 
   @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) => getOuterPath(rect);
+  Path getInnerPath(Rect rect, {TextDirection? textDirection}) =>
+      getOuterPath(rect);
 
   @override
   Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
     final cutoutSize = rect.width * 0.7;
-    final cutout = Rect.fromCenter(center: rect.center, width: cutoutSize, height: cutoutSize);
+    final cutout = Rect.fromCenter(
+      center: rect.center,
+      width: cutoutSize,
+      height: cutoutSize,
+    );
     return Path()
       ..addRect(rect)
-      ..addRRect(RRect.fromRectAndRadius(cutout, const Radius.circular(AppSizes.radiusLg)))
+      ..addRRect(
+        RRect.fromRectAndRadius(
+          cutout,
+          const Radius.circular(AppSizes.radiusLg),
+        ),
+      )
       ..fillType = PathFillType.evenOdd;
   }
 

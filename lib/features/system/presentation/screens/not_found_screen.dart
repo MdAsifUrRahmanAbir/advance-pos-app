@@ -5,7 +5,6 @@ import '../../../../core/utils/responsive.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/not_found_content.dart';
 
-
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
 
@@ -20,24 +19,22 @@ class NotFoundScreen extends StatelessWidget {
   }
 }
 
-
-
-
 class NotFoundMobileView extends StatelessWidget {
   const NotFoundMobileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.xl, vertical: AppSizes.xxl),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.xl,
+        vertical: AppSizes.xxl,
+      ),
       child: NotFoundContent(
         onBackToHome: () => context.go(RouteNames.mainShell),
       ),
     );
   }
 }
-
-
 
 /// Same content as [NotFoundMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.

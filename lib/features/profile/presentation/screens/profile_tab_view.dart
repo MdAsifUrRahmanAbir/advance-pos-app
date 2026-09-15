@@ -20,7 +20,12 @@ class ProfileTabView extends ConsumerWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 640),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSizes.xl, 0, AppSizes.xl, AppSizes.xl),
+            padding: const EdgeInsets.fromLTRB(
+              AppSizes.xl,
+              0,
+              AppSizes.xl,
+              AppSizes.xl,
+            ),
             child: Column(
               children: [
                 const ProfileHeader(
@@ -28,7 +33,11 @@ class ProfileTabView extends ConsumerWidget {
                   role: 'Workspace Admin',
                 ),
                 const SizedBox(height: AppSizes.xl),
-                const ProfileStatsRow(projects: '24', tasks: '156', rating: '4.8'),
+                const ProfileStatsRow(
+                  projects: '24',
+                  tasks: '156',
+                  rating: '4.8',
+                ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileReportsSection(
                   onStockReportTap: () => context.push(RouteNames.error),
@@ -41,8 +50,6 @@ class ProfileTabView extends ConsumerWidget {
                   onSettingsTap: () => context.push(RouteNames.settings),
                 ),
                 const SizedBox(height: AppSizes.bottomNavBarHeight),
-
-
               ],
             ),
           ),

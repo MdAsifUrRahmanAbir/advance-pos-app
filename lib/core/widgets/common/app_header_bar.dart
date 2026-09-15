@@ -37,8 +37,10 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
     this.trailingLabel,
     this.onTrailingTap,
     this.trailingLabelColor,
-  }) : assert(trailingIcon == null || trailingLabel == null,
-  'Provide trailingIcon OR trailingLabel, not both');
+  }) : assert(
+         trailingIcon == null || trailingLabel == null,
+         'Provide trailingIcon OR trailingLabel, not both',
+       );
 
   Widget? _buildBack(BuildContext context) {
     final tap = onBackTap ?? () => Navigator.of(context).maybePop();
@@ -53,11 +55,13 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
             padding: EdgeInsets.all(AppSizes.xs),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-              border: Border.all(
-                color: context.appColors.border
-              )
+              border: Border.all(color: context.appColors.border),
             ),
-            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: context.appColors.textPrimary),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              size: AppSizes.iconSm,
+              color: context.appColors.textPrimary,
+            ),
           ),
         );
       case HeaderBackStyle.circle:
@@ -73,7 +77,11 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
               // border: Border.all(color: AppColors.border),
             ),
             alignment: Alignment.center,
-            child: Icon(Icons.arrow_back_rounded, size: AppSizes.iconSm, color: context.appColors.textPrimary),
+            child: Icon(
+              Icons.arrow_back_rounded,
+              size: AppSizes.iconSm,
+              color: context.appColors.textPrimary,
+            ),
           ),
         );
     }
@@ -86,8 +94,15 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: onTrailingTap,
         child: Container(
           padding: const EdgeInsets.all(AppSizes.sm),
-          decoration: BoxDecoration(color: context.appColors.background, borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
-          child: Icon(trailingIcon, size: AppSizes.iconSm, color: context.appColors.primary),
+          decoration: BoxDecoration(
+            color: context.appColors.background,
+            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          ),
+          child: Icon(
+            trailingIcon,
+            size: AppSizes.iconSm,
+            color: context.appColors.primary,
+          ),
         ),
       );
     }
@@ -133,12 +148,25 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(title, style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary)),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: AppSizes.fontXl,
+                    fontWeight: FontWeight.w700,
+                    color: context.appColors.textPrimary,
+                  ),
+                ),
                 if (subtitle != null) ...[
                   const SizedBox(height: AppSizes.xs / 2),
-                  Text(subtitle!, style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary)),
-                ]else ...[
-                  SizedBox(height: AppSizes.xs,)
+                  Text(
+                    subtitle!,
+                    style: TextStyle(
+                      fontSize: AppSizes.fontSm,
+                      color: context.appColors.textSecondary,
+                    ),
+                  ),
+                ] else ...[
+                  SizedBox(height: AppSizes.xs),
                 ],
               ],
             ),
@@ -150,5 +178,9 @@ class AppHeaderBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(subtitle == null ? AppSizes.appBarHeight : AppSizes.appBarHeight + AppSizes.lg);
+  Size get preferredSize => Size.fromHeight(
+    subtitle == null
+        ? AppSizes.appBarHeight
+        : AppSizes.appBarHeight + AppSizes.lg,
+  );
 }

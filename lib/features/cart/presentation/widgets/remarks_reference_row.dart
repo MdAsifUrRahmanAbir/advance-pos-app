@@ -46,7 +46,11 @@ class _LabeledField extends StatelessWidget {
   final String hint;
   final ValueChanged<String> onChanged;
 
-  const _LabeledField({required this.label, required this.hint, required this.onChanged});
+  const _LabeledField({
+    required this.label,
+    required this.hint,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +68,10 @@ class _LabeledField extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.xs),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm + 4, vertical: AppSizes.sm),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.sm + 4,
+            vertical: AppSizes.sm,
+          ),
           decoration: BoxDecoration(
             color: AppColors.background,
             border: Border.all(color: AppColors.border),
@@ -72,12 +79,18 @@ class _LabeledField extends StatelessWidget {
           ),
           child: TextField(
             onChanged: onChanged,
-            style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm),
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: AppSizes.fontSm,
+            ),
             decoration: InputDecoration(
               border: InputBorder.none,
               isDense: true,
               hintText: hint,
-              hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontSm),
+              hintStyle: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: AppSizes.fontSm,
+              ),
             ),
           ),
         ),

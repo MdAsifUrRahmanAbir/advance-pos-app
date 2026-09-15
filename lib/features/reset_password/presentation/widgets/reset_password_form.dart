@@ -20,13 +20,9 @@ class ResetPasswordForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      resetPasswordControllerProvider.notifier,
-    );
+    final controller = ref.watch(resetPasswordControllerProvider.notifier);
 
-    final state = ref.watch(
-      resetPasswordControllerProvider,
-    );
+    final state = ref.watch(resetPasswordControllerProvider);
 
     return Form(
       key: controller.formKey,
@@ -37,25 +33,19 @@ class ResetPasswordForm extends ConsumerWidget {
             label: AppStrings.newPassword,
             controller: controller.passwordController,
             validator: controller.validatePassword,
-            onChanged:
-            controller.onPasswordChanged,
+            onChanged: controller.onPasswordChanged,
           ),
 
-          const SizedBox(
-            height: AppSizes.lg,
-          ),
+          const SizedBox(height: AppSizes.lg),
 
           PasswordInputField(
             label: AppStrings.confirmPassword,
             controller: controller.confirmController,
             validator: controller.validateConfirm,
-            onChanged:
-            controller.onConfirmPasswordChanged,
+            onChanged: controller.onConfirmPasswordChanged,
           ),
 
-          const SizedBox(
-            height: AppSizes.xs,
-          ),
+          const SizedBox(height: AppSizes.xs),
 
           PasswordRequirementItem(
             label: AppStrings.reqMinLength,
@@ -77,9 +67,7 @@ class ResetPasswordForm extends ConsumerWidget {
             met: state.passwordsMatch,
           ),
 
-          const SizedBox(
-            height: AppSizes.md,
-          ),
+          const SizedBox(height: AppSizes.md),
 
           PrimaryButton(
             label: AppStrings.updatePassword,

@@ -57,15 +57,24 @@ class PrimaryInputField extends StatelessWidget {
           maxLines: maxLines,
           enabled: enabled,
           onChanged: onChanged,
-          style: const TextStyle(fontSize: AppSizes.fontMd, color: AppColors.textPrimary),
+          style: const TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: AppColors.textPrimary,
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(color: AppColors.textHint, fontSize: AppSizes.fontMd),
+            hintStyle: const TextStyle(
+              color: AppColors.textHint,
+              fontSize: AppSizes.fontMd,
+            ),
             prefixIcon: prefixIcon,
             suffixIcon: suffixIcon,
             filled: true,
             fillColor: context.appColors.surface,
-            contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.md),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.md,
+              vertical: AppSizes.md,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
               borderSide: const BorderSide(color: AppColors.border),
@@ -76,7 +85,10 @@ class PrimaryInputField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.primary,
+                width: 1.5,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
@@ -84,7 +96,9 @@ class PrimaryInputField extends StatelessWidget {
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-              borderSide: BorderSide(color: AppColors.border.withValues(alpha: 0.5)),
+              borderSide: BorderSide(
+                color: AppColors.border.withValues(alpha: 0.5),
+              ),
             ),
           ),
         ),

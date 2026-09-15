@@ -29,36 +29,28 @@ class CustomBottomNav extends StatelessWidget {
           indicatorColor: indicatorColor,
 
           // Selected/unselected icon colors
-          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
-                (states) {
-              if (states.contains(WidgetState.selected)) {
-                return const IconThemeData(
-                  color: AppColors.primary,
-                );
-              }
+          iconTheme: WidgetStateProperty.resolveWith<IconThemeData>((states) {
+            if (states.contains(WidgetState.selected)) {
+              return const IconThemeData(color: AppColors.primary);
+            }
 
-              return const IconThemeData(
-                color: AppColors.textSecondary,
-              );
-            },
-          ),
+            return const IconThemeData(color: AppColors.textSecondary);
+          }),
 
           // Selected/unselected label colors
-          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                (states) {
-              if (states.contains(WidgetState.selected)) {
-                return const TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w600,
-                );
-              }
-
+          labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>((states) {
+            if (states.contains(WidgetState.selected)) {
               return const TextStyle(
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
+                color: AppColors.primary,
+                fontWeight: FontWeight.w600,
               );
-            },
-          ),
+            }
+
+            return const TextStyle(
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            );
+          }),
         ),
         child: NavigationBar(
           selectedIndex: selectedIndex,

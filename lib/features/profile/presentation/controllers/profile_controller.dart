@@ -7,4 +7,7 @@ class ProfileController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final profileControllerProvider = NotifierProvider<ProfileController, AsyncValue<void>>(ProfileController.new);
+final profileControllerProvider =
+    NotifierProvider<ProfileController, AsyncValue<void>>(
+      ProfileController.new,
+    );

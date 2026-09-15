@@ -24,7 +24,9 @@ class InvoicesModel {
     recordsTotal: json["recordsTotal"],
     recordsFiltered: json["recordsFiltered"],
     recordsShowing: json["recordsShowing"],
-    resultData: List<ResultDatum>.from(json["resultData"].map((x) => ResultDatum.fromJson(x))),
+    resultData: List<ResultDatum>.from(
+      json["resultData"].map((x) => ResultDatum.fromJson(x)),
+    ),
   );
 
   Map<String, dynamic> toJson() => {
@@ -99,8 +101,12 @@ class ResultDatum {
     deliveryCharge: json["delivery_charge"],
     totalPayableAmount: json["total_payable_amount"],
     paidAmount: json["paid_amount"],
-    paymentSystems: List<Payment>.from(json["payment_systems"].map((x) => Payment.fromJson(x))),
-    paymentAccounts: List<Payment>.from(json["payment_accounts"].map((x) => Payment.fromJson(x))),
+    paymentSystems: List<Payment>.from(
+      json["payment_systems"].map((x) => Payment.fromJson(x)),
+    ),
+    paymentAccounts: List<Payment>.from(
+      json["payment_accounts"].map((x) => Payment.fromJson(x)),
+    ),
     productNames: List<String>.from(json["product_names"].map((x) => x)),
     referenceNo: json["reference_no"],
     remarks: json["remarks"],
@@ -123,8 +129,12 @@ class ResultDatum {
     "delivery_charge": deliveryCharge,
     "total_payable_amount": totalPayableAmount,
     "paid_amount": paidAmount,
-    "payment_systems": List<dynamic>.from(paymentSystems.map((x) => x.toJson())),
-    "payment_accounts": List<dynamic>.from(paymentAccounts.map((x) => x.toJson())),
+    "payment_systems": List<dynamic>.from(
+      paymentSystems.map((x) => x.toJson()),
+    ),
+    "payment_accounts": List<dynamic>.from(
+      paymentAccounts.map((x) => x.toJson()),
+    ),
     "product_names": List<dynamic>.from(productNames.map((x) => x)),
     "reference_no": referenceNo,
     "remarks": remarks,
@@ -138,18 +148,10 @@ class Payment {
   final String id;
   final String name;
 
-  Payment({
-    required this.id,
-    required this.name,
-  });
+  Payment({required this.id, required this.name});
 
-  factory Payment.fromJson(Map<String, dynamic> json) => Payment(
-    id: json["id"],
-    name: json["name"],
-  );
+  factory Payment.fromJson(Map<String, dynamic> json) =>
+      Payment(id: json["id"], name: json["name"]);
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
+  Map<String, dynamic> toJson() => {"id": id, "name": name};
 }

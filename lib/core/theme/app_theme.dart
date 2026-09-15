@@ -44,9 +44,18 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimary,
         ),
-        bodyLarge: TextStyle(fontSize: AppSizes.fontLg, color: AppColors.textPrimary),
-        bodyMedium: TextStyle(fontSize: AppSizes.fontMd, color: AppColors.textPrimary),
-        bodySmall: TextStyle(fontSize: AppSizes.fontSm, color: AppColors.textSecondary),
+        bodyLarge: TextStyle(
+          fontSize: AppSizes.fontLg,
+          color: AppColors.textPrimary,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: AppSizes.fontMd,
+          color: AppColors.textPrimary,
+        ),
+        bodySmall: TextStyle(
+          fontSize: AppSizes.fontSm,
+          color: AppColors.textSecondary,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -54,8 +63,13 @@ class AppTheme {
           foregroundColor: AppColors.textWhite,
           minimumSize: const Size.fromHeight(AppSizes.buttonHeight),
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
-          textStyle: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          textStyle: const TextStyle(
+            fontSize: AppSizes.fontMd,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -99,9 +113,18 @@ class AppTheme {
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimaryDark,
         ),
-        bodyLarge: TextStyle(fontSize: AppSizes.fontLg, color: AppColors.textPrimaryDark),
-        bodyMedium: TextStyle(fontSize: AppSizes.fontMd, color: AppColors.textPrimaryDark),
-        bodySmall: TextStyle(fontSize: AppSizes.fontSm, color: AppColors.textSecondaryDark),
+        bodyLarge: TextStyle(
+          fontSize: AppSizes.fontLg,
+          color: AppColors.textPrimaryDark,
+        ),
+        bodyMedium: TextStyle(
+          fontSize: AppSizes.fontMd,
+          color: AppColors.textPrimaryDark,
+        ),
+        bodySmall: TextStyle(
+          fontSize: AppSizes.fontSm,
+          color: AppColors.textSecondaryDark,
+        ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -109,8 +132,13 @@ class AppTheme {
           foregroundColor: AppColors.textWhite,
           minimumSize: const Size.fromHeight(AppSizes.buttonHeight),
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
-          textStyle: const TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+          ),
+          textStyle: const TextStyle(
+            fontSize: AppSizes.fontMd,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

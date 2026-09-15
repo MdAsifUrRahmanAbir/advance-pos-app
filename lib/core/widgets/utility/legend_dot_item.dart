@@ -36,14 +36,21 @@ class LegendDotItem extends StatelessWidget {
             const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
             Text(
               label,
-              style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textSecondary),
+              style: const TextStyle(
+                fontSize: AppSizes.fontXs,
+                color: AppColors.textSecondary,
+              ),
             ),
           ],
         ),
         if (value != null)
           Text(
             value!,
-            style: const TextStyle(fontSize: AppSizes.fontXs, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+            style: const TextStyle(
+              fontSize: AppSizes.fontXs,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
           ),
       ],
     );

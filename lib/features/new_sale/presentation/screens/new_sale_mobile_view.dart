@@ -22,13 +22,19 @@ class NewSaleMobileView extends ConsumerWidget {
     final code = await BarcodeScannerScreen.scan(context);
     if (code == null) return;
 
-    final match = ref.read(newSaleControllerProvider.notifier).handleScannedCode(code);
+    final match = ref
+        .read(newSaleControllerProvider.notifier)
+        .handleScannedCode(code);
     if (!context.mounted) return;
 
     if (match != null) {
       CustomSnackbar.show(context, 'Added: ${match.name}');
     } else {
-      CustomSnackbar.show(context, 'No product found for code $code', error: true);
+      CustomSnackbar.show(
+        context,
+        'No product found for code $code',
+        error: true,
+      );
     }
   }
 
@@ -87,7 +93,9 @@ class NewSaleMobileView extends ConsumerWidget {
                         context,
                         child: CartReviewSheet(
                           onNext: () {
-                            Navigator.of(context).pop(); // close the sheet first
+                            Navigator.of(
+                              context,
+                            ).pop(); // close the sheet first
                             context.push(RouteNames.cart);
                           },
                         ),

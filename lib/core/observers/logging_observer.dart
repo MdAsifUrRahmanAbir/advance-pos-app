@@ -11,25 +11,33 @@ class LoggingObserver extends NavigatorObserver {
 
   @override
   void didPush(Route route, Route? previousRoute) {
-    AppLogger.navigation('Pushed: ${_describe(route)}\nFrom  : ${_describe(previousRoute)}');
+    AppLogger.navigation(
+      'Pushed: ${_describe(route)}\nFrom  : ${_describe(previousRoute)}',
+    );
     super.didPush(route, previousRoute);
   }
 
   @override
   void didPop(Route route, Route? previousRoute) {
-    AppLogger.navigation('Popped: ${_describe(route)}\nBack to: ${_describe(previousRoute)}');
+    AppLogger.navigation(
+      'Popped: ${_describe(route)}\nBack to: ${_describe(previousRoute)}',
+    );
     super.didPop(route, previousRoute);
   }
 
   @override
   void didRemove(Route route, Route? previousRoute) {
-    AppLogger.navigation('Removed: ${_describe(route)}\nContext: ${_describe(previousRoute)}');
+    AppLogger.navigation(
+      'Removed: ${_describe(route)}\nContext: ${_describe(previousRoute)}',
+    );
     super.didRemove(route, previousRoute);
   }
 
   @override
   void didReplace({Route? newRoute, Route? oldRoute}) {
-    AppLogger.navigation('Replaced: ${_describe(oldRoute)} → ${_describe(newRoute)}');
+    AppLogger.navigation(
+      'Replaced: ${_describe(oldRoute)} → ${_describe(newRoute)}',
+    );
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
   }
 

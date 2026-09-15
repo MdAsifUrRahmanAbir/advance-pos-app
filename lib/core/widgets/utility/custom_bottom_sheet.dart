@@ -18,12 +18,12 @@ class CustomBottomSheet {
       useSafeArea: useSafeArea,
       backgroundColor: context.appColors.surface,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXl)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSizes.radiusXl),
+        ),
       ),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(AppSizes.lg),
-        child: child,
-      ),
+      builder: (_) =>
+          Padding(padding: const EdgeInsets.all(AppSizes.lg), child: child),
     );
   }
 }

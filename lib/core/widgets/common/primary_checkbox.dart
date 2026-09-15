@@ -35,14 +35,19 @@ class PrimaryCheckbox extends StatelessWidget {
                 value: value,
                 onChanged: onChanged,
                 activeColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusSm / 2)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.radiusSm / 2),
+                ),
               ),
             ),
             if (label != null) ...[
               const SizedBox(width: AppSizes.xs),
               Text(
                 label!,
-                style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textPrimary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontSm,
+                  color: context.appColors.textPrimary,
+                ),
               ),
             ],
           ],

@@ -36,7 +36,10 @@ class SalesAgentSelector extends StatelessWidget {
         const SizedBox(height: AppSizes.xs),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.md,
+            vertical: AppSizes.xs,
+          ),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(color: AppColors.border),
@@ -46,10 +49,19 @@ class SalesAgentSelector extends StatelessWidget {
             child: DropdownButton<String>(
               value: selectedAgent.isEmpty ? null : selectedAgent,
               isExpanded: true,
-              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.textSecondary),
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm),
+              icon: const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: AppColors.textSecondary,
+              ),
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: AppSizes.fontSm,
+              ),
               items: agents
-                  .map((agent) => DropdownMenuItem(value: agent, child: Text(agent)))
+                  .map(
+                    (agent) =>
+                        DropdownMenuItem(value: agent, child: Text(agent)),
+                  )
                   .toList(),
               onChanged: (value) {
                 if (value != null) onChanged(value);

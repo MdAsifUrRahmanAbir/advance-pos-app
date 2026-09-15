@@ -25,7 +25,7 @@ class CartItemList extends StatelessWidget {
     return Column(
       children: [
         ...items.map(
-              (item) => Padding(
+          (item) => Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.sm),
             child: CartItemCard(
               item: item,
@@ -41,7 +41,10 @@ class CartItemList extends StatelessWidget {
             child: Text(
               AppStrings.swipeToDeleteHint,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: AppSizes.fontXs,
+              ),
             ),
           ),
       ],

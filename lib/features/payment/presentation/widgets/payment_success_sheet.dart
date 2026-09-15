@@ -65,7 +65,11 @@ class PaymentSuccessSheet extends StatelessWidget {
                 color: AppColors.success.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_rounded, color: AppColors.success, size: AppSizes.iconLg),
+              child: const Icon(
+                Icons.check_rounded,
+                color: AppColors.success,
+                size: AppSizes.iconLg,
+              ),
             ),
             const SizedBox(height: AppSizes.md),
             Text(
@@ -78,8 +82,13 @@ class PaymentSuccessSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.xs),
             Text(
-              AppStrings.paymentCollectedSubtitle('₹${paymentState.payableAmount.toStringAsFixed(2)}'),
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontSm),
+              AppStrings.paymentCollectedSubtitle(
+                '₹${paymentState.payableAmount.toStringAsFixed(2)}',
+              ),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: AppSizes.fontSm,
+              ),
             ),
             const SizedBox(height: AppSizes.lg),
             MiniReceiptCard(

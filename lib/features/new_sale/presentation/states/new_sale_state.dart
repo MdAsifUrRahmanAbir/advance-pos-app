@@ -65,7 +65,8 @@ class NewSaleState {
     return allProducts.where((p) {
       final matchesCategory =
           selectedCategory == 'all' || p.categoryKey == selectedCategory;
-      final matchesQuery = searchQuery.isEmpty ||
+      final matchesQuery =
+          searchQuery.isEmpty ||
           p.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
           p.sku.toLowerCase().contains(searchQuery.toLowerCase());
       return matchesCategory && matchesQuery;
@@ -74,9 +75,11 @@ class NewSaleState {
 
   /// Derived from [cartItems] so quantity/line data and the badge/total
   /// shown on [CartSummaryBar] can never drift apart.
-  int get cartItemCount => cartItems.fold(0, (sum, line) => sum + line.quantity);
+  int get cartItemCount =>
+      cartItems.fold(0, (sum, line) => sum + line.quantity);
 
-  double get cartTotal => cartItems.fold(0.0, (sum, line) => sum + line.lineTotal);
+  double get cartTotal =>
+      cartItems.fold(0.0, (sum, line) => sum + line.lineTotal);
 
   NewSaleState copyWith({
     bool? isLoading,

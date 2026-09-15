@@ -7,4 +7,5 @@ class SystemController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final systemControllerProvider = NotifierProvider<SystemController, AsyncValue<void>>(SystemController.new);
+final systemControllerProvider =
+    NotifierProvider<SystemController, AsyncValue<void>>(SystemController.new);

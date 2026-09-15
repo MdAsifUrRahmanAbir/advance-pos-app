@@ -33,7 +33,8 @@ class _PrinterSelectionSheetState extends State<PrinterSelectionSheet> {
   Future<void> _loadDevices() async {
     final granted = await PermissionService.requestBluetoothPermissions();
     if (!granted) {
-      final permanentlyDenied = await PermissionService.isBluetoothPermissionPermanentlyDenied();
+      final permanentlyDenied =
+          await PermissionService.isBluetoothPermissionPermanentlyDenied();
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -70,7 +71,11 @@ class _PrinterSelectionSheetState extends State<PrinterSelectionSheet> {
           children: [
             Text(
               AppStrings.selectPrinterTitle,
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700),
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: AppSizes.fontLg,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: AppSizes.md),
             if (_isLoading)
@@ -79,35 +84,59 @@ class _PrinterSelectionSheetState extends State<PrinterSelectionSheet> {
                 child: Center(child: CircularProgressIndicator()),
               )
             else if (_permissionDenied)
-              _PermissionDeniedNotice(permanentlyDenied: _permissionPermanentlyDenied)
+              _PermissionDeniedNotice(
+                permanentlyDenied: _permissionPermanentlyDenied,
+              )
             else if (_devices.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
-                  child: Column(
-                    children: [
-                      Text(
-                        AppStrings.noPrintersFoundMessage,
-                        style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
+                child: Column(
+                  children: [
+                    Text(
+                      AppStrings.noPrintersFoundMessage,
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: AppSizes.fontSm,
+                        fontWeight: FontWeight.w600,
                       ),
-                      const SizedBox(height: AppSizes.xs),
-                      Text(
-                        AppStrings.pairPrinterHint,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+                    ),
+                    const SizedBox(height: AppSizes.xs),
+                    Text(
+                      AppStrings.pairPrinterHint,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: AppSizes.fontXs,
                       ),
-                    ],
-                  ),
-                )
-              else
-                ..._devices.map(
-                      (device) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.print_outlined, color: AppColors.primary),
-                    title: Text(device.name, style: const TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600)),
-                    subtitle: Text(device.macAdress, style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textSecondary)),
-                    onTap: () => Navigator.of(context).pop(device),
-                  ),
+                    ),
+                  ],
                 ),
+              )
+            else
+              ..._devices.map(
+                (device) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.print_outlined,
+                    color: AppColors.primary,
+                  ),
+                  title: Text(
+                    device.name,
+                    style: const TextStyle(
+                      fontSize: AppSizes.fontSm,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    device.macAdress,
+                    style: const TextStyle(
+                      fontSize: AppSizes.fontXs,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  onTap: () => Navigator.of(context).pop(device),
+                ),
+              ),
           ],
         ),
       ),
@@ -125,12 +154,20 @@ class _PermissionDeniedNotice extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
       child: Column(
         children: [
-          const Icon(Icons.bluetooth_disabled_rounded, color: AppColors.error, size: AppSizes.iconLg),
+          const Icon(
+            Icons.bluetooth_disabled_rounded,
+            color: AppColors.error,
+            size: AppSizes.iconLg,
+          ),
           const SizedBox(height: AppSizes.sm),
           const Text(
             'Bluetooth permission is required to find printers.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm, fontWeight: FontWeight.w600),
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: AppSizes.fontSm,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           if (permanentlyDenied) ...[
             const SizedBox(height: AppSizes.sm),

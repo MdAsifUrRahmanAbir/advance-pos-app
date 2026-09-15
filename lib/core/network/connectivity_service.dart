@@ -15,16 +15,20 @@ import 'package:dio/dio.dart';
 /// `InternetAddress.lookup` so this also works on Flutter Web.
 class ConnectivityService {
   ConnectivityService({Connectivity? connectivity, Dio? probeClient})
-      : _connectivity = connectivity ?? Connectivity(),
-        _probeClient = probeClient ??
-            Dio(BaseOptions(
+    : _connectivity = connectivity ?? Connectivity(),
+      _probeClient =
+          probeClient ??
+          Dio(
+            BaseOptions(
               connectTimeout: const Duration(seconds: 4),
               receiveTimeout: const Duration(seconds: 4),
-            ));
+            ),
+          );
 
   final Connectivity _connectivity;
   final Dio _probeClient;
-  final StreamController<bool> _statusController = StreamController<bool>.broadcast();
+  final StreamController<bool> _statusController =
+      StreamController<bool>.broadcast();
   StreamSubscription<List<ConnectivityResult>>? _subscription;
   bool? _lastStatus;
 
@@ -38,7 +42,9 @@ class ConnectivityService {
   Stream<bool> get onStatusChange => _statusController.stream;
 
   void start() {
-    _subscription ??= _connectivity.onConnectivityChanged.listen((_) => checkNow());
+    _subscription ??= _connectivity.onConnectivityChanged.listen(
+      (_) => checkNow(),
+    );
     checkNow();
   }
 
@@ -55,7 +61,8 @@ class ConnectivityService {
     final hasInternet = await _hasActualInternet();
     if (hasInternet != _lastStatus) {
       _lastStatus = hasInternet; // set first
-      if (!_statusController.isClosed) _statusController.add(hasInternet); // then notify
+      if (!_statusController.isClosed)
+        _statusController.add(hasInternet); // then notify
     }
     return hasInternet;
   }

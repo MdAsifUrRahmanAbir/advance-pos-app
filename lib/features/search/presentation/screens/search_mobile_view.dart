@@ -6,8 +6,6 @@ class SearchMobileView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Text('SearchMobileView'),
-    );
+    return Center(child: Text('SearchMobileView'));
   }
 }

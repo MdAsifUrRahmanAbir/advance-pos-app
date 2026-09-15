@@ -65,14 +65,22 @@ class ProductCardItem extends StatelessWidget {
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
           Text(
             category.toUpperCase(),
-            style: TextStyle(fontSize: AppSizes.fontXs, fontWeight: FontWeight.w600, color: context.appColors.textSecondary),
+            style: TextStyle(
+              fontSize: AppSizes.fontXs,
+              fontWeight: FontWeight.w600,
+              color: context.appColors.textSecondary,
+            ),
           ),
           const SizedBox(height: AppSizes.xs / 2),
           Text(
             name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+            style: TextStyle(
+              fontSize: AppSizes.fontMd,
+              fontWeight: FontWeight.w700,
+              color: context.appColors.textPrimary,
+            ),
           ),
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
           Row(
@@ -81,7 +89,11 @@ class ProductCardItem extends StatelessWidget {
               Flexible(
                 child: Text(
                   price,
-                  style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+                  style: TextStyle(
+                    fontSize: AppSizes.fontLg,
+                    fontWeight: FontWeight.w700,
+                    color: context.appColors.textPrimary,
+                  ),
                 ),
               ),
               StatusBadge(text: stockLabel, type: stockType, compact: true),

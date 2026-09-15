@@ -31,7 +31,11 @@ class OnboardingItemWidget extends StatelessWidget {
                     errorBuilder: (_, _, _) => Container(
                       color: context.appColors.background,
                       alignment: Alignment.center,
-                      child: Icon(Icons.image_outlined, color: context.appColors.textHint, size: AppSizes.iconLg),
+                      child: Icon(
+                        Icons.image_outlined,
+                        color: context.appColors.textHint,
+                        size: AppSizes.iconLg,
+                      ),
                     ),
                   ),
                 ),
@@ -40,13 +44,20 @@ class OnboardingItemWidget extends StatelessWidget {
               Text(
                 data.title,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontXl,
+                  fontWeight: FontWeight.w700,
+                  color: context.appColors.textPrimary,
+                ),
               ),
               const SizedBox(height: AppSizes.sm),
               Text(
                 data.description,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  color: context.appColors.textSecondary,
+                ),
               ),
             ],
           ),

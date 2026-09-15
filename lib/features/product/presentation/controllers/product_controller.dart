@@ -4,9 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/product_repository.dart';
 import '../states/product_state.dart';
 
-final productControllerProvider = NotifierProvider.autoDispose<ProductController, ProductState>(
-  ProductController.new,
-);
+final productControllerProvider =
+    NotifierProvider.autoDispose<ProductController, ProductState>(
+      ProductController.new,
+    );
 
 class ProductController extends Notifier<ProductState> {
   late final TextEditingController nameController;
@@ -30,8 +31,6 @@ class ProductController extends Notifier<ProductState> {
     state = state.copyWith(searchQuery: query);
   }
 
-
-
   // ───────────────────────────────────────────────
   // GET
   // ───────────────────────────────────────────────
@@ -39,10 +38,7 @@ class ProductController extends Notifier<ProductState> {
     state = state.copyWith(isProductLoading: true);
     try {
       final product = await _repository.getProduct();
-      state = state.copyWith(
-        isProductLoading: false,
-        productModel: product,
-      );
+      state = state.copyWith(isProductLoading: false, productModel: product);
       return true;
     } catch (error) {
       state = state.copyWith(
@@ -52,5 +48,4 @@ class ProductController extends Notifier<ProductState> {
       return false;
     }
   }
-
 }

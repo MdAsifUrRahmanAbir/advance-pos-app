@@ -35,7 +35,11 @@ class ProfileHeader extends StatelessWidget {
         const SizedBox(height: AppSizes.md),
         Text(
           name,
-          style: TextStyle(fontSize: AppSizes.fontXxl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontXxl,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppSizes.xs),
         StatusBadge(text: role, type: StatusBadgeType.primary, compact: true),

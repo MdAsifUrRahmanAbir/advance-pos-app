@@ -24,7 +24,9 @@ class CustomDialog {
           child: child,
         ),
         actions: actions,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusLg)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+        ),
       ),
     );
   }

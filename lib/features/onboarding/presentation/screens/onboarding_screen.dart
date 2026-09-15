@@ -26,12 +26,12 @@ class OnboardingScreen extends ConsumerWidget {
   }
 }
 
-
 class OnboardingMobileView extends ConsumerStatefulWidget {
   const OnboardingMobileView({super.key});
 
   @override
-  ConsumerState<OnboardingMobileView> createState() => _OnboardingMobileViewState();
+  ConsumerState<OnboardingMobileView> createState() =>
+      _OnboardingMobileViewState();
 }
 
 class _OnboardingMobileViewState extends ConsumerState<OnboardingMobileView> {
@@ -55,7 +55,10 @@ class _OnboardingMobileViewState extends ConsumerState<OnboardingMobileView> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.sm),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSizes.lg,
+              vertical: AppSizes.sm,
+            ),
             child: OnboardingTopBar(onSkip: _finish),
           ),
           Expanded(
@@ -66,8 +69,10 @@ class _OnboardingMobileViewState extends ConsumerState<OnboardingMobileView> {
                   PageView.builder(
                     controller: _pageController,
                     itemCount: slides.length,
-                    onPageChanged: (index) => setState(() => _currentIndex = index),
-                    itemBuilder: (context, index) => OnboardingItemWidget(data: slides[index]),
+                    onPageChanged: (index) =>
+                        setState(() => _currentIndex = index),
+                    itemBuilder: (context, index) =>
+                        OnboardingItemWidget(data: slides[index]),
                   ),
                   Positioned(
                     bottom: 120,
@@ -76,10 +81,13 @@ class _OnboardingMobileViewState extends ConsumerState<OnboardingMobileView> {
                     child: Column(
                       children: [
                         const SizedBox(height: AppSizes.lg),
-                        CustomStepIndicator(stepCount: slides.length, currentStep: _currentIndex),
+                        CustomStepIndicator(
+                          stepCount: slides.length,
+                          currentStep: _currentIndex,
+                        ),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -105,7 +113,6 @@ class _OnboardingMobileViewState extends ConsumerState<OnboardingMobileView> {
     );
   }
 }
-
 
 /// Same content as [OnboardingMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -140,7 +147,10 @@ class _OnboardingTabViewState extends ConsumerState<OnboardingTabView> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.xl, vertical: AppSizes.sm),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSizes.xl,
+                  vertical: AppSizes.sm,
+                ),
                 child: OnboardingTopBar(onSkip: _finish),
               ),
               Expanded(
@@ -152,12 +162,17 @@ class _OnboardingTabViewState extends ConsumerState<OnboardingTabView> {
                         child: PageView.builder(
                           controller: _pageController,
                           itemCount: slides.length,
-                          onPageChanged: (index) => setState(() => _currentIndex = index),
-                          itemBuilder: (context, index) => OnboardingItemWidget(data: slides[index]),
+                          onPageChanged: (index) =>
+                              setState(() => _currentIndex = index),
+                          itemBuilder: (context, index) =>
+                              OnboardingItemWidget(data: slides[index]),
                         ),
                       ),
                       const SizedBox(height: AppSizes.lg),
-                      CustomStepIndicator(stepCount: slides.length, currentStep: _currentIndex),
+                      CustomStepIndicator(
+                        stepCount: slides.length,
+                        currentStep: _currentIndex,
+                      ),
                     ],
                   ),
                 ),

@@ -22,7 +22,9 @@ class AppColors {
   // ---- Light theme surface colors ----
   static const Color background = Color(0xFFF5F5F7);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceDark = Color(0xFF1C1C1E); // kept for backward-compat (unused directly by theme now)
+  static const Color surfaceDark = Color(
+    0xFF1C1C1E,
+  ); // kept for backward-compat (unused directly by theme now)
 
   static const Color textPrimary = Color(0xFF1C1C1E);
   static const Color textSecondary = Color(0xFF636366);

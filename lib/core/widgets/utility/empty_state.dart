@@ -30,14 +30,32 @@ class EmptyState extends StatelessWidget {
           children: [
             Icon(icon, size: AppSizes.iconLg * 2, color: AppColors.textHint),
             const SizedBox(height: AppSizes.lg),
-            Text(title, textAlign: TextAlign.center, style: TextStyle(fontSize: AppSizes.fontXl, fontWeight: FontWeight.w700, color: context.appColors.textPrimary)),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: AppSizes.fontXl,
+                fontWeight: FontWeight.w700,
+                color: context.appColors.textPrimary,
+              ),
+            ),
             if (message != null) ...[
               const SizedBox(height: AppSizes.sm),
-              Text(message!, textAlign: TextAlign.center, style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary)),
+              Text(
+                message!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  color: context.appColors.textSecondary,
+                ),
+              ),
             ],
             if (onAction != null) ...[
               const SizedBox(height: AppSizes.lg),
-              FilledButton(onPressed: onAction, child: Text(actionLabel ?? 'Try again')),
+              FilledButton(
+                onPressed: onAction,
+                child: Text(actionLabel ?? 'Try again'),
+              ),
             ],
           ],
         ),

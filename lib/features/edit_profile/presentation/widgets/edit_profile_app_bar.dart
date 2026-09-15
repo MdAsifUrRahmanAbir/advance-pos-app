@@ -11,7 +11,7 @@ class EditProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppHeaderBar (
+    return AppHeaderBar(
       title: AppStrings.editProfileTitle,
       trailingLabel: AppStrings.done,
       onTrailingTap: onDoneTap,

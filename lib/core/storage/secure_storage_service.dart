@@ -9,10 +9,10 @@ class SecureStorageService {
   final FlutterSecureStorage _storage;
 
   SecureStorageService()
-      : _storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
-  );
+    : _storage = const FlutterSecureStorage(
+        aOptions: AndroidOptions(),
+        iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
+      );
 
   static const _keyAccessToken = 'auth_access_token';
   static const _keyRefreshToken = 'auth_refresh_token';
@@ -48,5 +48,6 @@ class SecureStorageService {
   }
 }
 
-final secureStorageServiceProvider =
-Provider<SecureStorageService>((ref) => SecureStorageService());
+final secureStorageServiceProvider = Provider<SecureStorageService>(
+  (ref) => SecureStorageService(),
+);

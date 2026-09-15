@@ -15,12 +15,19 @@ class InfoTipBanner extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(Icons.info_outline_rounded, size: AppSizes.fontMd, color: AppColors.textSecondary),
+        const Icon(
+          Icons.info_outline_rounded,
+          size: AppSizes.fontMd,
+          color: AppColors.textSecondary,
+        ),
         const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: AppSizes.fontXs, color: AppColors.textSecondary),
+            style: const TextStyle(
+              fontSize: AppSizes.fontXs,
+              color: AppColors.textSecondary,
+            ),
           ),
         ),
       ],

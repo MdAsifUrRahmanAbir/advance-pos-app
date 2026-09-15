@@ -125,7 +125,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.maintenance,
         builder: (_, _) => const MaintenanceScreen(),
       ),
-      // Added: routes for the newly added basic screens
       GoRoute(
         path: RouteNames.register,
         builder: (_, _) => const RegisterScreen(),
@@ -151,12 +150,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.termsPrivacy,
         builder: (context, state) => const TermsPrivacyScreen(),
       ),
-
       GoRoute(
         path: RouteNames.orderList,
         builder: (context, state) => const OrderListScreen(),
       ),
-
       GoRoute(
         path: RouteNames.product,
         builder: (context, state) => const ProductScreen(),
@@ -177,11 +174,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.cart,
         builder: (context, state) => const CartScreen(),
       ),
-      GoRoute(path: RouteNames.invoices, builder: (context, state) => const InvoicesScreen()),
+      GoRoute(
+        path: RouteNames.invoices,
+        builder: (context, state) => const InvoicesScreen(),
+      ),
 
       GoRoute(
         path: RouteNames.invoiceDetail,
-        builder: (context, state) => InvoiceDetailScreen(invoiceId: state.extra as String),
-      ),  ],
+        builder: (context, state) =>
+            InvoiceDetailScreen(invoiceId: state.extra as String),
+      ),
+    ],
   );
 });

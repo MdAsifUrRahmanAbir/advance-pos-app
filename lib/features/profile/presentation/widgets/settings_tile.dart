@@ -24,10 +24,17 @@ class SettingsTile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + AppSizes.xs),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.md,
+          vertical: AppSizes.sm + AppSizes.xs,
+        ),
         child: Row(
           children: [
-            Icon(icon, size: AppSizes.iconMd - AppSizes.xs / 2, color: context.appColors.textSecondary),
+            Icon(
+              icon,
+              size: AppSizes.iconMd - AppSizes.xs / 2,
+              color: context.appColors.textSecondary,
+            ),
             const SizedBox(width: AppSizes.sm + AppSizes.xs),
             Expanded(
               child: Column(
@@ -35,19 +42,30 @@ class SettingsTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontMd,
+                      fontWeight: FontWeight.w600,
+                      color: context.appColors.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: AppSizes.xs / 2),
                   Text(
                     subtitle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontSm,
+                      color: context.appColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded, size: AppSizes.iconSm, color: context.appColors.textHint),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: AppSizes.iconSm,
+              color: context.appColors.textHint,
+            ),
           ],
         ),
       ),

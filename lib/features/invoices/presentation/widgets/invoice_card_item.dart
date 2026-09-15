@@ -6,9 +6,8 @@ import '../../../../core/widgets/common/custom_card.dart';
 import '../../data/model/invoices_model.dart';
 import 'invoice_status_badge.dart';
 
-/// Single invoice row mapped directly from the API's [ResultDatum] —
-/// bill no + customer, product summary, date, item count + total, and
-/// a computed payment-status badge.
+/// Single invoice row — invoice # + customer, product summary, date,
+/// item count + total, and a computed payment-status badge.
 class InvoiceCardItem extends StatelessWidget {
   final ResultDatum invoice;
   final VoidCallback? onTap;
@@ -17,8 +16,8 @@ class InvoiceCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final total = double.tryParse(invoice.totalPayableAmount) ?? 0;
-    final qty = double.tryParse(invoice.totalQuantity) ?? 0;
+    final total = parseAmount(invoice.totalPayableAmount);
+    final qty = parseQuantity(invoice.totalQuantity);
 
     return CustomCard(
       onTap: onTap,
@@ -70,7 +69,7 @@ class InvoiceCardItem extends StatelessWidget {
                 style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textSecondary),
               ),
               Text(
-                '${qty.toStringAsFixed(0)} items',
+                '$qty items',
                 style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textSecondary),
               ),
               Text(

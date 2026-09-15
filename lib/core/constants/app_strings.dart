@@ -6,21 +6,16 @@ class AppStrings {
   static const String connectingToServers = 'Connecting to secure servers...';
 
   static const String appName = 'POS App';
-  static const String welcomeTitle = 'Welcome to POS App';
-  static const String welcomeSubtitle = 'Manage your sales, products, and receipts seamlessly.';
   static const String getStarted = 'Get Started';
   static const String login = 'Login';
-  static const String logout = 'Logout';
-  static const String products = 'Products';
   static const String skip = 'Skip';
   static const String next = 'Next';
   static const String errorOccurred = 'Something went wrong. Please try again.';
 
   // ---- Added: Welcome screen ----
-  static const String welcomeToApp = 'Welcome to EnterpriseSuite';
+  static const String welcomeToApp = 'Welcome to Advance POS Sales';
   static const String welcomeToAppSubtitle =
-      'Manage operations, analyze global metrics, and streamline communications with modern secure systems.';
-
+      'Scan products, search inventory, view stock reports, and invoice history with ease.';
 
   // ---- Added: Sign In screen ----
   static const String signIn = 'Sign In';
@@ -43,7 +38,8 @@ class AppStrings {
   // ---- Added: OTP Verification screen ----
   static const String identityVerification = 'Identity Verification';
   static const String verifyYourAccount = 'Verify Your Account';
-  static const String otpSubtitle = 'Enter the 6-digit code sent to your enterprise email.';
+  static const String otpSubtitle =
+      'Enter the 6-digit code sent to your enterprise email.';
   static const String resendOtpInPrefix = 'Resend OTP in ';
   static const String verifyAndProceed = 'Verify & Proceed';
   static const String didntReceiveCode = "Didn't receive code? ";
@@ -65,7 +61,8 @@ class AppStrings {
   static const String fullNameRequired = 'Full name is required';
   static const String confirmPasswordRequired = 'Please confirm your password';
   static const String passwordsDoNotMatch = 'Passwords do not match';
-  static const String mustAgreeToTerms = 'Please agree to the Terms & Conditions';
+  static const String mustAgreeToTerms =
+      'Please agree to the Terms & Conditions';
 
   // ---- Added: Change Password screen ----
   static const String changePasswordTitle = 'Change Password';
@@ -73,11 +70,13 @@ class AppStrings {
   static const String newPassword = 'New Password';
   static const String saveChanges = 'Save Changes';
   static const String currentPasswordRequired = 'Current password is required';
-  static const String newPasswordSameAsCurrent = 'New password must be different from current password';
+  static const String newPasswordSameAsCurrent =
+      'New password must be different from current password';
 
   // ---- Added: Forgot Password screen ----
   static const String forgotPasswordTitle = 'Forgot Password?';
-  static const String forgotPasswordSubtitle = "Enter your email address and we'll send you a reset link";
+  static const String forgotPasswordSubtitle =
+      "Enter your email address and we'll send you a reset link";
   static const String sendResetLink = 'Send Reset Link';
   static const String backToLogin = 'Back to Login';
 
@@ -91,34 +90,30 @@ class AppStrings {
   static const String reqSymbol = 'Contains a symbol';
   static const String reqMatch = 'Passwords match';
 
-// ---- Added: Home screen ----
-  static const String quickActions = 'Quick Actions';
-  static const String newOrder = 'New Order';
-  static const String reports = 'Reports';
-  static const String inventory = 'Inventory';
-  static const String messages = 'Messages';
-  static const String calender = 'Calender';
-  static const String tasks = 'Tasks';
-  static const String invoices = 'Invoices';
-  static const String recentActivity = 'Recent Activity';
+  // ---- Added: Home screen ----
 
   // ---- Added: Profile screen ----
   static const String accountSection = 'ACCOUNT';
   static const String preferencesSection = 'PREFERENCES';
   static const String securitySupportSection = 'SECURITY & SUPPORT';
   static const String personalInfoTitle = 'Personal Info';
-  static const String personalInfoSubtitle = 'Configure name, email, credentials';
+  static const String personalInfoSubtitle =
+      'Configure name, email, credentials';
   static const String notificationSettingsTitle = 'Notification Settings';
-  static const String notificationSettingsSubtitle = 'Push triggers, emails & Slack integrations';
+  static const String notificationSettingsSubtitle =
+      'Push triggers, emails & Slack integrations';
   static const String languageTitle = 'Language';
   static const String privacyTitle = 'Privacy';
-  static const String privacySubtitle = 'Control visibility and cluster logs exposure';
+  static const String privacySubtitle =
+      'Control visibility and cluster logs exposure';
   static const String connectedAppsTitle = 'Connected Apps';
   static const String twoFactorAuthTitle = 'Two-Factor Auth';
   static const String helpCenterTitle = 'Help Center';
-  static const String helpCenterSubtitle = 'Documentation, ticket desk & server diagnostics';
+  static const String helpCenterSubtitle =
+      'Documentation, ticket desk & server diagnostics';
   static const String settingsTitle = 'Settings';
-  static const String settingsSubtitle = 'App preferences, account management & security';
+  static const String settingsSubtitle =
+      'App preferences, account management & security';
 
   // ---- Added: Edit Profile screen ----
   static const String editProfileTitle = 'Edit Profile';
@@ -131,8 +126,7 @@ class AppStrings {
   // static const String saveChanges = 'Save Changes';
   // static const String fullNameRequired = 'Full name is required';
 
-// ---- Added: Activity screen ----
-  static const String activityLogsTitle = 'Activity Logs';
+  // ---- Added: Activity screen ----
   static const String filterToday = 'Today';
   static const String filterThisWeek = 'This Week';
   static const String filterThisMonth = 'This Month';
@@ -142,10 +136,8 @@ class AppStrings {
   static const String markAllAsRead = 'Mark All as Read';
   static const String filterAll = 'All';
   static const String filterUnread = 'Unread';
-  static const String notificationsTip = 'Tip: Swipe left on a notification to archive or configure triggers.';
-  static const String categoryAlert = 'ALERT';
-  static const String categoryOrder = 'ORDER';
-  static const String categorySystem = 'SYSTEM';
+  static const String notificationsTip =
+      'Tip: Swipe left on a notification to archive or configure triggers.';
 
   // ---- Added: Settings screen ----
   static const String appearanceSection = 'APPEARANCE';
@@ -211,12 +203,8 @@ class AppStrings {
   static const String callContact = 'Call';
 
   // ---- Added: Audit Log screen ----
-  static const String auditLogTitle = 'Audit Log';
-  static const String statusSuccess = 'Success';
-  static const String statusFailed = 'Failed';
-  static const String statusPending = 'Pending';
 
-// ---- Added: Order List screen ----
+  // ---- Added: Order List screen ----
   static const String myOrdersTitle = 'My Orders';
   static const String orderTabAll = 'All';
   static const String orderTabPending = 'Pending';
@@ -225,42 +213,35 @@ class AppStrings {
   static const String viewDetails = 'View Details';
 
   // ---- Added: Analytics screen ----
-  static const String analyticsTitle = 'Analytics';
-  static const String exportLabel = 'Export';
-  static const String revenueVsExpenses = 'Revenue vs Expenses';
-  static const String categoryBreakdown = 'Category Breakdown';
-  static const String revenueLabel = 'Revenue';
-  static const String expensesLabel = 'Expenses';
-  static const String netProfitLabel = 'Net Profit';
-  static const String ordersLabel2 = 'Orders';
 
   // ---- Added: Products screen ----
   static const String productsTitle = 'Products';
   static const String searchProductsHint = 'Search products...';
-  static const String stockInStock = 'In Stock';
-  static const String stockLowStock = 'Low Stock';
-  static const String stockOutOfStock = 'Out of Stock';
 
   // ---- Added: Not Found screen ----
   static const String notFoundCode = '404';
   static const String notFoundTitle = 'Page Not Found';
-  static const String notFoundSubtitle = "The page you're looking for doesn't exist or has been moved.";
+  static const String notFoundSubtitle =
+      "The page you're looking for doesn't exist or has been moved.";
   static const String backToHome = 'Back to Home';
 
   // ---- Added: No Internet screen ----
   static const String noInternetTitle = 'No Internet Connection';
-  static const String noInternetSubtitle = 'Please check your network settings and try again.';
+  static const String noInternetSubtitle =
+      'Please check your network settings and try again.';
   static const String checkConnection = 'Check Connection';
   static const String workOffline = 'Work Offline';
 
   // ---- Added: Maintenance screen ----
   static const String maintenanceTitle = 'Under Maintenance';
-  static const String maintenanceSubtitle = "We're performing scheduled maintenance to improve your experience.";
+  static const String maintenanceSubtitle =
+      "We're performing scheduled maintenance to improve your experience.";
   static const String notifyMeWhenReady = 'Notify Me When Ready';
 
   // ---- Added: Error screen ----
   static const String errorTitle = 'Something Went Wrong';
-  static const String errorSubtitle = 'An unexpected error occurred. Please try again.';
+  static const String errorSubtitle =
+      'An unexpected error occurred. Please try again.';
   static const String retry = 'Retry';
   static const String reportIssue = 'Report Issue';
 
@@ -289,11 +270,6 @@ class AppStrings {
   static const String periodWeekly = 'Weekly';
   static const String periodMonthly = 'Monthly';
 
-  static const String statTodaysSales = "Today's Sales";
-  static const String statCollection = 'Collection';
-  static const String statOrders = 'Orders';
-  static const String statProfit = 'Profit';
-
   static const String dailyTargetProgress = 'Daily Target Progress';
   static String dailyTargetSubtitle(String achieved, String target) =>
       '$achieved of $target target achieved';
@@ -304,7 +280,6 @@ class AppStrings {
   static const String recentSales = 'Recent Sales';
   static String saleMetaLabel(int items, String timeAgo) =>
       '$items items • $timeAgo';
-
 
   // --- New Sale / Product search additions ---
   static const String newSaleTitle = 'New Sale';
@@ -321,7 +296,6 @@ class AppStrings {
   // --- Payment additions ---
   static const String paymentTitle = 'Payment';
   static const String payableAmountLabel = 'PAYABLE AMOUNT';
-  static const String selectPaymentMethodLabel = 'SELECT PAYMENT METHOD';
   static const String givenAmountLabel = 'GIVEN AMOUNT';
   static const String changeDueLabel = 'Change Due';
   static const String salesAgentLabel = 'SALES AGENT';
@@ -332,17 +306,12 @@ class AppStrings {
   static const String paymentMethodCard = 'Card';
   static const String paymentMethodMobile = 'Mobile';
 
-  static const String errorGivenAmountInsufficient =
-      'Given amount is less than the payable amount.';
-
-
   // --- Cart review additions ---
   static const String reviewCartTitle = 'Review Cart';
   static const String clearAllAction = 'Clear All';
   static const String swipeToDeleteHint = 'Swipe left on any item to delete';
 
   static const String customerLabel = 'CUSTOMER';
-  static const String walkInCustomer = 'Walk-In Customer';
   static const String remarksLabel = 'REMARKS';
   static const String remarksHint = 'Add remarks...';
   static const String referenceNoLabel = 'REFERENCE NO';
@@ -359,34 +328,32 @@ class AppStrings {
 
   // --- Payment success sheet additions ---
   static const String paymentCollectedTitle = 'Payment Collected';
-  static String paymentCollectedSubtitle(String amount) => 'Amount received: $amount';
+  static String paymentCollectedSubtitle(String amount) =>
+      'Amount received: $amount';
 
   static const String receiptSaleIdLabel = 'Sale ID';
   static const String receiptDateLabel = 'Date';
   static const String receiptPaymentMethodLabel = 'Payment Method';
-  static const String receiptItemsLabel = 'Items';
 
   static const String actionNewSale = 'New Sale';
   static const String actionGoToDashboard = 'Go to Dashboard';
   static const String actionShareReceipt = 'Share Receipt';
   static const String actionPrintReceipt = 'Print Receipt';
 
-
   // --- Receipt share/print additions ---
-  static const String sharingReceipt = 'Preparing receipt...';
-  static const String shareFailedMessage = 'Could not share the receipt. Please try again.';
+  static const String shareFailedMessage =
+      'Could not share the receipt. Please try again.';
 
   static const String selectPrinterTitle = 'Select Printer';
-  static const String noPrintersFoundMessage = 'No paired Bluetooth printers found.';
-  static const String pairPrinterHint = 'Pair a thermal printer in your device Bluetooth settings first.';
-  static const String scanningForPrinters = 'Scanning for paired printers...';
-  static const String printingReceipt = 'Printing...';
-  static const String printFailedMessage = 'Could not print the receipt. Check the printer connection.';
+  static const String noPrintersFoundMessage =
+      'No paired Bluetooth printers found.';
+  static const String pairPrinterHint =
+      'Pair a thermal printer in your device Bluetooth settings first.';
+  static const String printFailedMessage =
+      'Could not print the receipt. Check the printer connection.';
   static const String printSuccessMessage = 'Receipt sent to printer.';
 
-  static const String receiptStoreNamePlaceholder = 'POS Pro'; // TODO: source from store settings once available
   static const String receiptThankYouLine = 'Thank you for your purchase!';
-
 
   // ---- Added: Stock report screen card tiles + filters ----
   static const String stockFilterAll = 'All';
@@ -407,47 +374,29 @@ class AppStrings {
   static const String stockBarcodeLabel = 'Barcode';
   static const String showInfo = 'Show Info';
 
-
   // ---- Added: Invoices screen ----
   static const String invoicesTitle = 'Invoices';
   static const String invoiceSearchHint = 'Search invoice # or customer...';
   static const String invoicesEmptyMessage = 'No invoices match this filter.';
-  static const String invoicesFoundSuffix = 'invoices found';
-  static const String invoiceFilterAll = 'All';
-  static const String invoiceStatusPaid = 'Paid';
-  static const String invoiceStatusDue = 'Due';
-  static const String invoiceStatusPartial = 'Partial';
-  static const String invoiceStatusOverdue = 'Overdue';
-  static const String invoiceItemsSuffix = 'items';
   static const String invoiceDateLabel = 'Date';
-  static const String invoiceDueDateLabel = 'Due';
-  static const String invoiceTotalLabel = 'Total';
   static const String invoicePaidLabel = 'Paid';
   static const String invoiceDueLabel = 'Due';
-  static const String invoiceTotalDueLabel = 'Total Due';
   static const String invoiceShareAction = 'Share';
-  static const String invoiceDownloadAction = 'Download';
 
   // ---- Added: Invoice detail screen ----
   static const String invoiceDetailTitle = 'Invoice Details';
   static const String invoiceInfoSectionTitle = 'Cash Sale Information';
   static const String invoiceProductsSectionTitle = 'Products';
-  static const String invoiceActivityLogTitle = 'Activity Log';
   static const String invoiceBillNoLabel = 'Bill No.';
   static const String invoiceCustomerLabel = 'Customer';
   static const String invoiceMobileLabel = 'Mobile No.';
-  static const String invoiceNationalIdLabel = 'National ID';
   static const String invoiceSalesByLabel = 'Sales By';
-  static const String invoiceBranchLabel = 'Branch';
-  static const String invoiceVatNoLabel = 'VAT Invoice No.';
   static const String invoicePaymentSystemLabel = 'Payment System';
-  static const String invoicePaymentAccountLabel = 'Payment Account';
   static const String invoiceSubtotalLabel = 'Subtotal';
   static const String invoiceDiscountLabel = 'Discount';
   static const String invoiceVatLabel = 'VAT';
   static const String invoiceTotalPayableLabel = 'Total Payable';
   static const String invoiceRemarksLabel = 'Remarks';
-  static const String invoiceSerialNoLabel = 'Serial No';
   static const String invoiceTotalQuantityLabel = 'Total Quantity';
   static const String invoiceTotalAmountLabel = 'Total Amount';
   static const String invoicePrintAction = 'Print Receipt';
@@ -456,24 +405,19 @@ class AppStrings {
   // ---- Added: Profile "More" screen — Reports section ----
   static const String reportsSection = 'REPORTS';
   static const String stockReportTitle = 'Stock Report';
-  static const String stockReportSubtitle = 'Inventory levels, low/out-of-stock items';
+  static const String stockReportSubtitle =
+      'Inventory levels, low/out-of-stock items';
   static const String salesReportTitle = 'Sales Report';
-  static const String salesReportSubtitle = 'Daily and periodic sales summaries';
-  static const String salesReportEmptyMessage = 'Sales reporting is coming soon.';
+  static const String salesReportSubtitle =
+      'Daily and periodic sales summaries';
   static const String allReportTitle = 'All Report';
-  static const String allReportSubtitle = 'Combined revenue, expenses & category breakdown';
-
+  static const String allReportSubtitle =
+      'Combined revenue, expenses & category breakdown';
 
   // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
   static const String todayRevenueLabel = 'Today\'s Revenue';
-  static const String todayOrdersLabel = 'Today\'s Orders';
-  static const String todayProfitLabel = 'Today\'s Profit';
-  static const String todayItemsSoldLabel = 'Items Sold';
   static const String todaySalesTrendTitle = 'Today\'s Sales Trend';
-  static const String recentSalesTitle = 'Recent Sales';
-  static const String topProductsTodayTitle = 'Top Products Today';
-  static const String seeAllLabel = 'See All';
 
-
-
+  static const String invoicePaymentAccountLabel = 'Payment Account';
+  static const String invoiceBarcodeLabel = 'Barcode';
 }

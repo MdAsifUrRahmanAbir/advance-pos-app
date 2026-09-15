@@ -71,9 +71,13 @@ class NotificationTile extends StatelessWidget {
                 },
                 shape: StatusBadgeShape.square,
                 compact: true,
-              ),              Text(
+              ),
+              Text(
                 time,
-                style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textSecondary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontXs,
+                  color: context.appColors.textSecondary,
+                ),
               ),
             ],
           ),
@@ -91,7 +95,10 @@ class NotificationTile extends StatelessWidget {
             description,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+            style: TextStyle(
+              fontSize: AppSizes.fontSm,
+              color: context.appColors.textSecondary,
+            ),
           ),
         ],
       ),

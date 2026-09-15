@@ -8,13 +8,9 @@ import '../../data/repositories/register_repository.dart';
 class RegisterFormState {
   final bool agreedToTerms;
 
-  const RegisterFormState({
-    this.agreedToTerms = false,
-  });
+  const RegisterFormState({this.agreedToTerms = false});
 
-  RegisterFormState copyWith({
-    bool? agreedToTerms,
-  }) {
+  RegisterFormState copyWith({bool? agreedToTerms}) {
     return RegisterFormState(
       agreedToTerms: agreedToTerms ?? this.agreedToTerms,
     );
@@ -47,9 +43,7 @@ class RegisterController extends Notifier<RegisterFormState> {
   }
 
   void setAgreedToTerms(bool value) {
-    state = state.copyWith(
-      agreedToTerms: value,
-    );
+    state = state.copyWith(agreedToTerms: value);
   }
 
   PasswordStrength passwordStrength() {
@@ -118,16 +112,11 @@ class RegisterController extends Notifier<RegisterFormState> {
     return state.agreedToTerms;
   }
 
-
   RegisterRepository get _repository => ref.read(registerRepositoryProvider);
 
   void submit(
-      void Function(
-          String fullName,
-          String email,
-          String password,
-          ) onRegister,
-      ) {
+    void Function(String fullName, String email, String password) onRegister,
+  ) {
     if (!validateForm()) {
       return;
     }
@@ -145,6 +134,6 @@ class RegisterController extends Notifier<RegisterFormState> {
 }
 
 final registerControllerProvider =
-NotifierProvider.autoDispose<RegisterController, RegisterFormState>(
-  RegisterController.new,
-);
+    NotifierProvider.autoDispose<RegisterController, RegisterFormState>(
+      RegisterController.new,
+    );

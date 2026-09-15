@@ -46,8 +46,9 @@ class StockState {
 
   // --- pagination additions ---
   final int currentStart;
-  final bool isLoadingMore; // independent flag — loading page 2+, not initial fetch
-  final bool hasMore;       // false once recordsFiltered is fully loaded
+  final bool
+  isLoadingMore; // independent flag — loading page 2+, not initial fetch
+  final bool hasMore; // false once recordsFiltered is fully loaded
 
   const StockState({
     this.isLoading = false,
@@ -66,8 +67,10 @@ class StockState {
 
   List<StockItem> get filteredItems {
     return allItems.where((item) {
-      final matchesStatus = selectedStatus == 'all' || item.status.name == selectedStatus;
-      final matchesQuery = searchQuery.isEmpty ||
+      final matchesStatus =
+          selectedStatus == 'all' || item.status.name == selectedStatus;
+      final matchesQuery =
+          searchQuery.isEmpty ||
           item.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
           item.sku.toLowerCase().contains(searchQuery.toLowerCase()) ||
           item.barcode.contains(searchQuery);

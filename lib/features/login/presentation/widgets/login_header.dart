@@ -9,7 +9,7 @@ class LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Text(
+    return Text(
       AppStrings.welcomeBack,
       style: TextStyle(
         fontSize: AppSizes.fontXl,

@@ -7,4 +7,7 @@ class ForgotPasswordController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final forgotPasswordControllerProvider = NotifierProvider<ForgotPasswordController, AsyncValue<void>>(ForgotPasswordController.new);
+final forgotPasswordControllerProvider =
+    NotifierProvider<ForgotPasswordController, AsyncValue<void>>(
+      ForgotPasswordController.new,
+    );

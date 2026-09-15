@@ -26,7 +26,11 @@ class SplashLogo extends StatelessWidget {
         ],
       ),
       alignment: Alignment.center,
-      child: Icon(Icons.hexagon_outlined, color: AppColors.textWhite, size: size * 0.5),
+      child: Icon(
+        Icons.hexagon_outlined,
+        color: AppColors.textWhite,
+        size: size * 0.5,
+      ),
     );
   }
 }

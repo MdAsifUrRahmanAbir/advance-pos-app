@@ -24,7 +24,12 @@ class ForgotPasswordTabView extends ConsumerWidget {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 480),
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(AppSizes.xl, AppSizes.xxl, AppSizes.xl, AppSizes.xl),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSizes.xl,
+                    AppSizes.xxl,
+                    AppSizes.xl,
+                    AppSizes.xl,
+                  ),
                   child: Column(
                     children: [
                       const ForgotPasswordHeader(),
@@ -33,7 +38,10 @@ class ForgotPasswordTabView extends ConsumerWidget {
                         child: ForgotPasswordForm(
                           onSend: (email) {
                             // TODO: wire to forgotPasswordControllerProvider.sendResetLink(email)
-                            CustomSnackbar.show(context, 'Reset link sent to $email');
+                            CustomSnackbar.show(
+                              context,
+                              'Reset link sent to $email',
+                            );
                           },
                         ),
                       ),
@@ -45,9 +53,7 @@ class ForgotPasswordTabView extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.xl),
-            child: BackToLoginLink(
-              onTap: () => context.go(RouteNames.login),
-            ),
+            child: BackToLoginLink(onTap: () => context.go(RouteNames.login)),
           ),
         ],
       ),

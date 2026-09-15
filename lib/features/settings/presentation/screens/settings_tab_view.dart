@@ -17,34 +17,27 @@ class SettingsTabView extends ConsumerWidget {
   const SettingsTabView({super.key});
 
   Future<void> _confirmDeleteAccount(
-      BuildContext context,
-      WidgetRef ref,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final confirmed = await CustomAlertDialog.confirm(
       context,
       title: AppStrings.deleteAccount,
-      message:
-      'This action is permanent and cannot be undone. Are you sure?',
+      message: 'This action is permanent and cannot be undone. Are you sure?',
       confirmText: AppStrings.deleteAccount,
       destructive: true,
     );
 
     if (confirmed == true) {
-      await ref
-          .read(settingsControllerProvider.notifier)
-          .deleteAccount();
+      await ref.read(settingsControllerProvider.notifier).deleteAccount();
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      settingsControllerProvider.notifier,
-    );
+    final controller = ref.watch(settingsControllerProvider.notifier);
 
-    final state = ref.watch(
-      settingsControllerProvider,
-    );
+    final state = ref.watch(settingsControllerProvider);
 
     return Column(
       children: [
@@ -56,9 +49,7 @@ class SettingsTabView extends ConsumerWidget {
         Expanded(
           child: Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 640,
-              ),
+              constraints: const BoxConstraints(maxWidth: 640),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSizes.xl),
                 child: Column(
@@ -66,37 +57,29 @@ class SettingsTabView extends ConsumerWidget {
                   children: [
                     SettingsTogglesSection(
                       darkMode: state.darkMode,
-                      onDarkModeChanged:
-                      controller.setDarkMode,
+                      onDarkModeChanged: controller.setDarkMode,
 
                       onAppThemeTap: () {
                         // TODO: open app-theme picker
                       },
 
-                      pushNotifications:
-                      state.pushNotifications,
+                      pushNotifications: state.pushNotifications,
                       onPushNotificationsChanged:
-                      controller.setPushNotifications,
+                          controller.setPushNotifications,
 
-                      emailNotifications:
-                      state.emailNotifications,
+                      emailNotifications: state.emailNotifications,
                       onEmailNotificationsChanged:
-                      controller.setEmailNotifications,
+                          controller.setEmailNotifications,
 
                       smsAlerts: state.smsAlerts,
-                      onSmsAlertsChanged:
-                      controller.setSmsAlerts,
+                      onSmsAlertsChanged: controller.setSmsAlerts,
                     ),
 
-                    const SizedBox(
-                      height: AppSizes.xl,
-                    ),
+                    const SizedBox(height: AppSizes.xl),
 
                     SettingsSecurityGeneralSection(
-                      biometricAuth:
-                      state.biometricAuth,
-                      onBiometricAuthChanged:
-                      controller.setBiometricAuth,
+                      biometricAuth: state.biometricAuth,
+                      onBiometricAuthChanged: controller.setBiometricAuth,
 
                       onTwoFactorAuthTap: () {
                         // TODO: navigate to 2FA setup
@@ -115,9 +98,7 @@ class SettingsTabView extends ConsumerWidget {
                       },
                     ),
 
-                    const SizedBox(
-                      height: AppSizes.xl,
-                    ),
+                    const SizedBox(height: AppSizes.xl),
 
                     SettingsLegalSection(
                       onTermsTap: () {
@@ -133,23 +114,17 @@ class SettingsTabView extends ConsumerWidget {
                       },
                     ),
 
-                    const SizedBox(
-                      height: AppSizes.xl,
-                    ),
+                    const SizedBox(height: AppSizes.xl),
 
                     SettingsFooterActions(
-                      versionLabel:
-                      'v2.4.1 (Build 2026)',
+                      versionLabel: 'v2.4.1 (Build 2026)',
 
                       onLogOutTap: () {
                         // TODO: call authControllerProvider.logout()
                       },
 
                       onDeleteAccountTap: () {
-                        _confirmDeleteAccount(
-                          context,
-                          ref,
-                        );
+                        _confirmDeleteAccount(context, ref);
                       },
                     ),
                   ],

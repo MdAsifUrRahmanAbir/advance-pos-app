@@ -93,7 +93,9 @@ class PaymentTabView extends ConsumerWidget {
         return Consumer(
           builder: (consumerContext, sheetRef, _) {
             final state = sheetRef.watch(paymentControllerProvider);
-            final controller = sheetRef.read(paymentControllerProvider.notifier);
+            final controller = sheetRef.read(
+              paymentControllerProvider.notifier,
+            );
 
             return PaymentSuccessSheet(
               paymentState: state,
@@ -109,10 +111,14 @@ class PaymentTabView extends ConsumerWidget {
                 context.go(RouteNames.mainShell);
               },
               onShareReceipt: () async {
-                final success = await controller.shareReceipt(receiptBoundaryKey);
+                final success = await controller.shareReceipt(
+                  receiptBoundaryKey,
+                );
                 if (!success && consumerContext.mounted) {
                   ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    const SnackBar(content: Text(AppStrings.shareFailedMessage)),
+                    const SnackBar(
+                      content: Text(AppStrings.shareFailedMessage),
+                    ),
                   );
                 }
               },
@@ -129,7 +135,11 @@ class PaymentTabView extends ConsumerWidget {
                 if (consumerContext.mounted) {
                   ScaffoldMessenger.of(consumerContext).showSnackBar(
                     SnackBar(
-                      content: Text(success ? AppStrings.printSuccessMessage : AppStrings.printFailedMessage),
+                      content: Text(
+                        success
+                            ? AppStrings.printSuccessMessage
+                            : AppStrings.printFailedMessage,
+                      ),
                     ),
                   );
                 }

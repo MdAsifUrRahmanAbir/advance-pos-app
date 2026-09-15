@@ -6,7 +6,9 @@ import '../../../../core/utils/thermal_printer_service.dart';
 import '../states/payment_state.dart';
 
 final paymentControllerProvider =
-NotifierProvider.autoDispose<PaymentController, PaymentState>(PaymentController.new);
+    NotifierProvider.autoDispose<PaymentController, PaymentState>(
+      PaymentController.new,
+    );
 
 class PaymentController extends Notifier<PaymentState> {
   @override
@@ -22,8 +24,16 @@ class PaymentController extends Notifier<PaymentState> {
       salesAgent: 'Admin',
       availableAgents: ['Admin', 'Rahul Sharma', 'Amit Patel'],
       receiptItems: const [
-        ReceiptLineItem(name: 'Quantum Wireless Mouse', quantity: 2, lineTotal: 900.00),
-        ReceiptLineItem(name: 'Minimalist Leather Backpack', quantity: 1, lineTotal: 300.00),
+        ReceiptLineItem(
+          name: 'Quantum Wireless Mouse',
+          quantity: 2,
+          lineTotal: 900.00,
+        ),
+        ReceiptLineItem(
+          name: 'Minimalist Leather Backpack',
+          quantity: 1,
+          lineTotal: 300.00,
+        ),
         ReceiptLineItem(name: 'Smart LED Lamp', quantity: 1, lineTotal: 50.00),
       ],
     );
@@ -68,7 +78,10 @@ class PaymentController extends Notifier<PaymentState> {
       state = state.copyWith(isSharing: false);
       return true;
     } catch (_) {
-      state = state.copyWith(isSharing: false, shareError: 'shareFailedMessage');
+      state = state.copyWith(
+        isSharing: false,
+        shareError: 'shareFailedMessage',
+      );
       return false;
     }
   }
@@ -82,7 +95,10 @@ class PaymentController extends Notifier<PaymentState> {
       if (!connected) {
         final ok = await ThermalPrinterService.connect(printerMac);
         if (!ok) {
-          state = state.copyWith(isPrinting: false, printError: 'printFailedMessage');
+          state = state.copyWith(
+            isPrinting: false,
+            printError: 'printFailedMessage',
+          );
           return false;
         }
       }
@@ -96,10 +112,16 @@ class PaymentController extends Notifier<PaymentState> {
         givenAmount: state.givenAmount,
         changeDue: state.changeDue,
       );
-      state = state.copyWith(isPrinting: false, printError: success ? null : 'printFailedMessage');
+      state = state.copyWith(
+        isPrinting: false,
+        printError: success ? null : 'printFailedMessage',
+      );
       return success;
     } catch (_) {
-      state = state.copyWith(isPrinting: false, printError: 'printFailedMessage');
+      state = state.copyWith(
+        isPrinting: false,
+        printError: 'printFailedMessage',
+      );
       return false;
     }
   }

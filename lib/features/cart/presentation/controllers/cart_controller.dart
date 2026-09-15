@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../states/cart_state.dart';
 
 final cartControllerProvider =
-NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
+    NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
 
 class CartController extends Notifier<CartState> {
   @override
@@ -13,9 +13,24 @@ class CartController extends Notifier<CartState> {
     // the New Sale flow's cart contents.
     return CartState.initial().copyWith(
       items: const [
-        CartLineItem(id: 'p1', name: 'Quantum Wireless Mouse', unitPrice: 450.00, quantity: 2),
-        CartLineItem(id: 'p2', name: 'Minimalist Leather Backpack', unitPrice: 300.00, quantity: 1),
-        CartLineItem(id: 'p3', name: 'Smart LED Lamp', unitPrice: 50.00, quantity: 1),
+        CartLineItem(
+          id: 'p1',
+          name: 'Quantum Wireless Mouse',
+          unitPrice: 450.00,
+          quantity: 2,
+        ),
+        CartLineItem(
+          id: 'p2',
+          name: 'Minimalist Leather Backpack',
+          unitPrice: 300.00,
+          quantity: 1,
+        ),
+        CartLineItem(
+          id: 'p3',
+          name: 'Smart LED Lamp',
+          unitPrice: 50.00,
+          quantity: 1,
+        ),
       ],
       customerName: 'Walk-In Customer',
       discountPercent: 5,
@@ -28,7 +43,10 @@ class CartController extends Notifier<CartState> {
     state = state.copyWith(
       items: [
         for (final item in state.items)
-          if (item.id == itemId) item.copyWith(quantity: item.quantity + 1) else item,
+          if (item.id == itemId)
+            item.copyWith(quantity: item.quantity + 1)
+          else
+            item,
       ],
     );
   }

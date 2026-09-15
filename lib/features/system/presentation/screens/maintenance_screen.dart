@@ -17,17 +17,16 @@ class MaintenanceScreen extends StatelessWidget {
   }
 }
 
-
-
-
-
 class MaintenanceMobileView extends StatelessWidget {
   const MaintenanceMobileView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.xl, vertical: AppSizes.xxl),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.xl,
+        vertical: AppSizes.xxl,
+      ),
       child: MaintenanceContent(
         // TODO: replace hardcoded ETA with a real value from a
         // remote-config or system-status provider once that exists.
@@ -40,8 +39,6 @@ class MaintenanceMobileView extends StatelessWidget {
     );
   }
 }
-
-
 
 /// Same content as [MaintenanceMobileView], centered in a
 /// fixed-width column for wider (tablet/web) viewports.

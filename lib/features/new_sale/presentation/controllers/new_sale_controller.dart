@@ -4,7 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../states/new_sale_state.dart';
 
 final newSaleControllerProvider =
-NotifierProvider.autoDispose<NewSaleController, NewSaleState>(NewSaleController.new);
+    NotifierProvider.autoDispose<NewSaleController, NewSaleState>(
+      NewSaleController.new,
+    );
 
 class NewSaleController extends Notifier<NewSaleState> {
   late final TextEditingController searchController;
@@ -38,12 +40,16 @@ class NewSaleController extends Notifier<NewSaleState> {
     // TODO: wire to cartControllerProvider.addItem(product) once the
     // shared cart controller exists.
     final items = List<CartLineItem>.from(state.cartItems);
-    final existingIndex = items.indexWhere((line) => line.product.id == product.id);
+    final existingIndex = items.indexWhere(
+      (line) => line.product.id == product.id,
+    );
 
     if (existingIndex == -1) {
       items.add(CartLineItem(product: product, quantity: 1));
     } else {
-      items[existingIndex] = items[existingIndex].copyWith(quantity: items[existingIndex].quantity + 1);
+      items[existingIndex] = items[existingIndex].copyWith(
+        quantity: items[existingIndex].quantity + 1,
+      );
     }
 
     state = state.copyWith(cartItems: items);
@@ -53,7 +59,10 @@ class NewSaleController extends Notifier<NewSaleState> {
     state = state.copyWith(
       cartItems: [
         for (final line in state.cartItems)
-          if (line.product.id == productId) line.copyWith(quantity: line.quantity + 1) else line,
+          if (line.product.id == productId)
+            line.copyWith(quantity: line.quantity + 1)
+          else
+            line,
       ],
     );
   }
@@ -66,7 +75,8 @@ class NewSaleController extends Notifier<NewSaleState> {
         items.add(line);
         continue;
       }
-      if (line.quantity > 1) items.add(line.copyWith(quantity: line.quantity - 1));
+      if (line.quantity > 1)
+        items.add(line.copyWith(quantity: line.quantity - 1));
       // quantity == 1 -> dropped, i.e. removed from cart
     }
     state = state.copyWith(cartItems: items);
@@ -74,7 +84,9 @@ class NewSaleController extends Notifier<NewSaleState> {
 
   void removeFromCart(String productId) {
     state = state.copyWith(
-      cartItems: state.cartItems.where((line) => line.product.id != productId).toList(),
+      cartItems: state.cartItems
+          .where((line) => line.product.id != productId)
+          .toList(),
     );
   }
 
@@ -103,9 +115,37 @@ class NewSaleController extends Notifier<NewSaleState> {
   }
 
   static const _mockProducts = [
-    ProductItem(id: 'p1', name: 'Fresh Milk 1L', sku: 'MK-1002', price: 60.00, categoryKey: 'grocery', barcode: '8901030123457'),
-    ProductItem(id: 'p2', name: 'Wheat Bread', sku: 'BR-5001', price: 40.00, categoryKey: 'grocery', barcode: '8901030123458'),
-    ProductItem(id: 'p3', name: 'Organic Eggs', sku: 'EG-1200', price: 120.00, categoryKey: 'grocery', barcode: '8901030123459'),
-    ProductItem(id: 'p4', name: 'Apple Soda', sku: 'SD-0091', price: 30.00, categoryKey: 'beverages', barcode: '8901030123460'),
+    ProductItem(
+      id: 'p1',
+      name: 'Fresh Milk 1L',
+      sku: 'MK-1002',
+      price: 60.00,
+      categoryKey: 'grocery',
+      barcode: '8901030123457',
+    ),
+    ProductItem(
+      id: 'p2',
+      name: 'Wheat Bread',
+      sku: 'BR-5001',
+      price: 40.00,
+      categoryKey: 'grocery',
+      barcode: '8901030123458',
+    ),
+    ProductItem(
+      id: 'p3',
+      name: 'Organic Eggs',
+      sku: 'EG-1200',
+      price: 120.00,
+      categoryKey: 'grocery',
+      barcode: '8901030123459',
+    ),
+    ProductItem(
+      id: 'p4',
+      name: 'Apple Soda',
+      sku: 'SD-0091',
+      price: 30.00,
+      categoryKey: 'beverages',
+      barcode: '8901030123460',
+    ),
   ];
 }

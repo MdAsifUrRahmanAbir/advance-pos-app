@@ -27,11 +27,19 @@ class ChangeDueBanner extends StatelessWidget {
         children: [
           Text(
             AppStrings.changeDueLabel,
-            style: TextStyle(color: color, fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              color: color,
+              fontSize: AppSizes.fontSm,
+              fontWeight: FontWeight.w700,
+            ),
           ),
           Text(
             '₹${amount.abs().toStringAsFixed(2)}',
-            style: TextStyle(color: color, fontSize: AppSizes.fontMd, fontWeight: FontWeight.w800),
+            style: TextStyle(
+              color: color,
+              fontSize: AppSizes.fontMd,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),

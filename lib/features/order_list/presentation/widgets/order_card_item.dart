@@ -53,12 +53,19 @@ class OrderCardItem extends StatelessWidget {
                 children: [
                   Text(
                     orderId,
-                    style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontMd,
+                      fontWeight: FontWeight.w700,
+                      color: context.appColors.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: AppSizes.xs / 2),
                   Text(
                     date,
-                    style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontSm,
+                      color: context.appColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -81,9 +88,17 @@ class OrderCardItem extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.fromBorderSide(BorderSide(color: context.appColors.surface, width: 2)),
+                            border: Border.fromBorderSide(
+                              BorderSide(
+                                color: context.appColors.surface,
+                                width: 2,
+                              ),
+                            ),
                           ),
-                          child: AppAvatar(imageUrl: itemImageUrls[i], radius: AppSizes.md),
+                          child: AppAvatar(
+                            imageUrl: itemImageUrls[i],
+                            radius: AppSizes.md,
+                          ),
                         ),
                       ),
                   ],
@@ -94,12 +109,19 @@ class OrderCardItem extends StatelessWidget {
                 children: [
                   Text(
                     '$itemCount items',
-                    style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontSm,
+                      color: context.appColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: AppSizes.xs / 2),
                   Text(
                     total,
-                    style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontLg,
+                      fontWeight: FontWeight.w700,
+                      color: context.appColors.textPrimary,
+                    ),
                   ),
                 ],
               ),

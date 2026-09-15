@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/utils/widget_animation_extension.dart';
 import '../states/new_sale_state.dart';
 import 'product_grid_card.dart';
 
@@ -33,7 +35,7 @@ class ProductGrid extends StatelessWidget {
         return ProductGridCard(
           product: product,
           onAddToCart: () => onAddToCart(product),
-        );
+        ).fadeSlideIn(delay: (index * 40).ms);
       },
     );
   }

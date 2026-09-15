@@ -4,12 +4,8 @@ class TermsPrivacyModel {
   TermsPrivacyModel({this.id});
 
   factory TermsPrivacyModel.fromJson(Map<String, dynamic> json) {
-    return TermsPrivacyModel(
-      id: json['id'],
-    );
+    return TermsPrivacyModel(id: json['id']);
   }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-  };
+  Map<String, dynamic> toJson() => {'id': id};
 }

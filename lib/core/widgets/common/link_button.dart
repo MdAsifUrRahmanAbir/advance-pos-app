@@ -29,7 +29,10 @@ class LinkButton extends StatelessWidget {
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
-      child: Text(label, style: TextStyle(fontSize: fontSize, fontWeight: fontWeight)),
+      child: Text(
+        label,
+        style: TextStyle(fontSize: fontSize, fontWeight: fontWeight),
+      ),
     );
   }
 }

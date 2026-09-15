@@ -31,10 +31,15 @@ class CustomListTile extends StatelessWidget {
       leading: leading,
       trailing: trailing,
       onTap: onTap,
-      contentPadding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSizes.md,
+        vertical: AppSizes.xs,
+      ),
       iconColor: context.appColors.textSecondary,
       textColor: context.appColors.textPrimary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+      ),
     );
   }
 }

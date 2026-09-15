@@ -13,12 +13,20 @@ class TermsPrivacyContent extends StatelessWidget {
 
   Widget _sectionTitle(String text, BuildContext context) => Text(
     text,
-    style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+    style: TextStyle(
+      fontSize: AppSizes.fontLg,
+      fontWeight: FontWeight.w600,
+      color: context.appColors.textPrimary,
+    ),
   );
 
   Widget _sectionBody(String text, BuildContext context) => Text(
     text,
-    style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary, height: 1.5),
+    style: TextStyle(
+      fontSize: AppSizes.fontMd,
+      color: context.appColors.textSecondary,
+      height: 1.5,
+    ),
   );
 
   @override
@@ -35,9 +43,19 @@ class TermsPrivacyContent extends StatelessWidget {
         const SizedBox(height: AppSizes.sm + AppSizes.xs),
         _sectionBody(AppStrings.termsSection2Body, context),
         const SizedBox(height: AppSizes.sm),
-        const NumberedListItem(number: '01', text: 'Secure system telemetry and active diagnostic profiles.'),
-        const NumberedListItem(number: '02', text: 'Encrypted performance packets for secure cluster analytics.'),
-        const NumberedListItem(number: '03', text: 'OAuth validation tokens for authenticated third-party connections.'),
+        const NumberedListItem(
+          number: '01',
+          text: 'Secure system telemetry and active diagnostic profiles.',
+        ),
+        const NumberedListItem(
+          number: '02',
+          text: 'Encrypted performance packets for secure cluster analytics.',
+        ),
+        const NumberedListItem(
+          number: '03',
+          text:
+              'OAuth validation tokens for authenticated third-party connections.',
+        ),
         const SizedBox(height: AppSizes.md),
 
         _sectionTitle(AppStrings.termsSection3Title, context),
@@ -58,18 +76,28 @@ class TermsPrivacyContent extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
+              Text(
                 AppStrings.termsContactName,
-                style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w600,
+                  color: context.appColors.textPrimary,
+                ),
               ),
               const SizedBox(height: AppSizes.xs),
-               Text(
+              Text(
                 AppStrings.termsContactEmail,
-                style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontSm,
+                  color: context.appColors.textSecondary,
+                ),
               ),
-               Text(
+              Text(
                 AppStrings.termsContactSla,
-                style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                style: TextStyle(
+                  fontSize: AppSizes.fontSm,
+                  color: context.appColors.textSecondary,
+                ),
               ),
             ],
           ),

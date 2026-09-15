@@ -11,7 +11,11 @@ class InvoicesRepository {
   final ApiClient _apiClient;
   InvoicesRepository(this._apiClient);
 
-  Future<InvoicesModel> getInvoices({required int start, required int length, String search = ''}) async {
+  Future<InvoicesModel> getInvoices({
+    required int start,
+    required int length,
+    String search = '',
+  }) async {
     _apiClient.setAuthToken("2nMDQU2TodIJH9Y8oycSUKNDVcHh5KZKCbLAmamU");
 
     final response = await _apiClient.get(

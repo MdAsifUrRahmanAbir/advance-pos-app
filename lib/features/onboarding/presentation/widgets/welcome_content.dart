@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
@@ -12,18 +13,29 @@ class WelcomeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const HeroImageBanner(imagePath: 'assets/images/welcome_hero.png'),
+        HeroImageBanner(
+          imagePath: AppAssets.welcome,
+          fit: BoxFit.cover,
+          scale: 1.2,
+        ),
         const SizedBox(height: AppSizes.xl),
-         Text(
+        Text(
           AppStrings.welcomeToApp,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontDisplay, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontDisplay,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         const SizedBox(height: AppSizes.sm),
-         Text(
+        Text(
           AppStrings.welcomeToAppSubtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textSecondary,
+          ),
         ),
       ],
     );

@@ -4,7 +4,6 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../theme/app_color_scheme.dart';
 
-
 /// Uppercase section label + a bordered, rounded container of
 /// [SettingsTile]s separated by thin dividers. Used to group related
 /// settings rows (Account, Preferences, Security & Support...).
@@ -40,7 +39,8 @@ class SettingsGroup extends StatelessWidget {
             children: [
               for (int i = 0; i < children.length; i++) ...[
                 children[i],
-                if (i != children.length - 1) const Divider(height: 1, color: AppColors.border),
+                if (i != children.length - 1)
+                  const Divider(height: 1, color: AppColors.border),
               ],
             ],
           ),

@@ -89,12 +89,18 @@ class _OtpFormState extends State<OtpForm> {
         if (!canResend)
           RichText(
             text: TextSpan(
-              style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+              style: TextStyle(
+                fontSize: AppSizes.fontMd,
+                color: context.appColors.textSecondary,
+              ),
               children: [
                 const TextSpan(text: AppStrings.resendOtpInPrefix),
                 TextSpan(
                   text: _formattedTime,
-                  style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                  style: TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -109,9 +115,12 @@ class _OtpFormState extends State<OtpForm> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Text(
+            Text(
               AppStrings.didntReceiveCode,
-              style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+              style: TextStyle(
+                fontSize: AppSizes.fontSm,
+                color: context.appColors.textSecondary,
+              ),
             ),
             LinkButton(
               label: AppStrings.resendOtp,

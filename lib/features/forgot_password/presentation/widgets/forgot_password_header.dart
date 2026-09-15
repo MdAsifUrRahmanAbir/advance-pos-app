@@ -21,13 +21,20 @@ class ForgotPasswordHeader extends StatelessWidget {
         Text(
           AppStrings.forgotPasswordTitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontDisplay, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
+          style: TextStyle(
+            fontSize: AppSizes.fontDisplay,
+            fontWeight: FontWeight.w700,
+            color: context.appColors.textPrimary,
+          ),
         ),
         SizedBox(height: AppSizes.sm),
         Text(
           AppStrings.forgotPasswordSubtitle,
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textSecondary,
+          ),
         ),
       ],
     );

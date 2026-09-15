@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../states/home_state.dart';
 
 final homeControllerProvider =
-NotifierProvider.autoDispose<HomeController, HomeState>(HomeController.new);
+    NotifierProvider.autoDispose<HomeController, HomeState>(HomeController.new);
 
 class HomeController extends Notifier<HomeState> {
   @override
@@ -62,16 +62,59 @@ class HomeController extends Notifier<HomeState> {
   }
 
   static const _mockTopProducts = [
-    TopProductData(rank: 1, name: 'Fresh Filtered Milk 1L', unitsSold: 48, revenue: '₹2,400'),
-    TopProductData(rank: 2, name: 'Whole Wheat Bread', unitsSold: 36, revenue: '₹1,440'),
-    TopProductData(rank: 3, name: 'Organic Eggs 12pk', unitsSold: 32, revenue: '₹3,840'),
-    TopProductData(rank: 4, name: 'Double Apple Soda', unitsSold: 28, revenue: '₹840'),
-    TopProductData(rank: 5, name: 'Crisp Potato Chips', unitsSold: 24, revenue: '₹720'),
+    TopProductData(
+      rank: 1,
+      name: 'Fresh Filtered Milk 1L',
+      unitsSold: 48,
+      revenue: '₹2,400',
+    ),
+    TopProductData(
+      rank: 2,
+      name: 'Whole Wheat Bread',
+      unitsSold: 36,
+      revenue: '₹1,440',
+    ),
+    TopProductData(
+      rank: 3,
+      name: 'Organic Eggs 12pk',
+      unitsSold: 32,
+      revenue: '₹3,840',
+    ),
+    TopProductData(
+      rank: 4,
+      name: 'Double Apple Soda',
+      unitsSold: 28,
+      revenue: '₹840',
+    ),
+    TopProductData(
+      rank: 5,
+      name: 'Crisp Potato Chips',
+      unitsSold: 24,
+      revenue: '₹720',
+    ),
   ];
 
   static const _mockRecentSales = [
-    RecentSaleData(saleId: '#SL001', customerName: 'Walk-In Customer', itemCount: 3, timeAgo: '2 mins ago', amount: '₹1,250'),
-    RecentSaleData(saleId: '#SL002', customerName: 'Rahul Sharma', itemCount: 5, timeAgo: '15 mins ago', amount: '₹3,420'),
-    RecentSaleData(saleId: '#SL003', customerName: 'Amit Patel', itemCount: 1, timeAgo: '1 hour ago', amount: '₹450'),
+    RecentSaleData(
+      saleId: '#SL001',
+      customerName: 'Walk-In Customer',
+      itemCount: 3,
+      timeAgo: '2 mins ago',
+      amount: '₹1,250',
+    ),
+    RecentSaleData(
+      saleId: '#SL002',
+      customerName: 'Rahul Sharma',
+      itemCount: 5,
+      timeAgo: '15 mins ago',
+      amount: '₹3,420',
+    ),
+    RecentSaleData(
+      saleId: '#SL003',
+      customerName: 'Amit Patel',
+      itemCount: 1,
+      timeAgo: '1 hour ago',
+      amount: '₹450',
+    ),
   ];
 }

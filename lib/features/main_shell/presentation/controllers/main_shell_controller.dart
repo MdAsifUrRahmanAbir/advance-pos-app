@@ -10,4 +10,6 @@ class MainShellController extends Notifier<int> {
   void selectTab(int index) => state = index;
 }
 
-final mainShellControllerProvider = NotifierProvider<MainShellController, int>(MainShellController.new);
+final mainShellControllerProvider = NotifierProvider<MainShellController, int>(
+  MainShellController.new,
+);

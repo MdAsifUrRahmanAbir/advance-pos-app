@@ -18,13 +18,17 @@ class CustomShimmer extends StatefulWidget {
   State<CustomShimmer> createState() => _CustomShimmerState();
 }
 
-class _CustomShimmerState extends State<CustomShimmer> with SingleTickerProviderStateMixin {
+class _CustomShimmerState extends State<CustomShimmer>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))..repeat();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    )..repeat();
   }
 
   @override
@@ -42,11 +46,19 @@ class _CustomShimmerState extends State<CustomShimmer> with SingleTickerProvider
           gradient: LinearGradient(
             begin: Alignment(-1 + (_controller.value * 2), 0),
             end: Alignment(1 + (_controller.value * 2), 0),
-            colors: const [AppColors.shimmerBase, AppColors.shimmerHighlight, AppColors.shimmerBase],
+            colors: const [
+              AppColors.shimmerBase,
+              AppColors.shimmerHighlight,
+              AppColors.shimmerBase,
+            ],
           ),
-          borderRadius: widget.borderRadius ?? BorderRadius.circular(AppSizes.radiusMd),
+          borderRadius:
+              widget.borderRadius ?? BorderRadius.circular(AppSizes.radiusMd),
         ),
-        child: SizedBox(height: widget.height, width: widget.width ?? double.infinity),
+        child: SizedBox(
+          height: widget.height,
+          width: widget.width ?? double.infinity,
+        ),
       ),
     );
   }

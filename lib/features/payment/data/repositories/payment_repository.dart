@@ -8,6 +8,4 @@ final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
 class PaymentRepository {
   final ApiClient _apiClient;
   PaymentRepository(this._apiClient);
-
-
 }

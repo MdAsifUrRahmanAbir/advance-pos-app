@@ -11,17 +11,23 @@ class SplashLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       children: [
         SizedBox(
           width: AppSizes.xl,
           height: AppSizes.xl,
-          child: CircularProgressIndicator(strokeWidth: 3, color: AppColors.primary),
+          child: CircularProgressIndicator(
+            strokeWidth: 3,
+            color: AppColors.primary,
+          ),
         ),
         SizedBox(height: AppSizes.md),
         Text(
           AppStrings.connectingToServers,
-          style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+          style: TextStyle(
+            fontSize: AppSizes.fontSm,
+            color: context.appColors.textSecondary,
+          ),
         ),
       ],
     );

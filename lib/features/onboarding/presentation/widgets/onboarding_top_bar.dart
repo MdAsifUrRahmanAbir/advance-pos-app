@@ -12,10 +12,7 @@ class OnboardingTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: LinkButton(
-        label: AppStrings.skip,
-        onPressed: onSkip,
-      ),
+      child: LinkButton(label: AppStrings.skip, onPressed: onSkip),
     );
   }
 }

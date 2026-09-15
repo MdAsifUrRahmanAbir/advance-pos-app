@@ -29,7 +29,14 @@ class PaginationControls extends StatelessWidget {
           color: AppColors.primary,
           iconSize: AppSizes.iconMd,
         ),
-        Text('$currentPage / $totalPages', style: TextStyle(fontSize: AppSizes.fontMd, color: context.appColors.textPrimary, fontWeight: FontWeight.w600)),
+        Text(
+          '$currentPage / $totalPages',
+          style: TextStyle(
+            fontSize: AppSizes.fontMd,
+            color: context.appColors.textPrimary,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         IconButton(
           onPressed: canNext ? () => onPageChanged(currentPage + 1) : null,
           icon: const Icon(Icons.chevron_right),

@@ -31,15 +31,13 @@ class ResetPasswordState {
   }
 }
 
-class ResetPasswordController
-    extends Notifier<ResetPasswordState> {
+class ResetPasswordController extends Notifier<ResetPasswordState> {
   final formKey = GlobalKey<FormState>();
 
   late final TextEditingController passwordController;
   late final TextEditingController confirmController;
 
-  static final _symbolRegExp =
-  RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]');
+  static final _symbolRegExp = RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]');
 
   static final _numberRegExp = RegExp(r'[0-9]');
 
@@ -72,8 +70,7 @@ class ResetPasswordController
       hasMinLength: password.length >= 8,
       hasNumber: _numberRegExp.hasMatch(password),
       hasSymbol: _symbolRegExp.hasMatch(password),
-      passwordsMatch:
-      password.isNotEmpty && password == confirm,
+      passwordsMatch: password.isNotEmpty && password == confirm,
     );
   }
 
@@ -105,22 +102,16 @@ class ResetPasswordController
     return formKey.currentState?.validate() ?? false;
   }
 
-  void submit(
-      ValueChanged<String> onSubmit,
-      ) {
+  void submit(ValueChanged<String> onSubmit) {
     if (!validate()) {
       return;
     }
 
-    onSubmit(
-      passwordController.text,
-    );
+    onSubmit(passwordController.text);
   }
 }
 
 final resetPasswordControllerProvider =
-NotifierProvider.autoDispose<
-    ResetPasswordController,
-    ResetPasswordState>(
-  ResetPasswordController.new,
-);
+    NotifierProvider.autoDispose<ResetPasswordController, ResetPasswordState>(
+      ResetPasswordController.new,
+    );

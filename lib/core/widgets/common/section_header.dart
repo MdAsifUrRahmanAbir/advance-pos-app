@@ -21,7 +21,11 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final action = trailing ?? (actionLabel == null ? null : TextButton(onPressed: onAction, child: Text(actionLabel!)));
+    final action =
+        trailing ??
+        (actionLabel == null
+            ? null
+            : TextButton(onPressed: onAction, child: Text(actionLabel!)));
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -29,10 +33,23 @@ class SectionHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700, color: context.appColors.textPrimary)),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: AppSizes.fontLg,
+                  fontWeight: FontWeight.w700,
+                  color: context.appColors.textPrimary,
+                ),
+              ),
               if (subtitle != null) ...[
                 const SizedBox(height: AppSizes.xs),
-                Text(subtitle!, style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary)),
+                Text(
+                  subtitle!,
+                  style: TextStyle(
+                    fontSize: AppSizes.fontSm,
+                    color: context.appColors.textSecondary,
+                  ),
+                ),
               ],
             ],
           ),

@@ -53,11 +53,16 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
     final code = await BarcodeScannerScreen.scan(context);
     if (code == null) return;
 
-    final match = ref.read(stockControllerProvider.notifier).handleScannedCode(code);
+    final match = ref
+        .read(stockControllerProvider.notifier)
+        .handleScannedCode(code);
     if (!context.mounted) return;
 
     if (match != null) {
-      CustomBottomSheet.show<void>(context, child: StockDetailSheet(item: match));
+      CustomBottomSheet.show<void>(
+        context,
+        child: StockDetailSheet(item: match),
+      );
     } else {
       CustomSnackbar.show(context, 'Product not found.', error: true);
     }
@@ -108,51 +113,58 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
         Expanded(
           child: isInitialLoad
               ? Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: const StockListSkeleton(itemCount: 6),
-            ),
-          )
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
+                    child: const StockListSkeleton(itemCount: 6),
+                  ),
+                )
               : items.isEmpty
               ? EmptyState(
-            title: AppStrings.stockTitle,
-            message: AppStrings.stockEmptyMessage,
-            icon: Icons.inventory_2_outlined,
-          )
+                  title: AppStrings.stockTitle,
+                  message: AppStrings.stockEmptyMessage,
+                  icon: Icons.inventory_2_outlined,
+                )
               : Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
-              child: CustomRefreshWrapper(
-                onRefresh: controller.refresh,
-                child: ListView(
-                  controller: _scrollController,
-                  children: [
-                    ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: items.length,
-                      separatorBuilder: (_, _) =>
-                      const SizedBox(height: AppSizes.sm + AppSizes.xs),
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        return StockCardTile(
-                          item: item,
-                          onShowInfo: () => _showInfo(context, item),
-                        );
-                      },
-                    ),
-                    if (state.isLoadingMore)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: AppSizes.md),
-                        child: Center(child: CircularProgressIndicator()),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 640),
+                    child: CustomRefreshWrapper(
+                      onRefresh: controller.refresh,
+                      child: ListView(
+                        controller: _scrollController,
+                        children: [
+                          ListView.separated(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSizes.lg,
+                            ),
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: items.length,
+                            separatorBuilder: (_, _) => const SizedBox(
+                              height: AppSizes.sm + AppSizes.xs,
+                            ),
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return StockCardTile(
+                                item: item,
+                                onShowInfo: () => _showInfo(context, item),
+                              );
+                            },
+                          ),
+                          if (state.isLoadingMore)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSizes.md,
+                              ),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          const SizedBox(
+                            height: AppSizes.bottomNavBarHeight / 2,
+                          ),
+                        ],
                       ),
-                    const SizedBox(height: AppSizes.bottomNavBarHeight / 2),
-                  ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
         ),
       ],
     );

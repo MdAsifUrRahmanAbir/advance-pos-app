@@ -12,7 +12,11 @@ class InvoiceLineItem {
   final int quantity;
   final double unitPrice;
 
-  const InvoiceLineItem({required this.name, required this.quantity, required this.unitPrice});
+  const InvoiceLineItem({
+    required this.name,
+    required this.quantity,
+    required this.unitPrice,
+  });
 
   double get lineTotal => unitPrice * quantity;
 }

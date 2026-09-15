@@ -7,4 +7,7 @@ class TermsPrivacyController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final termsPrivacyControllerProvider = NotifierProvider<TermsPrivacyController, AsyncValue<void>>(TermsPrivacyController.new);
+final termsPrivacyControllerProvider =
+    NotifierProvider<TermsPrivacyController, AsyncValue<void>>(
+      TermsPrivacyController.new,
+    );

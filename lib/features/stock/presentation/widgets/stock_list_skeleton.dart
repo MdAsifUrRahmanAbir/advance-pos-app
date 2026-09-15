@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/utils/widget_animation_extension.dart';
 import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../states/stock_state.dart';
 import 'stock_card_tile.dart';
@@ -26,9 +28,13 @@ class StockListSkeleton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemCount,
-      separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),
+      separatorBuilder: (_, _) =>
+          const SizedBox(height: AppSizes.sm + AppSizes.xs),
       itemBuilder: (context, index) {
-        return StockCardTile(item: _placeholder, onShowInfo: () {});
+        return StockCardTile(
+          item: _placeholder,
+          onShowInfo: () {},
+        ).fadeSlideIn(delay: (index * 60).ms);
       },
     ).skeletonizer(enabled: true);
   }

@@ -55,7 +55,8 @@ class LoginForm extends ConsumerWidget {
                 child: PrimaryCheckbox(
                   value: state.rememberMe,
                   label: AppStrings.rememberMe,
-                  onChanged: (value) => controller.setRememberMe(value ?? false),
+                  onChanged: (value) =>
+                      controller.setRememberMe(value ?? false),
                 ),
               ),
               LinkButton(

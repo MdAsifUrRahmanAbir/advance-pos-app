@@ -62,7 +62,11 @@ class _StepButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.xs / 2),
-        child: Icon(icon, size: AppSizes.fontSm + 1, color: AppColors.textSecondary),
+        child: Icon(
+          icon,
+          size: AppSizes.fontSm + 1,
+          color: AppColors.textSecondary,
+        ),
       ),
     );
   }

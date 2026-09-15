@@ -11,10 +11,7 @@ import '../controllers/change_password_controller.dart';
 class ChangePasswordForm extends ConsumerWidget {
   final bool loading;
 
-  final void Function(
-      String currentPassword,
-      String newPassword,
-      ) onSave;
+  final void Function(String currentPassword, String newPassword) onSave;
 
   const ChangePasswordForm({
     super.key,
@@ -24,13 +21,9 @@ class ChangePasswordForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(
-      changePasswordControllerProvider.notifier,
-    );
+    final controller = ref.watch(changePasswordControllerProvider.notifier);
 
-    final state = ref.watch(
-      changePasswordControllerProvider,
-    );
+    final state = ref.watch(changePasswordControllerProvider);
 
     return Form(
       key: controller.formKey,
@@ -39,49 +32,32 @@ class ChangePasswordForm extends ConsumerWidget {
         children: [
           PasswordInputField(
             label: AppStrings.currentPassword,
-            controller:
-            controller.currentPasswordController,
-            validator:
-            controller.validateCurrentPassword,
+            controller: controller.currentPasswordController,
+            validator: controller.validateCurrentPassword,
           ),
 
-          const SizedBox(
-            height: AppSizes.lg,
-          ),
+          const SizedBox(height: AppSizes.lg),
 
           PasswordInputField(
             label: AppStrings.newPassword,
-            controller:
-            controller.newPasswordController,
-            validator:
-            controller.validateNewPassword,
-            onChanged:
-            controller.onNewPasswordChanged,
+            controller: controller.newPasswordController,
+            validator: controller.validateNewPassword,
+            onChanged: controller.onNewPasswordChanged,
           ),
 
-          const SizedBox(
-            height: AppSizes.lg,
-          ),
+          const SizedBox(height: AppSizes.lg),
 
           PasswordInputField(
             label: AppStrings.confirmPassword,
-            controller:
-            controller.confirmPasswordController,
-            validator:
-            controller.validateConfirmPassword,
+            controller: controller.confirmPasswordController,
+            validator: controller.validateConfirmPassword,
           ),
 
-          const SizedBox(
-            height: AppSizes.xs,
-          ),
+          const SizedBox(height: AppSizes.xs),
 
-          PasswordStrengthMeter(
-            strength: state.passwordStrength,
-          ),
+          PasswordStrengthMeter(strength: state.passwordStrength),
 
-          const SizedBox(
-            height: AppSizes.lg,
-          ),
+          const SizedBox(height: AppSizes.lg),
 
           PrimaryButton(
             label: AppStrings.saveChanges,

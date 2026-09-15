@@ -7,4 +7,6 @@ class OtpController extends Notifier<AsyncValue<void>> {
   }
 }
 
-final otpControllerProvider = NotifierProvider<OtpController, AsyncValue<void>>(OtpController.new);
+final otpControllerProvider = NotifierProvider<OtpController, AsyncValue<void>>(
+  OtpController.new,
+);

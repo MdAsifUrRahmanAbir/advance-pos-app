@@ -30,10 +30,7 @@ class ResetPasswordMobileView extends ConsumerWidget {
                 onSubmit: (newPassword) {
                   // TODO: wire to resetPasswordControllerProvider.updatePassword(newPassword)
                   // once features/reset_password/data/repositories is implemented.
-                  CustomSnackbar.show(
-                    context,
-                    'Password updated successfully',
-                  );
+                  CustomSnackbar.show(context, 'Password updated successfully');
                   context.go(RouteNames.login);
                 },
               ),

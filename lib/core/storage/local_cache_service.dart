@@ -49,24 +49,33 @@ class LocalCacheService {
       sensitivity == CacheSensitivity.sensitive ? _secureBox : _standardBox;
 
   Future<void> write<T>(
-      String key,
-      T data,
-      CachePolicy policy,
-      Map<String, dynamic> Function(T) toJsonT,
-      ) async {
+    String key,
+    T data,
+    CachePolicy policy,
+    Map<String, dynamic> Function(T) toJsonT,
+  ) async {
     if (policy.sensitivity == CacheSensitivity.none) return; // no-op by design
-    final entry = CacheEntry<T>(data: data, cachedAt: DateTime.now(), ttl: policy.ttl);
-    await _boxFor(policy.sensitivity).put(key, jsonEncode(entry.toJson(toJsonT)));
+    final entry = CacheEntry<T>(
+      data: data,
+      cachedAt: DateTime.now(),
+      ttl: policy.ttl,
+    );
+    await _boxFor(
+      policy.sensitivity,
+    ).put(key, jsonEncode(entry.toJson(toJsonT)));
   }
 
   T? read<T>(
-      String key,
-      CacheSensitivity sensitivity,
-      T Function(Map<String, dynamic>) fromJsonT,
-      ) {
+    String key,
+    CacheSensitivity sensitivity,
+    T Function(Map<String, dynamic>) fromJsonT,
+  ) {
     final raw = _boxFor(sensitivity).get(key) as String?;
     if (raw == null) return null;
-    final entry = CacheEntry.fromJson<T>(jsonDecode(raw) as Map<String, dynamic>, fromJsonT);
+    final entry = CacheEntry.fromJson<T>(
+      jsonDecode(raw) as Map<String, dynamic>,
+      fromJsonT,
+    );
     if (entry.isExpired) {
       _boxFor(sensitivity).delete(key);
       return null;
@@ -91,5 +100,7 @@ class LocalCacheService {
 /// see §15.10. The throw is intentional: it fails loudly if something
 /// reads this provider before startup init has run.
 final localCacheServiceProvider = Provider<LocalCacheService>((ref) {
-  throw UnimplementedError('Override with an initialized LocalCacheService in main.dart.');
+  throw UnimplementedError(
+    'Override with an initialized LocalCacheService in main.dart.',
+  );
 });

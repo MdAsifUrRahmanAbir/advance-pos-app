@@ -50,8 +50,16 @@ class SettingsTile extends StatelessWidget {
     }
 
     final indicator = switch (trailing) {
-      SettingsTileTrailing.chevron => const Icon(Icons.chevron_right_rounded, size: AppSizes.iconSm, color: AppColors.textHint),
-      SettingsTileTrailing.externalLink => const Icon(Icons.open_in_new_rounded, size: AppSizes.iconSm - AppSizes.xs / 2, color: AppColors.textHint),
+      SettingsTileTrailing.chevron => const Icon(
+        Icons.chevron_right_rounded,
+        size: AppSizes.iconSm,
+        color: AppColors.textHint,
+      ),
+      SettingsTileTrailing.externalLink => const Icon(
+        Icons.open_in_new_rounded,
+        size: AppSizes.iconSm - AppSizes.xs / 2,
+        color: AppColors.textHint,
+      ),
       SettingsTileTrailing.none => null,
     };
 
@@ -61,8 +69,15 @@ class SettingsTile extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (value != null) ...[
-          Text(value!, style: TextStyle(fontSize: AppSizes.fontMd, color: AppColors.textSecondary)),
-          if (indicator != null) const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
+          Text(
+            value!,
+            style: TextStyle(
+              fontSize: AppSizes.fontMd,
+              color: AppColors.textSecondary,
+            ),
+          ),
+          if (indicator != null)
+            const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
         ],
         ?indicator,
       ],
@@ -76,11 +91,18 @@ class SettingsTile extends StatelessWidget {
     return InkWell(
       onTap: switchValue != null ? null : onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: icon != null ? AppSizes.sm + AppSizes.xs : AppSizes.sm),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSizes.md,
+          vertical: icon != null ? AppSizes.sm + AppSizes.xs : AppSizes.sm,
+        ),
         child: Row(
           children: [
             if (icon != null) ...[
-              Icon(icon, size: AppSizes.iconMd - AppSizes.xs / 2, color: AppColors.textSecondary),
+              Icon(
+                icon,
+                size: AppSizes.iconMd - AppSizes.xs / 2,
+                color: AppColors.textSecondary,
+              ),
               const SizedBox(width: AppSizes.sm + AppSizes.xs),
             ],
             Expanded(
@@ -89,7 +111,11 @@ class SettingsTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w600, color: context.appColors.textPrimary),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontMd,
+                      fontWeight: FontWeight.w600,
+                      color: context.appColors.textPrimary,
+                    ),
                   ),
                   if (subtitle != null) ...[
                     const SizedBox(height: AppSizes.xs / 2),
@@ -97,7 +123,10 @@ class SettingsTile extends StatelessWidget {
                       subtitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                      style: TextStyle(
+                        fontSize: AppSizes.fontSm,
+                        color: context.appColors.textSecondary,
+                      ),
                     ),
                   ],
                 ],

@@ -54,15 +54,30 @@ class PayableAmountCard extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(saleId, style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs)),
+              Text(
+                saleId,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: AppSizes.fontXs,
+                ),
+              ),
               const SizedBox(width: AppSizes.xs),
               Container(
                 width: 4,
                 height: 4,
-                decoration: const BoxDecoration(color: AppColors.textSecondary, shape: BoxShape.circle),
+                decoration: const BoxDecoration(
+                  color: AppColors.textSecondary,
+                  shape: BoxShape.circle,
+                ),
               ),
               const SizedBox(width: AppSizes.xs),
-              Text(saleDate, style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs)),
+              Text(
+                saleDate,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: AppSizes.fontXs,
+                ),
+              ),
             ],
           ),
         ],

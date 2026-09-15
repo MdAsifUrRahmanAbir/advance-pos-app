@@ -7,22 +7,16 @@ import '../../../../core/widgets/common/password_strength_meter.dart';
 class ChangePasswordState {
   final PasswordStrength passwordStrength;
 
-  const ChangePasswordState({
-    this.passwordStrength = PasswordStrength.weak,
-  });
+  const ChangePasswordState({this.passwordStrength = PasswordStrength.weak});
 
-  ChangePasswordState copyWith({
-    PasswordStrength? passwordStrength,
-  }) {
+  ChangePasswordState copyWith({PasswordStrength? passwordStrength}) {
     return ChangePasswordState(
-      passwordStrength:
-      passwordStrength ?? this.passwordStrength,
+      passwordStrength: passwordStrength ?? this.passwordStrength,
     );
   }
 }
 
-class ChangePasswordController
-    extends Notifier<ChangePasswordState> {
+class ChangePasswordController extends Notifier<ChangePasswordState> {
   final formKey = GlobalKey<FormState>();
 
   late final TextEditingController currentPasswordController;
@@ -31,14 +25,11 @@ class ChangePasswordController
 
   @override
   ChangePasswordState build() {
-    currentPasswordController =
-        TextEditingController();
+    currentPasswordController = TextEditingController();
 
-    newPasswordController =
-        TextEditingController();
+    newPasswordController = TextEditingController();
 
-    confirmPasswordController =
-        TextEditingController();
+    confirmPasswordController = TextEditingController();
 
     ref.onDispose(() {
       currentPasswordController.dispose();
@@ -68,9 +59,7 @@ class ChangePasswordController
   }
 
   void onNewPasswordChanged(String value) {
-    state = state.copyWith(
-      passwordStrength: strengthOf(value),
-    );
+    state = state.copyWith(passwordStrength: strengthOf(value));
   }
 
   String? validateCurrentPassword(String? value) {
@@ -110,25 +99,17 @@ class ChangePasswordController
   }
 
   void submit(
-      void Function(
-          String currentPassword,
-          String newPassword,
-          ) onSave,
-      ) {
+    void Function(String currentPassword, String newPassword) onSave,
+  ) {
     if (!validate()) {
       return;
     }
 
-    onSave(
-      currentPasswordController.text,
-      newPasswordController.text,
-    );
+    onSave(currentPasswordController.text, newPasswordController.text);
   }
 }
 
 final changePasswordControllerProvider =
-NotifierProvider.autoDispose<
-    ChangePasswordController,
-    ChangePasswordState>(
-  ChangePasswordController.new,
-);
+    NotifierProvider.autoDispose<ChangePasswordController, ChangePasswordState>(
+      ChangePasswordController.new,
+    );

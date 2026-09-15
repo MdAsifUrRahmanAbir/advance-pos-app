@@ -19,7 +19,12 @@ class ForgotPasswordMobileView extends ConsumerWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(AppSizes.lg, AppSizes.xxl, AppSizes.lg, AppSizes.lg),
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.lg,
+                AppSizes.xxl,
+                AppSizes.lg,
+                AppSizes.lg,
+              ),
               child: Column(
                 children: [
                   const ForgotPasswordHeader(),
@@ -29,7 +34,10 @@ class ForgotPasswordMobileView extends ConsumerWidget {
                       onSend: (email) {
                         // TODO: wire to forgotPasswordControllerProvider.sendResetLink(email)
                         // once the forgot_password/data/repositories layer is ready.
-                        CustomSnackbar.show(context, 'Reset link sent to $email');
+                        CustomSnackbar.show(
+                          context,
+                          'Reset link sent to $email',
+                        );
                         context.push(RouteNames.resetPassword);
                       },
                     ),
@@ -40,9 +48,7 @@ class ForgotPasswordMobileView extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: AppSizes.lg),
-            child: BackToLoginLink(
-              onTap: () => context.go(RouteNames.login),
-            ),
+            child: BackToLoginLink(onTap: () => context.go(RouteNames.login)),
           ),
         ],
       ),

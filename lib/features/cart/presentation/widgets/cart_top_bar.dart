@@ -10,11 +10,11 @@ class CartTopBar extends AppHeaderBar {
     required VoidCallback onBack,
     required VoidCallback onClearAll,
   }) : super(
-    title: AppStrings.reviewCartTitle,
-    backStyle: HeaderBackStyle.chevron,
-    onBackTap: onBack,
-    trailingLabel: AppStrings.clearAllAction,
-    trailingLabelColor: AppColors.error,
-    onTrailingTap: onClearAll,
-  );
+         title: AppStrings.reviewCartTitle,
+         backStyle: HeaderBackStyle.chevron,
+         onBackTap: onBack,
+         trailingLabel: AppStrings.clearAllAction,
+         trailingLabelColor: AppColors.error,
+         onTrailingTap: onClearAll,
+       );
 }

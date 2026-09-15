@@ -66,10 +66,13 @@ class _OtpInputFieldState extends State<OtpInputField> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(widget.length, (index) {
-        final active = _focusNodes[index].hasFocus || _controllers[index].text.isNotEmpty;
+        final active =
+            _focusNodes[index].hasFocus || _controllers[index].text.isNotEmpty;
 
         return Padding(
-          padding: EdgeInsets.only(right: index == widget.length - 1 ? 0 : AppSizes.sm),
+          padding: EdgeInsets.only(
+            right: index == widget.length - 1 ? 0 : AppSizes.sm,
+          ),
           child: SizedBox(
             width: AppSizes.xxl,
             height: AppSizes.xxl,
@@ -87,21 +90,33 @@ class _OtpInputFieldState extends State<OtpInputField> {
               decoration: InputDecoration(
                 counterText: '',
                 hintText: '-',
-                hintStyle: const TextStyle(color: AppColors.textSecondary, fontWeight: FontWeight.w700),
+                hintStyle: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w700,
+                ),
                 filled: true,
                 fillColor: context.appColors.surface,
                 contentPadding: EdgeInsets.zero,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                  borderSide: BorderSide(color: active ? AppColors.primary : AppColors.border, width: active ? 2 : 1),
+                  borderSide: BorderSide(
+                    color: active ? AppColors.primary : AppColors.border,
+                    width: active ? 2 : 1,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                  borderSide: BorderSide(color: active ? AppColors.primary : AppColors.border, width: active ? 2 : 1),
+                  borderSide: BorderSide(
+                    color: active ? AppColors.primary : AppColors.border,
+                    width: active ? 2 : 1,
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-                  borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                    width: 2,
+                  ),
                 ),
               ),
               onChanged: (value) => _onChanged(value, index),

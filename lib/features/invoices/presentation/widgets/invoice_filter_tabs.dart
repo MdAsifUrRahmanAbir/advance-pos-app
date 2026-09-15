@@ -8,7 +8,11 @@ class InvoiceFilterTabs extends StatelessWidget {
   final String selected;
   final ValueChanged<String> onChanged;
 
-  const InvoiceFilterTabs({super.key, required this.selected, required this.onChanged});
+  const InvoiceFilterTabs({
+    super.key,
+    required this.selected,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -43,12 +43,15 @@ class MiniReceiptCard extends StatelessWidget {
           const SizedBox(height: AppSizes.xs),
           _MetaRow(label: AppStrings.receiptDateLabel, value: saleDate),
           const SizedBox(height: AppSizes.xs),
-          _MetaRow(label: AppStrings.receiptPaymentMethodLabel, value: method.labelKey),
+          _MetaRow(
+            label: AppStrings.receiptPaymentMethodLabel,
+            value: method.labelKey,
+          ),
           const SizedBox(height: AppSizes.sm),
           const _DashedDivider(),
           const SizedBox(height: AppSizes.sm),
           ...items.map(
-                (item) => Padding(
+            (item) => Padding(
               padding: const EdgeInsets.only(bottom: AppSizes.xs),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -58,7 +61,10 @@ class MiniReceiptCard extends StatelessWidget {
                       '${item.quantity}× ${item.name}',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm),
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: AppSizes.fontSm,
+                      ),
                     ),
                   ),
                   Text(
@@ -81,11 +87,19 @@ class MiniReceiptCard extends StatelessWidget {
             children: [
               const Text(
                 'Total',
-                style: TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               Text(
                 '₹${total.toStringAsFixed(2)}',
-                style: const TextStyle(color: AppColors.primary, fontSize: AppSizes.fontMd, fontWeight: FontWeight.w800),
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontSize: AppSizes.fontMd,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
             ],
           ),
@@ -94,7 +108,10 @@ class MiniReceiptCard extends StatelessWidget {
             Text(
               AppStrings.receiptThankYouLine,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs),
+              style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: AppSizes.fontXs,
+              ),
             ),
           ],
         ],
@@ -116,8 +133,21 @@ class _MetaRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: AppSizes.fontXs)),
-        Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontXs, fontWeight: FontWeight.w600)),
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: AppSizes.fontXs,
+          ),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: AppSizes.fontXs,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
     );
   }
@@ -128,7 +158,10 @@ class _DashedDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(size: const Size(double.infinity, 1), painter: _DashPainter());
+    return CustomPaint(
+      size: const Size(double.infinity, 1),
+      painter: _DashPainter(),
+    );
   }
 }
 

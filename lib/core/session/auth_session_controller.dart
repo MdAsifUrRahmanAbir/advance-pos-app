@@ -8,7 +8,8 @@ import 'auth_session_state.dart';
 /// from the splash flow to pick the initial route. Never duplicate a
 /// token check anywhere else — everything routes through here.
 class AuthSessionController extends Notifier<AuthSessionState> {
-  SecureStorageService get _secureStorage => ref.read(secureStorageServiceProvider);
+  SecureStorageService get _secureStorage =>
+      ref.read(secureStorageServiceProvider);
   ApiClient get _apiClient => ref.read(apiClientProvider);
 
   @override
@@ -24,14 +25,24 @@ class AuthSessionController extends Notifier<AuthSessionState> {
       return;
     }
     _apiClient.setAuthToken(token);
-    state = AuthSessionState(status: AuthStatus.authenticated, accessToken: token);
+    state = AuthSessionState(
+      status: AuthStatus.authenticated,
+      accessToken: token,
+    );
   }
 
-  Future<void> onLoginSuccess({required String accessToken, String? refreshToken}) async {
+  Future<void> onLoginSuccess({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
     await _secureStorage.saveAccessToken(accessToken);
-    if (refreshToken != null) await _secureStorage.saveRefreshToken(refreshToken);
+    if (refreshToken != null)
+      await _secureStorage.saveRefreshToken(refreshToken);
     _apiClient.setAuthToken(accessToken);
-    state = AuthSessionState(status: AuthStatus.authenticated, accessToken: accessToken);
+    state = AuthSessionState(
+      status: AuthStatus.authenticated,
+      accessToken: accessToken,
+    );
   }
 
   Future<void> logout() async {
@@ -43,4 +54,6 @@ class AuthSessionController extends Notifier<AuthSessionState> {
 }
 
 final authSessionControllerProvider =
-NotifierProvider<AuthSessionController, AuthSessionState>(AuthSessionController.new);
+    NotifierProvider<AuthSessionController, AuthSessionState>(
+      AuthSessionController.new,
+    );
