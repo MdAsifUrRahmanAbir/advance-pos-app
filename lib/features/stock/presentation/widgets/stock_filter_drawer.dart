@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../../../../core/widgets/common/secondary_button.dart';
+import '../../../../core/widgets/common/searchable_dropdown_field.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/stock_filter.dart';
 
-/// Right-side drawer opened from the Stock screen's header filter icon.
-/// Lets the user narrow the list by Group / Category / Subcategory /
-/// Brand (Model), sourced live from [masterDataControllerProvider] (the
-/// once-per-day cached master data). Subcategories are narrowed to the
-/// ones belonging to the selected category, if any is chosen.
-///
-/// No supplier selector yet — the API/state supports `supplierId`, but
-/// there's no supplier master-data source wired in to populate a list.
 class StockFilterDrawer extends ConsumerStatefulWidget {
   final StockFilter initialFilter;
   final ValueChanged<StockFilter> onApply;
@@ -38,6 +30,7 @@ class _StockFilterDrawerState extends ConsumerState<StockFilterDrawer> {
         : masterData.subcategories.where((s) => s.prodCatId.contains(_draft.categoryId)).toList();
 
     return Drawer(
+      backgroundColor: context.appColors.background,
       child: SafeArea(
         child: Column(
           children: [
@@ -57,40 +50,38 @@ class _StockFilterDrawerState extends ConsumerState<StockFilterDrawer> {
                   : ListView(
                 padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
                 children: [
-                  _section(
-                    title: 'Group',
-                    selectedId: _draft.groupId,
+                  SearchableDropdownField<int>(
+                    label: 'Group',
                     items: masterData.groups.map((g) => (g.id, g.groupName)).toList(),
-                    onSelected: (id) => setState(() => _draft = _draft.copyWith(groupId: id)),
-                    onClear: () => setState(() => _draft = _draft.clearing(groupId: true)),
+                    selectedId: _draft.groupId,
+                    onChanged: (id) => setState(() => _draft = id == null ? _draft.clearing(groupId: true) : _draft.copyWith(groupId: id)),
                   ),
                   const SizedBox(height: AppSizes.md),
-                  _section(
-                    title: 'Category',
-                    selectedId: _draft.categoryId,
+                  SearchableDropdownField<int>(
+                    label: 'Category',
                     items: categories.map((c) => (c.id, c.categoryName)).toList(),
-                    onSelected: (id) => setState(() {
+                    selectedId: _draft.categoryId,
+                    onChanged: (id) => setState(() {
                       // Changing category invalidates a previously
                       // selected subcategory that may no longer belong to it.
-                      _draft = _draft.copyWith(categoryId: id).clearing(subCategoryId: true);
+                      _draft = id == null
+                          ? _draft.clearing(categoryId: true, subCategoryId: true)
+                          : _draft.copyWith(categoryId: id).clearing(subCategoryId: true);
                     }),
-                    onClear: () => setState(() => _draft = _draft.clearing(categoryId: true, subCategoryId: true)),
                   ),
                   const SizedBox(height: AppSizes.md),
-                  _section(
-                    title: 'Subcategory',
-                    selectedId: _draft.subCategoryId,
+                  SearchableDropdownField<int>(
+                    label: 'Subcategory',
                     items: subcategories.map((s) => (s.id, s.subCategoryName)).toList(),
-                    onSelected: (id) => setState(() => _draft = _draft.copyWith(subCategoryId: id)),
-                    onClear: () => setState(() => _draft = _draft.clearing(subCategoryId: true)),
+                    selectedId: _draft.subCategoryId,
+                    onChanged: (id) => setState(() => _draft = id == null ? _draft.clearing(subCategoryId: true) : _draft.copyWith(subCategoryId: id)),
                   ),
                   const SizedBox(height: AppSizes.md),
-                  _section(
-                    title: 'Brand / Model',
-                    selectedId: _draft.brandId,
+                  SearchableDropdownField<int>(
+                    label: 'Brand / Model',
                     items: masterData.brands.map((b) => (b.id, b.modelName)).toList(),
-                    onSelected: (id) => setState(() => _draft = _draft.copyWith(brandId: id)),
-                    onClear: () => setState(() => _draft = _draft.clearing(brandId: true)),
+                    selectedId: _draft.brandId,
+                    onChanged: (id) => setState(() => _draft = id == null ? _draft.clearing(brandId: true) : _draft.copyWith(brandId: id)),
                   ),
                   const SizedBox(height: AppSizes.lg),
                 ],
@@ -127,51 +118,5 @@ class _StockFilterDrawerState extends ConsumerState<StockFilterDrawer> {
         ),
       ),
     );
-  }
-
-  Widget _section({
-    required String title,
-    required int? selectedId,
-    required List<(int, String)> items,
-    required ValueChanged<int?> onSelected,
-    required VoidCallback onClear,
-  }) {
-    return Builder(builder: (context) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(title, style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700, color: context.appColors.textSecondary)),
-              if (selectedId != null)
-                GestureDetector(
-                  onTap: onClear,
-                  child: const Text('Clear', style: TextStyle(fontSize: AppSizes.fontXs, color: AppColors.primary, fontWeight: FontWeight.w600)),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.xs),
-          if (items.isEmpty)
-            Text('No options available', style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint))
-          else
-            Wrap(
-              spacing: AppSizes.xs,
-              runSpacing: AppSizes.xs,
-              children: [
-                for (final (id, label) in items)
-                  ChoiceChip(
-                    label: Text(label),
-                    selected: selectedId == id,
-                    onSelected: (isSelected) => onSelected(isSelected ? id : null),
-                    selectedColor: AppColors.primaryLight,
-                    labelStyle: TextStyle(fontSize: AppSizes.fontXs, color: selectedId == id ? AppColors.primary : context.appColors.textSecondary),
-                    side: BorderSide(color: context.appColors.border),
-                  ),
-              ],
-            ),
-        ],
-      );
-    });
   }
 }

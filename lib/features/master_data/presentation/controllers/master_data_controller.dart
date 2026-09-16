@@ -10,9 +10,10 @@ import '../../data/models/subcategory_model.dart';
 import '../../data/repositories/master_data_repository.dart';
 import '../states/master_data_state.dart';
 
-
 final masterDataControllerProvider =
-NotifierProvider<MasterDataController, MasterDataState>(MasterDataController.new);
+    NotifierProvider<MasterDataController, MasterDataState>(
+      MasterDataController.new,
+    );
 
 class MasterDataController extends Notifier<MasterDataState> {
   static const _ttl = Duration(days: 1);
@@ -21,32 +22,28 @@ class MasterDataController extends Notifier<MasterDataState> {
   static const _subcategoriesKey = 'master_data_subcategories';
   static const _brandsKey = 'master_data_brands';
 
-  MasterDataRepository get _repository => ref.read(masterDataRepositoryProvider);
+  MasterDataRepository get _repository =>
+      ref.read(masterDataRepositoryProvider);
   LocalCacheService get _cache => ref.read(localCacheServiceProvider);
 
   @override
   MasterDataState build() {
-    print("STEP 1 ---");
     Future.microtask(loadAll);
     return MasterDataState.initial();
   }
 
   Future<void> loadAll({bool forceRefresh = true}) async {
-    print("STEP 1 --- 1");
-
     state = state.copyWith(isLoading: true, errorMessage: null);
-    print("STEP 1 --- 2");
 
     try {
       final groupsResult = await _loadGroups(forceRefresh: forceRefresh);
-      print("STEP 1 --- 2.1");
-      final subcategoriesResult = await _loadSubcategories(forceRefresh: forceRefresh);
-      print("STEP 1 --- 2.2");
+      final subcategoriesResult = await _loadSubcategories(
+        forceRefresh: forceRefresh,
+      );
       final brandsResult = await _loadBrands(forceRefresh: forceRefresh);
-      print("STEP 1 --- 2.3");
-      final categoriesResult = await _loadCategories(forceRefresh: forceRefresh);
-      print("STEP 1 --- 3");
-
+      final categoriesResult = await _loadCategories(
+        forceRefresh: forceRefresh,
+      );
 
       state = state.copyWith(
         isLoading: false,
@@ -56,8 +53,6 @@ class MasterDataController extends Notifier<MasterDataState> {
         brands: brandsResult.data,
         lastSyncedAt: DateTime.now(),
       );
-      print("STEP 1 --- 4");
-
       AppLogger.masterDataSynced(
         groups: groupsResult.data.length,
         categories: categoriesResult.data.categories.length,
@@ -69,52 +64,97 @@ class MasterDataController extends Notifier<MasterDataState> {
         brandsFromCache: brandsResult.fromCache,
       );
     } catch (error, stackTrace) {
-      print("STEP 1 --- 5");
-
       AppLogger.controllerFailed('MasterDataController.loadAll', error);
-      state = state.copyWith(isLoading: false, errorMessage: getErrorMessage(error));
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
     }
   }
 
   Future<void> refresh() => loadAll(forceRefresh: true);
 
-  Future<({List<GroupItem> data, bool fromCache})> _loadGroups({required bool forceRefresh}) async {
+  Future<({List<GroupItem> data, bool fromCache})> _loadGroups({
+    required bool forceRefresh,
+  }) async {
     if (!forceRefresh) {
-      final cached = _cache.read<GroupModel>(_groupsKey, CacheSensitivity.standard, GroupModel.fromJson);
+      final cached = _cache.read<GroupModel>(
+        _groupsKey,
+        CacheSensitivity.standard,
+        GroupModel.fromJson,
+      );
       if (cached != null) return (data: cached.resultData, fromCache: true);
     }
     final fresh = await _repository.getGroups();
-    await _cache.write<GroupModel>(_groupsKey, fresh, CachePolicy.standard(ttl: _ttl), (m) => m.toJson());
+    await _cache.write<GroupModel>(
+      _groupsKey,
+      fresh,
+      CachePolicy.standard(ttl: _ttl),
+      (m) => m.toJson(),
+    );
     return (data: fresh.resultData, fromCache: false);
   }
 
-  Future<({CategoryResultData data, bool fromCache})> _loadCategories({required bool forceRefresh}) async {
+  Future<({CategoryResultData data, bool fromCache})> _loadCategories({
+    required bool forceRefresh,
+  }) async {
     if (!forceRefresh) {
-      final cached = _cache.read<CategoryModel>(_categoriesKey, CacheSensitivity.standard, CategoryModel.fromJson);
+      final cached = _cache.read<CategoryModel>(
+        _categoriesKey,
+        CacheSensitivity.standard,
+        CategoryModel.fromJson,
+      );
       if (cached != null) return (data: cached.resultData, fromCache: true);
     }
     final fresh = await _repository.getCategories();
-    await _cache.write<CategoryModel>(_categoriesKey, fresh, CachePolicy.standard(ttl: _ttl), (m) => m.toJson());
+    await _cache.write<CategoryModel>(
+      _categoriesKey,
+      fresh,
+      CachePolicy.standard(ttl: _ttl),
+      (m) => m.toJson(),
+    );
     return (data: fresh.resultData, fromCache: false);
   }
 
-  Future<({List<SubcategoryItem> data, bool fromCache})> _loadSubcategories({required bool forceRefresh}) async {
+  Future<({List<SubcategoryItem> data, bool fromCache})> _loadSubcategories({
+    required bool forceRefresh,
+  }) async {
     if (!forceRefresh) {
-      final cached = _cache.read<SubcategoryModel>(_subcategoriesKey, CacheSensitivity.standard, SubcategoryModel.fromJson);
+      final cached = _cache.read<SubcategoryModel>(
+        _subcategoriesKey,
+        CacheSensitivity.standard,
+        SubcategoryModel.fromJson,
+      );
       if (cached != null) return (data: cached.resultData, fromCache: true);
     }
     final fresh = await _repository.getSubcategories();
-    await _cache.write<SubcategoryModel>(_subcategoriesKey, fresh, CachePolicy.standard(ttl: _ttl), (m) => m.toJson());
+    await _cache.write<SubcategoryModel>(
+      _subcategoriesKey,
+      fresh,
+      CachePolicy.standard(ttl: _ttl),
+      (m) => m.toJson(),
+    );
     return (data: fresh.resultData, fromCache: false);
   }
 
-  Future<({List<BrandItem> data, bool fromCache})> _loadBrands({required bool forceRefresh}) async {
+  Future<({List<BrandItem> data, bool fromCache})> _loadBrands({
+    required bool forceRefresh,
+  }) async {
     if (!forceRefresh) {
-      final cached = _cache.read<BrandModel>(_brandsKey, CacheSensitivity.standard, BrandModel.fromJson);
+      final cached = _cache.read<BrandModel>(
+        _brandsKey,
+        CacheSensitivity.standard,
+        BrandModel.fromJson,
+      );
       if (cached != null) return (data: cached.resultData, fromCache: true);
     }
     final fresh = await _repository.getBrands();
-    await _cache.write<BrandModel>(_brandsKey, fresh, CachePolicy.standard(ttl: _ttl), (m) => m.toJson());
+    await _cache.write<BrandModel>(
+      _brandsKey,
+      fresh,
+      CachePolicy.standard(ttl: _ttl),
+      (m) => m.toJson(),
+    );
     return (data: fresh.resultData, fromCache: false);
   }
 }

@@ -240,7 +240,7 @@ def main():
     }} catch (error) {{
       state = state.copyWith(
         {loading_field}: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }}
@@ -264,7 +264,7 @@ def main():
     }} catch (error) {{
       state = state.copyWith(
         {loading_field}: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }}

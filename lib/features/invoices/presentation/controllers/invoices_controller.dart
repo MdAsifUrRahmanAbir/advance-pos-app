@@ -66,10 +66,10 @@ class InvoicesController extends Notifier<InvoicesState> {
         hasMore:
             (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isLoadingMore: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
     }
   }
@@ -102,10 +102,10 @@ class InvoicesController extends Notifier<InvoicesState> {
         hasMore: invoices.resultData.length < invoices.recordsFiltered,
       );
       return true;
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isInvoicesLoading: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }

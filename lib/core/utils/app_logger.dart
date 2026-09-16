@@ -1,7 +1,21 @@
+import 'dart:developer' as developer;
+
 import 'package:flutter/foundation.dart';
 
 class AppLogger {
   AppLogger._();
+
+  // TODO: paste inside your existing AppLogger class — assuming static
+// methods; adjust if your ANSI-boxed logger is structured differently.
+  static void error(String message, Object error, [StackTrace? stackTrace]) {
+    developer.log(
+      message,
+      name: 'API_ERROR',
+      error: error,          // <-- makes console show full error object
+      stackTrace: stackTrace, // <-- makes console line clickable -> source
+      level: 1000,            // SEVERE
+    );
+  }
 
   static const String _line =
       '────────────────────────────────────────────────────────────';

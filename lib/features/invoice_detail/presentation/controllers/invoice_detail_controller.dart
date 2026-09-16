@@ -33,10 +33,10 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
     try {
       final result = await _repository.getInvoiceDetail(invoiceId);
       state = state.copyWith(isLoading: false, invoiceDetailModel: result);
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
     }
   }

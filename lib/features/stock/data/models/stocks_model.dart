@@ -127,27 +127,27 @@ class Stock {
 }
 
 class BranchStock {
-  final int sl;
+  // final int sl;
   final int id;
   final String name;
   final int stock;
 
   BranchStock({
-    required this.sl,
+    // required this.sl,
     required this.id,
     required this.name,
     required this.stock,
   });
 
   factory BranchStock.fromJson(Map<String, dynamic> json) => BranchStock(
-    sl: json["sl"],
+    // sl: json["sl"],
     id: json["id"],
     name: json["name"] ?? "",
     stock: json["stock"],
   );
 
   Map<String, dynamic> toJson() => {
-    "sl": sl,
+    // "sl": sl,
     "id": id,
     "name": name,
     "stock": stock,

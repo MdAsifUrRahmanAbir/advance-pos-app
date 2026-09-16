@@ -5,6 +5,17 @@ class AppStrings {
   static const String appTagline = 'Next-Gen Business Platform';
   static const String connectingToServers = 'Connecting to secure servers...';
 
+  static const String dataParsingError =
+      'Something went wrong while loading data. Please try again.';
+  static const String unexpectedError =
+      'An unexpected error occurred. Please try again.';
+
+  static const String searchHint = 'Search...';
+  static const String noResultsFound = 'No results found';
+  static const String selectOption = 'Select';
+  static const String noOptionsAvailable = 'No options available';
+  static const String clear = 'Clear';
+
   static const String appName = 'POS App';
   static const String getStarted = 'Get Started';
   static const String login = 'Login';

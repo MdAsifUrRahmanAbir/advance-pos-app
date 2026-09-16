@@ -40,10 +40,10 @@ class ProductController extends Notifier<ProductState> {
       final product = await _repository.getProduct();
       state = state.copyWith(isProductLoading: false, productModel: product);
       return true;
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isProductLoading: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }

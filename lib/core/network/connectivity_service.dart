@@ -61,8 +61,9 @@ class ConnectivityService {
     final hasInternet = await _hasActualInternet();
     if (hasInternet != _lastStatus) {
       _lastStatus = hasInternet; // set first
-      if (!_statusController.isClosed)
+      if (!_statusController.isClosed) {
         _statusController.add(hasInternet); // then notify
+      }
     }
     return hasInternet;
   }

@@ -78,7 +78,6 @@ class StockController extends Notifier<StockState> {
         brandId: state.filter.brandId,
       );
       final newItems = _mapToStockItems(stocks);
-      print("STOCK LEANGTH: ${state.allItems.length}");
       state = state.copyWith(
         isLoadingMore: false,
         stocksModel: stocks,
@@ -86,10 +85,10 @@ class StockController extends Notifier<StockState> {
         currentStart: nextStart,
         hasMore: (nextStart + newItems.length) < stocks.recordsFiltered,
       );
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isLoadingMore: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
     }
   }
@@ -120,6 +119,7 @@ class StockController extends Notifier<StockState> {
       currentStart: reset ? 0 : state.currentStart,
       hasMore: reset ? true : state.hasMore,
     );
+
     try {
       final stocks = await _repository.getStocks(
         start: 0,
@@ -131,6 +131,7 @@ class StockController extends Notifier<StockState> {
         subCategoryId: state.filter.subCategoryId,
         brandId: state.filter.brandId,
       );
+
       final newItems = _mapToStockItems(stocks);
 
       state = state.copyWith(
@@ -141,10 +142,10 @@ class StockController extends Notifier<StockState> {
         hasMore: newItems.length < stocks.recordsFiltered,
       );
       return true;
-    } catch (error) {
+    } catch (error, stackTrace) {
       state = state.copyWith(
         isStocksLoading: false,
-        errorMessage: getErrorMessage(error),
+        errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }
