@@ -420,4 +420,10 @@ class AppStrings {
 
   static const String invoicePaymentAccountLabel = 'Payment Account';
   static const String invoiceBarcodeLabel = 'Barcode';
+
+
+  static const String stockLowStockNoteTemplate =
+      'Only {qty} {unit} left — below the reorder threshold of {threshold} {unit}.';
+  static const String stockOutOfStockNote =
+      'This item is currently out of stock. Restock to resume sales.';
 }

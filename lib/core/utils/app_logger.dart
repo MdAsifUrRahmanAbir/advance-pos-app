@@ -108,4 +108,48 @@ class AppLogger {
 
     _box('🚨', 'API ERROR  •  $method', lines.join('\n'));
   }
+
+
+  // ── Master Data ─────────────────────────────────────────────
+
+  static void masterDataSynced1({
+    required int groups,
+    required int categories,
+    required int subcategories,
+    required int brands,
+  }) {
+    _box(
+      '📦',
+      'MASTER DATA SYNCED',
+      'Groups       : $groups\n'
+          'Categories   : $categories\n'
+          'Subcategories: $subcategories\n'
+          'Brands       : $brands',
+    );
+  }
+
+  // ── Master Data ─────────────────────────────────────────────
+
+  static void masterDataSynced({
+    required int groups,
+    required int categories,
+    required int subcategories,
+    required int brands,
+    required bool groupsFromCache,
+    required bool categoriesFromCache,
+    required bool subcategoriesFromCache,
+    required bool brandsFromCache,
+  }) {
+    String source(bool fromCache) => fromCache ? 'CACHE' : 'API';
+
+    _box(
+      '📦',
+      'MASTER DATA SYNCED',
+      'Groups       : $groups  (${source(groupsFromCache)})\n'
+          'Categories   : $categories  (${source(categoriesFromCache)})\n'
+          'Subcategories: $subcategories  (${source(subcategoriesFromCache)})\n'
+          'Brands       : $brands  (${source(brandsFromCache)})',
+    );
+  }
 }
+

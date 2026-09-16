@@ -72,7 +72,7 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
     final controller = ref.read(stockControllerProvider.notifier);
-    final items = state.allItems;
+    final items = state.filteredItems;
 
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 

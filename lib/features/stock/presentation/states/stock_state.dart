@@ -14,6 +14,8 @@ class StockItem {
   final StockStatus status;
   final String category;
   final double sellingPrice;
+  final String unit;
+  final int lowStockThreshold;
 
   const StockItem({
     required this.id,
@@ -24,6 +26,8 @@ class StockItem {
     required this.status,
     required this.category,
     required this.sellingPrice,
+    this.unit = 'pcs', // TODO: not available from the stock API yet — defaulted.
+    this.lowStockThreshold = 10, // TODO: not available from the stock API yet — defaulted.
   });
 }
 
@@ -33,7 +37,7 @@ class StockState {
   final bool isLoadingMore;
   final String? errorMessage;
   final String searchQuery;
-  final String selectedStatus;
+  final String selectedStatus; // 'all' | one of StockStatus.name
   final StockFilter filter;
   final StocksModel? stocksModel;
   final List<StockItem> allItems;
@@ -54,6 +58,18 @@ class StockState {
   });
 
   factory StockState.initial() => const StockState();
+
+  /// Client-side status filter over the currently-loaded page(s) — the
+  /// quick "All/In Stock/Low Stock/Out of Stock" tabs. Separate from
+  /// [filter] (Group/Category/Subcategory/Brand), which is applied
+  /// server-side via the filter drawer. Same caveat as Invoices: since
+  /// this only filters what's already loaded via infinite scroll, a
+  /// status with few loaded matches may show few results until more
+  /// pages load in.
+  List<StockItem> get filteredItems {
+    if (selectedStatus == 'all') return allItems;
+    return allItems.where((item) => item.status.name == selectedStatus).toList();
+  }
 
   StockState copyWith({
     bool? isStocksLoading,

@@ -48,9 +48,14 @@ class SubcategoryItem {
   factory SubcategoryItem.fromJson(Map<String, dynamic> json) => SubcategoryItem(
     sl: json["sl"],
     id: json["id"],
-    prodCatId: List<int>.from(json["prod_cat_id"].map((x) => x)),
-    subCategoryName: json["sub_category_name"],
-    subCategoryCode: json["sub_category_code"],
+    // `prod_cat_id` has been observed null/missing on some records —
+    // defaulting to an empty list instead of letting `.map` on null
+    // throw, which was silently aborting the whole master-data batch.
+    prodCatId: json["prod_cat_id"] == null
+        ? const []
+        : List<int>.from((json["prod_cat_id"] as List).map((x) => x as int)),
+    subCategoryName: json["sub_category_name"] ?? '',
+    subCategoryCode: json["sub_category_code"] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

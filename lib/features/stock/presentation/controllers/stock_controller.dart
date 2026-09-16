@@ -8,7 +8,9 @@ import '../states/stock_filter.dart';
 import '../states/stock_state.dart';
 
 final stockControllerProvider =
-NotifierProvider.autoDispose<StockController, StockState>(StockController.new);
+    NotifierProvider.autoDispose<StockController, StockState>(
+      StockController.new,
+    );
 
 class StockController extends Notifier<StockState> {
   late final TextEditingController searchController;
@@ -76,7 +78,7 @@ class StockController extends Notifier<StockState> {
         brandId: state.filter.brandId,
       );
       final newItems = _mapToStockItems(stocks);
-
+      print("STOCK LEANGTH: ${state.allItems.length}");
       state = state.copyWith(
         isLoadingMore: false,
         stocksModel: stocks,
@@ -98,7 +100,9 @@ class StockController extends Notifier<StockState> {
         .firstOrNull;
 
     updateSearchQuery(code);
-    state = state.copyWith(errorMessage: match == null ? 'Product not found.' : null);
+    state = state.copyWith(
+      errorMessage: match == null ? 'Product not found.' : null,
+    );
 
     return match;
   }
@@ -156,11 +160,13 @@ class StockController extends Notifier<StockState> {
         id: result.product.id.toString(),
         name: product.name,
         sku: product.skuCode,
-        barcode: product.barcode.isNotEmpty ? product.barcode : product.sysBarcode,
+        barcode: product.barcode.isNotEmpty
+            ? product.barcode
+            : product.sysBarcode,
         quantity: quantity,
         status: _mapStatus(quantity, null),
         category: 'Uncategorized', // TODO: not available from this endpoint
-        sellingPrice: 0.0,          // TODO: not available from this endpoint
+        sellingPrice: 0.0, // TODO: not available from this endpoint
       );
     }).toList();
   }

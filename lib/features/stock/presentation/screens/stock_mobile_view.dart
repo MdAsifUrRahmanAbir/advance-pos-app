@@ -75,7 +75,7 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
     final controller = ref.read(stockControllerProvider.notifier);
-    final items = state.allItems;
+    final items = state.filteredItems;
 
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 
@@ -98,53 +98,53 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
         isInitialLoad
             ? SizedBox.shrink()
             : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-                child: StockFilterTabs(
-                  selected: state.selectedStatus,
-                  onChanged: controller.selectStatus,
-                ),
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: StockFilterTabs(
+            selected: state.selectedStatus,
+            onChanged: controller.selectStatus,
+          ),
+        ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
           child: isInitialLoad
               ? const StockListSkeleton(itemCount: 6)
               : items.isEmpty
               ? EmptyState(
-                  title: AppStrings.stockTitle,
-                  message: AppStrings.stockEmptyMessage,
-                  icon: Icons.inventory_2_outlined,
-                )
+            title: AppStrings.stockTitle,
+            message: AppStrings.stockEmptyMessage,
+            icon: Icons.inventory_2_outlined,
+          )
               : CustomRefreshWrapper(
-                  onRefresh: controller.refresh,
-                  child: ListView(
-                    controller: _scrollController,
-                    children: [
-                      ListView.separated(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSizes.md,
-                        ),
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: items.length,
-                        separatorBuilder: (_, _) =>
-                            const SizedBox(height: AppSizes.sm + AppSizes.xs),
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return StockCardTile(
-                            item: item,
-                            onShowInfo: () => _showInfo(context, item),
-                          ).fadeSlideIn(delay: (index * 60).ms);
-                        },
-                      ),
-                      if (state.isLoadingMore)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: AppSizes.md),
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                      SizedBox(height: AppSizes.bottomNavBarHeight / 2),
-                    ],
+            onRefresh: controller.refresh,
+            child: ListView(
+              controller: _scrollController,
+              children: [
+                ListView.separated(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
                   ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: items.length,
+                  separatorBuilder: (_, _) =>
+                  const SizedBox(height: AppSizes.sm + AppSizes.xs),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return StockCardTile(
+                      item: item,
+                      onShowInfo: () => _showInfo(context, item),
+                    ).fadeSlideIn(delay: (index * 60).ms);
+                  },
                 ),
+                if (state.isLoadingMore)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: AppSizes.md),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                SizedBox(height: AppSizes.bottomNavBarHeight / 2),
+              ],
+            ),
+          ),
         ),
       ],
     );

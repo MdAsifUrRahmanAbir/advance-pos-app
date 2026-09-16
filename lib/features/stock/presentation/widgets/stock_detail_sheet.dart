@@ -8,8 +8,8 @@ import '../states/stock_state.dart';
 
 /// Detail content shown in a [CustomBottomSheet] when "Show Info" is
 /// tapped on a [StockCardTile] — every field on the item, plus the
-/// specific reason for a low/out-of-stock/slow-moving status so a store
-/// manager can act on it without opening a separate screen.
+/// specific reason for a low/out-of-stock status so a store manager can
+/// act on it without opening a separate screen.
 class StockDetailSheet extends StatelessWidget {
   final StockItem item;
 
@@ -18,9 +18,12 @@ class StockDetailSheet extends StatelessWidget {
   String? get _statusNote {
     switch (item.status) {
       case StockStatus.lowStock:
-        return 'Only ${item.quantity} {item.unit} left — below the reorder threshold of {item.lowStockThreshold} {item.unit}.';
+        return AppStrings.stockLowStockNoteTemplate
+            .replaceAll('{qty}', '${item.quantity}')
+            .replaceAll('{unit}', item.unit)
+            .replaceAll('{threshold}', '${item.lowStockThreshold}');
       case StockStatus.outOfStock:
-        return 'This item is currently out of stock. Restock to resume sales.';
+        return AppStrings.stockOutOfStockNote;
       case StockStatus.inStock:
         return null;
     }
@@ -48,7 +51,7 @@ class StockDetailSheet extends StatelessWidget {
         _DetailRow(label: AppStrings.stockBarcodeLabel, value: item.barcode),
         _DetailRow(
           label: AppStrings.stockQuantityLabel,
-          value: '${item.quantity} {item.unit}',
+          value: '${item.quantity} ${item.unit}',
         ),
         _DetailRow(
           label: AppStrings.sellingPriceLabel,
