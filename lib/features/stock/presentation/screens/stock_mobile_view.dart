@@ -10,9 +10,7 @@ import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
-import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../controllers/stock_controller.dart';
-import '../states/stock_state.dart';
 import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
 import '../widgets/stock_filter_tabs.dart';
@@ -77,7 +75,7 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
     final controller = ref.read(stockControllerProvider.notifier);
-    final items = state.filteredItems;
+    final items = state.allItems;
 
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 
@@ -85,7 +83,7 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
       children: [
         AppHeaderBar(
           title: AppStrings.stockTitle,
-          onTrailingTap: () {},
+          onTrailingTap: () => Scaffold.of(context).openEndDrawer(),
           trailingIcon: Icons.filter_alt_sharp,
         ),
         const SizedBox(height: AppSizes.md),

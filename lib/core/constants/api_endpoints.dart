@@ -16,4 +16,12 @@ class ApiEndpoints {
   // Invoices /sales/view/
   static const String invoices = "/sales?length=15";
   static String invoiceDetails(String id) => "/sales/view/$id";
+
+
+  // Master data — fetched once per day, shared across all product features.
+  static const String groups = "/group/all";
+  static String categories({int topSaleCategoryLimit = 10}) =>
+      "/category?top_sale_category_limit=$topSaleCategoryLimit";
+  static const String subcategories = "/subcategory/all";
+  static const String brands = "/model/all";
 }

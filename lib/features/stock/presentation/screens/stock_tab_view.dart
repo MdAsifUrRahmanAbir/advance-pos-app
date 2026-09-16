@@ -72,7 +72,7 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
     final controller = ref.read(stockControllerProvider.notifier);
-    final items = state.filteredItems;
+    final items = state.allItems;
 
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 
@@ -80,7 +80,7 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
       children: [
         AppHeaderBar(
           title: AppStrings.stockTitle,
-          onTrailingTap: () {},
+          onTrailingTap: () => Scaffold.of(context).openEndDrawer(),
           trailingIcon: Icons.filter_alt_sharp,
         ),
         const SizedBox(height: AppSizes.md),

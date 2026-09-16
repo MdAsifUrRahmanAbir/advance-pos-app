@@ -25,8 +25,6 @@ class StockCardTile extends StatelessWidget {
         return (AppColors.warning, AppStrings.stockStatusLowStock);
       case StockStatus.outOfStock:
         return (AppColors.error, AppStrings.stockStatusOutOfStock);
-      case StockStatus.slowMoving:
-        return (AppColors.info, AppStrings.stockStatusSlowMoving);
     }
   }
 
@@ -107,7 +105,7 @@ class StockCardTile extends StatelessWidget {
                   const SizedBox(height: AppSizes.sm / 2),
                   _StatColumn(
                     label: AppStrings.stockQuantityLabel,
-                    value: '${item.quantity} ${item.unit}',
+                    value: '${item.quantity} {item.unit}',
                     isTable: false,
                   ),
                 ],
@@ -115,26 +113,6 @@ class StockCardTile extends StatelessWidget {
             ],
           ),
 
-          // const SizedBox(height: AppSizes.sm + AppSizes.xs),
-          // Row(
-          //   children: [
-          //     Expanded(
-          //       child: _StatColumn(
-          //         label: AppStrings.stockQuantityLabel,
-          //         value: '${item.quantity} ${item.unit}',
-          //       ),
-          //     ),
-          //     Expanded(
-          //       child: _StatColumn(
-          //         label: AppStrings.sellingPriceLabel,
-          //         value: CurrencyFormatter.format(
-          //           item.sellingPrice,
-          //           symbol: '৳',
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
           Divider(height: 1, color: context.appColors.divider),
           const SizedBox(height: AppSizes.sm),

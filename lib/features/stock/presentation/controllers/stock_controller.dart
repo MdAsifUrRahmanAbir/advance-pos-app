@@ -4,12 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/models/stocks_model.dart';
 import '../../data/repositories/stock_repository.dart';
+import '../states/stock_filter.dart';
 import '../states/stock_state.dart';
 
 final stockControllerProvider =
-    NotifierProvider.autoDispose<StockController, StockState>(
-      StockController.new,
-    );
+NotifierProvider.autoDispose<StockController, StockState>(StockController.new);
 
 class StockController extends Notifier<StockState> {
   late final TextEditingController searchController;
@@ -40,6 +39,18 @@ class StockController extends Notifier<StockState> {
     state = state.copyWith(searchQuery: query);
   }
 
+  /// Applied by [StockFilterDrawer]'s "Apply" button — replaces the
+  /// active filter and refetches from scratch.
+  Future<void> applyFilter(StockFilter filter) async {
+    state = state.copyWith(filter: filter);
+    await getStocks(reset: true);
+  }
+
+  Future<void> clearFilter() async {
+    state = state.copyWith(filter: StockFilter.empty);
+    await getStocks(reset: true);
+  }
+
   /// Pull-to-refresh: resets pagination and refetches from start=0.
   Future<void> refresh() async {
     await getStocks(reset: true);
@@ -57,6 +68,12 @@ class StockController extends Notifier<StockState> {
       final stocks = await _repository.getStocks(
         start: nextStart,
         length: _pageLength,
+        search: state.searchQuery,
+        supplierId: state.filter.supplierId,
+        groupId: state.filter.groupId,
+        categoryId: state.filter.categoryId,
+        subCategoryId: state.filter.subCategoryId,
+        brandId: state.filter.brandId,
       );
       final newItems = _mapToStockItems(stocks);
 
@@ -81,9 +98,7 @@ class StockController extends Notifier<StockState> {
         .firstOrNull;
 
     updateSearchQuery(code);
-    state = state.copyWith(
-      errorMessage: match == null ? 'Product not found.' : null,
-    );
+    state = state.copyWith(errorMessage: match == null ? 'Product not found.' : null);
 
     return match;
   }
@@ -92,7 +107,7 @@ class StockController extends Notifier<StockState> {
   // GET (initial load or full reset)
   // ───────────────────────────────────────────────
   /// [reset] clears existing items and refetches from start=0 — used by
-  /// both the initial build() call and pull-to-refresh.
+  /// both the initial build() call, pull-to-refresh, and filter changes.
   Future<bool> getStocks({bool reset = false}) async {
     state = state.copyWith(
       isStocksLoading: true,
@@ -102,7 +117,16 @@ class StockController extends Notifier<StockState> {
       hasMore: reset ? true : state.hasMore,
     );
     try {
-      final stocks = await _repository.getStocks(start: 0, length: _pageLength);
+      final stocks = await _repository.getStocks(
+        start: 0,
+        length: _pageLength,
+        search: state.searchQuery,
+        supplierId: state.filter.supplierId,
+        groupId: state.filter.groupId,
+        categoryId: state.filter.categoryId,
+        subCategoryId: state.filter.subCategoryId,
+        brandId: state.filter.brandId,
+      );
       final newItems = _mapToStockItems(stocks);
 
       state = state.copyWith(
@@ -132,13 +156,11 @@ class StockController extends Notifier<StockState> {
         id: result.product.id.toString(),
         name: product.name,
         sku: product.skuCode,
-        barcode: product.barcode.isNotEmpty
-            ? product.barcode
-            : product.sysBarcode,
+        barcode: product.barcode.isNotEmpty ? product.barcode : product.sysBarcode,
         quantity: quantity,
         status: _mapStatus(quantity, null),
         category: 'Uncategorized', // TODO: not available from this endpoint
-        sellingPrice: 0.0, // TODO: not available from this endpoint
+        sellingPrice: 0.0,          // TODO: not available from this endpoint
       );
     }).toList();
   }

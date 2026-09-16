@@ -18,11 +18,9 @@ class StockDetailSheet extends StatelessWidget {
   String? get _statusNote {
     switch (item.status) {
       case StockStatus.lowStock:
-        return 'Only ${item.quantity} ${item.unit} left — below the reorder threshold of ${item.lowStockThreshold} ${item.unit}.';
+        return 'Only ${item.quantity} {item.unit} left — below the reorder threshold of {item.lowStockThreshold} {item.unit}.';
       case StockStatus.outOfStock:
         return 'This item is currently out of stock. Restock to resume sales.';
-      case StockStatus.slowMoving:
-        return 'This item has seen little to no sales recently despite healthy stock levels.';
       case StockStatus.inStock:
         return null;
     }
@@ -50,7 +48,7 @@ class StockDetailSheet extends StatelessWidget {
         _DetailRow(label: AppStrings.stockBarcodeLabel, value: item.barcode),
         _DetailRow(
           label: AppStrings.stockQuantityLabel,
-          value: '${item.quantity} ${item.unit}',
+          value: '${item.quantity} {item.unit}',
         ),
         _DetailRow(
           label: AppStrings.sellingPriceLabel,
