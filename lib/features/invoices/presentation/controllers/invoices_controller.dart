@@ -5,6 +5,8 @@ import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/model/invoices_model.dart';
 import '../../data/repositories/invoices_repository.dart';
+import '../states/invoice_date_presets.dart';
+import '../states/invoice_filter.dart';
 import '../states/invoices_state.dart';
 
 final invoicesControllerProvider =
@@ -29,13 +31,60 @@ class InvoicesController extends Notifier<InvoicesState> {
     return InvoicesState.initial();
   }
 
+  void selectStatus(String statusKey) {
+    state = state.copyWith(selectedStatus: statusKey);
+  }
+
+  /// A text search and the drawer filter are mutually-exclusive ways of
+  /// narrowing the list — running a search clears any active filter
+  /// (group/category/etc.) and date preset, same rationale as Stock.
   void updateSearchQuery(String query) {
     searchController.value = searchController.value.copyWith(
       text: query,
       selection: TextSelection.collapsed(offset: query.length),
     );
-    state = state.copyWith(searchQuery: query);
+    state = state.copyWith(
+      searchQuery: query,
+      filter: InvoiceFilter.empty,
+      clearSelectedDatePreset: true,
+    );
     getInvoices(reset: true);
+  }
+
+  /// Tapping a date-preset chip (Today/Yesterday/Last 7 Days/This
+  /// Month/Last Month) computes concrete dates and applies them
+  /// immediately. Tapping the already-active preset again clears the
+  /// date filter back to "any date".
+  Future<void> selectDatePreset(String? presetKey) async {
+    if (presetKey == null) {
+      state = state.copyWith(
+        clearSelectedDatePreset: true,
+        filter: state.filter.clearing(startDate: true, endDate: true),
+      );
+    } else {
+      final range = InvoiceDatePresets.rangeFor(presetKey);
+      state = state.copyWith(
+        selectedDatePreset: presetKey,
+        filter: state.filter.copyWith(startDate: range.start, endDate: range.end),
+      );
+    }
+    await getInvoices(reset: true);
+  }
+
+  /// Applied by [InvoiceFilterDrawer]'s "Apply" button — replaces the
+  /// active filter (including any custom date range picked there) and
+  /// refetches from scratch. Clears the quick-preset chip highlight
+  /// since the drawer's own date range now takes precedence — note this
+  /// also happens if the user opens the drawer and applies without
+  /// touching dates at all, a minor UX nuance rather than a bug.
+  Future<void> applyFilter(InvoiceFilter filter) async {
+    state = state.copyWith(filter: filter, clearSelectedDatePreset: true);
+    await getInvoices(reset: true);
+  }
+
+  Future<void> clearFilter() async {
+    state = state.copyWith(filter: InvoiceFilter.empty, clearSelectedDatePreset: true);
+    await getInvoices(reset: true);
   }
 
   Future<void> refresh() async {
@@ -58,6 +107,14 @@ class InvoicesController extends Notifier<InvoicesState> {
         start: nextStart,
         length: _pageLength,
         search: state.searchQuery,
+        groupId: state.filter.groupId,
+        categoryId: state.filter.categoryId,
+        subCategoryId: state.filter.subCategoryId,
+        brandId: state.filter.brandId,
+        customerId: state.filter.customerId,
+        employeeId: state.filter.employeeId,
+        startDate: state.filter.startDate,
+        endDate: state.filter.endDate,
       );
 
       state = state.copyWith(
@@ -95,6 +152,14 @@ class InvoicesController extends Notifier<InvoicesState> {
         start: 0,
         length: _pageLength,
         search: state.searchQuery,
+        groupId: state.filter.groupId,
+        categoryId: state.filter.categoryId,
+        subCategoryId: state.filter.subCategoryId,
+        brandId: state.filter.brandId,
+        customerId: state.filter.customerId,
+        employeeId: state.filter.employeeId,
+        startDate: state.filter.startDate,
+        endDate: state.filter.endDate,
       );
 
       state = state.copyWith(

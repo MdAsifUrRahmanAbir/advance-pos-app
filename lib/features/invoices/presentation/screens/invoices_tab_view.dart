@@ -11,14 +11,12 @@ import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
-// import '../../../../core/widgets/utility/technical_error_screen.dart';
 import '../../../../routes/route_names.dart';
 import '../../data/model/invoices_model.dart';
 import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
-import '../widgets/invoice_filter_tabs.dart';
-import '../widgets/invoice_status_badge.dart';
+import '../widgets/invoice_quick_filter_tabs.dart';
 
 /// Same content as [InvoicesMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -31,7 +29,6 @@ class InvoicesTabView extends ConsumerStatefulWidget {
 
 class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
   final _scrollController = ScrollController();
-  String _statusFilter = 'all';
 
   @override
   void initState() {
@@ -58,16 +55,6 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
-  List<ResultDatum> _applyStatusFilter(List<ResultDatum> invoices) {
-    if (_statusFilter == 'all') return invoices;
-    return invoices
-        .where(
-          (invoice) =>
-      InvoiceStatusBadge.statusOf(invoice).name == _statusFilter,
-    )
-        .toList();
-  }
-
   void _viewTechnicalDetails(InvoicesState state, InvoicesController controller) {
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -92,12 +79,14 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
     final controller = ref.read(invoicesControllerProvider.notifier);
     final isInitialLoading = state.isInvoicesLoading && state.allItems.isEmpty;
     final hasError = state.errorMessage != null && state.allItems.isEmpty;
-    final invoices = _applyStatusFilter(state.allItems);
+    final invoices = state.filteredItems;
 
     return Column(
       children: [
         AppHeaderBar(
           title: AppStrings.invoicesTitle,
+          trailingIcon: Icons.filter_alt_sharp,
+          onTrailingTap: () => Scaffold.of(context).openEndDrawer(),
         ),
         Expanded(
           child: Center(
@@ -107,12 +96,7 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSizes.lg,
-                      AppSizes.md,
-                      AppSizes.lg,
-                      0,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(AppSizes.lg, AppSizes.md, AppSizes.lg, 0),
                     child: SearchField(
                       hintText: AppStrings.invoiceSearchHint,
                       controller: controller.searchController,
@@ -121,9 +105,11 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(AppSizes.lg),
-                    child: InvoiceFilterTabs(
-                      selected: _statusFilter,
-                      onChanged: (v) => setState(() => _statusFilter = v),
+                    child: InvoiceQuickFilterTabs(
+                      selectedStatus: state.selectedStatus,
+                      selectedDatePreset: state.selectedDatePreset,
+                      onStatusSelected: controller.selectStatus,
+                      onDatePresetSelected: controller.selectDatePreset,
                     ),
                   ),
                   Expanded(
@@ -133,20 +119,15 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                       children: [
                         Expanded(
                           child: ErrorState(
-                            message: state.errorMessage ??
-                                AppStrings.errorOccurred,
-                            onRetry: () =>
-                                controller.getInvoices(reset: true),
+                            message: state.errorMessage ?? AppStrings.errorOccurred,
+                            onRetry: () => controller.getInvoices(reset: true),
                           ),
                         ),
                         if (state.technicalDetails != null)
                           Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSizes.lg,
-                            ),
+                            padding: const EdgeInsets.only(bottom: AppSizes.lg),
                             child: TextButton(
-                              onPressed: () =>
-                                  _viewTechnicalDetails(state, controller),
+                              onPressed: () => _viewTechnicalDetails(state, controller),
                               child: const Text('View technical details'),
                             ),
                           ),
@@ -162,33 +143,19 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                       onRefresh: controller.refresh,
                       child: ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSizes.lg,
-                          0,
-                          AppSizes.lg,
-                          AppSizes.lg,
-                        ),
+                        padding: const EdgeInsets.fromLTRB(AppSizes.lg, 0, AppSizes.lg, AppSizes.lg),
                         physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount:
-                        invoices.length + (state.hasMore ? 1 : 0),
+                        itemCount: invoices.length + (state.hasMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= invoices.length) {
                             return const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: AppSizes.lg,
-                              ),
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              ),
+                              padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
+                              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
                             );
                           }
                           final invoice = invoices[index];
                           return Padding(
-                            padding: const EdgeInsets.only(
-                              bottom: AppSizes.sm + AppSizes.xs,
-                            ),
+                            padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
                             child: InvoiceCardItem(
                               invoice: invoice,
                               onTap: () => _openDetail(context, invoice),

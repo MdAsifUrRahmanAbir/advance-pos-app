@@ -19,8 +19,7 @@ import '../../data/model/invoices_model.dart';
 import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
-import '../widgets/invoice_filter_tabs.dart';
-import '../widgets/invoice_status_badge.dart';
+import '../widgets/invoice_quick_filter_tabs.dart';
 
 class InvoicesMobileView extends ConsumerStatefulWidget {
   const InvoicesMobileView({super.key});
@@ -31,7 +30,6 @@ class InvoicesMobileView extends ConsumerStatefulWidget {
 
 class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
   final _scrollController = ScrollController();
-  String _statusFilter = 'all';
 
   @override
   void initState() {
@@ -47,9 +45,6 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
   }
 
   void _onScroll() {
-    // Fires whenever the list is scrolled; loadMore() itself is a no-op
-    // if already loading or if hasMore is false, so this is safe to call
-    // on every scroll tick near the bottom.
     if (!_scrollController.hasClients) return;
     final position = _scrollController.position;
     if (position.pixels >= position.maxScrollExtent - 200) {
@@ -61,14 +56,22 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
-  List<ResultDatum> _applyStatusFilter(List<ResultDatum> invoices) {
-    if (_statusFilter == 'all') return invoices;
-    return invoices
-        .where(
-          (invoice) =>
-              InvoiceStatusBadge.statusOf(invoice).name == _statusFilter,
-        )
-        .toList();
+  void _viewTechnicalDetails(BuildContext context, InvoicesState state, InvoicesController controller) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TechnicalErrorScreen(
+          errorDetails: state.technicalDetails ?? '',
+          onRetry: () {
+            Navigator.of(context).pop();
+            controller.getInvoices(reset: true);
+          },
+          onReportIssue: () {
+            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
+            CustomSnackbar.show(context, 'Technical details copied.');
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -77,12 +80,16 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
     final controller = ref.read(invoicesControllerProvider.notifier);
     final isInitialLoading = state.isInvoicesLoading && state.allItems.isEmpty;
     final hasError = state.errorMessage != null && state.allItems.isEmpty;
-    final invoices = _applyStatusFilter(state.allItems);
+    final invoices = state.filteredItems;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppHeaderBar(title: AppStrings.invoicesTitle),
+        AppHeaderBar(
+          title: AppStrings.invoicesTitle,
+          trailingIcon: Icons.filter_alt_sharp,
+          onTrailingTap: () => Scaffold.of(context).openEndDrawer(),
+        ),
         const SizedBox(height: AppSizes.sm),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
@@ -96,20 +103,21 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         isInitialLoading
             ? SizedBox.shrink()
             : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-                child: InvoiceFilterTabs(
-                  selected: _statusFilter,
-                  onChanged: (v) => setState(() => _statusFilter = v),
-                ),
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: InvoiceQuickFilterTabs(
+            selectedStatus: state.selectedStatus,
+            selectedDatePreset: state.selectedDatePreset,
+            onStatusSelected: controller.selectStatus,
+            onDatePresetSelected: controller.selectDatePreset,
+          ),
+        ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
-          // AFTER
           child: hasError
               ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: AppSizes.bottomNavBarHeight * 2,),
+              SizedBox(height: AppSizes.bottomNavBarHeight * 2),
               Expanded(
                 child: ErrorState(
                   message: state.errorMessage ?? AppStrings.errorOccurred,
@@ -124,75 +132,54 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
                     child: const Text('View technical details'),
                   ),
                 ),
-              SizedBox(height: AppSizes.bottomNavBarHeight * 3,)
+              SizedBox(height: AppSizes.bottomNavBarHeight * 3),
             ],
           )
               : (!isInitialLoading && invoices.isEmpty)
               ? EmptyState(
-                  title: AppStrings.invoicesTitle,
-                  message: AppStrings.invoicesEmptyMessage,
-                  icon: Icons.receipt_long_outlined,
-                )
+            title: AppStrings.invoicesTitle,
+            message: AppStrings.invoicesEmptyMessage,
+            icon: Icons.receipt_long_outlined,
+          )
               : CustomRefreshWrapper(
-                  onRefresh: controller.refresh,
-                  child: isInitialLoading
-                      ? ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSizes.md,
-                            0,
-                            AppSizes.md,
-                            AppSizes.md,
-                          ),
-                          itemCount: 6,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: AppSizes.sm + AppSizes.xs),
-                          itemBuilder: (context, index) => _placeholderCard()
-                              .fadeSlideIn(delay: (index * 60).ms),
-                        ).skeletonizer(enabled: true)
-                      : ListView(
-                          controller: _scrollController,
-                          shrinkWrap: true,
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.fromLTRB(
-                                AppSizes.md,
-                                0,
-                                AppSizes.md,
-                                AppSizes.md,
-                              ),
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount:
-                                  invoices.length + (state.hasMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index >= invoices.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: AppSizes.md,
-                                    ),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                final invoice = invoices[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppSizes.sm + AppSizes.xs,
-                                  ),
-                                  child: InvoiceCardItem(
-                                    invoice: invoice,
-                                    onTap: () => _openDetail(context, invoice),
-                                  ).fadeSlideIn(delay: (index * 60).ms),
-                                );
-                              },
-                            ),
-                            SizedBox(height: AppSizes.bottomNavBarHeight / 2),
-                          ],
-                        ),
+            onRefresh: controller.refresh,
+            child: isInitialLoading
+                ? ListView.separated(
+              padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.md),
+              itemCount: 6,
+              separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),
+              itemBuilder: (context, index) => _placeholderCard().fadeSlideIn(delay: (index * 60).ms),
+            ).skeletonizer(enabled: true)
+                : ListView(
+              controller: _scrollController,
+              shrinkWrap: true,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.md),
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: invoices.length + (state.hasMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index >= invoices.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: AppSizes.md),
+                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                      );
+                    }
+                    final invoice = invoices[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
+                      child: InvoiceCardItem(
+                        invoice: invoice,
+                        onTap: () => _openDetail(context, invoice),
+                      ).fadeSlideIn(delay: (index * 60).ms),
+                    );
+                  },
                 ),
+                SizedBox(height: AppSizes.bottomNavBarHeight / 2),
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -222,28 +209,6 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         customerName: 'Customer name',
         customerMobile: '',
         salesBy: '',
-      ),
-    );
-  }
-
-  void _viewTechnicalDetails(
-      BuildContext context,
-      InvoicesState state,
-      InvoicesController controller,
-      ) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => TechnicalErrorScreen( // TODO: swap for your real screen class/import
-          errorDetails: state.technicalDetails ?? '',
-          onRetry: () {
-            Navigator.of(context).pop();
-            controller.getInvoices(reset: true);
-          },
-          onReportIssue: () {
-            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
-            CustomSnackbar.show(context, 'Technical details copied.');
-          },
-        ),
       ),
     );
   }

@@ -1,34 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/status_badge.dart';
+import '../../../invoice_detail/presentation/widgets/invoice_detail_status_badge.dart' hide InvoiceComputedStatus;
 import '../../data/model/invoices_model.dart';
+import '../states/invoice_status.dart';
 
-enum InvoiceComputedStatus { paid, due, partial }
-
-/// Derives a paid/due/partial badge by comparing [ResultDatum.paidAmount]
-/// against [ResultDatum.totalPayableAmount] — the API has no explicit
-/// status field, so this is computed client-side from the two amounts.
 class InvoiceStatusBadge extends StatelessWidget {
   final ResultDatum invoice;
   final bool compact;
 
   const InvoiceStatusBadge({super.key, required this.invoice, this.compact = true});
 
-  static InvoiceComputedStatus statusOf(ResultDatum invoice) {
-    final paid = parseAmount(invoice.paidAmount);
-    final payable = parseAmount(invoice.totalPayableAmount);
-    if (payable <= 0 || paid >= payable) return InvoiceComputedStatus.paid;
-    if (paid <= 0) return InvoiceComputedStatus.due;
-    return InvoiceComputedStatus.partial;
-  }
+  /// Kept as a static passthrough so existing call sites
+  /// (`InvoiceStatusBadge.statusOf(invoice)`) keep working unchanged.
+  static InvoiceComputedStatus statusOf(ResultDatum invoice) => invoiceStatusOf(invoice);
 
   @override
   Widget build(BuildContext context) {
-    final status = statusOf(invoice);
+    final status = invoiceStatusOf(invoice);
     final (label, type) = switch (status) {
-      InvoiceComputedStatus.paid => ('Paid', StatusBadgeType.success),
-      InvoiceComputedStatus.due => ('Due', StatusBadgeType.warning),
-      InvoiceComputedStatus.partial => ('Partial', StatusBadgeType.info),
+      InvoiceComputedStatus.paid => (AppStrings.invoicePaidLabel, StatusBadgeType.success),
+      InvoiceComputedStatus.due => (AppStrings.invoiceDueLabel, StatusBadgeType.warning),
+      InvoiceComputedStatus.partial => (AppStrings.invoiceStatusPartial, StatusBadgeType.info),
     };
     return StatusBadge(text: label, type: type, compact: compact);
   }

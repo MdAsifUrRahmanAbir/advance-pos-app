@@ -392,6 +392,7 @@ class AppStrings {
   static const String invoiceDateLabel = 'Date';
   static const String invoicePaidLabel = 'Paid';
   static const String invoiceDueLabel = 'Due';
+  static const String invoiceStatusPartial = 'Partial';
   static const String invoiceShareAction = 'Share';
 
   // ---- Added: Invoice detail screen ----
@@ -437,4 +438,12 @@ class AppStrings {
       'Only {qty} {unit} left — below the reorder threshold of {threshold} {unit}.';
   static const String stockOutOfStockNote =
       'This item is currently out of stock. Restock to resume sales.';
+
+  // ---- Added: Invoice date-preset quick filters ----
+  static const String invoiceDatePresetToday = 'Today';
+  static const String invoiceDatePresetYesterday = 'Yesterday';
+  static const String invoiceDatePresetLast7Days = 'Last 7 Days';
+  static const String invoiceDatePresetThisMonth = 'This Month';
+  static const String invoiceDatePresetLastMonth = 'Last Month';
+
 }
