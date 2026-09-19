@@ -84,12 +84,16 @@ class ProductProduct {
   final String skuCode;
   final String barcode;
   final String sysBarcode;
+  final String salePrice;
+  final String costPrice;
 
   ProductProduct({
     required this.name,
     required this.skuCode,
     required this.barcode,
     required this.sysBarcode,
+    required this.salePrice,
+    required this.costPrice,
   });
 
   factory ProductProduct.fromJson(Map<String, dynamic> json) => ProductProduct(
@@ -97,6 +101,8 @@ class ProductProduct {
     skuCode: json["sku_code"],
     barcode: json["barcode"],
     sysBarcode: json["sys_barcode"],
+    salePrice: json["sale_price"],
+    costPrice: json["cost_price"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -104,6 +110,8 @@ class ProductProduct {
     "sku_code": skuCode,
     "barcode": barcode,
     "sys_barcode": sysBarcode,
+    "sale_price": salePrice,
+    "cost_price": costPrice,
   };
 }
 

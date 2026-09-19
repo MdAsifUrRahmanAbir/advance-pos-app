@@ -22,16 +22,17 @@ class StockRepository {
     int? brandId,
   }) async {
     final response = await _apiClient.get(
-      ApiEndpoints.stocks,
+      ApiEndpoints.stocks(branchId: 2),
       queryParameters: {
         'start': start,
         'length': length,
+        'branch_id': "1",
         if (search.isNotEmpty) 'search': search,
         'supplier_id': ?supplierId,
-        'prod_group_id': ?groupId,
-        'prod_cat_id': ?categoryId,
-        'prod_sub_cat_id': ?subCategoryId,
-        'prod_brand_id': ?brandId,
+        'group_id': ?groupId,
+        'category_id': ?categoryId,
+        'subcategory_id': ?subCategoryId,
+        'brand_id': ?brandId,
       },
     );
     return StocksModel.fromJson(response.data);

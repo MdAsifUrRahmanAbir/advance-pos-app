@@ -8,11 +8,12 @@ import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../controllers/stock_controller.dart';
 import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
-import '../widgets/stock_filter_tabs.dart';
 import '../widgets/stock_list_skeleton.dart';
+import '../widgets/stock_quick_filter_tabs.dart';
 import '../widgets/stock_search_bar.dart';
 
 class StockTabView extends ConsumerStatefulWidget {
@@ -53,7 +54,7 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
     final code = await BarcodeScannerScreen.scan(context);
     if (code == null) return;
 
-    final match = ref
+    final match = await ref
         .read(stockControllerProvider.notifier)
         .handleScannedCode(code);
     if (!context.mounted) return;
@@ -67,6 +68,15 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
       CustomSnackbar.show(context, 'Product not found.', error: true);
     }
   }
+
+
+  void _selectTopCategory(int? categoryId) {
+    final currentFilter = ref.read(stockControllerProvider).filter;
+    ref.read(stockControllerProvider.notifier).applyFilter(
+      categoryId == null ? currentFilter.clearing(categoryId: true) : currentFilter.copyWith(categoryId: categoryId),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +100,8 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
               child: StockSearchBar(
-                onChanged: (_) {},
+                controller: controller.searchController,
+                onChanged: controller.updateSearchQuery,
                 onScanTap: () => _handleScanBarcode(context, ref),
               ),
             ),
@@ -102,9 +113,12 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
             constraints: const BoxConstraints(maxWidth: 640),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
-              child: StockFilterTabs(
-                selected: state.selectedStatus,
-                onChanged: controller.selectStatus,
+              child: StockQuickFilterTabs(
+                selectedStatus: state.selectedStatus,
+                selectedCategoryId: state.filter.categoryId,
+                topCategories: ref.watch(masterDataControllerProvider).categoryData?.topCategories ?? const [],
+                onStatusSelected: controller.selectStatus,
+                onCategorySelected: _selectTopCategory,
               ),
             ),
           ),

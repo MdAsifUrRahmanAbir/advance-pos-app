@@ -7,10 +7,11 @@ import '../../../../core/widgets/common/icon_button.dart';
 
 /// Search input + a filter/sort icon button beside it.
 class StockSearchBar extends StatelessWidget {
+  final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onScanTap;
 
-  const StockSearchBar({super.key, this.onChanged, this.onScanTap});
+  const StockSearchBar({super.key, this.controller, this.onChanged, this.onScanTap});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +19,7 @@ class StockSearchBar extends StatelessWidget {
       children: [
         Expanded(
           child: SearchField(
+            controller: controller,
             hintText: AppStrings.searchProductsHint,
             onChanged: onChanged,
           ),

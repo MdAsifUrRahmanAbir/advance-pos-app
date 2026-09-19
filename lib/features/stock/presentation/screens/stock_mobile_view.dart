@@ -13,9 +13,10 @@ import '../../../../core/widgets/utility/empty_state.dart';
 import '../controllers/stock_controller.dart';
 import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
-import '../widgets/stock_filter_tabs.dart';
 import '../widgets/stock_list_skeleton.dart';
+import '../widgets/stock_quick_filter_tabs.dart';
 import '../widgets/stock_search_bar.dart';
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 
 class StockMobileView extends ConsumerStatefulWidget {
   const StockMobileView({super.key});
@@ -56,7 +57,7 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
     final code = await BarcodeScannerScreen.scan(context);
     if (code == null) return;
 
-    final match = ref
+    final match = await ref
         .read(stockControllerProvider.notifier)
         .handleScannedCode(code);
     if (!context.mounted) return;
@@ -71,6 +72,15 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
     }
   }
 
+
+  void _selectTopCategory(int? categoryId) {
+    final currentFilter = ref.read(stockControllerProvider).filter;
+    ref.read(stockControllerProvider.notifier).applyFilter(
+      categoryId == null ? currentFilter.clearing(categoryId: true) : currentFilter.copyWith(categoryId: categoryId),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
@@ -80,6 +90,7 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppHeaderBar(
           title: AppStrings.stockTitle,
@@ -90,18 +101,21 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: StockSearchBar(
-            onChanged: (_) {},
+            controller: controller.searchController,
+            onChanged: controller.updateSearchQuery,
             onScanTap: () => _handleScanBarcode(context, ref),
           ),
-        ),
-        const SizedBox(height: AppSizes.sm),
+        ),        const SizedBox(height: AppSizes.sm),
         isInitialLoad
             ? SizedBox.shrink()
             : Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: StockFilterTabs(
-            selected: state.selectedStatus,
-            onChanged: controller.selectStatus,
+          child: StockQuickFilterTabs(
+            selectedStatus: state.selectedStatus,
+            selectedCategoryId: state.filter.categoryId,
+            topCategories: ref.watch(masterDataControllerProvider).categoryData?.topCategories ?? const [],
+            onStatusSelected: controller.selectStatus,
+            onCategorySelected: _selectTopCategory,
           ),
         ),
         const SizedBox(height: AppSizes.sm),

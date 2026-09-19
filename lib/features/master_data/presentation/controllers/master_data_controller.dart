@@ -107,6 +107,8 @@ class MasterDataController extends Notifier<MasterDataState> {
       if (cached != null) return (data: cached.resultData, fromCache: true);
     }
     final fresh = await _repository.getCategories();
+    print("TOPCATEGORIES ->");
+    print(fresh.resultData.topCategories.length);
     await _cache.write<CategoryModel>(
       _categoriesKey,
       fresh,

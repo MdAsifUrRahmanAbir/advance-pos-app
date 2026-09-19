@@ -105,7 +105,7 @@ class StockCardTile extends StatelessWidget {
                   const SizedBox(height: AppSizes.sm / 2),
                   _StatColumn(
                     label: AppStrings.stockQuantityLabel,
-                    value: '${item.quantity} {item.unit}',
+                    value: '${item.quantity} pcs',
                     isTable: false,
                   ),
                 ],
@@ -121,7 +121,7 @@ class StockCardTile extends StatelessWidget {
             children: [
               _StatColumn(
                 label: AppStrings.sellingPriceLabel,
-                value: CurrencyFormatter.format(item.sellingPrice, symbol: '৳'),
+                value: CurrencyFormatter.format(item.sellingPrice, symbol: ''),
               ),
               TextButton.icon(
                 onPressed: onShowInfo,
