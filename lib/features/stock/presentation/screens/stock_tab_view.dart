@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
+import '../../../../core/widgets/utility/error_state.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../controllers/stock_controller.dart';
+import '../states/stock_state.dart';
 import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
 import '../widgets/stock_list_skeleton.dart';
@@ -69,7 +73,6 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
     }
   }
 
-
   void _selectTopCategory(int? categoryId) {
     final currentFilter = ref.read(stockControllerProvider).filter;
     ref.read(stockControllerProvider.notifier).applyFilter(
@@ -77,6 +80,23 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
     );
   }
 
+  void _viewTechnicalDetails(StockState state, StockController controller) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TechnicalErrorScreen(
+          errorDetails: state.technicalDetails ?? '',
+          onRetry: () {
+            Navigator.of(context).pop();
+            controller.getStocks(reset: true);
+          },
+          onReportIssue: () {
+            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
+            CustomSnackbar.show(context, 'Technical details copied.');
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +105,7 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
     final items = state.filteredItems;
 
     final isInitialLoad = state.isStocksLoading && state.allItems.isEmpty;
+    final hasError = state.errorMessage != null && state.allItems.isEmpty;
 
     return Column(
       children: [
@@ -127,58 +148,83 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
         Expanded(
           child: isInitialLoad
               ? Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 640),
-                    child: const StockListSkeleton(itemCount: 6),
-                  ),
-                )
-              : items.isEmpty
-              ? EmptyState(
-                  title: AppStrings.stockTitle,
-                  message: AppStrings.stockEmptyMessage,
-                  icon: Icons.inventory_2_outlined,
-                )
-              : Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 640),
-                    child: CustomRefreshWrapper(
-                      onRefresh: controller.refresh,
-                      child: ListView(
-                        controller: _scrollController,
-                        children: [
-                          ListView.separated(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSizes.lg,
-                            ),
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: items.length,
-                            separatorBuilder: (_, _) => const SizedBox(
-                              height: AppSizes.sm + AppSizes.xs,
-                            ),
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return StockCardTile(
-                                item: item,
-                                onShowInfo: () => _showInfo(context, item),
-                              );
-                            },
-                          ),
-                          if (state.isLoadingMore)
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: AppSizes.md,
-                              ),
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
-                          const SizedBox(
-                            height: AppSizes.bottomNavBarHeight / 2,
-                          ),
-                        ],
-                      ),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: const StockListSkeleton(itemCount: 6),
+            ),
+          )
+              : hasError
+              ? Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ErrorState(
+                      message: state.errorMessage!,
+                      onRetry: () => controller.getStocks(reset: true),
                     ),
                   ),
+                  if (state.technicalDetails != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSizes.lg),
+                      child: TextButton(
+                        onPressed: () => _viewTechnicalDetails(state, controller),
+                        child: const Text('View technical details'),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          )
+              : items.isEmpty
+              ? EmptyState(
+            title: AppStrings.stockTitle,
+            message: AppStrings.stockEmptyMessage,
+            icon: Icons.inventory_2_outlined,
+          )
+              : Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: CustomRefreshWrapper(
+                onRefresh: controller.refresh,
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSizes.lg,
+                      ),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: items.length,
+                      separatorBuilder: (_, _) => const SizedBox(
+                        height: AppSizes.sm + AppSizes.xs,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        return StockCardTile(
+                          item: item,
+                          onShowInfo: () => _showInfo(context, item),
+                        );
+                      },
+                    ),
+                    if (state.isLoadingMore)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppSizes.md,
+                        ),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    const SizedBox(
+                      height: AppSizes.bottomNavBarHeight / 2,
+                    ),
+                  ],
                 ),
+              ),
+            ),
+          ),
         ),
       ],
     );

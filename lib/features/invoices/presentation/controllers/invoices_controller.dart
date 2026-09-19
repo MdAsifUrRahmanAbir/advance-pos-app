@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/model/invoices_model.dart';
 import '../../data/repositories/invoices_repository.dart';
 import '../states/invoices_state.dart';
 
 final invoicesControllerProvider =
-    NotifierProvider.autoDispose<InvoicesController, InvoicesState>(
-      InvoicesController.new,
-    );
+NotifierProvider.autoDispose<InvoicesController, InvoicesState>(
+  InvoicesController.new,
+);
 
 class InvoicesController extends Notifier<InvoicesState> {
   late final TextEditingController searchController;
@@ -37,19 +38,20 @@ class InvoicesController extends Notifier<InvoicesState> {
     getInvoices(reset: true);
   }
 
-  /// Pull-to-refresh: resets pagination and refetches from start=0.
   Future<void> refresh() async {
     await getInvoices(reset: true);
   }
 
-  /// Infinite-scroll continuation: fetches the next page and appends.
-  /// No-op if already loading or no more pages exist — call this from
-  /// a ScrollController listener near the list's bottom edge.
   Future<void> loadMore() async {
-    if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore)
+    if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore) {
       return;
+    }
 
-    state = state.copyWith(isLoadingMore: true, errorMessage: null);
+    state = state.copyWith(
+      isLoadingMore: true,
+      errorMessage: null,
+      technicalDetails: null,
+    );
     try {
       final nextStart = state.currentStart + _pageLength;
       final invoices = await _repository.getInvoices(
@@ -64,25 +66,26 @@ class InvoicesController extends Notifier<InvoicesState> {
         allItems: [...state.allItems, ...invoices.resultData],
         currentStart: nextStart,
         hasMore:
-            (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
+        (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
       );
     } catch (error, stackTrace) {
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.invoices,
+        ),
       );
     }
   }
 
-  // ───────────────────────────────────────────────
-  // GET (initial load or full reset)
-  // ───────────────────────────────────────────────
-  /// [reset] clears existing items and refetches from start=0 — used by
-  /// both the initial build() call, pull-to-refresh, and search changes.
   Future<bool> getInvoices({bool reset = false}) async {
     state = state.copyWith(
       isInvoicesLoading: true,
       errorMessage: null,
+      technicalDetails: null,
       allItems: reset ? [] : state.allItems,
       currentStart: reset ? 0 : state.currentStart,
       hasMore: reset ? true : state.hasMore,
@@ -106,6 +109,11 @@ class InvoicesController extends Notifier<InvoicesState> {
       state = state.copyWith(
         isInvoicesLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.invoices,
+        ),
       );
       return false;
     }

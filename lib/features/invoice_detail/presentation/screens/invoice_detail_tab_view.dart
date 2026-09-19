@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/widgets/common/custom_app_bar.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
@@ -11,6 +13,7 @@ import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../data/models/sale_amounts.dart';
 import '../controllers/invoice_detail_controller.dart';
+import '../states/invoice_detail_state.dart';
 import '../widgets/invoice_detail_actions.dart';
 import '../widgets/invoice_info_card.dart';
 import '../widgets/invoice_products_card.dart';
@@ -32,7 +35,7 @@ class _InvoiceDetailTabViewState extends ConsumerState<InvoiceDetailTabView> {
   void initState() {
     super.initState();
     Future.microtask(
-      () => ref
+          () => ref
           .read(invoiceDetailControllerProvider.notifier)
           .loadInvoice(widget.invoiceId),
     );
@@ -43,7 +46,7 @@ class _InvoiceDetailTabViewState extends ConsumerState<InvoiceDetailTabView> {
       context,
       title: AppStrings.invoicePayDuesAction,
       message:
-          'Record full payment of ${CurrencyFormatter.format(amountDue, symbol: '৳')} for $invoiceNumber?',
+      'Record full payment of ${CurrencyFormatter.format(amountDue, symbol: '৳')} for $invoiceNumber?',
       confirmText: AppStrings.invoicePayDuesAction,
     );
     if (confirmed != true || !mounted) return;
@@ -60,10 +63,29 @@ class _InvoiceDetailTabViewState extends ConsumerState<InvoiceDetailTabView> {
     );
   }
 
+  void _viewTechnicalDetails(InvoiceDetailState state) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TechnicalErrorScreen(
+          errorDetails: state.technicalDetails ?? '',
+          onRetry: () {
+            Navigator.of(context).pop();
+            ref.read(invoiceDetailControllerProvider.notifier).retry();
+          },
+          onReportIssue: () {
+            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
+            CustomSnackbar.show(context, 'Technical details copied.');
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(invoiceDetailControllerProvider);
     final invoice = state.invoice;
+    final hasError = state.errorMessage != null && invoice == null;
 
     return Column(
       children: [
@@ -77,26 +99,41 @@ class _InvoiceDetailTabViewState extends ConsumerState<InvoiceDetailTabView> {
               constraints: const BoxConstraints(maxWidth: 640),
               child: state.isLoading && invoice == null
                   ? const CustomLoader()
-                  : state.errorMessage != null && invoice == null
-                  ? ErrorState(
+                  : hasError
+                  ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ErrorState(
                       message: state.errorMessage!,
                       onRetry: () => ref
                           .read(invoiceDetailControllerProvider.notifier)
                           .retry(),
-                    )
+                    ),
+                  ),
+                  if (state.technicalDetails != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSizes.md),
+                      child: TextButton(
+                        onPressed: () => _viewTechnicalDetails(state),
+                        child: const Text('View technical details'),
+                      ),
+                    ),
+                ],
+              )
                   : invoice == null
                   ? const SizedBox.shrink()
                   : SingleChildScrollView(
-                      padding: const EdgeInsets.all(AppSizes.lg),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          InvoiceInfoCard(resultData: invoice),
-                          const SizedBox(height: AppSizes.md),
-                          InvoiceProductsCard(resultData: invoice),
-                        ],
-                      ),
-                    ),
+                padding: const EdgeInsets.all(AppSizes.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InvoiceInfoCard(resultData: invoice),
+                    const SizedBox(height: AppSizes.md),
+                    InvoiceProductsCard(resultData: invoice),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

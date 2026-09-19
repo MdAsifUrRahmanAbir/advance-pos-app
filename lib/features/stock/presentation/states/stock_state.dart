@@ -36,6 +36,10 @@ class StockState {
   final bool isStocksLoading;
   final bool isLoadingMore;
   final String? errorMessage;
+  /// Dev-facing breakdown for the full "Technical Details" screen —
+  /// built by `buildTechnicalErrorDetails()` alongside [errorMessage].
+  /// Null until an error actually occurs.
+  final String? technicalDetails;
   final String searchQuery;
   final String selectedStatus; // 'all' | one of StockStatus.name
   final StockFilter filter;
@@ -48,6 +52,7 @@ class StockState {
     this.isStocksLoading = false,
     this.isLoadingMore = false,
     this.errorMessage,
+    this.technicalDetails,
     this.searchQuery = '',
     this.selectedStatus = 'all',
     this.filter = StockFilter.empty,
@@ -75,6 +80,7 @@ class StockState {
     bool? isStocksLoading,
     bool? isLoadingMore,
     String? errorMessage,
+    String? technicalDetails,
     String? searchQuery,
     String? selectedStatus,
     StockFilter? filter,
@@ -87,6 +93,7 @@ class StockState {
       isStocksLoading: isStocksLoading ?? this.isStocksLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage,
+      technicalDetails: technicalDetails,
       searchQuery: searchQuery ?? this.searchQuery,
       selectedStatus: selectedStatus ?? this.selectedStatus,
       filter: filter ?? this.filter,

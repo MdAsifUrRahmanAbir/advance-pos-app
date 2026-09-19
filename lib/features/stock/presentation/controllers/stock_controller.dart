@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/models/stocks_model.dart';
 import '../../data/repositories/stock_repository.dart';
@@ -105,7 +106,7 @@ class StockController extends Notifier<StockState> {
   Future<void> loadMore() async {
     if (state.isLoadingMore || state.isStocksLoading || !state.hasMore) return;
 
-    state = state.copyWith(isLoadingMore: true, errorMessage: null);
+    state = state.copyWith(isLoadingMore: true, errorMessage: null, technicalDetails: null);
     try {
       final nextStart = state.currentStart + _pageLength;
       final stocks = await _repository.getStocks(
@@ -130,6 +131,11 @@ class StockController extends Notifier<StockState> {
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.stocks(branchId: 2),
+        ),
       );
     }
   }
@@ -172,6 +178,7 @@ class StockController extends Notifier<StockState> {
     state = state.copyWith(
       isStocksLoading: true,
       errorMessage: null,
+      technicalDetails: null,
       allItems: reset ? [] : state.allItems,
       currentStart: reset ? 0 : state.currentStart,
       hasMore: reset ? true : state.hasMore,
@@ -203,6 +210,11 @@ class StockController extends Notifier<StockState> {
       state = state.copyWith(
         isStocksLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.stocks(branchId: 2),
+        ),
       );
       return false;
     }

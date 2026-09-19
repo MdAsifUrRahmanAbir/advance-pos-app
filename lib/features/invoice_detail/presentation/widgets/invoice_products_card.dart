@@ -8,9 +8,6 @@ import '../../../../core/widgets/common/custom_card.dart';
 import '../../data/models/invoice_detail_model.dart';
 import '../../data/models/sale_amounts.dart';
 
-/// List of every [SaleDetail] on the invoice, plus a totals footer row.
-/// Every line shows its full breakdown (barcode, discount) regardless
-/// of whether the value is zero, so the report reads as complete.
 class InvoiceProductsCard extends StatelessWidget {
   final ResultData resultData;
 

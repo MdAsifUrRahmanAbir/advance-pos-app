@@ -6,6 +6,10 @@ class InvoicesState {
   final bool isInvoicesLoading;
   final bool isLoadingMore;
   final String? errorMessage;
+  /// Dev-facing breakdown for the full error screen's "Technical
+  /// Details" panel — built by `buildTechnicalErrorDetails()` alongside
+  /// [errorMessage]. Null until an error actually occurs.
+  final String? technicalDetails;
   final String searchQuery;
   final InvoicesModel? invoicesModel;
   final List<ResultDatum> allItems;
@@ -16,6 +20,7 @@ class InvoicesState {
     this.isInvoicesLoading = false,
     this.isLoadingMore = false,
     this.errorMessage,
+    this.technicalDetails,
     this.searchQuery = '',
     this.invoicesModel,
     this.allItems = const [],
@@ -29,6 +34,7 @@ class InvoicesState {
     bool? isInvoicesLoading,
     bool? isLoadingMore,
     String? errorMessage,
+    String? technicalDetails,
     String? searchQuery,
     InvoicesModel? invoicesModel,
     List<ResultDatum>? allItems,
@@ -39,6 +45,7 @@ class InvoicesState {
       isInvoicesLoading: isInvoicesLoading ?? this.isInvoicesLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage,
+      technicalDetails: technicalDetails,
       searchQuery: searchQuery ?? this.searchQuery,
       invoicesModel: invoicesModel ?? this.invoicesModel,
       allItems: allItems ?? this.allItems,

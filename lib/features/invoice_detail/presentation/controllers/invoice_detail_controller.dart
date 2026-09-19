@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/repositories/invoice_detail_repository.dart';
 import '../states/invoice_detail_state.dart';
 
 final invoiceDetailControllerProvider =
-    NotifierProvider.autoDispose<InvoiceDetailController, InvoiceDetailState>(
-      InvoiceDetailController.new,
-    );
+NotifierProvider.autoDispose<InvoiceDetailController, InvoiceDetailState>(
+  InvoiceDetailController.new,
+);
 
 class InvoiceDetailController extends Notifier<InvoiceDetailState> {
   InvoiceDetailRepository get _repository =>
@@ -29,6 +30,7 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
       isLoading: true,
       loadedInvoiceId: invoiceId,
       errorMessage: null,
+      technicalDetails: null,
     );
     try {
       final result = await _repository.getInvoiceDetail(invoiceId);
@@ -37,6 +39,11 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
       state = state.copyWith(
         isLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.invoiceDetails(invoiceId),
+        ),
       );
     }
   }
@@ -52,7 +59,9 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
     if (state.invoice == null) return false;
 
     // TODO: wire to a real payment-recording endpoint once the backend
-    // supports it — currently a no-op success signal.
+    // supports it — currently a no-op that doesn't change state. Once
+    // wired, refetch or locally update invoiceDetailModel so
+    // amountDue/badge reflect the payment immediately.
     return true;
   }
 }

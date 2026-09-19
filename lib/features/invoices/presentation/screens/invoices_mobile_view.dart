@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/utils/widget_animation_extension.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/search_field.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
+import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../../data/model/invoices_model.dart';
 import '../controllers/invoices_controller.dart';
+import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_filter_tabs.dart';
 import '../widgets/invoice_status_badge.dart';
@@ -100,11 +104,29 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
               ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
+          // AFTER
           child: hasError
-              ? ErrorState(
+              ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: AppSizes.bottomNavBarHeight * 2,),
+              Expanded(
+                child: ErrorState(
                   message: state.errorMessage ?? AppStrings.errorOccurred,
                   onRetry: () => controller.getInvoices(reset: true),
-                )
+                ),
+              ),
+              if (state.technicalDetails != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSizes.md),
+                  child: TextButton(
+                    onPressed: () => _viewTechnicalDetails(context, state, controller),
+                    child: const Text('View technical details'),
+                  ),
+                ),
+              SizedBox(height: AppSizes.bottomNavBarHeight * 3,)
+            ],
+          )
               : (!isInitialLoading && invoices.isEmpty)
               ? EmptyState(
                   title: AppStrings.invoicesTitle,
@@ -200,6 +222,28 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         customerName: 'Customer name',
         customerMobile: '',
         salesBy: '',
+      ),
+    );
+  }
+
+  void _viewTechnicalDetails(
+      BuildContext context,
+      InvoicesState state,
+      InvoicesController controller,
+      ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TechnicalErrorScreen( // TODO: swap for your real screen class/import
+          errorDetails: state.technicalDetails ?? '',
+          onRetry: () {
+            Navigator.of(context).pop();
+            controller.getInvoices(reset: true);
+          },
+          onReportIssue: () {
+            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
+            CustomSnackbar.show(context, 'Technical details copied.');
+          },
+        ),
       ),
     );
   }
