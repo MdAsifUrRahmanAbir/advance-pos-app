@@ -1,24 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
+import '../../../../core/utils/error_mapper.dart';
+import '../../data/repositories/new_sale_repository.dart';
 import '../states/new_sale_state.dart';
+import '../../data/models/stocks_model.dart';
 
 final newSaleControllerProvider =
-    NotifierProvider.autoDispose<NewSaleController, NewSaleState>(
-      NewSaleController.new,
-    );
+NotifierProvider.autoDispose<NewSaleController, NewSaleState>(
+  NewSaleController.new,
+);
 
 class NewSaleController extends Notifier<NewSaleState> {
   late final TextEditingController searchController;
 
+  NewSaleRepository get _repository => ref.read(newSaleRepositoryProvider);
+
+  static const int _pageLength = 20;
+  static const int _minSearchLength = 3;
+  static const Duration _debounceDelay = Duration(milliseconds: 400);
+
+  Timer? _debounce;
+
   @override
   NewSaleState build() {
     searchController = TextEditingController();
-    ref.onDispose(() => searchController.dispose());
+    ref.onDispose(() {
+      searchController.dispose();
+      _debounce?.cancel();
+    });
 
-    // TODO: wire to productRepositoryProvider.getProducts() once the
-    // new_sale/data/repositories layer is ready. Currently mock data.
-    return NewSaleState.initial().copyWith(allProducts: _mockProducts);
+    Future.microtask(getProducts);
+
+    return NewSaleState.initial();
   }
 
   void updateSearchQuery(String query) {
@@ -27,47 +46,62 @@ class NewSaleController extends Notifier<NewSaleState> {
       selection: TextSelection.collapsed(offset: query.length),
     );
     state = state.copyWith(searchQuery: query);
+
+    _debounce?.cancel();
+    if (query.isEmpty) {
+      _runSearch(query);
+      return;
+    }
+    if (query.length < _minSearchLength) return;
+
+    _debounce = Timer(_debounceDelay, () => _runSearch(query));
   }
 
-  void selectCategory(String categoryKey) {
-    state = state.copyWith(selectedCategory: categoryKey);
+  Future<void> _runSearch(String query) async {
+    state = state.copyWith(searchQuery: query);
+    await getProducts(reset: true);
   }
 
-  /// Adds [product] to the cart, or increments its quantity by one if
-  /// it's already there — so scanning/tapping the same item twice grows
-  /// one line rather than creating a duplicate.
-  void addToCart(ProductItem product) {
-    // TODO: wire to cartControllerProvider.addItem(product) once the
-    // shared cart controller exists.
-    final items = List<CartLineItem>.from(state.cartItems);
-    final existingIndex = items.indexWhere(
-      (line) => line.product.id == product.id,
+  Future<void> selectCategory(int? categoryId) async {
+    state = state.copyWith(
+      selectedCategoryId: categoryId,
+      clearSelectedCategoryId: categoryId == null,
     );
+    await getProducts(reset: true);
+  }
+
+  /// Won't add an out-of-stock product, and won't push an existing cart
+  /// line's quantity past the product's available [ProductItem.stock].
+  void addToCart(ProductItem product) {
+    if (product.stock <= 0) return;
+
+    final items = List<CartLineItem>.from(state.cartItems);
+    final existingIndex = items.indexWhere((line) => line.product.id == product.id);
 
     if (existingIndex == -1) {
       items.add(CartLineItem(product: product, quantity: 1));
     } else {
-      items[existingIndex] = items[existingIndex].copyWith(
-        quantity: items[existingIndex].quantity + 1,
-      );
+      final current = items[existingIndex];
+      if (current.quantity >= product.stock) return;
+      items[existingIndex] = current.copyWith(quantity: current.quantity + 1);
     }
 
     state = state.copyWith(cartItems: items);
   }
 
+  /// Capped at the product's available stock — won't increment past it.
   void increaseQty(String productId) {
     state = state.copyWith(
       cartItems: [
         for (final line in state.cartItems)
           if (line.product.id == productId)
-            line.copyWith(quantity: line.quantity + 1)
+            (line.quantity < line.product.stock ? line.copyWith(quantity: line.quantity + 1) : line)
           else
             line,
       ],
     );
   }
 
-  /// Decrements quantity, removing the line entirely once it hits zero.
   void decreaseQty(String productId) {
     final items = <CartLineItem>[];
     for (final line in state.cartItems) {
@@ -75,77 +109,154 @@ class NewSaleController extends Notifier<NewSaleState> {
         items.add(line);
         continue;
       }
-      if (line.quantity > 1)
-        items.add(line.copyWith(quantity: line.quantity - 1));
-      // quantity == 1 -> dropped, i.e. removed from cart
+      if (line.quantity > 1) items.add(line.copyWith(quantity: line.quantity - 1));
     }
     state = state.copyWith(cartItems: items);
   }
 
   void removeFromCart(String productId) {
     state = state.copyWith(
-      cartItems: state.cartItems
-          .where((line) => line.product.id != productId)
-          .toList(),
+      cartItems: state.cartItems.where((line) => line.product.id != productId).toList(),
     );
   }
 
-  /// Resolves a scanned barcode against [NewSaleState.allProducts] —
-  /// no separate repository call needed just to resolve a scanned code.
-  /// Fills [searchController]/`searchQuery` with the raw code either
-  /// way, adds the product to the cart on a match, and sets
-  /// [NewSaleState.errorMessage] to exactly "Product not found." on a
-  /// miss so the view can surface that message without duplicating the
-  /// lookup itself.
-  ProductItem? handleScannedCode(String code) {
-    final match = state.allProducts
-        .where((p) => p.barcode == code || p.sku == code)
-        .firstOrNull;
+  /// Scans/searches for [code]. Three outcomes:
+  /// - [ScanOutcome.added]: found + stock available → added to cart.
+  /// - [ScanOutcome.outOfStock]: found but no stock left (or cart already
+  ///   holds all available stock for it).
+  /// - [ScanOutcome.notFound]: no matching product.
+  Future<ScanResult> handleScannedCode(String code) async {
+    _debounce?.cancel();
 
-    updateSearchQuery(code);
+    searchController.value = searchController.value.copyWith(
+      text: code,
+      selection: TextSelection.collapsed(offset: code.length),
+    );
+    state = state.copyWith(searchQuery: code);
 
-    if (match != null) {
-      addToCart(match);
-      state = state.copyWith(errorMessage: null);
-    } else {
-      state = state.copyWith(errorMessage: 'Product not found.');
+    await getProducts(reset: true);
+
+    final match = state.allItems.where((p) => p.barcode == code || p.sku == code).firstOrNull;
+
+    if (match == null) {
+      state = state.copyWith(errorMessage: AppStrings.productNotFoundMessage(code));
+      return ScanResult(product: null, outcome: ScanOutcome.notFound);
     }
 
-    return match;
+    final inCartQty =
+        state.cartItems.where((l) => l.product.id == match.id).firstOrNull?.quantity ?? 0;
+
+    if (match.stock <= 0 || inCartQty >= match.stock) {
+      state = state.copyWith(errorMessage: AppStrings.productOutOfStockMessage(match.name));
+      return ScanResult(product: match, outcome: ScanOutcome.outOfStock);
+    }
+
+    addToCart(match);
+    state = state.copyWith(errorMessage: null);
+    return ScanResult(product: match, outcome: ScanOutcome.added);
   }
 
-  static const _mockProducts = [
-    ProductItem(
-      id: 'p1',
-      name: 'Fresh Milk 1L',
-      sku: 'MK-1002',
-      price: 60.00,
-      categoryKey: 'grocery',
-      barcode: '8901030123457',
-    ),
-    ProductItem(
-      id: 'p2',
-      name: 'Wheat Bread',
-      sku: 'BR-5001',
-      price: 40.00,
-      categoryKey: 'grocery',
-      barcode: '8901030123458',
-    ),
-    ProductItem(
-      id: 'p3',
-      name: 'Organic Eggs',
-      sku: 'EG-1200',
-      price: 120.00,
-      categoryKey: 'grocery',
-      barcode: '8901030123459',
-    ),
-    ProductItem(
-      id: 'p4',
-      name: 'Apple Soda',
-      sku: 'SD-0091',
-      price: 30.00,
-      categoryKey: 'beverages',
-      barcode: '8901030123460',
-    ),
-  ];
+  Future<void> refresh() async {
+    await getProducts(reset: true);
+  }
+
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || state.isProductsLoading || !state.hasMore) return;
+
+    state = state.copyWith(isLoadingMore: true, errorMessage: null, technicalDetails: null);
+    try {
+      final nextStart = state.currentStart + _pageLength;
+      final StocksModel products = await _repository.getProducts(
+        start: nextStart,
+        length: _pageLength,
+        search: state.searchQuery,
+        categoryId: state.selectedCategoryId,
+      );
+      final newItems = products.resultData.map(_mapItem).toList();
+
+      state = state.copyWith(
+        isLoadingMore: false,
+        productModel: products,
+        allItems: [...state.allItems, ...newItems],
+        currentStart: nextStart,
+        hasMore: (nextStart + newItems.length) < products.recordsFiltered,
+      );
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.stocks(branchId: 2),
+        ),
+      );
+    }
+  }
+
+  Future<bool> getProducts({bool reset = false}) async {
+    state = state.copyWith(
+      isProductsLoading: true,
+      errorMessage: null,
+      technicalDetails: null,
+      allItems: reset ? [] : state.allItems,
+      currentStart: reset ? 0 : state.currentStart,
+      hasMore: reset ? true : state.hasMore,
+    );
+
+    try {
+      final products = await _repository.getProducts(
+        start: 0,
+        length: _pageLength,
+        search: state.searchQuery,
+        categoryId: state.selectedCategoryId,
+      );
+      final newItems = products.resultData.map(_mapItem).toList();
+
+      state = state.copyWith(
+        isProductsLoading: false,
+        productModel: products,
+        allItems: newItems,
+        currentStart: 0,
+        hasMore: newItems.length < products.recordsFiltered,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isProductsLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+        technicalDetails: buildTechnicalErrorDetails(
+          error,
+          stackTrace,
+          endpoint: ApiEndpoints.stocks(branchId: 2),
+        ),
+      );
+      return false;
+    }
+  }
+
+  /// Maps a Stock API record into the flat [ProductItem] the UI expects.
+  /// `quantity` (branch stock, falling back to org-wide) was previously
+  /// computed but never passed through — now wired into [ProductItem.stock].
+  ProductItem _mapItem(ResultDatum r) {
+    final product = r.product.product;
+    final stock = r.product.stock;
+    final quantity = resolveBranchStock(stock, 2);
+
+    return ProductItem(
+      id: r.product.id.toString(),
+      name: product.name,
+      sku: product.skuCode,
+      price: parseAmount(product.salePrice),
+      categoryKey: 'Uncategorized', // TODO: not available from this endpoint
+      stock: quantity,
+      barcode: product.barcode.isNotEmpty ? product.barcode : product.sysBarcode,
+    );
+  }
+
+  int resolveBranchStock(Stock stock, int branchId) {
+    final branchEntry = stock.branchStock.where((b) => b.id == branchId).firstOrNull;
+    if (branchEntry != null) return branchEntry.stock;
+    return stock.branchStock.isNotEmpty ? stock.branchStock.first.stock : stock.organizationStock;
+  }
 }

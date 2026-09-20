@@ -27,6 +27,7 @@ class AppStrings {
   static const String welcomeToApp = 'Welcome to Advance POS Sales';
   static const String welcomeToAppSubtitle =
       'Scan products, search inventory, view stock reports, and invoice history with ease.';
+  static const String newSaleEmptyMessage = 'No products found.';
 
   // ---- Added: Sign In screen ----
   static const String signIn = 'Sign In';
@@ -446,4 +447,10 @@ class AppStrings {
   static const String invoiceDatePresetThisMonth = 'This Month';
   static const String invoiceDatePresetLastMonth = 'Last Month';
 
+
+  static const String outOfStockLabel = 'Out of stock';
+  static String stockPcsLabel(int stock) => '$stock pcs';
+  static String productAddedMessage(String name) => 'Added: $name';
+  static String productOutOfStockMessage(String name) => 'Out of stock: $name';
+  static String productNotFoundMessage(String code) => 'No product found for code $code';
 }

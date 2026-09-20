@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
-
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/custom_filter_bar.dart';
+import '../../../master_data/data/models/category_model.dart';
 
-/// Category chips (All / Beverages / Snacks / Grocery).
-/// Reuses CustomFilterBar as a single-select bar via a one-item Set —
-/// this is the widget's intended use case (category filtering), so it
-/// should track the Figma pill-chip look closely.
+/// Category quick-filter — "All" plus top-selling categories sourced
+/// from master data's `categoryData.topCategories` (same source as
+/// Stock's quick-category chips), applied server-side via `category_id`.
 class CategoryFilterBar extends StatelessWidget {
-  final String selectedCategory; // 'all' | 'beverages' | 'snacks' | 'grocery'
-  final ValueChanged<String> onCategoryChanged;
+  final int? selectedCategoryId; // null = All
+  final List<TopCategory> topCategories;
+  final ValueChanged<int?> onCategorySelected;
 
   const CategoryFilterBar({
     super.key,
-    required this.selectedCategory,
-    required this.onCategoryChanged,
+    required this.selectedCategoryId,
+    required this.topCategories,
+    required this.onCategorySelected,
   });
 
-  static const _keys = <String>['all', 'beverages', 'snacks', 'grocery'];
-
-  String _labelFor(String key) => switch (key) {
-    'beverages' => AppStrings.categoryBeverages,
-    'snacks' => AppStrings.categorySnacks,
-    'grocery' => AppStrings.categoryGrocery,
-    _ => AppStrings.categoryAll,
-  };
+  String _key(int? id) => id == null ? 'all' : 'category:$id';
 
   @override
   Widget build(BuildContext context) {
+    final allKeys = ['all', for (final c in topCategories) 'category:${c.categoryId}'];
+    final selectedKey = _key(selectedCategoryId);
+
     return CustomFilterBar<String>(
-      filters: _keys,
-      selectedFilters: {selectedCategory},
-      labelBuilder: _labelFor,
+      filters: allKeys,
+      selectedFilters: {selectedKey},
+      labelBuilder: (key) {
+        if (key == 'all') return AppStrings.categoryAll;
+        final id = int.parse(key.split(':').last);
+        return topCategories.firstWhere((c) => c.categoryId == id).categoryName;
+      },
       onSelected: (key) {
-        if (key != selectedCategory) onCategoryChanged(key);
+        onCategorySelected(key == 'all' ? null : int.parse(key.split(':').last));
       },
     );
   }

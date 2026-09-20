@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
+import '../../data/models/stocks_model.dart';
 
-/// Presentation-layer shape until the real product API is wired via
-/// add_api_feature.py — at that point this maps from the real ProductModel
-/// (`barcode` mirrors `ResultDatum.barcode`/`systemBarcode`).
-@immutable
+
+// 1. Add a `stock` field to ProductItem (required — every construction site
+//    below is updated to pass it):
 class ProductItem {
   final String id;
   final String name;
   final String sku;
   final double price;
-  final String categoryKey; // 'beverages' | 'snacks' | 'grocery'
-  final String? barcode;
+  final String categoryKey;
+  final int stock;           // <-- NEW: available pcs from Stock endpoint
   final String? imageUrl;
+  final String? barcode;
 
   const ProductItem({
     required this.id,
@@ -19,14 +20,23 @@ class ProductItem {
     required this.sku,
     required this.price,
     required this.categoryKey,
-    this.barcode,
+    required this.stock,     // <-- NEW
     this.imageUrl,
+    this.barcode,
   });
 }
 
-/// One line in the cart — a [product] plus how many of it were added.
-/// Kept separate from [ProductItem] itself so the product catalog stays
-/// immutable/shared while cart quantity is per-sale, mutable state.
+// 2. New result type for the scan flow, so the view can distinguish
+//    "added" / "out of stock" / "not found" without overloading a bool:
+enum ScanOutcome { added, outOfStock, notFound }
+
+class ScanResult {
+  final ProductItem? product;
+  final ScanOutcome outcome;
+  const ScanResult({required this.product, required this.outcome});
+}
+
+
 @immutable
 class CartLineItem {
   final ProductItem product;
@@ -43,58 +53,65 @@ class CartLineItem {
 
 @immutable
 class NewSaleState {
-  final bool isLoading;
+  final bool isProductsLoading;
+  final bool isLoadingMore;
   final String? errorMessage;
+  final String? technicalDetails;
   final String searchQuery;
-  final String selectedCategory; // 'all' | 'beverages' | 'snacks' | 'grocery'
-  final List<ProductItem> allProducts;
+  final int? selectedCategoryId;
+  final StocksModel? productModel;
+  final List<ProductItem> allItems;
+  final int currentStart;
+  final bool hasMore;
   final List<CartLineItem> cartItems;
 
   const NewSaleState({
-    this.isLoading = false,
+    this.isProductsLoading = false,
+    this.isLoadingMore = false,
     this.errorMessage,
+    this.technicalDetails,
     this.searchQuery = '',
-    this.selectedCategory = 'all',
-    this.allProducts = const [],
+    this.selectedCategoryId,
+    this.productModel,
+    this.allItems = const [],
+    this.currentStart = 0,
+    this.hasMore = true,
     this.cartItems = const [],
   });
 
   factory NewSaleState.initial() => const NewSaleState();
 
-  List<ProductItem> get filteredProducts {
-    return allProducts.where((p) {
-      final matchesCategory =
-          selectedCategory == 'all' || p.categoryKey == selectedCategory;
-      final matchesQuery =
-          searchQuery.isEmpty ||
-          p.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          p.sku.toLowerCase().contains(searchQuery.toLowerCase());
-      return matchesCategory && matchesQuery;
-    }).toList();
-  }
+  List<ProductItem> get filteredProducts => allItems;
 
-  /// Derived from [cartItems] so quantity/line data and the badge/total
-  /// shown on [CartSummaryBar] can never drift apart.
-  int get cartItemCount =>
-      cartItems.fold(0, (sum, line) => sum + line.quantity);
+  int get cartItemCount => cartItems.fold(0, (sum, line) => sum + line.quantity);
 
-  double get cartTotal =>
-      cartItems.fold(0.0, (sum, line) => sum + line.lineTotal);
+  double get cartTotal => cartItems.fold(0.0, (sum, line) => sum + line.lineTotal);
 
   NewSaleState copyWith({
-    bool? isLoading,
+    bool? isProductsLoading,
+    bool? isLoadingMore,
     String? errorMessage,
+    String? technicalDetails,
     String? searchQuery,
-    String? selectedCategory,
-    List<ProductItem>? allProducts,
+    int? selectedCategoryId,
+    bool clearSelectedCategoryId = false,
+    StocksModel? productModel,
+    List<ProductItem>? allItems,
+    int? currentStart,
+    bool? hasMore,
     List<CartLineItem>? cartItems,
   }) {
     return NewSaleState(
-      isLoading: isLoading ?? this.isLoading,
+      isProductsLoading: isProductsLoading ?? this.isProductsLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       errorMessage: errorMessage,
+      technicalDetails: technicalDetails,
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-      allProducts: allProducts ?? this.allProducts,
+      selectedCategoryId: clearSelectedCategoryId ? null : (selectedCategoryId ?? this.selectedCategoryId),
+      productModel: productModel ?? this.productModel,
+      allItems: allItems ?? this.allItems,
+      currentStart: currentStart ?? this.currentStart,
+      hasMore: hasMore ?? this.hasMore,
       cartItems: cartItems ?? this.cartItems,
     );
   }

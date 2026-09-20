@@ -221,10 +221,12 @@ class StockController extends Notifier<StockState> {
   }
 
   List<StockItem> _mapToStockItems(StocksModel stocks) {
+    const int branchId = 2; // matches ApiEndpoints.stocks(branchId: 2)
+
     return stocks.resultData.map((result) {
       final product = result.product.product;
       final stock = result.product.stock;
-      final quantity = stock.branchStock.first.stock;
+      final quantity = _resolveQuantity(stock, branchId);
 
       return StockItem(
         id: result.product.id.toString(),
@@ -240,6 +242,20 @@ class StockController extends Notifier<StockState> {
       );
     }).toList();
   }
+
+  /// Picks the stock figure for the specific branch actually being
+  /// queried ([branchId]) instead of `branchStock.first` — `branch_stock`
+  /// isn't guaranteed ordered by branch id, so blindly taking the first
+  /// entry can silently return a *different* branch's (possibly zero)
+  /// stock, which is the "shows 0 pcs" bug. Falls back to
+  /// [Stock.organizationStock] only as a last resort, if that branch
+  /// isn't present in the array at all.
+  int _resolveQuantity(Stock stock, int branchId) {
+    final branchEntry = stock.branchStock.where((b) => b.id == branchId).firstOrNull;
+    if (branchEntry != null) return branchEntry.stock;
+    return stock.branchStock.isNotEmpty ? stock.branchStock.first.stock : stock.organizationStock;
+  }
+
 
   StockStatus _mapStatus(int quantity) {
     // Low Stock removed — there's no real reorder-threshold field from

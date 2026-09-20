@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
-import '../../data/model/invoices_model.dart';
 import '../../data/repositories/invoices_repository.dart';
 import '../states/invoice_date_presets.dart';
 import '../states/invoice_filter.dart';

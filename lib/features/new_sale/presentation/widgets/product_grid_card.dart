@@ -5,13 +5,12 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/custom_card.dart';
 import '../states/new_sale_state.dart';
 
-/// Single product tile: image placeholder, name, SKU, price, add button.
-/// Add button is composed inline (InkWell + circle Container) — not a new
-/// core widget, since this specific circular-icon-on-price-row layout is
-/// narrow to this card.
+/// Single product tile: image, name, SKU, stock pcs, price, add button.
+/// Add button disables (and dims) when [ProductItem.stock] is 0.
 class ProductGridCard extends StatelessWidget {
   final ProductItem product;
   final VoidCallback onAddToCart;
@@ -24,13 +23,15 @@ class ProductGridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isOutOfStock = product.stock <= 0;
+
     return CustomCard(
       padding: const EdgeInsets.all(AppSizes.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AspectRatio(
-            aspectRatio: 1.5,
+            aspectRatio: 1.7,
             child: Container(
               decoration: BoxDecoration(
                 color: context.appColors.background,
@@ -61,12 +62,21 @@ class ProductGridCard extends StatelessWidget {
               fontSize: AppSizes.fontXs,
             ),
           ),
+          const SizedBox(height: AppSizes.xs / 2),
+          Text(
+            isOutOfStock ? AppStrings.outOfStockLabel : AppStrings.stockPcsLabel(product.stock),
+            style: TextStyle(
+              color: isOutOfStock ? AppColors.error : AppColors.textSecondary,
+              fontSize: AppSizes.fontXs,
+              fontWeight: isOutOfStock ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
           const SizedBox(height: AppSizes.xs),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '₹${product.price.toStringAsFixed(2)}',
+                CurrencyFormatter.format(product.price, symbol: '৳'),
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: AppSizes.fontMd,
@@ -74,12 +84,12 @@ class ProductGridCard extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: onAddToCart,
+                onTap: isOutOfStock ? null : onAddToCart,
                 borderRadius: BorderRadius.circular(AppSizes.radiusFull),
                 child: Container(
                   padding: const EdgeInsets.all(AppSizes.xs),
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
+                  decoration: BoxDecoration(
+                    color: isOutOfStock ? AppColors.textHint : AppColors.primary,
                     shape: BoxShape.circle,
                   ),
                   child: const Icon(

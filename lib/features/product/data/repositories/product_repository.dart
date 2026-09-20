@@ -13,7 +13,7 @@ class ProductRepository {
 
   // AUTO-GENERATED API METHOD
   Future<ProductModel> getProduct() async {
-    final response = await _apiClient.get(ApiEndpoints.products);
+    final response = await _apiClient.get(ApiEndpoints.products(branchId: 2));
     return ProductModel.fromJson(response.data);
   }
 }

@@ -8,7 +8,7 @@ class ApiEndpoints {
   static const String register = "/auth/register";
 
   // Products /product/view/
-  static const String products = "/product?length=10";
+  static String products ({int branchId = 2}) =>"/product?branch_id=$branchId";
   static String productDetails(String id) => "/products/$id";
 
   // Stock /stock/view/

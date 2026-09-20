@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
 /// Pinned bottom cart-summary bar (item badge, total, expand chevron).
 ///
@@ -61,7 +62,7 @@ class CartSummaryBar extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSizes.sm),
                 Text(
-                  AppStrings.viewCartLabel('₹${total.toStringAsFixed(2)}'),
+                  AppStrings.viewCartLabel(CurrencyFormatter.format(total, symbol: '৳')),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: AppSizes.fontMd,
