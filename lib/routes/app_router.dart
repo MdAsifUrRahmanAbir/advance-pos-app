@@ -108,10 +108,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.profile,
         builder: (_, _) => const ProfileScreen(),
       ),
-      GoRoute(
-        path: RouteNames.settings,
-        builder: (_, _) => const SettingsScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.notFound,
         builder: (_, _) => const NotFoundScreen(),
@@ -134,6 +131,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const OtpVerificationScreen(),
       ),
       GoRoute(
+        path: RouteNames.settings,
+        builder: (_, _) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.editProfile,
+        builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
         path: RouteNames.changePassword,
         builder: (_, _) => const ChangePasswordScreen(),
       ),
@@ -142,10 +147,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, _) => const HelpSupportScreen(),
       ),
       GoRoute(path: RouteNames.cart, builder: (_, _) => const CartScreen()),
-      GoRoute(
-        path: RouteNames.editProfile,
-        builder: (context, state) => const EditProfileScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.termsPrivacy,
         builder: (context, state) => const TermsPrivacyScreen(),

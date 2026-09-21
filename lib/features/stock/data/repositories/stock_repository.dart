@@ -26,7 +26,6 @@ class StockRepository {
       queryParameters: {
         'start': start,
         'length': length,
-        // 'branch_id': "1",
         if (search.isNotEmpty) 'search': search,
         'supplier_id': ?supplierId,
         'group_id': ?groupId,

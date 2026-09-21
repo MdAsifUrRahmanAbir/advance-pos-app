@@ -40,6 +40,7 @@ class ProductGridCard extends StatelessWidget {
                   image: product.imageUrl == null
                       ? AssetImage(AppAssets.placeholder2)
                       : NetworkImage(product.imageUrl!),
+                  fit: BoxFit.cover
                 ),
               ),
             ),
