@@ -31,8 +31,42 @@ class InvoicesController extends Notifier<InvoicesState> {
   }
 
   void selectStatus(String statusKey) {
-    state = state.copyWith(selectedStatus: statusKey);
+    final hadDatePreset = state.selectedDatePreset != null;
+    state = state.copyWith(
+      selectedStatus: statusKey,
+      clearSelectedDatePreset: true,
+      filter: state.filter.clearing(startDate: true, endDate: true),
+    );
+    // Only need to refetch if a date preset was actually active before —
+    // pure status switching is a client-side filter over already-loaded data.
+    if (hadDatePreset) {
+      getInvoices(reset: true);
+    }
   }
+
+  /// Tapping a date-preset chip (Today/Yesterday/Last 7 Days/This
+  /// Month/Last Month) computes concrete dates and applies them
+  /// immediately. Tapping the already-active preset again clears the
+  /// date filter back to "any date". Quick Filter row is single-select
+  /// overall, so picking a date preset also resets the status chip
+  /// back to "all".
+  Future<void> selectDatePreset(String? presetKey) async {
+    if (presetKey == null) {
+      state = state.copyWith(
+        clearSelectedDatePreset: true,
+        filter: state.filter.clearing(startDate: true, endDate: true),
+      );
+    } else {
+      final range = InvoiceDatePresets.rangeFor(presetKey);
+      state = state.copyWith(
+        selectedStatus: 'all',
+        selectedDatePreset: presetKey,
+        filter: state.filter.copyWith(startDate: range.start, endDate: range.end),
+      );
+    }
+    await getInvoices(reset: true);
+  }
+
 
   /// A text search and the drawer filter are mutually-exclusive ways of
   /// narrowing the list — running a search clears any active filter
@@ -50,25 +84,6 @@ class InvoicesController extends Notifier<InvoicesState> {
     getInvoices(reset: true);
   }
 
-  /// Tapping a date-preset chip (Today/Yesterday/Last 7 Days/This
-  /// Month/Last Month) computes concrete dates and applies them
-  /// immediately. Tapping the already-active preset again clears the
-  /// date filter back to "any date".
-  Future<void> selectDatePreset(String? presetKey) async {
-    if (presetKey == null) {
-      state = state.copyWith(
-        clearSelectedDatePreset: true,
-        filter: state.filter.clearing(startDate: true, endDate: true),
-      );
-    } else {
-      final range = InvoiceDatePresets.rangeFor(presetKey);
-      state = state.copyWith(
-        selectedDatePreset: presetKey,
-        filter: state.filter.copyWith(startDate: range.start, endDate: range.end),
-      );
-    }
-    await getInvoices(reset: true);
-  }
 
   /// Applied by [InvoiceFilterDrawer]'s "Apply" button — replaces the
   /// active filter (including any custom date range picked there) and

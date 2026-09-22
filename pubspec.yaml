@@ -42,7 +42,5 @@ flutter:
 
   assets:
     - assets/clip/
-    - assets/clip/welcome.png
     - assets/icon/
     - assets/logo/
-    - assets/logo/advance_pos.png

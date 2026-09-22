@@ -6,11 +6,10 @@ import '../states/invoice_date_presets.dart';
 /// Single combined quick-filter row: payment status (All/Paid/Due/
 /// Partial — client-side over loaded data) and date presets (Today/
 /// Yesterday/Last 7 Days/This Month/Last Month — server-side, refetches
-/// via [InvoicesController.selectDatePreset]). Both axes are
-/// independent and can be active simultaneously (e.g. "Paid" + "This
-/// Month"), so [CustomFilterBar]'s `selectedFilters` set carries both
-/// selected keys at once rather than being mutually exclusive across
-/// the whole row.
+/// via [InvoicesController.selectDatePreset]). The row is single-select
+/// overall — picking either a status chip or a date-preset chip clears
+/// the other axis (see [InvoicesController.selectStatus] /
+/// [selectDatePreset]), so only one chip is ever highlighted at a time.
 class InvoiceQuickFilterTabs extends StatelessWidget {
   final String selectedStatus;
   final String? selectedDatePreset;
@@ -30,9 +29,12 @@ class InvoiceQuickFilterTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final allKeys = [..._statusKeys, ...InvoiceDatePresets.keys];
+
+    // Single-select: if a date preset is active, only IT is highlighted
+    // (not also the default 'all' status chip); otherwise the status
+    // chip is highlighted.
     final selected = <String>{
-      selectedStatus,
-      if (selectedDatePreset != null) selectedDatePreset!,
+      selectedDatePreset ?? selectedStatus,
     };
 
     return CustomFilterBar<String>(
