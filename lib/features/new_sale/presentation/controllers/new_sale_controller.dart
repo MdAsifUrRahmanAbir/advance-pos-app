@@ -120,11 +120,13 @@ class NewSaleController extends Notifier<NewSaleState> {
     );
   }
 
-  /// Scans/searches for [code]. Three outcomes:
-  /// - [ScanOutcome.added]: found + stock available → added to cart.
-  /// - [ScanOutcome.outOfStock]: found but no stock left (or cart already
-  ///   holds all available stock for it).
-  /// - [ScanOutcome.notFound]: no matching product.
+
+  void clearAll() {
+    state = state.copyWith(
+      cartItems: [],
+    );
+  }
+
   Future<ScanResult> handleScannedCode(String code) async {
     _debounce?.cancel();
 
@@ -235,9 +237,6 @@ class NewSaleController extends Notifier<NewSaleState> {
     }
   }
 
-  /// Maps a Stock API record into the flat [ProductItem] the UI expects.
-  /// `quantity` (branch stock, falling back to org-wide) was previously
-  /// computed but never passed through — now wired into [ProductItem.stock].
   ProductItem _mapItem(ResultDatum r) {
     final product = r.product.product;
     final stock = r.product.stock;
@@ -259,4 +258,6 @@ class NewSaleController extends Notifier<NewSaleState> {
     if (branchEntry != null) return branchEntry.stock;
     return stock.branchStock.isNotEmpty ? stock.branchStock.first.stock : stock.organizationStock;
   }
+
+
 }

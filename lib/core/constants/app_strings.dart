@@ -453,4 +453,27 @@ class AppStrings {
   static String productAddedMessage(String name) => 'Added: $name';
   static String productOutOfStockMessage(String name) => 'Out of stock: $name';
   static String productNotFoundMessage(String code) => 'No product found for code $code';
+
+
+  // ---- Cart: customer picker ----
+  static const String selectCustomerTitle = 'Select Customer';
+  static const String selectCustomerHint = 'Select a customer';
+  static const String searchCustomerHint = 'Search by name or mobile...';
+  static const String noCustomersFoundTitle = 'No customers found';
+  static const String tryDifferentSearchMessage = 'Try a different search.';
+
+  // ---- Cart: add customer ----
+  static const String addCustomerTitle = 'Add Customer';
+  static const String customerNameLabel = 'Customer Name';
+  static const String customerNameHint = 'e.g. Rahul Sharma';
+  static const String customerNameRequiredError = 'Customer name is required';
+  static const String customerNumberLabel = 'Mobile Number';
+  static const String customerNumberHint = 'e.g. 01700000000';
+  static const String customerNumberRequiredError = 'Mobile number is required';
+  static const String customerEmailLabel = 'Email (optional)';
+  static const String customerEmailHint = 'e.g. name@example.com';
+  static const String customerAddressLabel = 'Address (optional)';
+  static const String customerAddressHint = 'e.g. House 12, Road 4, Dhaka';
+  static const String addCustomerAction = 'Add Customer';
+  static String customerAddedSuccessMessage(String name) => 'Customer "$name" added successfully';
 }

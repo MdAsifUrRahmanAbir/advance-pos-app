@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../data/models/customers_model.dart';
 
 @immutable
 class CartLineItem {
@@ -32,7 +33,7 @@ class CartState {
   final String? errorMessage;
 
   final List<CartLineItem> items;
-  final String customerName;
+  final ResultDatum? selectedCustomer;
   final String remarks;
   final String referenceNo;
 
@@ -40,16 +41,32 @@ class CartState {
   final double taxPercent;
   final double rounding;
 
+  // --- Customer search / pagination (for CustomerSearchSheet) ---
+  final String customerSearchQuery;
+  final List<ResultDatum> customerResults;
+  final bool isCustomerLoading;
+  final bool isCustomerLoadingMore;
+  final String? customerErrorMessage;
+  final int customerCurrentStart;
+  final bool customerHasMore;
+
   const CartState({
     this.isLoading = false,
     this.errorMessage,
     this.items = const [],
-    this.customerName = '',
+    this.selectedCustomer,
     this.remarks = '',
     this.referenceNo = '',
     this.discountPercent = 0,
     this.taxPercent = 0,
     this.rounding = 0,
+    this.customerSearchQuery = '',
+    this.customerResults = const [],
+    this.isCustomerLoading = false,
+    this.isCustomerLoadingMore = false,
+    this.customerErrorMessage,
+    this.customerCurrentStart = 0,
+    this.customerHasMore = true,
   });
 
   factory CartState.initial() => const CartState();
@@ -63,23 +80,37 @@ class CartState {
     bool? isLoading,
     String? errorMessage,
     List<CartLineItem>? items,
-    String? customerName,
+    ResultDatum? selectedCustomer,
     String? remarks,
     String? referenceNo,
     double? discountPercent,
     double? taxPercent,
     double? rounding,
+    String? customerSearchQuery,
+    List<ResultDatum>? customerResults,
+    bool? isCustomerLoading,
+    bool? isCustomerLoadingMore,
+    String? customerErrorMessage,
+    int? customerCurrentStart,
+    bool? customerHasMore,
   }) {
     return CartState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       items: items ?? this.items,
-      customerName: customerName ?? this.customerName,
+      selectedCustomer: selectedCustomer ?? this.selectedCustomer,
       remarks: remarks ?? this.remarks,
       referenceNo: referenceNo ?? this.referenceNo,
       discountPercent: discountPercent ?? this.discountPercent,
       taxPercent: taxPercent ?? this.taxPercent,
       rounding: rounding ?? this.rounding,
+      customerSearchQuery: customerSearchQuery ?? this.customerSearchQuery,
+      customerResults: customerResults ?? this.customerResults,
+      isCustomerLoading: isCustomerLoading ?? this.isCustomerLoading,
+      isCustomerLoadingMore: isCustomerLoadingMore ?? this.isCustomerLoadingMore,
+      customerErrorMessage: customerErrorMessage,
+      customerCurrentStart: customerCurrentStart ?? this.customerCurrentStart,
+      customerHasMore: customerHasMore ?? this.customerHasMore,
     );
   }
 }

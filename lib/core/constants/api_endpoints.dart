@@ -16,8 +16,13 @@ class ApiEndpoints {
   static String stocksDetails(String id) => "/product_stock/view/$id";
 
   // Invoices /sales/view/
-  static const String invoices = "/sales?length=15";
+  static const String invoices = "/sales";
   static String invoiceDetails(String id) => "/sales/view/$id";
+  static const String salesAdd = "/sales/add";
+
+  // Invoices /sales/view/
+  static String customers(String length) => "/customer?length=$length";
+  static const String customerAdd = "/customer/add";
 
   // Master data — fetched once per day, shared across all product features.
   static const String groups = "/group/all";
