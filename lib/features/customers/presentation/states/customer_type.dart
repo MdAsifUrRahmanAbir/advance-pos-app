@@ -1,16 +1,17 @@
 import '../../../../core/widgets/common/status_badge.dart';
 
 /// Maps the raw `customer_type` int from the API to a display label and
-/// badge color. Only 1 (Regular) and 2 (Special) are confirmed today —
-/// anything else falls back to a generic "Type N" label so a new type
-/// added on the backend doesn't break the UI. Update this map once more
-/// types are confirmed.
+/// badge color, matching the admin panel's "Customer Type" dropdown
+/// (All / Retail Sales / Credit Sales / Online Sale). Update this map
+/// if the backend adds more types later.
 String customerTypeLabel(int type) {
   switch (type) {
     case 1:
-      return 'Regular';
+      return 'Retail Sales';
     case 2:
-      return 'Special';
+      return 'Credit Sales';
+    case 3:
+      return 'Online Sale';
     default:
       return 'Type $type';
   }
@@ -19,8 +20,10 @@ String customerTypeLabel(int type) {
 StatusBadgeType customerTypeBadgeType(int type) {
   switch (type) {
     case 1:
-      return StatusBadgeType.success;
+      return StatusBadgeType.primary;
     case 2:
+      return StatusBadgeType.warning;
+    case 3:
       return StatusBadgeType.info;
     default:
       return StatusBadgeType.neutral;
