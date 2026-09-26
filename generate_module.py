@@ -3,7 +3,7 @@ import re
 
 ROOT = os.getcwd()
 LIB_PATH = os.path.join(ROOT, "lib")
-PACKAGE_NAME = "template_test2"  # 👈 আপনার pubspec.yaml এর package name বসান
+PACKAGE_NAME = "advance_pos_app"  # 👈 আপনার pubspec.yaml এর package name বসান
 
 def format_class_name(name):
     """Convert snake_case or clean string to PascalCase (e.g., product_list -> ProductList)"""

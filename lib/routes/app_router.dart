@@ -1,3 +1,4 @@
+import 'package:advance_pos_app/features/customers/presentation/screens/customers_screen.dart';
 import 'package:advance_pos_app/features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
 import 'package:advance_pos_app/features/invoices/presentation/screens/invoices_screen.dart';
 import 'package:advance_pos_app/features/product/presentation/screens/product_screen.dart';
@@ -185,6 +186,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: RouteNames.invoiceDetail,
         builder: (context, state) =>
             InvoiceDetailScreen(invoiceId: state.extra as String),
+      ),
+      GoRoute(
+        path: RouteNames.customers,
+        builder: (context, state) => const CustomersScreen(),
       ),
     ],
   );

@@ -14,6 +14,7 @@ class StockItem {
   final StockStatus status;
   final String category;
   final double sellingPrice;
+  final double buyingPrice;
   final String unit;
   final int lowStockThreshold;
 
@@ -26,6 +27,7 @@ class StockItem {
     required this.status,
     required this.category,
     required this.sellingPrice,
+    required this.buyingPrice,
     this.unit = 'pcs', // TODO: not available from the stock API yet — defaulted.
     this.lowStockThreshold = 10, // TODO: not available from the stock API yet — defaulted.
   });

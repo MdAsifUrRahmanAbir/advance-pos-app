@@ -10,9 +10,11 @@ class ProfileReportsSection extends StatelessWidget {
   final VoidCallback? onStockReportTap;
   final VoidCallback? onSalesReportTap;
   final VoidCallback? onAllReportTap;
+  final VoidCallback? onCustomerTap;
 
   const ProfileReportsSection({
     super.key,
+    this.onCustomerTap,
     this.onStockReportTap,
     this.onSalesReportTap,
     this.onAllReportTap,
@@ -23,6 +25,12 @@ class ProfileReportsSection extends StatelessWidget {
     return SettingsGroup(
       label: AppStrings.reportsSection,
       children: [
+        SettingsTile(
+          icon: Icons.people_alt_outlined,
+          title: AppStrings.customersTitle,
+          subtitle: AppStrings.customerReportSubtitle,
+          onTap: onCustomerTap,
+        ),
         SettingsTile(
           icon: Icons.bar_chart_rounded,
           title: AppStrings.allReportTitle,

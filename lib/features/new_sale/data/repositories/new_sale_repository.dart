@@ -27,7 +27,7 @@ class NewSaleRepository {
         'start': start,
         'length': length,
         if (search.isNotEmpty) 'search': search,
-        if (categoryId != null) 'category_id': categoryId,
+        'category_id': ?categoryId,
       },
     );
     return StocksModel.fromJson(response.data);

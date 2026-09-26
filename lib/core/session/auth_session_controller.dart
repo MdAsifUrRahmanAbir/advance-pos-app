@@ -36,8 +36,9 @@ class AuthSessionController extends Notifier<AuthSessionState> {
     String? refreshToken,
   }) async {
     await _secureStorage.saveAccessToken(accessToken);
-    if (refreshToken != null)
+    if (refreshToken != null) {
       await _secureStorage.saveRefreshToken(refreshToken);
+    }
     _apiClient.setAuthToken(accessToken);
     state = AuthSessionState(
       status: AuthStatus.authenticated,

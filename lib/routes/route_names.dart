@@ -34,4 +34,5 @@ class RouteNames {
   static const String payment = '/payment';
   static const String invoices = '/invoices';
   static const String invoiceDetail = '/invoice_detail';
+  static const String customers = '/customers';
 }

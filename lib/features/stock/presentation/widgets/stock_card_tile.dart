@@ -33,6 +33,7 @@ class StockCardTile extends StatelessWidget {
     final (statusColor, statusLabel) = _statusDisplay(context);
 
     return CustomCard(
+      onTap: onShowInfo,
       padding: EdgeInsets.only(
         left: AppSizes.lg,
         right: AppSizes.lg,
@@ -123,18 +124,24 @@ class StockCardTile extends StatelessWidget {
                 label: AppStrings.sellingPriceLabel,
                 value: CurrencyFormatter.format(item.sellingPrice, symbol: ''),
               ),
-              TextButton.icon(
-                onPressed: onShowInfo,
-                icon: const Icon(
-                  Icons.info_outline_rounded,
-                  size: AppSizes.iconSm,
-                ),
-                label: Text(AppStrings.showInfo),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
-                ),
+
+              _StatColumn(
+                leftAlign: false,
+                label: AppStrings.buyingPriceLabel,
+                value: CurrencyFormatter.format(item.buyingPrice, symbol: ''),
               ),
+              // TextButton.icon(
+              //   onPressed: onShowInfo,
+              //   icon: const Icon(
+              //     Icons.info_outline_rounded,
+              //     size: AppSizes.iconSm,
+              //   ),
+              //   label: Text(AppStrings.showInfo),
+              //   style: TextButton.styleFrom(
+              //     foregroundColor: AppColors.primary,
+              //     padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
+              //   ),
+              // ),
             ],
           ),
         ],
@@ -146,19 +153,22 @@ class StockCardTile extends StatelessWidget {
 class _StatColumn extends StatelessWidget {
   final String label;
   final String value;
-  final bool isTable;
+  final bool isTable, leftAlign;
 
   const _StatColumn({
     required this.label,
     required this.value,
     this.isTable = true,
+    this.leftAlign = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return isTable
         ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: leftAlign
+                ? CrossAxisAlignment.start
+                : CrossAxisAlignment.end,
             children: [
               Text(
                 label,

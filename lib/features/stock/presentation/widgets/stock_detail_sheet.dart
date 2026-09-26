@@ -57,6 +57,10 @@ class StockDetailSheet extends StatelessWidget {
           label: AppStrings.sellingPriceLabel,
           value: CurrencyFormatter.format(item.sellingPrice, symbol: ''),
         ),
+        _DetailRow(
+          label: AppStrings.buyingPriceLabel,
+          value: CurrencyFormatter.format(item.buyingPrice, symbol: ''),
+        ),
         if (note != null) ...[
           const SizedBox(height: AppSizes.md),
           Container(

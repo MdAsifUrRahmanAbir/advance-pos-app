@@ -40,6 +40,7 @@ class ProfileTabView extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileReportsSection(
+                  onCustomerTap: () => context.push(RouteNames.customers),
                   onStockReportTap: () => context.push(RouteNames.error),
                   onSalesReportTap: () => context.push(RouteNames.maintenance),
                   onAllReportTap: () => context.push(RouteNames.notFound),

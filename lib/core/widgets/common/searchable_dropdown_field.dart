@@ -65,7 +65,7 @@ class SearchableDropdownField<T extends Object> extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: context.appColors.border),
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-              color: enabled ? context.appColors.surface : context.appColors.surface.withOpacity(0.5),
+              color: enabled ? context.appColors.surface : context.appColors.surface.withValues(alpha: 0.5),
             ),
             child: Row(
               children: [

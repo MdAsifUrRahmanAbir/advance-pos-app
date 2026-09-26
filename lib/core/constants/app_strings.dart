@@ -379,6 +379,7 @@ class AppStrings {
   static const String stockStatusSlowMoving = 'Slow Moving';
   static const String stockQuantityLabel = 'Stock';
   static const String sellingPriceLabel = 'Selling Price';
+  static const String buyingPriceLabel = 'Buying Price';
   static const String stockSkuPrefix = 'SKU: ';
   static const String stockBarcodePrefix = 'Barcode: ';
   static const String stockCategoryLabel = 'Category';
@@ -426,6 +427,9 @@ class AppStrings {
   static const String allReportTitle = 'All Report';
   static const String allReportSubtitle =
       'Combined revenue, expenses & category breakdown';
+  static const String customerReportTitle = 'Customer Report';
+  static const String customerReportSubtitle =
+      'Customer information, contact details and accounts';
 
   // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
   static const String todayRevenueLabel = 'Today\'s Revenue';
@@ -476,4 +480,10 @@ class AppStrings {
   static const String customerAddressHint = 'e.g. House 12, Road 4, Dhaka';
   static const String addCustomerAction = 'Add Customer';
   static String customerAddedSuccessMessage(String name) => 'Customer "$name" added successfully';
+
+  // ---- Customers screen ----
+  static const String customersTitle = 'Customers';
+  static const String customersEmptyMessage = 'No customers found.';
+  static const String customerNoLabel = 'Customer No.';
+  static const String customerBranchLabel = 'Branch';
 }

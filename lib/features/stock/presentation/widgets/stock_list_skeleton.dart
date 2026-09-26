@@ -19,6 +19,7 @@ class StockListSkeleton extends StatelessWidget {
     quantity: 10,
     category: 'Category',
     sellingPrice: 0.0,
+    buyingPrice: 0.0,
     status: StockStatus.inStock,
   );
 

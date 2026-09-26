@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/status_badge.dart';
-import '../../../invoice_detail/presentation/widgets/invoice_detail_status_badge.dart' hide InvoiceComputedStatus;
 import '../../data/model/invoices_model.dart';
 import '../states/invoice_status.dart';
 

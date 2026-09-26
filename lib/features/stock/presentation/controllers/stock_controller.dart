@@ -239,6 +239,7 @@ class StockController extends Notifier<StockState> {
         status: _mapStatus(quantity),
         category: 'Uncategorized', // TODO: not available from this endpoint
         sellingPrice: double.parse(product.salePrice),
+        buyingPrice: double.parse(product.costPrice),
       );
     }).toList();
   }
