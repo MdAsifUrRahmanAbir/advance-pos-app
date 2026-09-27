@@ -101,6 +101,8 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
     );
   }
 
+  static const int _staggerResetAt = 15;
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(stockControllerProvider);
@@ -186,10 +188,11 @@ class _StockMobileViewState extends ConsumerState<StockMobileView> {
                   const SizedBox(height: AppSizes.sm + AppSizes.xs),
                   itemBuilder: (context, index) {
                     final item = items[index];
+                    final staggerIndex = index % _staggerResetAt;
                     return StockCardTile(
                       item: item,
                       onShowInfo: () => _showInfo(context, item),
-                    ).fadeSlideIn(delay: (index * 60).ms);
+                    ).fadeSlideIn(delay: (staggerIndex * 40).ms);
                   },
                 ),
                 if (state.isLoadingMore)

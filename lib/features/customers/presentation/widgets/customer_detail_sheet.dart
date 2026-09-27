@@ -52,6 +52,10 @@ class CustomerDetailSheet extends StatelessWidget {
           label: AppStrings.customerEmailLabel,
           value: item.customerEmail.isEmpty ? _placeholder : item.customerEmail,
         ),
+        item.parRemarks.isEmpty ? SizedBox.shrink(): _DetailRow(
+          label: AppStrings.customerAddressLabel,
+          value: item.parRemarks.isEmpty ? "" : item.parRemarks,
+        ),
         _DetailRow(label: AppStrings.customerBranchLabel, value: item.branchName),
         const SizedBox(height: AppSizes.md),
         Container(

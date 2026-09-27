@@ -1,41 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/primary_button.dart';
+import '../../data/models/customers_model.dart';
+import '../controllers/cart_controller.dart';
 
-/// Plain data returned to the caller — not a real server customer record
-/// since no create-customer endpoint exists yet to assign an id.
-class NewCustomerDraft {
-  final String name;
-  final String mobile;
-  final String email;
-  final String address;
-
-  const NewCustomerDraft({
-    required this.name,
-    required this.mobile,
-    required this.email,
-    required this.address,
-  });
-}
-
-/// Minimal add-customer form, shown as a modal bottom sheet from
-/// [CustomerSelectorRow]'s "+" button.
+/// Add-customer form, shown as a modal bottom sheet from
+/// [CustomerSelectorRow]'s "+" button. Submits POST /customer/add via
+/// [CartController.createAndSelectCustomer]; pops with the created
+/// [ResultDatum] on success (already selected as the cart's customer by
+/// the controller) or stays open showing an inline error on failure.
+///
 /// ⚠️ Composed manually (same caveat as [RemarksReferenceRow]) pending
 /// PrimaryInputField's exact constructor.
-/// TODO: wire to cartRepositoryProvider.createCustomer(...) once that
-/// endpoint exists — then select the newly created customer for real
-/// (with its server id) instead of returning a local draft.
-class AddCustomerSheet extends StatefulWidget {
+class AddCustomerSheet extends ConsumerStatefulWidget {
   const AddCustomerSheet({super.key});
 
   @override
-  State<AddCustomerSheet> createState() => _AddCustomerSheetState();
+  ConsumerState<AddCustomerSheet> createState() => _AddCustomerSheetState();
 }
 
-class _AddCustomerSheetState extends State<AddCustomerSheet> {
+class _AddCustomerSheetState extends ConsumerState<AddCustomerSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
@@ -51,20 +39,27 @@ class _AddCustomerSheetState extends State<AddCustomerSheet> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-    Navigator.of(context).pop(
-      NewCustomerDraft(
-        name: _nameController.text.trim(),
-        mobile: _numberController.text.trim(),
-        email: _emailController.text.trim(),
-        address: _addressController.text.trim(),
-      ),
+
+    final created = await ref.read(cartControllerProvider.notifier).createAndSelectCustomer(
+      name: _nameController.text.trim(),
+      mobile: _numberController.text.trim(),
+      email: _emailController.text.trim(),
+      address: _addressController.text.trim(),
     );
+
+    if (created != null && mounted) {
+      Navigator.of(context).pop(created);
+    }
+    // On failure the sheet stays open — the error banner below re-renders
+    // from `state.addCustomerErrorMessage` via ref.watch.
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(cartControllerProvider);
+
     return Container(
       padding: EdgeInsets.only(
         left: AppSizes.md,
@@ -95,14 +90,33 @@ class _AddCustomerSheetState extends State<AddCustomerSheet> {
                       AppStrings.addCustomerTitle,
                       style: TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontLg, fontWeight: FontWeight.w700),
                     ),
-                    IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.of(context).pop()),
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded),
+                      onPressed: state.isAddingCustomer ? null : () => Navigator.of(context).pop(),
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppSizes.sm),
+                if (state.addCustomerErrorMessage != null) ...[
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(AppSizes.sm + AppSizes.xs),
+                    decoration: BoxDecoration(
+                      color: AppColors.error.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: Text(
+                      state.addCustomerErrorMessage!,
+                      style: const TextStyle(color: AppColors.error, fontSize: AppSizes.fontSm),
+                    ),
+                  ),
+                  const SizedBox(height: AppSizes.md),
+                ],
                 _FormField(
                   label: AppStrings.customerNameLabel,
                   hint: AppStrings.customerNameHint,
                   controller: _nameController,
+                  enabled: !state.isAddingCustomer,
                   validator: (v) => (v == null || v.trim().isEmpty) ? AppStrings.customerNameRequiredError : null,
                 ),
                 const SizedBox(height: AppSizes.md),
@@ -111,6 +125,7 @@ class _AddCustomerSheetState extends State<AddCustomerSheet> {
                   hint: AppStrings.customerNumberHint,
                   controller: _numberController,
                   keyboardType: TextInputType.phone,
+                  enabled: !state.isAddingCustomer,
                   validator: (v) => (v == null || v.trim().isEmpty) ? AppStrings.customerNumberRequiredError : null,
                 ),
                 const SizedBox(height: AppSizes.md),
@@ -119,6 +134,7 @@ class _AddCustomerSheetState extends State<AddCustomerSheet> {
                   hint: AppStrings.customerEmailHint,
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
+                  enabled: !state.isAddingCustomer,
                 ),
                 const SizedBox(height: AppSizes.md),
                 _FormField(
@@ -126,9 +142,14 @@ class _AddCustomerSheetState extends State<AddCustomerSheet> {
                   hint: AppStrings.customerAddressHint,
                   controller: _addressController,
                   maxLines: 2,
+                  enabled: !state.isAddingCustomer,
                 ),
                 const SizedBox(height: AppSizes.lg),
-                PrimaryButton(label: AppStrings.addCustomerAction, onPressed: _submit),
+                PrimaryButton(
+                  label: AppStrings.addCustomerAction,
+                  loading: state.isAddingCustomer,
+                  onPressed: state.isAddingCustomer ? null : _submit,
+                ),
               ],
             ),
           ),
@@ -144,6 +165,7 @@ class _FormField extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType? keyboardType;
   final int maxLines;
+  final bool enabled;
   final String? Function(String?)? validator;
 
   const _FormField({
@@ -152,6 +174,7 @@ class _FormField extends StatelessWidget {
     required this.controller,
     this.keyboardType,
     this.maxLines = 1,
+    this.enabled = true,
     this.validator,
   });
 
@@ -176,6 +199,7 @@ class _FormField extends StatelessWidget {
             controller: controller,
             keyboardType: keyboardType,
             maxLines: maxLines,
+            enabled: enabled,
             validator: validator,
             style: const TextStyle(color: AppColors.textPrimary, fontSize: AppSizes.fontSm),
             decoration: InputDecoration(

@@ -80,20 +80,22 @@ class CustomerCardItem extends StatelessWidget {
               ),
             ],
           ),
+          item.parRemarks.isNotEmpty ? const SizedBox(height: AppSizes.xs) : SizedBox.shrink(),
+          item.parRemarks.isNotEmpty ? Row(
+            children: [
+              Icon(Icons.location_on, size: AppSizes.iconSm, color: context.appColors.textSecondary),
+              const SizedBox(width: AppSizes.xs),
+              Expanded(
+                child: Text(
+                  item.parRemarks,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontSize: AppSizes.fontSm, color: context.appColors.textSecondary),
+                ),
+              ),
+            ],
+          ): SizedBox.shrink(),
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
-          // Divider(height: 1, color: context.appColors.divider),
-          // Align(
-          //   alignment: Alignment.centerRight,
-          //   child: TextButton.icon(
-          //     onPressed: onShowInfo,
-          //     icon: const Icon(Icons.info_outline_rounded, size: AppSizes.iconSm),
-          //     label: const Text(AppStrings.showInfo),
-          //     style: TextButton.styleFrom(
-          //       foregroundColor: context.appColors.primary,
-          //       padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );

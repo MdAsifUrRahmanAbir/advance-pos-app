@@ -18,6 +18,8 @@ class ProductGrid extends StatelessWidget {
     this.crossAxisCount = 2,
   });
 
+  static const int _staggerResetAt = 20;
+
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
@@ -32,10 +34,11 @@ class ProductGrid extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final product = products[index];
+        final staggerIndex = index % _staggerResetAt;
         return ProductGridCard(
           product: product,
           onAddToCart: () => onAddToCart(product),
-        ).fadeSlideIn(delay: (index * 40).ms);
+        ).fadeSlideIn(delay: (staggerIndex * 40).ms);
       },
     );
   }

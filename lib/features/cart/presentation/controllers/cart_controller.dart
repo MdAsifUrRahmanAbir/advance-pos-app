@@ -14,14 +14,13 @@ NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
 
 /// Owns everything checkout-related EXCEPT the product cart itself:
 /// customer, remarks, reference no., discount/tax/rounding, and the
-/// customer search/pagination for [CustomerSearchSheet].
+/// customer search/pagination + add-customer flow.
 ///
 /// The product cart lines live in [NewSaleController] (single source of
 /// truth, since it owns stock-capping). This controller mirrors them
-/// into its own [CartState.items] shape for the widgets already built
-/// against it, via `ref.listen` — NOT `ref.watch` — so a New Sale cart
-/// change only refreshes `items`, never wipes out customer/remarks/
-/// customer-search state that's accumulated here.
+/// into its own [CartState.items] shape via `ref.listen` — NOT
+/// `ref.watch` — so a New Sale cart change only refreshes `items`, never
+/// wipes out customer/remarks/customer-search state accumulated here.
 class CartController extends Notifier<CartState> {
   late final TextEditingController customerSearchController;
 
@@ -157,6 +156,53 @@ class CartController extends Notifier<CartState> {
   void ensureCustomersLoaded() {
     if (state.customerResults.isEmpty && !state.isCustomerLoading) {
       searchCustomers(reset: true);
+    }
+  }
+
+  // --- Add customer (POST /customer/add) ---
+
+  /// Creates the customer via the API, then re-fetches it from the
+  /// customer *list* endpoint by mobile number to get back a real
+  /// [ResultDatum] (with the server-assigned `sl`/customer_no) — never
+  /// fabricates one locally from the form fields, since the create
+  /// response shape (`AddCustomerModel`) doesn't necessarily mirror the
+  /// list shape.
+  ///
+  /// On success, selects the new customer as the cart's current
+  /// customer and returns it. Returns `null` on failure (message left
+  /// in [CartState.addCustomerErrorMessage] for the sheet to show).
+  Future<ResultDatum?> createAndSelectCustomer({
+    required String name,
+    required String mobile,
+    String email = '',
+    String address = '',
+  }) async {
+    state = state.copyWith(isAddingCustomer: true, addCustomerErrorMessage: null);
+    try {
+      await _repository.createCustomer(
+        customerName: name,
+        customerMobile: mobile,
+        customerEmail: email,
+        address: address,
+      );
+
+      final lookup = await _repository.getCustomers(start: 0, length: 5, search: mobile);
+      final created = lookup.resultData.where((c) => c.customerMobile == mobile).firstOrNull ??
+          lookup.resultData.firstOrNull;
+
+      if (created == null) {
+        state = state.copyWith(
+          isAddingCustomer: false,
+          addCustomerErrorMessage: 'Customer was created but could not be found in the list. Please search manually.',
+        );
+        return null;
+      }
+
+      state = state.copyWith(isAddingCustomer: false, selectedCustomer: created);
+      return created;
+    } catch (error, stackTrace) {
+      state = state.copyWith(isAddingCustomer: false, addCustomerErrorMessage: getErrorMessage(error, stackTrace));
+      return null;
     }
   }
 }

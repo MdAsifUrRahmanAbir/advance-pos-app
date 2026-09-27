@@ -50,6 +50,10 @@ class CartState {
   final int customerCurrentStart;
   final bool customerHasMore;
 
+  // --- Add-customer (POST /customer/add), for AddCustomerSheet ---
+  final bool isAddingCustomer;
+  final String? addCustomerErrorMessage;
+
   const CartState({
     this.isLoading = false,
     this.errorMessage,
@@ -67,6 +71,8 @@ class CartState {
     this.customerErrorMessage,
     this.customerCurrentStart = 0,
     this.customerHasMore = true,
+    this.isAddingCustomer = false,
+    this.addCustomerErrorMessage,
   });
 
   factory CartState.initial() => const CartState();
@@ -93,6 +99,8 @@ class CartState {
     String? customerErrorMessage,
     int? customerCurrentStart,
     bool? customerHasMore,
+    bool? isAddingCustomer,
+    String? addCustomerErrorMessage,
   }) {
     return CartState(
       isLoading: isLoading ?? this.isLoading,
@@ -111,6 +119,8 @@ class CartState {
       customerErrorMessage: customerErrorMessage,
       customerCurrentStart: customerCurrentStart ?? this.customerCurrentStart,
       customerHasMore: customerHasMore ?? this.customerHasMore,
+      isAddingCustomer: isAddingCustomer ?? this.isAddingCustomer,
+      addCustomerErrorMessage: addCustomerErrorMessage,
     );
   }
 }

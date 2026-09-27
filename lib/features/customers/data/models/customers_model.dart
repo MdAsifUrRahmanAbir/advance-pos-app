@@ -42,6 +42,7 @@ class ResultDatum {
   final int sl;
   final String customerNo;
   final String customerName;
+  final String parRemarks;
   final int customerType;
   final dynamic isPurchase;
   final String customerMobile;
@@ -52,6 +53,7 @@ class ResultDatum {
     required this.sl,
     required this.customerNo,
     required this.customerName,
+    required this.parRemarks,
     required this.customerType,
     required this.isPurchase,
     required this.customerMobile,
@@ -67,6 +69,7 @@ class ResultDatum {
     isPurchase: json["is_purchase"],
     customerMobile: json["customer_mobile"],
     customerEmail: json["customer_email"] ?? "",
+    parRemarks: json["par_remarks"] ?? "",
     branchName: json["branch_name"],
   );
 

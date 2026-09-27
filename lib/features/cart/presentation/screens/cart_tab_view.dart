@@ -7,6 +7,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../routes/route_names.dart';
+import '../../data/models/customers_model.dart';
 import '../controllers/cart_controller.dart';
 import '../widgets/add_customer_sheet.dart';
 import '../widgets/cart_item_list.dart';
@@ -19,14 +20,14 @@ class CartTabView extends ConsumerWidget {
   const CartTabView({super.key});
 
   Future<void> _openAddCustomer(BuildContext context) async {
-    final draft = await showModalBottomSheet<NewCustomerDraft>(
+    final created = await showModalBottomSheet<ResultDatum>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => const AddCustomerSheet(),
     );
-    if (draft != null && context.mounted) {
-      CustomSnackbar.show(context, AppStrings.customerAddedSuccessMessage(draft.name));
+    if (created != null && context.mounted) {
+      CustomSnackbar.show(context, AppStrings.customerAddedSuccessMessage(created.customerName));
     }
   }
 

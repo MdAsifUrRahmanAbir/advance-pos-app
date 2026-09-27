@@ -74,6 +74,9 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
     );
   }
 
+  static const int _staggerResetAt = 15;
+
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(invoicesControllerProvider);
@@ -167,12 +170,13 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
                       );
                     }
                     final invoice = invoices[index];
+                    final staggerIndex = index % _staggerResetAt;
                     return Padding(
                       padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
                       child: InvoiceCardItem(
                         invoice: invoice,
                         onTap: () => _openDetail(context, invoice),
-                      ).fadeSlideIn(delay: (index * 60).ms),
+                      ).fadeSlideIn(delay: (staggerIndex * 40).ms),
                     );
                   },
                 ),

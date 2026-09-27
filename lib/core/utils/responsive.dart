@@ -13,7 +13,7 @@ class Responsive extends StatelessWidget {
         if (constraints.maxWidth >= AppSizes.mobileBreakpoint) {
           return SafeArea(child: tablet);
         }
-        return SafeArea(bottom: false, child: mobile);
+        return SafeArea(bottom: true, child: mobile);
       },
     );
   }
