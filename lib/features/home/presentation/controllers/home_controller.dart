@@ -13,8 +13,8 @@ class HomeController extends Notifier<HomeState> {
       isOnline: true,
       stats: _mockStatsFor('today'),
       dailyTargetPercent: 0.75,
-      dailyTargetAchieved: '₹45,280',
-      dailyTargetGoal: '₹60,000',
+      dailyTargetAchieved: '৳45,280',
+      dailyTargetGoal: '৳60,000',
       topProducts: _mockTopProducts,
       recentSales: _mockRecentSales,
     );
@@ -35,14 +35,14 @@ class HomeController extends Notifier<HomeState> {
       StatCardData(
         icon: Icons.bar_chart_rounded,
         label: "Today's Sales",
-        value: '₹45,280',
+        value: '৳45,280',
         trendLabel: '+12.5%',
         isPositiveTrend: true,
       ),
       StatCardData(
         icon: Icons.credit_card_rounded,
         label: 'Collection',
-        value: '₹38,500',
+        value: '৳38,500',
       ),
       StatCardData(
         icon: Icons.shopping_bag_outlined,
@@ -54,7 +54,7 @@ class HomeController extends Notifier<HomeState> {
       StatCardData(
         icon: Icons.person_outline_rounded,
         label: 'Profit',
-        value: '₹12,450',
+        value: '৳12,450',
         trendLabel: '+8.3%',
         isPositiveTrend: true,
       ),
@@ -66,31 +66,31 @@ class HomeController extends Notifier<HomeState> {
       rank: 1,
       name: 'Fresh Filtered Milk 1L',
       unitsSold: 48,
-      revenue: '₹2,400',
+      revenue: '৳2,400',
     ),
     TopProductData(
       rank: 2,
       name: 'Whole Wheat Bread',
       unitsSold: 36,
-      revenue: '₹1,440',
+      revenue: '৳1,440',
     ),
     TopProductData(
       rank: 3,
       name: 'Organic Eggs 12pk',
       unitsSold: 32,
-      revenue: '₹3,840',
+      revenue: '৳3,840',
     ),
     TopProductData(
       rank: 4,
       name: 'Double Apple Soda',
       unitsSold: 28,
-      revenue: '₹840',
+      revenue: '৳840',
     ),
     TopProductData(
       rank: 5,
       name: 'Crisp Potato Chips',
       unitsSold: 24,
-      revenue: '₹720',
+      revenue: '৳720',
     ),
   ];
 
@@ -100,21 +100,21 @@ class HomeController extends Notifier<HomeState> {
       customerName: 'Walk-In Customer',
       itemCount: 3,
       timeAgo: '2 mins ago',
-      amount: '₹1,250',
+      amount: '৳1,250',
     ),
     RecentSaleData(
       saleId: '#SL002',
       customerName: 'Rahul Sharma',
       itemCount: 5,
       timeAgo: '15 mins ago',
-      amount: '₹3,420',
+      amount: '৳3,420',
     ),
     RecentSaleData(
       saleId: '#SL003',
       customerName: 'Amit Patel',
       itemCount: 1,
       timeAgo: '1 hour ago',
-      amount: '₹450',
+      amount: '৳450',
     ),
   ];
 }

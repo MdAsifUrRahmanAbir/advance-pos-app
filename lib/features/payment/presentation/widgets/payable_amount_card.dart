@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
 /// Amber-tinted, amber-bordered summary card for the payable amount.
 /// Feature-local: needs a colored border + tint together, which may not
@@ -43,7 +44,7 @@ class PayableAmountCard extends StatelessWidget {
           ),
           const SizedBox(height: AppSizes.xs),
           Text(
-            '₹${amount.toStringAsFixed(2)}',
+            CurrencyFormatter.format(amount),
             style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: AppSizes.fontDisplay - 4,

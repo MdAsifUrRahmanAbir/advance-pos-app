@@ -44,7 +44,7 @@ class GroupItem {
   });
 
   factory GroupItem.fromJson(Map<String, dynamic> json) => GroupItem(
-    sl: json["sl"],
+    sl: json["sl"] ?? 1,
     id: json["id"],
     groupName: json["group_name"],
     groupCode: json["group_code"],

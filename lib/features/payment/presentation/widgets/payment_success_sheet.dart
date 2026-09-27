@@ -83,7 +83,7 @@ class PaymentSuccessSheet extends StatelessWidget {
             const SizedBox(height: AppSizes.xs),
             Text(
               AppStrings.paymentCollectedSubtitle(
-                '₹${paymentState.payableAmount.toStringAsFixed(2)}',
+                '৳${paymentState.payableAmount.toStringAsFixed(2)}',
               ),
               style: const TextStyle(
                 color: AppColors.textSecondary,
@@ -94,7 +94,7 @@ class PaymentSuccessSheet extends StatelessWidget {
             MiniReceiptCard(
               saleId: paymentState.saleId,
               saleDate: paymentState.saleDate,
-              method: paymentState.selectedMethod,
+              methodLabel: paymentState.methodLabel,
               items: paymentState.receiptItems,
               total: paymentState.payableAmount,
               boundaryKey: receiptBoundaryKey,

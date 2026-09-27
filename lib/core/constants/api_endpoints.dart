@@ -30,4 +30,7 @@ class ApiEndpoints {
       "/category?top_sale_category_limit=$topSaleCategoryLimit&branch_id=$branchId";
   static const String subcategories = "/subcategory/all";
   static const String brands = "/model/all";
+
+  static const String paymentSystem = "/gnl/payment_system/all";
+  static const String paymentAccount = "/gnl/payment_account/all";
 }

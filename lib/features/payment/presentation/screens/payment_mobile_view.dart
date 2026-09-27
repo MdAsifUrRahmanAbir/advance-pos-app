@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_color_scheme.dart';
+import '../../../../core/widgets/common/bottom_action_bar.dart';
+import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../controllers/payment_controller.dart';
-import '../widgets/payable_amount_card.dart';
-import '../widgets/payment_method_grid.dart';
-import '../widgets/given_amount_field.dart';
 import '../widgets/change_due_banner.dart';
+import '../widgets/complete_sale_button.dart';
+import '../widgets/payable_amount_card.dart';
+import '../widgets/payment_entry_card.dart';
 import '../widgets/payment_success_sheet.dart';
+import '../widgets/payment_system_selector.dart';
 import '../widgets/payment_top_bar.dart';
 import '../widgets/printer_selection_sheet.dart';
 import '../widgets/sales_agent_selector.dart';
-import '../widgets/complete_sale_button.dart';
 
 class PaymentMobileView extends ConsumerWidget {
   const PaymentMobileView({super.key});
@@ -33,47 +35,81 @@ class PaymentMobileView extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSizes.md),
             children: [
-              PayableAmountCard(
-                amount: state.payableAmount,
-                saleId: state.saleId,
-                saleDate: state.saleDate,
+              PayableAmountCard(amount: state.payableAmount, saleId: state.saleId, saleDate: state.saleDate),
+              const SizedBox(height: AppSizes.lg),
+              _SectionLabel(text: 'PAYMENT METHOD'),
+              const SizedBox(height: AppSizes.xs),
+              Text(
+                AppStrings.selectPaymentMethodsHint,
+                style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
               ),
-              const SizedBox(height: AppSizes.md),
-              const _SectionLabel(text: 'SELECT PAYMENT METHOD'),
               const SizedBox(height: AppSizes.sm),
-              PaymentMethodGrid(
-                selected: state.selectedMethod,
-                onSelected: controller.selectMethod,
-              ),
-              const SizedBox(height: AppSizes.md),
-              GivenAmountField(
-                amount: state.givenAmount,
-                onChanged: controller.updateGivenAmount,
-                onOpenKeypad: () {
-                  // TODO: wire to a numeric keypad bottom sheet once
-                  // CustomBottomSheet's calculator-pad variant is available.
-                },
-              ),
-              const SizedBox(height: AppSizes.md),
-              ChangeDueBanner(amount: state.changeDue),
-              const SizedBox(height: AppSizes.md),
+              if (state.isPaymentMethodsLoading && state.paymentSystems.isEmpty)
+                const Padding(padding: EdgeInsets.symmetric(vertical: AppSizes.lg), child: CustomLoader())
+              else if (state.paymentMethodsErrorMessage != null && state.paymentSystems.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
+                  child: Column(
+                    children: [
+                      Text(
+                        AppStrings.paymentMethodsLoadError,
+                        style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontSm),
+                      ),
+                      const SizedBox(height: AppSizes.xs),
+                      TextButton(onPressed: controller.loadPaymentMethods, child: const Text(AppStrings.retry)),
+                    ],
+                  ),
+                )
+              else
+                PaymentSystemSelector(
+                  systems: state.paymentSystems,
+                  selectedEntries: state.selectedEntries,
+                  onToggle: controller.toggleSystem,
+                ),
+              if (state.selectedEntries.isNotEmpty) ...[
+                const SizedBox(height: AppSizes.md),
+                for (final entry in state.selectedEntries) ...[
+                  PaymentEntryCard(
+                    entry: entry,
+                    accountsForThisSystem: controller.accountsForSystem(entry.system),
+                    amountLocked: state.lockSingleNonCashAmount,
+                    onAccountChanged: (account) => controller.selectAccountForSystem(entry.system.id, account),
+                    onAmountChanged: (amount) => controller.updateAmountForSystem(entry.system.id, amount),
+                    onRemove: () => controller.toggleSystem(entry.system),
+                  ),
+                  const SizedBox(height: AppSizes.sm + AppSizes.xs),
+                ],
+                if (state.changeDue != 0) ChangeDueBanner(amount: state.changeDue),
+              ] else
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSizes.sm),
+                  child: Text(
+                    AppStrings.selectPaymentMethodToContinue,
+                    style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
+                  ),
+                ),
+              // const SizedBox(height: AppSizes.lg),
+              // _SectionLabel(text: 'SALES AGENT'),
+              const SizedBox(height: AppSizes.sm),
               SalesAgentSelector(
                 selectedAgent: state.salesAgent,
                 agents: state.availableAgents,
                 onChanged: controller.selectAgent,
               ),
-              const SizedBox(height: AppSizes.md),
-              CompleteSaleButton(
-                isEnabled: state.canComplete,
-                isLoading: state.isProcessing,
-                onPressed: () async {
-                  final success = await controller.completeSale();
-                  if (success && context.mounted) {
-                    _showPaymentSuccessSheet(context, ref);
-                  }
-                },
-              ),
+              const SizedBox(height: AppSizes.xxl),
             ],
+          ),
+        ),
+        BottomActionBar(
+          child: CompleteSaleButton(
+            isEnabled: state.canComplete,
+            isLoading: state.isProcessing,
+            onPressed: () async {
+              final success = await controller.completeSale();
+              if (success && context.mounted) {
+                _showPaymentSuccessSheet(context, ref);
+              }
+            },
           ),
         ),
       ],
@@ -93,9 +129,7 @@ class PaymentMobileView extends ConsumerWidget {
         return Consumer(
           builder: (consumerContext, sheetRef, _) {
             final state = sheetRef.watch(paymentControllerProvider);
-            final controller = sheetRef.read(
-              paymentControllerProvider.notifier,
-            );
+            final controller = sheetRef.read(paymentControllerProvider.notifier);
 
             return PaymentSuccessSheet(
               paymentState: state,
@@ -111,15 +145,9 @@ class PaymentMobileView extends ConsumerWidget {
                 context.go(RouteNames.mainShell);
               },
               onShareReceipt: () async {
-                final success = await controller.shareReceipt(
-                  receiptBoundaryKey,
-                );
+                final success = await controller.shareReceipt(receiptBoundaryKey);
                 if (!success && consumerContext.mounted) {
-                  ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    const SnackBar(
-                      content: Text(AppStrings.shareFailedMessage),
-                    ),
-                  );
+                  ScaffoldMessenger.of(consumerContext).showSnackBar(const SnackBar(content: Text(AppStrings.shareFailedMessage)));
                 }
               },
               onPrintReceipt: () async {
@@ -134,13 +162,7 @@ class PaymentMobileView extends ConsumerWidget {
                 final success = await controller.printReceipt(device.macAdress);
                 if (consumerContext.mounted) {
                   ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        success
-                            ? AppStrings.printSuccessMessage
-                            : AppStrings.printFailedMessage,
-                      ),
-                    ),
+                    SnackBar(content: Text(success ? AppStrings.printSuccessMessage : AppStrings.printFailedMessage)),
                   );
                 }
               },
@@ -160,12 +182,7 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
-        color: AppColors.textSecondary,
-        fontSize: AppSizes.fontXs,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.4,
-      ),
+      style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontXs, fontWeight: FontWeight.w700, letterSpacing: 0.4),
     );
   }
 }

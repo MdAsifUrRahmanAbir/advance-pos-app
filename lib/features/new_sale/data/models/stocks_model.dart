@@ -47,7 +47,7 @@ class ResultDatum {
   ResultDatum({required this.sl, required this.product});
 
   factory ResultDatum.fromJson(Map<String, dynamic> json) => ResultDatum(
-    sl: json["sl"],
+    sl: json["sl"] ?? 1,
     product: ResultDatumProduct.fromJson(json["product"]),
   );
 

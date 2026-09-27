@@ -486,4 +486,12 @@ class AppStrings {
   static const String customersEmptyMessage = 'No customers found.';
   static const String customerNoLabel = 'Customer No.';
   static const String customerBranchLabel = 'Branch';
+
+  // ---- Payment: dynamic payment methods (payment_system/payment_account) ----
+  static const String selectPaymentMethodsHint = 'Select up to 2 payment methods';
+  static const String selectAccountLabel = 'Select account';
+  static const String noAccountsAvailableForSystem = 'No accounts configured for this method';
+  static const String selectPaymentMethodToContinue = 'Select a payment method to continue';
+  static const String paymentMethodsLoadError = 'Could not load payment methods.';
+  static const String paymentAmountLabel = 'AMOUNT';
 }

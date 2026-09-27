@@ -61,7 +61,7 @@ class CartItemCard extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     AppStrings.eachPriceLabel(
-                      '₹${item.unitPrice.toStringAsFixed(2)}',
+                      '৳${item.unitPrice.toStringAsFixed(2)}',
                     ),
                     style: const TextStyle(
                       color: AppColors.textSecondary,
@@ -82,7 +82,7 @@ class CartItemCard extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSizes.md),
                 Text(
-                  '₹${item.lineTotal.toStringAsFixed(2)}',
+                  '৳${item.lineTotal.toStringAsFixed(2)}',
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: AppSizes.fontMd - 1,

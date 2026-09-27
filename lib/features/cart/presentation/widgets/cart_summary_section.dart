@@ -23,22 +23,22 @@ class CartSummarySection extends StatelessWidget {
       children: [
         _SummaryRow(
           label: AppStrings.subtotalLabel,
-          value: '₹${state.subtotal.toStringAsFixed(2)}',
+          value: '৳${state.subtotal.toStringAsFixed(2)}',
         ),
         _SummaryRow(
           label: AppStrings.discountLabel(state.discountPercent.round()),
-          value: '-₹${state.discountAmount.toStringAsFixed(2)}',
+          value: '-৳${state.discountAmount.toStringAsFixed(2)}',
           valueColor: AppColors.error,
           badge: '%',
         ),
         _SummaryRow(
           label: AppStrings.vatTaxLabel(state.taxPercent.round()),
-          value: '+₹${state.taxAmount.toStringAsFixed(2)}',
+          value: '+৳${state.taxAmount.toStringAsFixed(2)}',
         ),
         _SummaryRow(
           label: AppStrings.roundingLabel,
           value:
-              '${state.rounding < 0 ? '-' : '+'}₹${state.rounding.abs().toStringAsFixed(2)}',
+              '${state.rounding < 0 ? '-' : '+'}৳${state.rounding.abs().toStringAsFixed(2)}',
           muted: true,
         ),
         const Divider(height: AppSizes.lg, color: AppColors.border),
@@ -54,7 +54,7 @@ class CartSummarySection extends StatelessWidget {
               ),
             ),
             Text(
-              '₹${state.totalPayable.toStringAsFixed(2)}',
+              '৳${state.totalPayable.toStringAsFixed(2)}',
               style: const TextStyle(
                 color: AppColors.primary,
                 fontSize: AppSizes.fontXl,

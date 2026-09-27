@@ -34,7 +34,7 @@ class ChangeDueBanner extends StatelessWidget {
             ),
           ),
           Text(
-            '₹${amount.abs().toStringAsFixed(2)}',
+            '৳${amount.abs().toStringAsFixed(2)}',
             style: TextStyle(
               color: color,
               fontSize: AppSizes.fontMd,
