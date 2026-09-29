@@ -125,23 +125,23 @@ class StockCardTile extends StatelessWidget {
                 value: CurrencyFormatter.format(item.sellingPrice, symbol: ''),
               ),
 
-              _StatColumn(
-                leftAlign: false,
-                label: AppStrings.buyingPriceLabel,
-                value: CurrencyFormatter.format(item.buyingPrice, symbol: ''),
-              ),
-              // TextButton.icon(
-              //   onPressed: onShowInfo,
-              //   icon: const Icon(
-              //     Icons.info_outline_rounded,
-              //     size: AppSizes.iconSm,
-              //   ),
-              //   label: Text(AppStrings.showInfo),
-              //   style: TextButton.styleFrom(
-              //     foregroundColor: AppColors.primary,
-              //     padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
-              //   ),
+              // _StatColumn(
+              //   leftAlign: false,
+              //   label: AppStrings.buyingPriceLabel,
+              //   value: CurrencyFormatter.format(item.buyingPrice, symbol: ''),
               // ),
+              TextButton.icon(
+                onPressed: onShowInfo,
+                icon: const Icon(
+                  Icons.info_outline_rounded,
+                  size: AppSizes.iconSm,
+                ),
+                label: Text(AppStrings.showInfo),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm),
+                ),
+              ),
             ],
           ),
         ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
-import '../../data/models/payment_system_model.dart' as ps;
+import '../../../master_data/data/models/payment_system_model.dart' as ps;
 import '../states/payment_state.dart';
 import 'payment_icon_mapper.dart';
 

@@ -1,6 +1,17 @@
 import 'package:flutter/foundation.dart';
 import '../../data/models/customers_model.dart';
 
+/// Discount can be entered either as a percentage of the subtotal or as
+/// a fixed amount — the seller picks which via the toggle in
+/// [DiscountVatSection].
+enum DiscountType { percent, amount }
+
+/// "12.50" -> "12.5", "10.00" -> "10", "0.00" -> "0".
+String trimDecimal(double value) {
+  final s = value.toStringAsFixed(2);
+  return s.replaceFirst(RegExp(r'\.?0+$'), '');
+}
+
 @immutable
 class CartLineItem {
   final String id;
@@ -37,7 +48,13 @@ class CartState {
   final String remarks;
   final String referenceNo;
 
-  final double discountPercent;
+  /// Raw value the seller typed for discount — interpreted as a percent
+  /// or an amount depending on [discountType]. Use [discountAmount] /
+  /// [discountPercent] for the derived, clamped values.
+  final DiscountType discountType;
+  final double discountInput;
+
+  /// VAT is percent-only.
   final double taxPercent;
   final double rounding;
 
@@ -61,7 +78,8 @@ class CartState {
     this.selectedCustomer,
     this.remarks = '',
     this.referenceNo = '',
-    this.discountPercent = 0,
+    this.discountType = DiscountType.percent,
+    this.discountInput = 0,
     this.taxPercent = 0,
     this.rounding = 0,
     this.customerSearchQuery = '',
@@ -78,8 +96,25 @@ class CartState {
   factory CartState.initial() => const CartState();
 
   double get subtotal => items.fold(0, (sum, item) => sum + item.lineTotal);
-  double get discountAmount => subtotal * (discountPercent / 100);
-  double get taxAmount => (subtotal - discountAmount) * (taxPercent / 100);
+
+  /// Discount in currency, always clamped to [0, subtotal] regardless of
+  /// which mode the seller typed in.
+  double get discountAmount {
+    final raw = discountType == DiscountType.percent
+        ? subtotal * (discountInput / 100)
+        : discountInput;
+    return raw.clamp(0.0, subtotal).toDouble();
+  }
+
+  /// Discount as a percentage of the subtotal (derived, so it's correct
+  /// in both modes and after the cart changes).
+  double get discountPercent => subtotal <= 0 ? 0 : (discountAmount / subtotal) * 100;
+
+  double get taxAmount {
+    final pct = taxPercent.clamp(0.0, 100.0).toDouble();
+    return (subtotal - discountAmount) * (pct / 100);
+  }
+
   double get totalPayable => subtotal - discountAmount + taxAmount + rounding;
 
   CartState copyWith({
@@ -89,7 +124,8 @@ class CartState {
     ResultDatum? selectedCustomer,
     String? remarks,
     String? referenceNo,
-    double? discountPercent,
+    DiscountType? discountType,
+    double? discountInput,
     double? taxPercent,
     double? rounding,
     String? customerSearchQuery,
@@ -109,7 +145,8 @@ class CartState {
       selectedCustomer: selectedCustomer ?? this.selectedCustomer,
       remarks: remarks ?? this.remarks,
       referenceNo: referenceNo ?? this.referenceNo,
-      discountPercent: discountPercent ?? this.discountPercent,
+      discountType: discountType ?? this.discountType,
+      discountInput: discountInput ?? this.discountInput,
       taxPercent: taxPercent ?? this.taxPercent,
       rounding: rounding ?? this.rounding,
       customerSearchQuery: customerSearchQuery ?? this.customerSearchQuery,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../data/models/payment_accounts_model.dart' as pa;
-import '../../data/models/payment_system_model.dart' as ps;
+import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
+import '../../../master_data/data/models/payment_system_model.dart' as ps;
 
 @immutable
 class ReceiptLineItem {
@@ -61,14 +61,8 @@ class PaymentState {
 
   final List<ReceiptLineItem> receiptItems;
 
-  // --- Payment systems / accounts, loaded from
-  // /gnl/payment_system/all and /gnl/payment_account/all ---
-  final bool isPaymentMethodsLoading;
-  final String? paymentMethodsErrorMessage;
-  final List<ps.ResultDatum> paymentSystems;
-  final List<pa.ResultDatum> paymentAccounts;
-
   /// User's chosen payment system(s), capped at [maxSelectable].
+  /// (The systems/accounts lists themselves live in MasterDataState.)
   final List<SelectedPaymentEntry> selectedEntries;
 
   // --- Independent concurrent operations (multi-flag pattern, §4) ---
@@ -86,10 +80,6 @@ class PaymentState {
     this.salesAgent = '',
     this.availableAgents = const [],
     this.receiptItems = const [],
-    this.isPaymentMethodsLoading = false,
-    this.paymentMethodsErrorMessage,
-    this.paymentSystems = const [],
-    this.paymentAccounts = const [],
     this.selectedEntries = const [],
     this.isSharing = false,
     this.isPrinting = false,
@@ -133,10 +123,6 @@ class PaymentState {
     String? salesAgent,
     List<String>? availableAgents,
     List<ReceiptLineItem>? receiptItems,
-    bool? isPaymentMethodsLoading,
-    String? paymentMethodsErrorMessage,
-    List<ps.ResultDatum>? paymentSystems,
-    List<pa.ResultDatum>? paymentAccounts,
     List<SelectedPaymentEntry>? selectedEntries,
     bool? isSharing,
     bool? isPrinting,
@@ -152,10 +138,6 @@ class PaymentState {
       salesAgent: salesAgent ?? this.salesAgent,
       availableAgents: availableAgents ?? this.availableAgents,
       receiptItems: receiptItems ?? this.receiptItems,
-      isPaymentMethodsLoading: isPaymentMethodsLoading ?? this.isPaymentMethodsLoading,
-      paymentMethodsErrorMessage: paymentMethodsErrorMessage,
-      paymentSystems: paymentSystems ?? this.paymentSystems,
-      paymentAccounts: paymentAccounts ?? this.paymentAccounts,
       selectedEntries: selectedEntries ?? this.selectedEntries,
       isSharing: isSharing ?? this.isSharing,
       isPrinting: isPrinting ?? this.isPrinting,

@@ -35,7 +35,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     context.go(
       status == AuthStatus.authenticated
           ? RouteNames.mainShell
-          : RouteNames.onboarding,
+          : RouteNames.welcome,
     );
   }
 

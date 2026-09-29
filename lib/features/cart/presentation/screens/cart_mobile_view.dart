@@ -15,6 +15,7 @@ import '../widgets/cart_top_bar.dart';
 import '../widgets/customer_selector_row.dart';
 import '../widgets/remarks_reference_row.dart';
 import '../widgets/cart_summary_section.dart';
+import '../widgets/discount_vat_section.dart';
 
 class CartMobileView extends ConsumerWidget {
   const CartMobileView({super.key});
@@ -64,6 +65,18 @@ class CartMobileView extends ConsumerWidget {
                 RemarksReferenceRow(
                   onRemarksChanged: controller.updateRemarks,
                   onReferenceChanged: controller.updateReferenceNo,
+                ),
+                const SizedBox(height: AppSizes.md),
+                DiscountVatSection(
+                  discountType: state.discountType,
+                  discountInput: state.discountInput,
+                  discountAmount: state.discountAmount,
+                  discountPercent: state.discountPercent,
+                  taxPercent: state.taxPercent,
+                  taxAmount: state.taxAmount,
+                  onDiscountTypeChanged: controller.setDiscountType,
+                  onDiscountChanged: controller.updateDiscountInput,
+                  onTaxChanged: controller.updateTaxPercent,
                 ),
                 const SizedBox(height: AppSizes.md),
                 CartSummarySection(

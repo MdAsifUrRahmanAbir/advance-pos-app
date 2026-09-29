@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
-import '../../data/models/payment_accounts_model.dart' as pa;
+import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 
 /// Dropdown of payment accounts for one selected non-cash payment
 /// system, filtered (by the caller) to that system's `shortName`.

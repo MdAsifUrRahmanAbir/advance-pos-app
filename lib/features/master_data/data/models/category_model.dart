@@ -102,7 +102,7 @@ class Category {
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-    sl: json["sl"],
+    sl: json["sl"] ?? 0,
     id: json["id"],
     categoryName: json["category_name"],
     categoryCode: json["category_code"],

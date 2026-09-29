@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
-import '../../data/models/payment_accounts_model.dart' as pa;
-import '../../data/models/payment_system_model.dart' as ps;
-import '../../data/repositories/payment_repository.dart';
+import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
+import '../../../master_data/data/models/payment_system_model.dart' as ps;
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/payment_state.dart';
 
 final paymentControllerProvider =
 NotifierProvider.autoDispose<PaymentController, PaymentState>(PaymentController.new);
 
 class PaymentController extends Notifier<PaymentState> {
-  PaymentRepository get _repository => ref.read(paymentRepositoryProvider);
-
   @override
   PaymentState build() {
-    Future.microtask(loadPaymentMethods);
+    // NOTE: deliberately NOT watching masterDataControllerProvider here —
+    // a watch would rebuild this notifier on every master-data change and
+    // wipe selectedEntries. Views watch master data directly; this
+    // controller only reads it on demand (see accountsForSystem).
 
     // TODO: wire to paymentRepositoryProvider.getPendingSale(saleId) once
     // the payment/data/repositories layer is ready. Currently mock data
@@ -34,26 +34,6 @@ class PaymentController extends Notifier<PaymentState> {
         ReceiptLineItem(name: 'Smart LED Lamp', quantity: 1, lineTotal: 50.00),
       ],
     );
-  }
-
-  // --- Payment systems / accounts ---
-
-  Future<void> loadPaymentMethods() async {
-    state = state.copyWith(isPaymentMethodsLoading: true, paymentMethodsErrorMessage: null);
-    try {
-      final systems = await _repository.getPaymentSystems();
-      final accounts = await _repository.getPaymentAccounts();
-      state = state.copyWith(
-        isPaymentMethodsLoading: false,
-        paymentSystems: systems.resultData,
-        paymentAccounts: accounts.resultData,
-      );
-    } catch (error, stackTrace) {
-      state = state.copyWith(
-        isPaymentMethodsLoading: false,
-        paymentMethodsErrorMessage: getErrorMessage(error, stackTrace),
-      );
-    }
   }
 
   /// Selects/deselects a payment system, capped at
@@ -85,11 +65,12 @@ class PaymentController extends Notifier<PaymentState> {
     return entries.map((e) => e.copyWith(amount: half)).toList();
   }
 
-  /// Filtered by shortName, per the accounts endpoint's shape — swap to
-  /// `a.paymentSystemId == system.id` if two systems ever share a
+  /// Accounts come from cached master data, filtered by shortName — swap
+  /// to `a.paymentSystemId == system.id` if two systems ever share a
   /// shortName in practice.
   List<pa.ResultDatum> accountsForSystem(ps.ResultDatum system) {
-    return state.paymentAccounts.where((a) => a.paymentSystem.shortName == system.shortName).toList();
+    final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
+    return accounts.where((a) => a.paymentSystem.shortName == system.shortName).toList();
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {

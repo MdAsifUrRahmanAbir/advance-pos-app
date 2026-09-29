@@ -9,6 +9,7 @@ import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/bottom_action_bar.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../routes/route_names.dart';
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../controllers/payment_controller.dart';
 import '../widgets/change_due_banner.dart';
 import '../widgets/complete_sale_button.dart';
@@ -27,6 +28,11 @@ class PaymentTabView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(paymentControllerProvider);
     final controller = ref.read(paymentControllerProvider.notifier);
+    final masterData = ref.watch(masterDataControllerProvider);
+
+    final systems = masterData.paymentSystems;
+    final isLoadingMethods = masterData.isLoading && systems.isEmpty;
+    final hasMethodsError = masterData.errorMessage != null && systems.isEmpty;
 
     return Column(
       children: [
@@ -50,9 +56,9 @@ class PaymentTabView extends ConsumerWidget {
                           style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
                         ),
                         const SizedBox(height: AppSizes.sm),
-                        if (state.isPaymentMethodsLoading && state.paymentSystems.isEmpty)
+                        if (isLoadingMethods)
                           const Padding(padding: EdgeInsets.symmetric(vertical: AppSizes.lg), child: CustomLoader())
-                        else if (state.paymentMethodsErrorMessage != null && state.paymentSystems.isEmpty)
+                        else if (hasMethodsError)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
                             child: Column(
@@ -62,13 +68,16 @@ class PaymentTabView extends ConsumerWidget {
                                   style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontSm),
                                 ),
                                 const SizedBox(height: AppSizes.xs),
-                                TextButton(onPressed: controller.loadPaymentMethods, child: const Text(AppStrings.retry)),
+                                TextButton(
+                                  onPressed: ref.read(masterDataControllerProvider.notifier).refresh,
+                                  child: const Text(AppStrings.retry),
+                                ),
                               ],
                             ),
                           )
                         else
                           PaymentSystemSelector(
-                            systems: state.paymentSystems,
+                            systems: systems,
                             selectedEntries: state.selectedEntries,
                             onToggle: controller.toggleSystem,
                           ),

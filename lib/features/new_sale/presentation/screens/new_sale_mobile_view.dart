@@ -102,6 +102,7 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
     final isInitialLoad = state.isProductsLoading && state.allItems.isEmpty;
     final hasError = state.errorMessage != null && state.allItems.isEmpty;
 
+    print(topCategories.length);
     return Column(
       children: [
         NewSaleTopBar(

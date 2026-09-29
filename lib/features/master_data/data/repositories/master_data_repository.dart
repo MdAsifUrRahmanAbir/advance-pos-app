@@ -4,6 +4,8 @@ import '../../../../core/network/api_client.dart';
 import '../models/brand_model.dart';
 import '../models/category_model.dart';
 import '../models/group_model.dart';
+import '../models/payment_accounts_model.dart';
+import '../models/payment_system_model.dart';
 import '../models/subcategory_model.dart';
 
 final masterDataRepositoryProvider = Provider<MasterDataRepository>((ref) {
@@ -32,5 +34,18 @@ class MasterDataRepository {
   Future<BrandModel> getBrands() async {
     final response = await _apiClient.get(ApiEndpoints.brands);
     return BrandModel.fromJson(response.data);
+  }
+
+  /// GET /gnl/payment_system/all — Cash, Bank, bKash, ... Full list, no pagination.
+  Future<PaymentSystemModel> getPaymentSystems() async {
+    final response = await _apiClient.get(ApiEndpoints.paymentSystem);
+    return PaymentSystemModel.fromJson(response.data);
+  }
+
+  /// GET /gnl/payment_account/all — every configured account, each tagged
+  /// with its owning payment system.
+  Future<PaymentAccountsModel> getPaymentAccounts() async {
+    final response = await _apiClient.get(ApiEndpoints.paymentAccount);
+    return PaymentAccountsModel.fromJson(response.data);
   }
 }

@@ -5,7 +5,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/custom_card.dart';
-import '../../data/models/payment_accounts_model.dart' as pa;
+import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../states/payment_state.dart';
 import 'payment_account_dropdown.dart';
 import 'payment_amount_field.dart';

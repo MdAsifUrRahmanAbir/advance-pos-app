@@ -26,21 +26,20 @@ class CartSummarySection extends StatelessWidget {
           value: '৳${state.subtotal.toStringAsFixed(2)}',
         ),
         _SummaryRow(
-          label: AppStrings.discountLabel(state.discountPercent.round()),
+          label: AppStrings.discountPercentLabel(trimDecimal(state.discountPercent)),
           value: '-৳${state.discountAmount.toStringAsFixed(2)}',
-          valueColor: AppColors.error,
-          badge: '%',
+          valueColor: state.discountAmount > 0 ? AppColors.error : null,
         ),
         _SummaryRow(
-          label: AppStrings.vatTaxLabel(state.taxPercent.round()),
+          label: AppStrings.vatTaxPercentLabel(trimDecimal(state.taxPercent)),
           value: '+৳${state.taxAmount.toStringAsFixed(2)}',
         ),
-        _SummaryRow(
-          label: AppStrings.roundingLabel,
-          value:
-              '${state.rounding < 0 ? '-' : '+'}৳${state.rounding.abs().toStringAsFixed(2)}',
-          muted: true,
-        ),
+        if (state.rounding != 0)
+          _SummaryRow(
+            label: AppStrings.roundingLabel,
+            value: '${state.rounding < 0 ? '-' : '+'}৳${state.rounding.abs().toStringAsFixed(2)}',
+            muted: true,
+          ),
         const Divider(height: AppSizes.lg, color: AppColors.border),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,14 +77,12 @@ class _SummaryRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
   final bool muted;
-  final String? badge;
 
   const _SummaryRow({
     required this.label,
     required this.value,
     this.valueColor,
     this.muted = false,
-    this.badge,
   });
 
   @override
@@ -102,41 +99,13 @@ class _SummaryRow extends StatelessWidget {
               fontSize: AppSizes.fontSm,
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (badge != null) ...[
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSizes.xs,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.08),
-                    borderRadius: BorderRadius.circular(AppSizes.xs),
-                  ),
-                  child: Text(
-                    badge!,
-                    style: const TextStyle(
-                      color: AppColors.primary,
-                      fontSize: AppSizes.fontXs,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSizes.xs),
-              ],
-              Text(
-                value,
-                style: TextStyle(
-                  color:
-                      valueColor ??
-                      (muted ? AppColors.textSecondary : AppColors.textPrimary),
-                  fontSize: AppSizes.fontSm,
-                  fontWeight: muted ? FontWeight.w400 : FontWeight.w600,
-                ),
-              ),
-            ],
+          Text(
+            value,
+            style: TextStyle(
+              color: valueColor ?? (muted ? AppColors.textSecondary : AppColors.textPrimary),
+              fontSize: AppSizes.fontSm,
+              fontWeight: muted ? FontWeight.w400 : FontWeight.w600,
+            ),
           ),
         ],
       ),

@@ -58,14 +58,7 @@ class CartController extends Notifier<CartState> {
 
     final initialItems = _mapFromNewSale(ref.read(newSaleControllerProvider).cartItems);
 
-    return CartState.initial().copyWith(
-      items: initialItems,
-      // TODO: discount/tax/rounding — hardcoded until the backend
-      // exposes per-sale discount/VAT/rounding rules.
-      discountPercent: 5,
-      taxPercent: 13,
-      rounding: -0.12,
-    );
+    return CartState.initial().copyWith(items: initialItems);
   }
 
   // --- Cart line mutations: delegate to NewSaleController, the single
@@ -85,6 +78,23 @@ class CartController extends Notifier<CartState> {
 
   void updateReferenceNo(String referenceNo) => state = state.copyWith(referenceNo: referenceNo);
 
+  double _round2(double v) => (v * 100).round() / 100;
+
+  /// Switching the discount mode converts the current discount into the
+  /// new mode, so the effective discount stays the same (e.g. 10% on
+  /// ৳1000 becomes ৳100 when switching to amount).
+  void setDiscountType(DiscountType type) {
+    if (type == state.discountType) return;
+    final converted = type == DiscountType.percent
+        ? _round2(state.discountPercent)
+        : _round2(state.discountAmount);
+    state = state.copyWith(discountType: type, discountInput: converted);
+  }
+
+  void updateDiscountInput(double value) => state = state.copyWith(discountInput: value < 0 ? 0 : value);
+
+  void updateTaxPercent(double value) => state = state.copyWith(taxPercent: value < 0 ? 0 : value);
+  
   // --- Customer search / pagination ---
   void updateCustomerSearchQuery(String query) {
     customerSearchController.value = customerSearchController.value.copyWith(

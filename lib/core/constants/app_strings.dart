@@ -494,4 +494,12 @@ class AppStrings {
   static const String selectPaymentMethodToContinue = 'Select a payment method to continue';
   static const String paymentMethodsLoadError = 'Could not load payment methods.';
   static const String paymentAmountLabel = 'AMOUNT';
+
+  // ---- Cart: manual discount / VAT ----
+  static const String discountInputLabel = 'DISCOUNT';
+  static const String discountInputHint = '0';
+  static const String vatInputLabel = 'VAT (%)';
+  static const String vatInputHint = '0';
+  static String discountPercentLabel(String percent) => 'Discount ($percent%)';
+  static String vatTaxPercentLabel(String percent) => 'VAT / Tax ($percent%)';
 }
