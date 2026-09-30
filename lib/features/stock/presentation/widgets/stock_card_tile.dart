@@ -159,8 +159,7 @@ class _StatColumn extends StatelessWidget {
     required this.label,
     required this.value,
     this.isTable = true,
-    this.leftAlign = true,
-  });
+  }) : leftAlign = true;
 
   @override
   Widget build(BuildContext context) {

@@ -37,6 +37,7 @@ import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
 import '../features/new_sale/presentation/screens/new_sale_screen.dart';
 import '../features/payment/presentation/screens/payment_screen.dart';
 import '../features/stock/presentation/screens/stock_screen.dart';
+import 'build_page_with_transition.dart';
 
 final hasCompletedInitialNavigationProvider = StateProvider<bool>(
   (ref) => false,
@@ -77,119 +78,285 @@ final routerProvider = Provider<GoRouter>((ref) {
     },
 
     routes: [
-      GoRoute(path: RouteNames.splash, builder: (_, _) => const SplashScreen()),
+      GoRoute(
+        path: RouteNames.splash,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SplashScreen(),
+          animationType: PageTransitionType.fade,
+        ),
+      ),
+
       GoRoute(
         path: RouteNames.onboarding,
-        builder: (_, _) => const OnboardingScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const OnboardingScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.welcome,
-        builder: (_, _) => const WelcomeScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const WelcomeScreen(),
+        ),
       ),
-      GoRoute(path: RouteNames.login, builder: (_, _) => const LoginScreen()),
+
+      GoRoute(
+        path: RouteNames.login,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const LoginScreen(),
+        ),
+      ),
+
       GoRoute(
         path: RouteNames.forgotPassword,
-        builder: (_, _) => const ForgotPasswordScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ForgotPasswordScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.resetPassword,
-        builder: (_, _) => const ResetPasswordScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ResetPasswordScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.mainShell,
-        builder: (_, _) => const MainShellScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const MainShellScreen(),
+        ),
       ),
-      GoRoute(path: RouteNames.home, builder: (_, _) => const HomeScreen()),
-      GoRoute(path: RouteNames.search, builder: (_, _) => const SearchScreen()),
+
+      GoRoute(
+        path: RouteNames.home,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const HomeScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: RouteNames.search,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SearchScreen(),
+        ),
+      ),
+
       GoRoute(
         path: RouteNames.notifications,
-        builder: (_, _) => const NotificationsScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const NotificationsScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.profile,
-        builder: (_, _) => const ProfileScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ProfileScreen(),
+        ),
       ),
 
       GoRoute(
         path: RouteNames.notFound,
-        builder: (_, _) => const NotFoundScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const NotFoundScreen(),
+        ),
       ),
-      GoRoute(path: RouteNames.error, builder: (_, _) => const ErrorScreen()),
+
+      GoRoute(
+        path: RouteNames.error,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ErrorScreen(),
+        ),
+      ),
+
       GoRoute(
         path: RouteNames.noInternet,
-        builder: (_, _) => const NoInternetScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const NoInternetScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.maintenance,
-        builder: (_, _) => const MaintenanceScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const MaintenanceScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.register,
-        builder: (_, _) => const RegisterScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const RegisterScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.otpVerification,
-        builder: (_, _) => const OtpVerificationScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const OtpVerificationScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.settings,
-        builder: (_, _) => const SettingsScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SettingsScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.editProfile,
-        builder: (context, state) => const EditProfileScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const EditProfileScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.changePassword,
-        builder: (_, _) => const ChangePasswordScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ChangePasswordScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.helpSupport,
-        builder: (_, _) => const HelpSupportScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const HelpSupportScreen(),
+        ),
       ),
-      GoRoute(path: RouteNames.cart, builder: (_, _) => const CartScreen()),
+
+      GoRoute(
+        path: RouteNames.cart,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const CartScreen(),
+          animationType: PageTransitionType.slideFromBottom,
+        ),
+      ),
 
       GoRoute(
         path: RouteNames.termsPrivacy,
-        builder: (context, state) => const TermsPrivacyScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const TermsPrivacyScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.orderList,
-        builder: (context, state) => const OrderListScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const OrderListScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.product,
-        builder: (context, state) => const ProductScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ProductScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.stock,
-        builder: (context, state) => const StockScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const StockScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.newSale,
-        builder: (context, state) => const NewSaleScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const NewSaleScreen(),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.payment,
-        builder: (context, state) => const PaymentScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const PaymentScreen(),
+        ),
       ),
-      GoRoute(
-        path: RouteNames.cart,
-        builder: (context, state) => const CartScreen(),
-      ),
+
       GoRoute(
         path: RouteNames.invoices,
-        builder: (context, state) => const InvoicesScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const InvoicesScreen(),
+        ),
       ),
 
       GoRoute(
         path: RouteNames.invoiceDetail,
-        builder: (context, state) =>
-            InvoiceDetailScreen(invoiceId: state.extra as String),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: InvoiceDetailScreen(invoiceId: state.extra as String),
+        ),
       ),
+
       GoRoute(
         path: RouteNames.customers,
-        builder: (context, state) => const CustomersScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const CustomersScreen(),
+        ),
       ),
     ],
   );
