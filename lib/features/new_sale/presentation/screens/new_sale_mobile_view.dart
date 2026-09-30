@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,7 +103,9 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
     final isInitialLoad = state.isProductsLoading && state.allItems.isEmpty;
     final hasError = state.errorMessage != null && state.allItems.isEmpty;
 
-    print(topCategories.length);
+    if (kDebugMode) {
+      print(topCategories.length);
+    }
     return Column(
       children: [
         NewSaleTopBar(

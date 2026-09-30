@@ -77,7 +77,7 @@ class ProductGridCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                CurrencyFormatter.format(product.price, symbol: '৳'),
+                CurrencyFormatter.format(product.price, ),
                 style: const TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: AppSizes.fontMd,

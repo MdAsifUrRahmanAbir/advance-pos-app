@@ -117,7 +117,7 @@ class InvoiceInfoCard extends StatelessWidget {
             ),
           ),
           Text(
-            '${negative ? '- ' : ''}${CurrencyFormatter.format(value, symbol: '৳')}',
+            '${negative ? '- ' : ''}${CurrencyFormatter.format(value, )}',
             style: TextStyle(
               fontSize: bold ? AppSizes.fontMd : AppSizes.fontSm,
               fontWeight: bold ? FontWeight.w700 : FontWeight.w600,

@@ -73,7 +73,7 @@ class InvoiceCardItem extends StatelessWidget {
                 style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textSecondary),
               ),
               Text(
-                CurrencyFormatter.format(total, symbol: '৳'),
+                CurrencyFormatter.format(total, ),
                 style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
               ),
             ],

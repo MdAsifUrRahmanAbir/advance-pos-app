@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../states/cart_state.dart';
 
@@ -23,21 +24,21 @@ class CartSummarySection extends StatelessWidget {
       children: [
         _SummaryRow(
           label: AppStrings.subtotalLabel,
-          value: '৳${state.subtotal.toStringAsFixed(2)}',
+          value: CurrencyFormatter.format(state.subtotal),
         ),
         _SummaryRow(
           label: AppStrings.discountPercentLabel(trimDecimal(state.discountPercent)),
-          value: '-৳${state.discountAmount.toStringAsFixed(2)}',
+          value: '- ${CurrencyFormatter.format(state.discountAmount)}',
           valueColor: state.discountAmount > 0 ? AppColors.error : null,
         ),
         _SummaryRow(
           label: AppStrings.vatTaxPercentLabel(trimDecimal(state.taxPercent)),
-          value: '+৳${state.taxAmount.toStringAsFixed(2)}',
+          value: '+ ${CurrencyFormatter.format(state.taxAmount)}',
         ),
         if (state.rounding != 0)
           _SummaryRow(
             label: AppStrings.roundingLabel,
-            value: '${state.rounding < 0 ? '-' : '+'}৳${state.rounding.abs().toStringAsFixed(2)}',
+            value: '${state.rounding < 0 ? '-' : '+'}${CurrencyFormatter.format(state.rounding.abs())}',
             muted: true,
           ),
         const Divider(height: AppSizes.lg, color: AppColors.border),
@@ -53,7 +54,7 @@ class CartSummarySection extends StatelessWidget {
               ),
             ),
             Text(
-              '৳${state.totalPayable.toStringAsFixed(2)}',
+              CurrencyFormatter.format(state.totalPayable),
               style: const TextStyle(
                 color: AppColors.primary,
                 fontSize: AppSizes.fontXl,

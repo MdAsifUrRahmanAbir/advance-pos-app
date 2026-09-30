@@ -45,7 +45,7 @@ class _InvoiceDetailMobileViewState
       context,
       title: AppStrings.invoicePayDuesAction,
       message:
-      'Record full payment of ${CurrencyFormatter.format(amountDue, symbol: '৳')} for $invoiceNumber?',
+      'Record full payment of ${CurrencyFormatter.format(amountDue, )} for $invoiceNumber?',
       confirmText: AppStrings.invoicePayDuesAction,
     );
     if (confirmed != true || !mounted) return;

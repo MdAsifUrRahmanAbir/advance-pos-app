@@ -62,7 +62,7 @@ class CartSummaryBar extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSizes.sm),
                 Text(
-                  AppStrings.viewCartLabel(CurrencyFormatter.format(total, symbol: '৳')),
+                  AppStrings.viewCartLabel(CurrencyFormatter.format(total)),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: AppSizes.fontMd,

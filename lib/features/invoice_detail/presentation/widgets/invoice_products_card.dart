@@ -40,7 +40,7 @@ class InvoiceProductsCard extends StatelessWidget {
                 style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
               ),
               Text(
-                '${AppStrings.invoiceTotalAmountLabel}: ${CurrencyFormatter.format(sale.totalAmountValue, symbol: '৳')}',
+                '${AppStrings.invoiceTotalAmountLabel}: ${CurrencyFormatter.format(sale.totalAmountValue, )}',
                 style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
               ),
             ],
@@ -76,7 +76,7 @@ class _LineRow extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.xs / 2),
               Text(
-                'Unit Price: ${CurrencyFormatter.format(line.unitPriceValue, symbol: '৳')}  •  Discount: ${line.disRate}% (- ${CurrencyFormatter.format(line.disAmountValue, symbol: '৳')})',
+                'Unit Price: ${CurrencyFormatter.format(line.unitPriceValue, )}  •  Discount: ${line.disRate}% (- ${CurrencyFormatter.format(line.disAmountValue, )})',
                 style: TextStyle(
                   fontSize: AppSizes.fontXs,
                   color: line.disRateValue > 0 ? AppColors.warning : context.appColors.textHint,
@@ -92,7 +92,7 @@ class _LineRow extends StatelessWidget {
         SizedBox(
           width: 90,
           child: Text(
-            CurrencyFormatter.format(line.totalPrice.toDouble(), symbol: '৳'),
+            CurrencyFormatter.format(line.totalPrice.toDouble(), ),
             textAlign: TextAlign.right,
             style: TextStyle(fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
           ),
