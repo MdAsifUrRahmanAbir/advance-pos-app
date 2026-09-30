@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/currency_formatter.dart';
 
+/// Positive [amount] (with cash) = cash to hand back to the customer.
+/// Negative [amount] = amount still missing.
 class ChangeDueBanner extends StatelessWidget {
   final double amount;
 
@@ -11,8 +14,8 @@ class ChangeDueBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isNegative = amount < 0;
-    final color = isNegative ? AppColors.error : AppColors.success;
+    final isShort = amount < 0;
+    final color = isShort ? AppColors.error : AppColors.success;
 
     return Container(
       width: double.infinity,
@@ -23,23 +26,29 @@ class ChangeDueBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusSm),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            AppStrings.changeDueLabel,
-            style: TextStyle(
-              color: color,
-              fontSize: AppSizes.fontSm,
-              fontWeight: FontWeight.w700,
+          Icon(isShort ? Icons.error_outline_rounded : Icons.keyboard_return_rounded,
+              color: color, size: AppSizes.iconMd),
+          const SizedBox(width: AppSizes.sm),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isShort ? AppStrings.remainingAmountLabel : AppStrings.returnToCustomerLabel,
+                  style: TextStyle(color: color, fontSize: AppSizes.fontSm, fontWeight: FontWeight.w700),
+                ),
+                if (!isShort)
+                  Text(
+                    AppStrings.returnFromCashNote,
+                    style: TextStyle(color: color, fontSize: AppSizes.fontXs),
+                  ),
+              ],
             ),
           ),
           Text(
-            '৳${amount.abs().toStringAsFixed(2)}',
-            style: TextStyle(
-              color: color,
-              fontSize: AppSizes.fontMd,
-              fontWeight: FontWeight.w800,
-            ),
+            CurrencyFormatter.format(amount.abs()),
+            style: TextStyle(color: color, fontSize: AppSizes.fontLg, fontWeight: FontWeight.w800),
           ),
         ],
       ),

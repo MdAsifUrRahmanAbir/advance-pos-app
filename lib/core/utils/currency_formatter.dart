@@ -5,7 +5,6 @@ class CurrencyFormatter {
       "$symbol${amount.toStringAsFixed(2)}";
 }
 
-
 double parseAmount(String value) {
   final cleaned = value.replaceAll(',', '').trim();
   return double.tryParse(cleaned) ?? 0;

@@ -7,34 +7,42 @@ import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../../../master_data/data/models/payment_system_model.dart' as ps;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/payment_state.dart';
+import '../../../cart/presentation/controllers/cart_controller.dart';
+import '../../../cart/presentation/states/cart_state.dart' show CartState;
+import 'dart:math' as math;
 
 final paymentControllerProvider =
-NotifierProvider.autoDispose<PaymentController, PaymentState>(PaymentController.new);
+    NotifierProvider.autoDispose<PaymentController, PaymentState>(
+      PaymentController.new,
+    );
 
 class PaymentController extends Notifier<PaymentState> {
+
   @override
   PaymentState build() {
-    // NOTE: deliberately NOT watching masterDataControllerProvider here —
-    // a watch would rebuild this notifier on every master-data change and
-    // wipe selectedEntries. Views watch master data directly; this
-    // controller only reads it on demand (see accountsForSystem).
-
-    // TODO: wire to paymentRepositoryProvider.getPendingSale(saleId) once
-    // the payment/data/repositories layer is ready. Currently mock data
-    // matching the in-progress New Sale cart.
-    return const PaymentState().copyWith(
-      payableAmount: 1341.88,
-      saleId: '#SL00100001',
-      saleDate: '09/06/2026',
-      salesAgent: 'Admin',
-      availableAgents: ['Admin', 'Rahul Sharma', 'Amit Patel'],
-      receiptItems: const [
-        ReceiptLineItem(name: 'Quantum Wireless Mouse', quantity: 2, lineTotal: 900.00),
-        ReceiptLineItem(name: 'Minimalist Leather Backpack', quantity: 1, lineTotal: 300.00),
-        ReceiptLineItem(name: 'Smart LED Lamp', quantity: 1, lineTotal: 50.00),
-      ],
+    final cart = ref.read(cartControllerProvider);
+    return PaymentState().copyWith(
+      payableAmount: _round2(cart.totalPayable),
+      saleDate: _formatDate(DateTime.now()),
+      receiptItems: _receiptItemsFrom(cart),
     );
   }
+
+  double _round2(double v) => (v * 100).round() / 100;
+
+  String _formatDate(DateTime d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(d.day)}/${two(d.month)}/${d.year}';
+  }
+
+  List<ReceiptLineItem> _receiptItemsFrom(CartState cart) => [
+    for (final line in cart.items)
+      ReceiptLineItem(
+        name: line.name,
+        quantity: line.quantity,
+        lineTotal: line.lineTotal,
+      ),
+  ];
 
   /// Selects/deselects a payment system, capped at
   /// [PaymentState.maxSelectable]. Re-derives every selected entry's
@@ -56,7 +64,9 @@ class PaymentController extends Notifier<PaymentState> {
   /// - 1 entry selected -> defaults to the full payable amount (locked
   ///   in the UI afterward if that entry is non-cash).
   /// - 2 entries selected -> starting 50/50 split, both editable.
-  List<SelectedPaymentEntry> _recalculateAmounts(List<SelectedPaymentEntry> entries) {
+  List<SelectedPaymentEntry> _recalculateAmounts(
+    List<SelectedPaymentEntry> entries,
+  ) {
     if (entries.isEmpty) return entries;
     if (entries.length == 1) {
       return [entries.first.copyWith(amount: state.payableAmount)];
@@ -70,7 +80,9 @@ class PaymentController extends Notifier<PaymentState> {
   /// shortName in practice.
   List<pa.ResultDatum> accountsForSystem(ps.ResultDatum system) {
     final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
-    return accounts.where((a) => a.paymentSystem.shortName == system.shortName).toList();
+    return accounts
+        .where((a) => a.paymentSystem.shortName == system.shortName)
+        .toList();
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {
@@ -82,17 +94,36 @@ class PaymentController extends Notifier<PaymentState> {
     );
   }
 
+
+  /// Editing one amount auto-fills the other (when two methods are
+  /// selected) with `payable - edited`, never below 0. Non-cash amounts
+  /// are capped at the payable amount; cash may exceed it (that's the
+  /// "given" amount, and the difference is returned as change).
   void updateAmountForSystem(int systemId, double amount) {
+    final payable = state.payableAmount;
+    final entries = state.selectedEntries;
+    final edited = entries.where((e) => e.system.id == systemId).firstOrNull;
+    if (edited == null) return;
+
+    var value = amount < 0 ? 0.0 : amount;
+    if (!edited.isCash) value = math.min(value, payable);
+
+    final other = entries.length == 2
+        ? entries.firstWhere((e) => e.system.id != systemId)
+        : null;
+    final complement = _round2(math.max(payable - value, 0));
+
     state = state.copyWith(
       selectedEntries: [
-        for (final e in state.selectedEntries)
-          if (e.system.id == systemId) e.copyWith(amount: amount) else e,
+        for (final e in entries)
+          if (e.system.id == systemId)
+            e.copyWith(amount: value)
+          else if (other != null && e.system.id == other.system.id)
+            e.copyWith(amount: complement)
+          else
+            e,
       ],
     );
-  }
-
-  void selectAgent(String agent) {
-    state = state.copyWith(salesAgent: agent);
   }
 
   Future<bool> completeSale() async {
@@ -115,11 +146,17 @@ class PaymentController extends Notifier<PaymentState> {
   Future<bool> shareReceipt(GlobalKey boundaryKey) async {
     state = state.copyWith(isSharing: true, shareError: null);
     try {
-      await ReceiptShareService.shareReceiptImage(boundaryKey: boundaryKey, saleId: state.saleId);
+      await ReceiptShareService.shareReceiptImage(
+        boundaryKey: boundaryKey,
+        saleId: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
       state = state.copyWith(isSharing: false);
       return true;
     } catch (_) {
-      state = state.copyWith(isSharing: false, shareError: 'shareFailedMessage');
+      state = state.copyWith(
+        isSharing: false,
+        shareError: 'shareFailedMessage',
+      );
       return false;
     }
   }
@@ -131,13 +168,16 @@ class PaymentController extends Notifier<PaymentState> {
       if (!connected) {
         final ok = await ThermalPrinterService.connect(printerMac);
         if (!ok) {
-          state = state.copyWith(isPrinting: false, printError: 'printFailedMessage');
+          state = state.copyWith(
+            isPrinting: false,
+            printError: 'printFailedMessage',
+          );
           return false;
         }
       }
       final success = await ThermalPrinterService.printReceipt(
         storeName: 'POS Pro', // TODO: source from store settings once available
-        saleId: state.saleId,
+        // saleId: state.saleId,
         saleDate: state.saleDate,
         methodLabel: state.methodLabel,
         items: state.receiptItems,
@@ -145,10 +185,16 @@ class PaymentController extends Notifier<PaymentState> {
         givenAmount: state.totalCollected,
         changeDue: state.changeDue,
       );
-      state = state.copyWith(isPrinting: false, printError: success ? null : 'printFailedMessage');
+      state = state.copyWith(
+        isPrinting: false,
+        printError: success ? null : 'printFailedMessage',
+      );
       return success;
     } catch (_) {
-      state = state.copyWith(isPrinting: false, printError: 'printFailedMessage');
+      state = state.copyWith(
+        isPrinting: false,
+        printError: 'printFailedMessage',
+      );
       return false;
     }
   }

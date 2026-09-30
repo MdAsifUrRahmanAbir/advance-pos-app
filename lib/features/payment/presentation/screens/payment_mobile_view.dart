@@ -19,7 +19,6 @@ import '../widgets/payment_success_sheet.dart';
 import '../widgets/payment_system_selector.dart';
 import '../widgets/payment_top_bar.dart';
 import '../widgets/printer_selection_sheet.dart';
-import '../widgets/sales_agent_selector.dart';
 
 class PaymentMobileView extends ConsumerWidget {
   const PaymentMobileView({super.key});
@@ -41,7 +40,7 @@ class PaymentMobileView extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSizes.md),
             children: [
-              PayableAmountCard(amount: state.payableAmount, saleId: state.saleId, saleDate: state.saleDate),
+              PayableAmountCard(amount: state.payableAmount,  saleDate: state.saleDate),
               const SizedBox(height: AppSizes.lg),
               _SectionLabel(text: 'PAYMENT METHOD'),
               const SizedBox(height: AppSizes.xs),
@@ -79,6 +78,7 @@ class PaymentMobileView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.md),
                 for (final entry in state.selectedEntries) ...[
                   PaymentEntryCard(
+                    key: ValueKey(entry.system.id),   // <-- add this
                     entry: entry,
                     accountsForThisSystem: controller.accountsForSystem(entry.system),
                     amountLocked: state.lockSingleNonCashAmount,
@@ -97,12 +97,12 @@ class PaymentMobileView extends ConsumerWidget {
                     style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
                   ),
                 ),
-              const SizedBox(height: AppSizes.sm),
-              SalesAgentSelector(
-                selectedAgent: state.salesAgent,
-                agents: state.availableAgents,
-                onChanged: controller.selectAgent,
-              ),
+              // const SizedBox(height: AppSizes.sm),
+              // SalesAgentSelector(
+              //   selectedAgent: state.salesAgent,
+              //   agents: state.availableAgents,
+              //   onChanged: controller.selectAgent,
+              // ),
               const SizedBox(height: AppSizes.xxl),
             ],
           ),

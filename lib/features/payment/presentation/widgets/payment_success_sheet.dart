@@ -92,7 +92,6 @@ class PaymentSuccessSheet extends StatelessWidget {
             ),
             const SizedBox(height: AppSizes.lg),
             MiniReceiptCard(
-              saleId: paymentState.saleId,
               saleDate: paymentState.saleDate,
               methodLabel: paymentState.methodLabel,
               items: paymentState.receiptItems,

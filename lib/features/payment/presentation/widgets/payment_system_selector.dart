@@ -44,7 +44,7 @@ class PaymentSystemSelector extends StatelessWidget {
 
 class _SystemChip extends StatelessWidget {
   final ps.ResultDatum system;
-  final int selectionOrder; // -1 if not selected, else 0/1
+  final int selectionOrder; // -1 if not selected
   final bool disabled;
   final VoidCallback onTap;
 
@@ -59,7 +59,7 @@ class _SystemChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = context.appColors.primary;
+    final color = paymentSystemColor(system.shortName, system.paymentSystemName);
 
     return Opacity(
       opacity: disabled ? 0.4 : 1,
@@ -68,11 +68,20 @@ class _SystemChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm + AppSizes.xs),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.md,
+            vertical: AppSizes.sm + AppSizes.xs,
+          ),
           decoration: BoxDecoration(
-            color: _isSelected ? color.withValues(alpha: 0.1) : context.appColors.surface,
+            color: _isSelected ? color : color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-            border: Border.all(color: _isSelected ? color : context.appColors.border, width: _isSelected ? 1.5 : 1),
+            border: Border.all(
+              color: _isSelected ? color : color.withValues(alpha: 0.35),
+              width: _isSelected ? 1.5 : 1,
+            ),
+            boxShadow: _isSelected
+                ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 3))]
+                : null,
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -80,7 +89,7 @@ class _SystemChip extends StatelessWidget {
               Icon(
                 paymentSystemIcon(system.shortName, system.paymentSystemName),
                 size: AppSizes.iconSm,
-                color: _isSelected ? color : context.appColors.textSecondary,
+                color: _isSelected ? Colors.white : color,
               ),
               const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
               Text(
@@ -88,21 +97,12 @@ class _SystemChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: AppSizes.fontSm,
                   fontWeight: FontWeight.w700,
-                  color: _isSelected ? color : context.appColors.textPrimary,
+                  color: _isSelected ? Colors.white : context.appColors.textPrimary,
                 ),
               ),
               if (_isSelected) ...[
                 const SizedBox(width: AppSizes.xs),
-                Container(
-                  width: AppSizes.md,
-                  height: AppSizes.md,
-                  decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${selectionOrder + 1}',
-                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.w800),
-                  ),
-                ),
+                const Icon(Icons.check_circle_rounded, size: AppSizes.iconSm, color: Colors.white),
               ],
             ],
           ),

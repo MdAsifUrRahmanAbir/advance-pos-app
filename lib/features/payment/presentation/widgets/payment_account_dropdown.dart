@@ -21,8 +21,8 @@ class PaymentAccountDropdown extends StatelessWidget {
   });
 
   String _labelFor(pa.ResultDatum account) {
-    final holder = account.accHolderName.trim();
-    return holder.isEmpty ? account.accountNo : '$holder • ${account.accountNo}';
+    final accNo = account.accountNo.isNotEmpty ? "(${account.accountNo})": "";
+    return '${account.providerName} $accNo';
   }
 
   @override

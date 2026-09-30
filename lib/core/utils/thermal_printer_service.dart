@@ -27,7 +27,7 @@ class ThermalPrinterService {
 
   static Future<bool> printReceipt({
     required String storeName,
-    required String saleId,
+    // required String saleId,
     required String saleDate,
     required String methodLabel,
     required List<ReceiptLineItem> items,
@@ -37,7 +37,7 @@ class ThermalPrinterService {
   }) async {
     final bytes = await _buildReceiptBytes(
       storeName: storeName,
-      saleId: saleId,
+      // saleId: saleId,
       saleDate: saleDate,
       methodLabel: methodLabel,
       items: items,
@@ -50,7 +50,7 @@ class ThermalPrinterService {
 
   static Future<Uint8List> _buildReceiptBytes({
     required String storeName,
-    required String saleId,
+    // required String saleId,
     required String saleDate,
     required String methodLabel,
     required List<ReceiptLineItem> items,
@@ -71,7 +71,7 @@ class ThermalPrinterService {
     bytes.addAll(generator.text(saleDate, styles: const PosStyles(align: PosAlign.center)));
     bytes.addAll(generator.hr());
 
-    bytes.addAll(generator.text('Sale ID: $saleId'));
+    // bytes.addAll(generator.text('Sale ID: $saleId'));
     bytes.addAll(generator.text('Payment: $methodLabel'));
     bytes.addAll(generator.hr());
 

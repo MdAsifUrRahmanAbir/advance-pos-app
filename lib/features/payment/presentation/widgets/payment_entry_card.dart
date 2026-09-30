@@ -35,6 +35,8 @@ class PaymentEntryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = paymentSystemColor(entry.system.shortName, entry.system.paymentSystemName);
+
     return CustomCard(
       padding: const EdgeInsets.all(AppSizes.md),
       child: Column(
@@ -45,13 +47,13 @@ class PaymentEntryCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSizes.xs + AppSizes.xs / 2),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: accent.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 ),
                 child: Icon(
                   paymentSystemIcon(entry.system.shortName, entry.system.paymentSystemName),
                   size: AppSizes.iconSm,
-                  color: AppColors.primary,
+                  color: accent,
                 ),
               ),
               const SizedBox(width: AppSizes.sm),

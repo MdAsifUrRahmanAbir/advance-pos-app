@@ -6,7 +6,6 @@ import '../../../../core/constants/app_strings.dart';
 import '../states/payment_state.dart';
 
 class MiniReceiptCard extends StatelessWidget {
-  final String saleId;
   final String saleDate;
   final String methodLabel;
   final List<ReceiptLineItem> items;
@@ -15,7 +14,6 @@ class MiniReceiptCard extends StatelessWidget {
 
   const MiniReceiptCard({
     super.key,
-    required this.saleId,
     required this.saleDate,
     required this.methodLabel,
     required this.items,
@@ -36,8 +34,8 @@ class MiniReceiptCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _MetaRow(label: AppStrings.receiptSaleIdLabel, value: saleId),
-          const SizedBox(height: AppSizes.xs),
+          // _MetaRow(label: AppStrings.receiptSaleIdLabel, value: saleId),
+          // const SizedBox(height: AppSizes.xs),
           _MetaRow(label: AppStrings.receiptDateLabel, value: saleDate),
           const SizedBox(height: AppSizes.xs),
           _MetaRow(label: AppStrings.receiptPaymentMethodLabel, value: methodLabel),

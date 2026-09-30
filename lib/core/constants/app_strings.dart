@@ -502,4 +502,9 @@ class AppStrings {
   static const String vatInputHint = '0';
   static String discountPercentLabel(String percent) => 'Discount ($percent%)';
   static String vatTaxPercentLabel(String percent) => 'VAT / Tax ($percent%)';
+
+
+  static const String remainingAmountLabel = 'Remaining Amount';
+  static const String returnToCustomerLabel = 'Return to Customer';
+  static const String returnFromCashNote = 'Return this amount from the cash received';
 }

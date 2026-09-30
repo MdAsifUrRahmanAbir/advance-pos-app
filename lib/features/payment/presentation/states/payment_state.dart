@@ -15,10 +15,7 @@ class ReceiptLineItem {
   });
 }
 
-/// One payment system the user has selected (max
-/// [PaymentState.maxSelectable] total), plus which account (for
-/// non-cash systems) and how much of the payable amount is allocated
-/// to it.
+/// One selected payment system plus its account (non-cash) and amount.
 @immutable
 class SelectedPaymentEntry {
   final ps.ResultDatum system;
@@ -31,14 +28,9 @@ class SelectedPaymentEntry {
     this.amount = 0,
   });
 
-  /// Matched by shortName rather than a hardcoded id, since "Cash" is
-  /// just another row from `/gnl/payment_system/all` on the backend.
   bool get isCash => system.shortName.trim().toUpperCase() == 'CAS';
 
-  SelectedPaymentEntry copyWith({
-    pa.ResultDatum? account,
-    double? amount,
-  }) {
+  SelectedPaymentEntry copyWith({pa.ResultDatum? account, double? amount}) {
     return SelectedPaymentEntry(
       system: system,
       account: account ?? this.account,
@@ -53,19 +45,11 @@ class PaymentState {
   final String? errorMessage;
 
   final double payableAmount;
-  final String saleId;
   final String saleDate;
 
-  final String salesAgent;
-  final List<String> availableAgents;
-
   final List<ReceiptLineItem> receiptItems;
-
-  /// User's chosen payment system(s), capped at [maxSelectable].
-  /// (The systems/accounts lists themselves live in MasterDataState.)
   final List<SelectedPaymentEntry> selectedEntries;
 
-  // --- Independent concurrent operations (multi-flag pattern, §4) ---
   final bool isSharing;
   final bool isPrinting;
   final String? shareError;
@@ -75,10 +59,7 @@ class PaymentState {
     this.isProcessing = false,
     this.errorMessage,
     this.payableAmount = 0,
-    this.saleId = '',
     this.saleDate = '',
-    this.salesAgent = '',
-    this.availableAgents = const [],
     this.receiptItems = const [],
     this.selectedEntries = const [],
     this.isSharing = false,
@@ -87,28 +68,37 @@ class PaymentState {
     this.printError,
   });
 
-  /// Only 2 payment methods can be combined on a single sale.
   static const int maxSelectable = 2;
+  static const double _eps = 0.005;
 
-  double get totalCollected => selectedEntries.fold(0, (sum, e) => sum + e.amount);
+  double get totalCollected => selectedEntries.fold(0, (s, e) => s + e.amount);
 
+  bool get hasCash => selectedEntries.any((e) => e.isCash);
+
+  double get nonCashTotal =>
+      selectedEntries.where((e) => !e.isCash).fold(0, (s, e) => s + e.amount);
+
+  /// >0 = collected more than payable, <0 = still short.
   double get changeDue => totalCollected - payableAmount;
 
-  /// True when exactly one, non-cash system is selected — its amount
-  /// field is locked to the full [payableAmount] rather than editable,
-  /// since a single digital payment can't have "change".
-  bool get lockSingleNonCashAmount => selectedEntries.length == 1 && !selectedEntries.first.isCash;
+  /// Cash to hand back. Only ever non-zero when cash is selected.
+  double get cashReturn => hasCash && changeDue > _eps ? changeDue : 0;
 
-  /// Every selected non-cash entry needs an account chosen, and the
-  /// combined amount must cover the payable amount.
+  /// Amount still missing.
+  double get shortfall => changeDue < -_eps ? -changeDue : 0;
+
+  /// Exactly one non-cash method -> amount pinned to the payable amount.
+  bool get lockSingleNonCashAmount =>
+      selectedEntries.length == 1 && !selectedEntries.first.isCash;
+
   bool get canComplete {
     if (isProcessing || selectedEntries.isEmpty) return false;
-    final missingAccount = selectedEntries.any((e) => !e.isCash && e.account == null);
-    if (missingAccount) return false;
-    return totalCollected >= payableAmount;
+    if (selectedEntries.any((e) => !e.isCash && e.account == null)) return false;
+    // Change can only come out of cash, so non-cash can't overpay.
+    if (nonCashTotal > payableAmount + _eps) return false;
+    return totalCollected >= payableAmount - _eps;
   }
 
-  /// Joined system names, for the receipt / printed slip.
   String get methodLabel {
     if (selectedEntries.isEmpty) return '-';
     return selectedEntries.map((e) => e.system.paymentSystemName).join(' + ');
@@ -118,10 +108,7 @@ class PaymentState {
     bool? isProcessing,
     String? errorMessage,
     double? payableAmount,
-    String? saleId,
     String? saleDate,
-    String? salesAgent,
-    List<String>? availableAgents,
     List<ReceiptLineItem>? receiptItems,
     List<SelectedPaymentEntry>? selectedEntries,
     bool? isSharing,
@@ -133,10 +120,7 @@ class PaymentState {
       isProcessing: isProcessing ?? this.isProcessing,
       errorMessage: errorMessage,
       payableAmount: payableAmount ?? this.payableAmount,
-      saleId: saleId ?? this.saleId,
       saleDate: saleDate ?? this.saleDate,
-      salesAgent: salesAgent ?? this.salesAgent,
-      availableAgents: availableAgents ?? this.availableAgents,
       receiptItems: receiptItems ?? this.receiptItems,
       selectedEntries: selectedEntries ?? this.selectedEntries,
       isSharing: isSharing ?? this.isSharing,
