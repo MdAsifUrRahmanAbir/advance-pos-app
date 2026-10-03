@@ -4,12 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
 import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
-import '../../../master_data/data/models/payment_system_model.dart' as ps;
+// import '../../../master_data/data/models/payment_system_model.dart' as ps;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/payment_state.dart';
 import '../../../cart/presentation/controllers/cart_controller.dart';
 import '../../../cart/presentation/states/cart_state.dart' show CartState;
 import 'dart:math' as math;
+import '../../../../core/utils/error_mapper.dart';
+import '../../../cart/presentation/states/cart_state.dart' show CartState, DiscountType;
+import '../../../new_sale/presentation/controllers/new_sale_controller.dart';
+import '../../data/repositories/payment_repository.dart';
 
 final paymentControllerProvider =
     NotifierProvider.autoDispose<PaymentController, PaymentState>(
@@ -47,7 +51,7 @@ class PaymentController extends Notifier<PaymentState> {
   /// Selects/deselects a payment system, capped at
   /// [PaymentState.maxSelectable]. Re-derives every selected entry's
   /// amount afterward (see [_recalculateAmounts]).
-  void toggleSystem(ps.ResultDatum system) {
+  void toggleSystem(pa.PaymentSystem system) {
     final current = List<SelectedPaymentEntry>.from(state.selectedEntries);
     final existingIndex = current.indexWhere((e) => e.system.id == system.id);
 
@@ -55,12 +59,23 @@ class PaymentController extends Notifier<PaymentState> {
       current.removeAt(existingIndex);
     } else {
       if (current.length >= PaymentState.maxSelectable) return;
-      current.add(SelectedPaymentEntry(system: system));
+
+      var entry = SelectedPaymentEntry(system: system);
+      // Cash / Reward: no dropdown, so bind their account right away.
+      if (!entry.needsAccountPicker) {
+        final accounts = accountsForSystem(system);
+        if (accounts.isNotEmpty) entry = entry.copyWith(account: accounts.first);
+      }
+      current.add(entry);
     }
 
     state = state.copyWith(selectedEntries: _recalculateAmounts(current));
   }
 
+  List<pa.ResultDatum> accountsForSystem(pa.PaymentSystem system) {
+    final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
+    return accounts.where((a) => a.paymentSystem.id == system.id).toList();
+  }
   /// - 1 entry selected -> defaults to the full payable amount (locked
   ///   in the UI afterward if that entry is non-cash).
   /// - 2 entries selected -> starting 50/50 split, both editable.
@@ -73,16 +88,6 @@ class PaymentController extends Notifier<PaymentState> {
     }
     final half = state.payableAmount / 2;
     return entries.map((e) => e.copyWith(amount: half)).toList();
-  }
-
-  /// Accounts come from cached master data, filtered by shortName — swap
-  /// to `a.paymentSystemId == system.id` if two systems ever share a
-  /// shortName in practice.
-  List<pa.ResultDatum> accountsForSystem(ps.ResultDatum system) {
-    final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
-    return accounts
-        .where((a) => a.paymentSystem.shortName == system.shortName)
-        .toList();
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {
@@ -126,21 +131,88 @@ class PaymentController extends Notifier<PaymentState> {
     );
   }
 
+// TODO: replace these statics once branch / employee come from the
+// logged-in session instead of being fixed.
+  static const _salesType = '1';
+  static const _branchId = '2';
+  static const _employeeId = '2';
+  static const _deliveryCharge = '0';
+
+  PaymentRepository get _repository => ref.read(paymentRepositoryProvider);
+
   Future<bool> completeSale() async {
-    if (!state.canComplete) {
-      state = state.copyWith(errorMessage: 'errorGivenAmountInsufficient');
-      return false;
-    }
+    if (!state.canComplete) return false;
     state = state.copyWith(isProcessing: true, errorMessage: null);
 
-    // TODO: wire to paymentRepositoryProvider.completeSale(...) once the
-    // payment/data/repositories layer supports sale creation — submit
-    // state.selectedEntries (system id, account id, amount each)
-    // alongside the sale/cart payload.
-    await Future<void>.delayed(const Duration(milliseconds: 400));
+    try {
+      final result = await _repository.completeSale(_buildSalePayload());
+      state = state.copyWith(
+        isProcessing: false,
+        isSaleCompleted: true,
+        salesBillNo: result.salesBillNo,
+      );
+      // Sale is recorded — empty the cart so back-navigation can't resell it.
+      ref.read(newSaleControllerProvider.notifier).clearAll();
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isProcessing: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    }
+  }
 
-    state = state.copyWith(isProcessing: false);
-    return true;
+  String _money(double v) => v.toStringAsFixed(2);
+
+  Map<String, dynamic> _buildSalePayload() {
+    final cart = ref.read(cartControllerProvider);
+    final items = cart.items;
+    final payable = _money(state.payableAmount);
+
+    // Percent typed by the seller is sent exactly; an amount-mode discount
+    // is converted to a percent with extra precision to avoid cent drift.
+    final discountRate = cart.discountType == DiscountType.percent
+        ? cart.discountInput.clamp(0.0, 100.0).toStringAsFixed(2)
+        : cart.discountPercent.toStringAsFixed(4);
+    final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
+
+    final payments =
+    state.selectedEntries.where((e) => e.amount > 0.005).toList();
+    final cashReturn = state.cashReturn;
+
+    return {
+      'sales_type': _salesType,
+      'branch_id': _branchId,
+      if (cart.selectedCustomer != null)
+        'customer_id': cart.selectedCustomer!.customerNo,
+      'employee_id': _employeeId,
+      'total_payable_amount': payable,
+      'given_amount': payable,
+      'total_quantity':
+      items.fold<int>(0, (sum, l) => sum + l.quantity).toString(),
+      'delivery_charge': _deliveryCharge,
+      'product_id_arr': {
+        for (var i = 0; i < items.length; i++) '$i': items[i].id,
+      },
+      'product_quantity_arr': {
+        for (var i = 0; i < items.length; i++) '$i': '${items[i].quantity}',
+      },
+      'prod_dis_rate_arr': {
+        for (var i = 0; i < items.length; i++) '$i': discountRate,
+      },
+      'prod_vat_rate_arr': {
+        for (var i = 0; i < items.length; i++) '$i': vatRate,
+      },
+      'payment_acc_id_arr': {
+        for (final e in payments)
+          if (e.account != null) '${e.system.id}': '${e.account!.id}',
+      },
+      'given_amount_arr': {
+        for (final e in payments)
+          '${e.system.id}': _money(e.isCash ? e.amount - cashReturn : e.amount),
+      },
+    };
   }
 
   Future<bool> shareReceipt(GlobalKey boundaryKey) async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_color_scheme.dart';
-import '../../../master_data/data/models/payment_system_model.dart' as ps;
+import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../states/payment_state.dart';
 import 'payment_icon_mapper.dart';
 
@@ -11,9 +11,9 @@ import 'payment_icon_mapper.dart';
 /// chip deselects it; tapping an unselected chip once the cap is
 /// reached is a no-op (the chip renders dimmed).
 class PaymentSystemSelector extends StatelessWidget {
-  final List<ps.ResultDatum> systems;
+  final List<pa.PaymentSystem> systems;
   final List<SelectedPaymentEntry> selectedEntries;
-  final ValueChanged<ps.ResultDatum> onToggle;
+  final ValueChanged<pa.PaymentSystem> onToggle;
 
   const PaymentSystemSelector({
     super.key,
@@ -26,6 +26,9 @@ class PaymentSystemSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final atCap = selectedEntries.length >= PaymentState.maxSelectable;
 
+    print(systems);
+    print(selectedEntries);
+
     return Wrap(
       spacing: AppSizes.sm,
       runSpacing: AppSizes.sm,
@@ -33,8 +36,13 @@ class PaymentSystemSelector extends StatelessWidget {
         for (final system in systems)
           _SystemChip(
             system: system,
-            selectionOrder: selectedEntries.indexWhere((e) => e.system.id == system.id),
-            disabled: atCap && selectedEntries.indexWhere((e) => e.system.id == system.id) == -1,
+            selectionOrder: selectedEntries.indexWhere(
+              (e) => e.system.id == system.id,
+            ),
+            disabled:
+                atCap &&
+                selectedEntries.indexWhere((e) => e.system.id == system.id) ==
+                    -1,
             onTap: () => onToggle(system),
           ),
       ],
@@ -43,7 +51,7 @@ class PaymentSystemSelector extends StatelessWidget {
 }
 
 class _SystemChip extends StatelessWidget {
-  final ps.ResultDatum system;
+  final pa.PaymentSystem system;
   final int selectionOrder; // -1 if not selected
   final bool disabled;
   final VoidCallback onTap;
@@ -59,7 +67,10 @@ class _SystemChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = paymentSystemColor(system.shortName, system.paymentSystemName);
+    final color = paymentSystemColor(
+      system.shortName,
+      system.paymentSystemName,
+    );
 
     return Opacity(
       opacity: disabled ? 0.4 : 1,
@@ -80,7 +91,13 @@ class _SystemChip extends StatelessWidget {
               width: _isSelected ? 1.5 : 1,
             ),
             boxShadow: _isSelected
-                ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 3))]
+                ? [
+                    BoxShadow(
+                      color: color.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
                 : null,
           ),
           child: Row(
@@ -97,12 +114,18 @@ class _SystemChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: AppSizes.fontSm,
                   fontWeight: FontWeight.w700,
-                  color: _isSelected ? Colors.white : context.appColors.textPrimary,
+                  color: _isSelected
+                      ? Colors.white
+                      : context.appColors.textPrimary,
                 ),
               ),
               if (_isSelected) ...[
                 const SizedBox(width: AppSizes.xs),
-                const Icon(Icons.check_circle_rounded, size: AppSizes.iconSm, color: Colors.white),
+                const Icon(
+                  Icons.check_circle_rounded,
+                  size: AppSizes.iconSm,
+                  color: Colors.white,
+                ),
               ],
             ],
           ),

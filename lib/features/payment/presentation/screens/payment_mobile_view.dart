@@ -7,6 +7,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/bottom_action_bar.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
+import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
@@ -19,6 +20,8 @@ import '../widgets/payment_success_sheet.dart';
 import '../widgets/payment_system_selector.dart';
 import '../widgets/payment_top_bar.dart';
 import '../widgets/printer_selection_sheet.dart';
+import '../states/payment_systems_from_accounts.dart';
+
 
 class PaymentMobileView extends ConsumerWidget {
   const PaymentMobileView({super.key});
@@ -29,7 +32,8 @@ class PaymentMobileView extends ConsumerWidget {
     final controller = ref.read(paymentControllerProvider.notifier);
     final masterData = ref.watch(masterDataControllerProvider);
 
-    final systems = masterData.paymentSystems;
+    final systems = paymentSystemsFrom(masterData.paymentAccounts);
+
     final isLoadingMethods = masterData.isLoading && systems.isEmpty;
     final hasMethodsError = masterData.errorMessage != null && systems.isEmpty;
 
@@ -40,17 +44,26 @@ class PaymentMobileView extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.all(AppSizes.md),
             children: [
-              PayableAmountCard(amount: state.payableAmount,  saleDate: state.saleDate),
+              PayableAmountCard(
+                amount: state.payableAmount,
+                saleDate: state.saleDate,
+              ),
               const SizedBox(height: AppSizes.lg),
               _SectionLabel(text: 'PAYMENT METHOD'),
               const SizedBox(height: AppSizes.xs),
               Text(
                 AppStrings.selectPaymentMethodsHint,
-                style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
+                style: TextStyle(
+                  fontSize: AppSizes.fontXs,
+                  color: context.appColors.textHint,
+                ),
               ),
               const SizedBox(height: AppSizes.sm),
               if (isLoadingMethods)
-                const Padding(padding: EdgeInsets.symmetric(vertical: AppSizes.lg), child: CustomLoader())
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
+                  child: CustomLoader(),
+                )
               else if (hasMethodsError)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
@@ -58,11 +71,16 @@ class PaymentMobileView extends ConsumerWidget {
                     children: [
                       Text(
                         AppStrings.paymentMethodsLoadError,
-                        style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontSm),
+                        style: TextStyle(
+                          color: context.appColors.textSecondary,
+                          fontSize: AppSizes.fontSm,
+                        ),
                       ),
                       const SizedBox(height: AppSizes.xs),
                       TextButton(
-                        onPressed: ref.read(masterDataControllerProvider.notifier).refresh,
+                        onPressed: ref
+                            .read(masterDataControllerProvider.notifier)
+                            .refresh,
                         child: const Text(AppStrings.retry),
                       ),
                     ],
@@ -78,31 +96,34 @@ class PaymentMobileView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.md),
                 for (final entry in state.selectedEntries) ...[
                   PaymentEntryCard(
-                    key: ValueKey(entry.system.id),   // <-- add this
+                    key: ValueKey(entry.system.id), // <-- add this
                     entry: entry,
-                    accountsForThisSystem: controller.accountsForSystem(entry.system),
+                    accountsForThisSystem: controller.accountsForSystem(
+                      entry.system,
+                    ),
                     amountLocked: state.lockSingleNonCashAmount,
-                    onAccountChanged: (account) => controller.selectAccountForSystem(entry.system.id, account),
-                    onAmountChanged: (amount) => controller.updateAmountForSystem(entry.system.id, amount),
+                    onAccountChanged: (account) => controller
+                        .selectAccountForSystem(entry.system.id, account),
+                    onAmountChanged: (amount) => controller
+                        .updateAmountForSystem(entry.system.id, amount),
                     onRemove: () => controller.toggleSystem(entry.system),
                   ),
                   const SizedBox(height: AppSizes.sm + AppSizes.xs),
                 ],
-                if (state.changeDue != 0) ChangeDueBanner(amount: state.changeDue),
+                if (state.changeDue != 0)
+                  ChangeDueBanner(amount: state.changeDue),
               ] else
                 Padding(
                   padding: const EdgeInsets.only(top: AppSizes.sm),
                   child: Text(
                     AppStrings.selectPaymentMethodToContinue,
-                    style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
+                    style: TextStyle(
+                      fontSize: AppSizes.fontXs,
+                      color: context.appColors.textHint,
+                    ),
                   ),
                 ),
-              // const SizedBox(height: AppSizes.sm),
-              // SalesAgentSelector(
-              //   selectedAgent: state.salesAgent,
-              //   agents: state.availableAgents,
-              //   onChanged: controller.selectAgent,
-              // ),
+
               const SizedBox(height: AppSizes.xxl),
             ],
           ),
@@ -113,8 +134,13 @@ class PaymentMobileView extends ConsumerWidget {
             isLoading: state.isProcessing,
             onPressed: () async {
               final success = await controller.completeSale();
-              if (success && context.mounted) {
+              if (!context.mounted) return;
+              if (success) {
                 _showPaymentSuccessSheet(context, ref);
+              } else {
+                final error = ref.read(paymentControllerProvider).errorMessage;
+                if (error != null)
+                  CustomSnackbar.show(context, error, error: true);
               }
             },
           ),
@@ -136,7 +162,9 @@ class PaymentMobileView extends ConsumerWidget {
         return Consumer(
           builder: (consumerContext, sheetRef, _) {
             final state = sheetRef.watch(paymentControllerProvider);
-            final controller = sheetRef.read(paymentControllerProvider.notifier);
+            final controller = sheetRef.read(
+              paymentControllerProvider.notifier,
+            );
 
             return PaymentSuccessSheet(
               paymentState: state,
@@ -152,9 +180,15 @@ class PaymentMobileView extends ConsumerWidget {
                 context.go(RouteNames.mainShell);
               },
               onShareReceipt: () async {
-                final success = await controller.shareReceipt(receiptBoundaryKey);
+                final success = await controller.shareReceipt(
+                  receiptBoundaryKey,
+                );
                 if (!success && consumerContext.mounted) {
-                  ScaffoldMessenger.of(consumerContext).showSnackBar(const SnackBar(content: Text(AppStrings.shareFailedMessage)));
+                  ScaffoldMessenger.of(consumerContext).showSnackBar(
+                    const SnackBar(
+                      content: Text(AppStrings.shareFailedMessage),
+                    ),
+                  );
                 }
               },
               onPrintReceipt: () async {
@@ -169,7 +203,13 @@ class PaymentMobileView extends ConsumerWidget {
                 final success = await controller.printReceipt(device.macAdress);
                 if (consumerContext.mounted) {
                   ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    SnackBar(content: Text(success ? AppStrings.printSuccessMessage : AppStrings.printFailedMessage)),
+                    SnackBar(
+                      content: Text(
+                        success
+                            ? AppStrings.printSuccessMessage
+                            : AppStrings.printFailedMessage,
+                      ),
+                    ),
                   );
                 }
               },
@@ -179,6 +219,7 @@ class PaymentMobileView extends ConsumerWidget {
       },
     );
   }
+
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -189,7 +230,12 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(color: context.appColors.textSecondary, fontSize: AppSizes.fontXs, fontWeight: FontWeight.w700, letterSpacing: 0.4),
+      style: TextStyle(
+        color: context.appColors.textSecondary,
+        fontSize: AppSizes.fontXs,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 0.4,
+      ),
     );
   }
 }

@@ -72,8 +72,12 @@ class PaymentEntryCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
-          if (!entry.isCash) ...[
-            PaymentAccountDropdown(accounts: accountsForThisSystem, selected: entry.account, onChanged: onAccountChanged),
+          if (entry.needsAccountPicker || entry.account == null) ...[
+            PaymentAccountDropdown(
+              accounts: accountsForThisSystem,
+              selected: entry.account,
+              onChanged: onAccountChanged,
+            ),
             const SizedBox(height: AppSizes.sm + AppSizes.xs),
           ],
           PaymentAmountField(

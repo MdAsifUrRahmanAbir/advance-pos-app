@@ -55,6 +55,8 @@ class MasterDataController extends Notifier<MasterDataState> {
         forceRefresh: forceRefresh,
       );
 
+      _printPaymentData(paymentSystems: paymentSystemsResult.data, paymentAccounts: paymentAccountsResult.data);
+
       state = state.copyWith(
         isLoading: false,
         groups: groupsResult.data,
@@ -210,5 +212,65 @@ class MasterDataController extends Notifier<MasterDataState> {
       (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
+  }
+
+  void _printPaymentData({
+    required List<ps.ResultDatum> paymentSystems,
+    required List<pa.ResultDatum> paymentAccounts,
+  }) {
+    print('');
+    print('╔══════════════════════════════════════════════╗');
+    print('║          PAYMENT SYSTEMS                    ║');
+    print('╚══════════════════════════════════════════════╝');
+
+    for (int i = 0; i < paymentSystems.length; i++) {
+      final item = paymentSystems[i];
+
+      print('');
+      print('┌──────────── Payment System [$i] ────────────');
+      print('│ ID              : ${item.id}');
+      print('│ Name            : ${item.paymentSystemName}');
+      print('│ Short Name      : ${item.shortName}');
+      print('│ Status          : ${item.status}');
+      // print('│ Is Active       : ${item.isActive}');
+      print('└─────────────────────────────────────────────');
+    }
+
+    print('');
+    print('╔══════════════════════════════════════════════╗');
+    print('║          PAYMENT ACCOUNTS                   ║');
+    print('╚══════════════════════════════════════════════╝');
+
+    for (int i = 0; i < paymentAccounts.length; i++) {
+      final item = paymentAccounts[i];
+
+      print('');
+      print('┌──────────── Payment Account [$i] ───────────');
+      print('│ ID              : ${item.id}');
+      print('│ Status          : ${item.status}');
+      print('│ Provider Name   : ${item.providerName}');
+      print('│ Account Holder  : ${item.accHolderName}');
+      print('│ Account No      : ${item.accountNo}');
+      print('│ Ledger ID       : ${item.ledgerId}');
+      print('│ Payment System ID: ${item.paymentSystemId}');
+      print('│ Ledger          : ${item.ledger}');
+      print('│');
+      print('│ ───── Payment System ─────');
+      print('│ ID              : ${item.paymentSystem.id}');
+      print(
+        '│ Name            : ${item.paymentSystem.paymentSystemName}',
+      );
+      print('│ Short Name      : ${item.paymentSystem.shortName}');
+      print('│ Status          : ${item.paymentSystem.status}');
+      print('│ Is Active       : ${item.paymentSystem.isActive}');
+      print('└─────────────────────────────────────────────');
+    }
+
+    print('');
+    print('══════════════════════════════════════════════');
+    print('Payment Systems Count  : ${paymentSystems.length}');
+    print('Payment Accounts Count : ${paymentAccounts.length}');
+    print('══════════════════════════════════════════════');
+    print('');
   }
 }

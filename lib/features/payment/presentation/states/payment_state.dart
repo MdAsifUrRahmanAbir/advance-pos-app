@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
-import '../../../master_data/data/models/payment_system_model.dart' as ps;
+// import '../../../master_data/data/models/payment_system_model.dart' as ps;
 
 @immutable
 class ReceiptLineItem {
@@ -15,10 +15,9 @@ class ReceiptLineItem {
   });
 }
 
-/// One selected payment system plus its account (non-cash) and amount.
 @immutable
 class SelectedPaymentEntry {
-  final ps.ResultDatum system;
+  final pa.PaymentSystem system;
   final pa.ResultDatum? account;
   final double amount;
 
@@ -29,6 +28,18 @@ class SelectedPaymentEntry {
   });
 
   bool get isCash => system.shortName.trim().toUpperCase() == 'CAS';
+
+  // TODO: confirm the exact short name the backend uses for Reward.
+  bool get isReward {
+    final short = system.shortName.trim().toUpperCase();
+    return short == 'REW' ||
+        short == 'RWD' ||
+        system.paymentSystemName.toUpperCase().contains('REWARD');
+  }
+
+  /// Cash and Reward never show an account dropdown — their account is
+  /// auto-assigned when the system is selected.
+  bool get needsAccountPicker => !isCash && !isReward;
 
   SelectedPaymentEntry copyWith({pa.ResultDatum? account, double? amount}) {
     return SelectedPaymentEntry(
@@ -55,6 +66,9 @@ class PaymentState {
   final String? shareError;
   final String? printError;
 
+  final bool isSaleCompleted;
+  final String? salesBillNo;
+
   const PaymentState({
     this.isProcessing = false,
     this.errorMessage,
@@ -66,10 +80,14 @@ class PaymentState {
     this.isPrinting = false,
     this.shareError,
     this.printError,
+    this.isSaleCompleted = false,
+    this.salesBillNo,
   });
+
 
   static const int maxSelectable = 2;
   static const double _eps = 0.005;
+
 
   double get totalCollected => selectedEntries.fold(0, (s, e) => s + e.amount);
 
@@ -87,14 +105,14 @@ class PaymentState {
   /// Amount still missing.
   double get shortfall => changeDue < -_eps ? -changeDue : 0;
 
-  /// Exactly one non-cash method -> amount pinned to the payable amount.
+// lock: exactly one method and it's not cash (reward included)
   bool get lockSingleNonCashAmount =>
       selectedEntries.length == 1 && !selectedEntries.first.isCash;
 
+// every entry (cash too) needs an account id for the API
   bool get canComplete {
-    if (isProcessing || selectedEntries.isEmpty) return false;
-    if (selectedEntries.any((e) => !e.isCash && e.account == null)) return false;
-    // Change can only come out of cash, so non-cash can't overpay.
+    if (isProcessing || isSaleCompleted || selectedEntries.isEmpty) return false;
+    if (selectedEntries.any((e) => e.account == null)) return false;
     if (nonCashTotal > payableAmount + _eps) return false;
     return totalCollected >= payableAmount - _eps;
   }
@@ -115,6 +133,9 @@ class PaymentState {
     bool? isPrinting,
     String? shareError,
     String? printError,
+    bool? isSaleCompleted,
+    String? salesBillNo,
+
   }) {
     return PaymentState(
       isProcessing: isProcessing ?? this.isProcessing,
@@ -127,6 +148,8 @@ class PaymentState {
       isPrinting: isPrinting ?? this.isPrinting,
       shareError: shareError,
       printError: printError,
+      isSaleCompleted: isSaleCompleted ?? this.isSaleCompleted,
+      salesBillNo: salesBillNo ?? this.salesBillNo,
     );
   }
 }

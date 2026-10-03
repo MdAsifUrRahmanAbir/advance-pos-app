@@ -11,6 +11,7 @@ import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../routes/route_names.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../controllers/payment_controller.dart';
+import '../states/payment_systems_from_accounts.dart';
 import '../widgets/change_due_banner.dart';
 import '../widgets/complete_sale_button.dart';
 import '../widgets/payable_amount_card.dart';
@@ -30,7 +31,7 @@ class PaymentTabView extends ConsumerWidget {
     final controller = ref.read(paymentControllerProvider.notifier);
     final masterData = ref.watch(masterDataControllerProvider);
 
-    final systems = masterData.paymentSystems;
+    final systems = paymentSystemsFrom(masterData.paymentAccounts);
     final isLoadingMethods = masterData.isLoading && systems.isEmpty;
     final hasMethodsError = masterData.errorMessage != null && systems.isEmpty;
 
