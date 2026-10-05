@@ -36,7 +36,6 @@ class CartMobileView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cartControllerProvider);
     final controller = ref.read(cartControllerProvider.notifier);
-    print("------------- ++");
 
     return Column(
       children: [
