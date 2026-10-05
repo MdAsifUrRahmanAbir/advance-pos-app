@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../../data/models/get_discount.dart';
 import '../../data/models/stocks_model.dart';
 
 
@@ -64,6 +65,8 @@ class NewSaleState {
   final int currentStart;
   final bool hasMore;
   final List<CartLineItem> cartItems;
+  final GetDiscountModel? getDiscountModel;
+  final bool isGetDiscountLoading;
 
   const NewSaleState({
     this.isProductsLoading = false,
@@ -77,6 +80,8 @@ class NewSaleState {
     this.currentStart = 0,
     this.hasMore = true,
     this.cartItems = const [],
+    this.getDiscountModel,
+    this.isGetDiscountLoading = false,
   });
 
   factory NewSaleState.initial() => const NewSaleState();
@@ -100,6 +105,8 @@ class NewSaleState {
     int? currentStart,
     bool? hasMore,
     List<CartLineItem>? cartItems,
+    GetDiscountModel? getDiscountModel,
+    bool? isGetDiscountLoading,
   }) {
     return NewSaleState(
       isProductsLoading: isProductsLoading ?? this.isProductsLoading,
@@ -113,6 +120,8 @@ class NewSaleState {
       currentStart: currentStart ?? this.currentStart,
       hasMore: hasMore ?? this.hasMore,
       cartItems: cartItems ?? this.cartItems,
+      getDiscountModel: getDiscountModel ?? this.getDiscountModel,
+      isGetDiscountLoading: isGetDiscountLoading ?? this.isGetDiscountLoading,
     );
   }
 }

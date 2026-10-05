@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -259,5 +258,27 @@ class NewSaleController extends Notifier<NewSaleState> {
     return stock.branchStock.isNotEmpty ? stock.branchStock.first.stock : stock.organizationStock;
   }
 
+
+
+  // ───────────────────────────────────────────────
+  // GET
+  // ───────────────────────────────────────────────
+  Future<bool> getGetDiscount() async {
+    state = state.copyWith(isGetDiscountLoading: true);
+    try {
+      final getDiscount = await _repository.getGetDiscount();
+      state = state.copyWith(
+        isGetDiscountLoading: false,
+        getDiscountModel: getDiscount,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isGetDiscountLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    }
+  }
 
 }
