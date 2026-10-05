@@ -4,73 +4,126 @@ import 'package:flutter/services.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/widgets/common/radio_option.dart';
 import '../states/cart_state.dart';
 
-/// Manual Discount + VAT inputs for the cart.
-/// - Discount: toggle between % and ৳ — seller enters either; the other
-///   value is derived and shown beneath the field.
-/// - VAT: percent only; the resulting amount is shown beneath the field.
-///
-/// Composed manually (same style as [RemarksReferenceRow]).
+/// Discount + VAT block for the cart.
+/// - Regular rule: seller types a discount (% or ৳), capped by the server.
+/// - Product / Bill rule: read-only, auto-applied from /get_discount.
+/// - Both: Product wise / Bill wise radio (re-fetches on change).
+/// - VAT: percent only.
 class DiscountVatSection extends StatelessWidget {
-  final DiscountType discountType;
-  final double discountInput;
-  final double discountAmount;
-  final double discountPercent;
-  final double taxPercent;
-  final double taxAmount;
+  final CartState state;
   final ValueChanged<DiscountType> onDiscountTypeChanged;
   final ValueChanged<double> onDiscountChanged;
   final ValueChanged<double> onTaxChanged;
+  final ValueChanged<DiscountBasis> onBasisChanged;
 
   const DiscountVatSection({
     super.key,
-    required this.discountType,
-    required this.discountInput,
-    required this.discountAmount,
-    required this.discountPercent,
-    required this.taxPercent,
-    required this.taxAmount,
+    required this.state,
     required this.onDiscountTypeChanged,
     required this.onDiscountChanged,
     required this.onTaxChanged,
+    required this.onBasisChanged,
   });
+
+  String get _helper =>
+      '৳${state.discountAmount.toStringAsFixed(2)}  •  ${trimDecimal(state.discountPercent)}%';
 
   @override
   Widget build(BuildContext context) {
-    final isPercent = discountType == DiscountType.percent;
+    final isPercent = state.discountType == DiscountType.percent;
 
-    return Row(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: _AdjustmentBlock(
-            label: AppStrings.discountInputLabel,
-            trailing: _TypeToggle(selected: discountType, onChanged: onDiscountTypeChanged),
-            field: _NumberField(
-              // Re-create the field when the mode flips so it shows the
-              // converted value instead of the previously typed text.
-              key: ValueKey(discountType),
-              initialValue: discountInput,
-              hint: AppStrings.discountInputHint,
-              suffix: isPercent ? '%' : '৳',
-              onChanged: onDiscountChanged,
+        if (state.showBasisChoice) ...[
+          const Text(
+            AppStrings.discountTypeChoiceLabel,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: AppSizes.fontXs,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.4,
             ),
-            helper: '৳${discountAmount.toStringAsFixed(2)}  •  ${trimDecimal(discountPercent)}%',
           ),
-        ),
-        const SizedBox(width: AppSizes.md),
-        Expanded(
-          child: _AdjustmentBlock(
-            label: AppStrings.vatInputLabel,
-            field: _NumberField(
-              initialValue: taxPercent,
-              hint: AppStrings.vatInputHint,
-              suffix: '%',
-              onChanged: onTaxChanged,
+          Row(
+            children: [
+              Expanded(
+                child: RadioOption<DiscountBasis>(
+                  value: DiscountBasis.product,
+                  groupValue: state.discountBasis,
+                  title: AppStrings.discountProductWise,
+                  onChanged: (v) => v == null ? null : onBasisChanged(v),
+                ),
+              ),
+              Expanded(
+                child: RadioOption<DiscountBasis>(
+                  value: DiscountBasis.bill,
+                  groupValue: state.discountBasis,
+                  title: AppStrings.discountBillWise,
+                  onChanged: (v) => v == null ? null : onBasisChanged(v),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSizes.xs),
+        ],
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: state.canEnterDiscount
+                  ? _AdjustmentBlock(
+                label: AppStrings.discountInputLabel,
+                trailing: _TypeToggle(
+                  selected: state.discountType,
+                  onChanged: onDiscountTypeChanged,
+                ),
+                field: _NumberField(
+                  key: ValueKey('${state.discountType}-${state.discountFieldRevision}'),
+                  initialValue: state.discountInput,
+                  hint: AppStrings.discountInputHint,
+                  suffix: isPercent ? '%' : '৳',
+                  onChanged: onDiscountChanged,
+                ),
+                helper: state.hasDiscountCap
+                    ? '$_helper  •  ${AppStrings.discountMaxHint(isPercent ? '${trimDecimal(state.maxDiscountInput)}%' : '৳${trimDecimal(state.maxDiscountInput)}')}'
+                    : _helper,
+              )
+                  : _AdjustmentBlock(
+                label: AppStrings.discountAutoLabel,
+                field: _LockedBox(
+                  text: state.isGetDiscountLoading
+                      ? AppStrings.discountChecking
+                      : state.selectedCustomer == null
+                      ? AppStrings.discountSelectCustomerHint
+                      : state.effectiveRule == DiscountRule.none
+                      ? AppStrings.discountNotAvailable
+                      : '৳${state.discountAmount.toStringAsFixed(2)}',
+                ),
+                helper: state.effectiveRule == DiscountRule.none
+                    ? (state.discountErrorMessage ?? '')
+                    : state.discountCodes.isEmpty
+                    ? _helper
+                    : AppStrings.discountCodesLabel(state.discountCodes.join(', ')),
+              ),
             ),
-            helper: '৳${taxAmount.toStringAsFixed(2)}',
-          ),
+            const SizedBox(width: AppSizes.md),
+            Expanded(
+              child: _AdjustmentBlock(
+                label: AppStrings.vatInputLabel,
+                field: _NumberField(
+                  initialValue: state.taxPercent,
+                  hint: AppStrings.vatInputHint,
+                  suffix: '%',
+                  onChanged: onTaxChanged,
+                ),
+                helper: '৳${state.taxAmount.toStringAsFixed(2)}',
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -118,7 +171,7 @@ class _AdjustmentBlock extends StatelessWidget {
         const SizedBox(height: AppSizes.xs),
         Text(
           helper,
-          maxLines: 1,
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: AppColors.textSecondary,
@@ -131,8 +184,45 @@ class _AdjustmentBlock extends StatelessWidget {
   }
 }
 
+/// Read-only box for server-applied discounts.
+class _LockedBox extends StatelessWidget {
+  final String text;
+  const _LockedBox({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.sm + 4, vertical: AppSizes.sm + 2),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: AppSizes.fontSm,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const Icon(Icons.lock_outline_rounded, size: AppSizes.iconSm, color: AppColors.textHint),
+        ],
+      ),
+    );
+  }
+}
+
 /// Numeric input (max 2 decimals). Keeps its own controller so typing
-/// isn't overwritten by state rebuilds; only [initialValue] seeds it.
+/// isn't overwritten by rebuilds; only [initialValue] seeds it. Change
+/// the widget key to force a re-seed.
 class _NumberField extends StatefulWidget {
   final double initialValue;
   final String hint;
@@ -190,7 +280,6 @@ class _NumberFieldState extends State<_NumberField> {
   }
 }
 
-/// Compact % | ৳ segmented toggle for the discount mode.
 class _TypeToggle extends StatelessWidget {
   final DiscountType selected;
   final ValueChanged<DiscountType> onChanged;

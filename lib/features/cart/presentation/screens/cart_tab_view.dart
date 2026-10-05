@@ -54,6 +54,7 @@ class CartTabView extends ConsumerWidget {
                   children: [
                     CartItemList(
                       items: state.items,
+                      lineDiscounts: state.lineDiscounts,
                       onIncrement: controller.incrementQuantity,
                       onDecrement: controller.decrementQuantity,
                       onDelete: controller.removeItem,
@@ -71,15 +72,11 @@ class CartTabView extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSizes.md),
                     DiscountVatSection(
-                      discountType: state.discountType,
-                      discountInput: state.discountInput,
-                      discountAmount: state.discountAmount,
-                      discountPercent: state.discountPercent,
-                      taxPercent: state.taxPercent,
-                      taxAmount: state.taxAmount,
+                      state: state,
                       onDiscountTypeChanged: controller.setDiscountType,
                       onDiscountChanged: controller.updateDiscountInput,
                       onTaxChanged: controller.updateTaxPercent,
+                      onBasisChanged: controller.setDiscountBasis,
                     ),
                     const SizedBox(height: AppSizes.md),
                     CartSummarySection(

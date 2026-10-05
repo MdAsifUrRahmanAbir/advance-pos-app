@@ -59,9 +59,35 @@ class CartRepository {
     return AddCustomerModel.fromJson(response.data);
   }
 
-  // AUTO-GENERATED API METHOD
-  Future<GetDiscountModel> getGetDiscount() async {
-    final response = await _apiClient.get(ApiEndpoints.getDiscount);
+  /// GET /get_discount with a JSON body (same contract as the web
+  /// `GetDiscount` call). [amounts] are UNIT prices, parallel to
+  /// [productIds] and [quantities].
+  Future<GetDiscountModel> getGetDiscount({
+    required String customerId,
+    required List<double> amounts,
+    required List<String> productIds,
+    required List<int> quantities,
+    String? discountType, // 'product' | 'bill' — only when scope is "both"
+    int branchId = 2,
+    int salesType = 1,
+    DateTime? salesDate,
+  }) async {
+    final d = salesDate ?? DateTime.now();
+    String two(int n) => n.toString().padLeft(2, '0');
+
+    final response = await _apiClient.get(
+      ApiEndpoints.getDiscount,
+      data: {
+        'customerId': int.tryParse(customerId) ?? customerId,
+        'amount': amounts,
+        'Product': [for (final id in productIds) int.tryParse(id) ?? id],
+        'Qnt': quantities,
+        'sales_type': salesType,
+        'sales_date': '${d.year}-${two(d.month)}-${two(d.day)}',
+        'branch_id': branchId,
+        'discountType': ?discountType,
+      },
+    );
     return GetDiscountModel.fromJson(response.data);
   }
 

@@ -16,6 +16,7 @@ class CartItemCard extends StatelessWidget {
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
   final VoidCallback onDelete;
+  final double discountAmount;
 
   const CartItemCard({
     super.key,
@@ -23,6 +24,7 @@ class CartItemCard extends StatelessWidget {
     required this.onIncrement,
     required this.onDecrement,
     required this.onDelete,
+    this.discountAmount = 0,
   });
 
   @override
@@ -69,6 +71,17 @@ class CartItemCard extends StatelessWidget {
                       fontSize: AppSizes.fontSm,
                     ),
                   ),
+                  if (discountAmount > 0)
+                    Text(
+                      AppStrings.lineDiscountLabel(
+                        CurrencyFormatter.format(discountAmount),
+                      ),
+                      style: const TextStyle(
+                        color: AppColors.success,
+                        fontSize: AppSizes.fontXs,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -82,13 +95,27 @@ class CartItemCard extends StatelessWidget {
                   onDecrement: onDecrement,
                 ),
                 const SizedBox(width: AppSizes.md),
-                Text(
-                  CurrencyFormatter.format(item.lineTotal),
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: AppSizes.fontMd - 1,
-                    fontWeight: FontWeight.w700,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    if (discountAmount > 0)
+                      Text(
+                        CurrencyFormatter.format(item.lineTotal),
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: AppSizes.fontXs,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    Text(
+                      CurrencyFormatter.format(item.lineTotal - discountAmount),
+                      style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: AppSizes.fontMd - 1,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

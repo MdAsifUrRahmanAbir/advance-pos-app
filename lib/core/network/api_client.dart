@@ -81,13 +81,15 @@ class ApiClient {
   Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,
-    Options? options,
+        dynamic data,
+        Options? options,
     CancelToken? cancelToken,
   }) async {
     try {
       return await _dio.get(
         path,
         queryParameters: queryParameters,
+        data: data,
         options: options,
         cancelToken: cancelToken,
       );

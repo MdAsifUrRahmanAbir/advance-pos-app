@@ -8,6 +8,7 @@ import 'cart_item_card.dart';
 
 class CartItemList extends StatelessWidget {
   final List<CartLineItem> items;
+  final Map<String, double> lineDiscounts; // NEW (product-wise)
   final ValueChanged<String> onIncrement;
   final ValueChanged<String> onDecrement;
   final ValueChanged<String> onDelete;
@@ -15,6 +16,7 @@ class CartItemList extends StatelessWidget {
   const CartItemList({
     super.key,
     required this.items,
+    this.lineDiscounts = const {},
     required this.onIncrement,
     required this.onDecrement,
     required this.onDelete,
@@ -29,6 +31,7 @@ class CartItemList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSizes.sm),
             child: CartItemCard(
               item: item,
+                  discountAmount: lineDiscounts[item.id] ?? 0,
               onIncrement: () => onIncrement(item.id),
               onDecrement: () => onDecrement(item.id),
               onDelete: () => onDelete(item.id),

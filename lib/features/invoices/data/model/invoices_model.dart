@@ -151,7 +151,7 @@ class Payment {
   Payment({required this.id, required this.name});
 
   factory Payment.fromJson(Map<String, dynamic> json) =>
-      Payment(id: json["id"], name: json["name"]);
+      Payment(id: json["id"], name: json["name"] ?? "");
 
   Map<String, dynamic> toJson() => {"id": id, "name": name};
 }

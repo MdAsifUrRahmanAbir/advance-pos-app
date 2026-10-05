@@ -12,15 +12,6 @@ import '../states/cart_state.dart';
 final cartControllerProvider =
     NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
 
-/// Owns everything checkout-related EXCEPT the product cart itself:
-/// customer, remarks, reference no., discount/tax/rounding, and the
-/// customer search/pagination + add-customer flow.
-///
-/// The product cart lines live in [NewSaleController] (single source of
-/// truth, since it owns stock-capping). This controller mirrors them
-/// into its own [CartState.items] shape via `ref.listen` — NOT
-/// `ref.watch` — so a New Sale cart change only refreshes `items`, never
-/// wipes out customer/remarks/customer-search state accumulated here.
 class CartController extends Notifier<CartState> {
   late final TextEditingController customerSearchController;
 
@@ -47,16 +38,21 @@ class CartController extends Notifier<CartState> {
   @override
   CartState build() {
     customerSearchController = TextEditingController();
+
     ref.onDispose(() {
       customerSearchController.dispose();
       _debounce?.cancel();
+      _discountDebounce?.cancel();
     });
 
     ref.listen<new_sale.NewSaleState>(newSaleControllerProvider, (
-      previous,
-      next,
-    ) {
-      state = state.copyWith(items: _mapFromNewSale(next.cartItems));
+        previous,
+        next,
+        ) {
+      final items = _mapFromNewSale(next.cartItems);
+      final changed = _signature(items) != _signature(state.items);
+      state = state.copyWith(items: items);
+      if (changed) _scheduleDiscountRefresh();
     });
 
     final initialItems = _mapFromNewSale(
@@ -64,6 +60,45 @@ class CartController extends Notifier<CartState> {
     );
 
     return CartState.initial().copyWith(items: initialItems);
+  }
+
+
+  void selectCustomer(ResultDatum customer) {
+    state = state.copyWith(selectedCustomer: customer);
+    getGetDiscount(); // discounts are customer-specific
+  }
+
+  void setDiscountType(DiscountType type) {
+    if (type == state.discountType) return;
+    final converted = type == DiscountType.percent
+        ? _round2(state.discountPercent)
+        : _round2(state.discountAmount);
+    state = state.copyWith(discountType: type, discountInput: converted);
+  }
+
+  /// Regular rule: the seller types freely but never above the server cap.
+  void updateDiscountInput(double value) {
+    var v = value < 0 ? 0.0 : value;
+    var rewritten = false;
+    if (state.canEnterDiscount && state.hasDiscountCap) {
+      final cap = state.maxDiscountInput;
+      if (cap > 0 && v > cap) {
+        v = _round2(cap);
+        rewritten = true;
+      }
+    }
+    state = state.copyWith(
+      discountInput: v,
+      discountFieldRevision:
+      rewritten ? state.discountFieldRevision + 1 : null,
+    );
+  }
+
+  /// Radio shown when the server returns scope "both".
+  void setDiscountBasis(DiscountBasis basis) {
+    if (basis == state.discountBasis) return;
+    state = state.copyWith(discountBasis: basis);
+    getGetDiscount(basisChange: true);
   }
 
   // --- Cart line mutations: delegate to NewSaleController, the single
@@ -79,9 +114,6 @@ class CartController extends Notifier<CartState> {
 
   void clearAll() => ref.read(newSaleControllerProvider.notifier).clearAll();
 
-  // --- Checkout fields owned here ---
-  void selectCustomer(ResultDatum customer) =>
-      state = state.copyWith(selectedCustomer: customer);
 
   void updateRemarks(String remarks) =>
       state = state.copyWith(remarks: remarks);
@@ -90,20 +122,6 @@ class CartController extends Notifier<CartState> {
       state = state.copyWith(referenceNo: referenceNo);
 
   double _round2(double v) => (v * 100).round() / 100;
-
-  /// Switching the discount mode converts the current discount into the
-  /// new mode, so the effective discount stays the same (e.g. 10% on
-  /// ৳1000 becomes ৳100 when switching to amount).
-  void setDiscountType(DiscountType type) {
-    if (type == state.discountType) return;
-    final converted = type == DiscountType.percent
-        ? _round2(state.discountPercent)
-        : _round2(state.discountAmount);
-    state = state.copyWith(discountType: type, discountInput: converted);
-  }
-
-  void updateDiscountInput(double value) =>
-      state = state.copyWith(discountInput: value < 0 ? 0 : value);
 
   void updateTaxPercent(double value) =>
       state = state.copyWith(taxPercent: value < 0 ? 0 : value);
@@ -160,8 +178,9 @@ class CartController extends Notifier<CartState> {
   Future<void> loadMoreCustomers() async {
     if (state.isCustomerLoadingMore ||
         state.isCustomerLoading ||
-        !state.customerHasMore)
+        !state.customerHasMore) {
       return;
+    }
     state = state.copyWith(
       isCustomerLoadingMore: true,
       customerErrorMessage: null,
@@ -201,18 +220,6 @@ class CartController extends Notifier<CartState> {
     }
   }
 
-  // --- Add customer (POST /customer/add) ---
-
-  /// Creates the customer via the API, then re-fetches it from the
-  /// customer *list* endpoint by mobile number to get back a real
-  /// [ResultDatum] (with the server-assigned `sl`/customer_no) — never
-  /// fabricates one locally from the form fields, since the create
-  /// response shape (`AddCustomerModel`) doesn't necessarily mirror the
-  /// list shape.
-  ///
-  /// On success, selects the new customer as the cart's current
-  /// customer and returns it. Returns `null` on failure (message left
-  /// in [CartState.addCustomerErrorMessage] for the sheet to show).
   Future<ResultDatum?> createAndSelectCustomer({
     required String name,
     required String mobile,
@@ -265,22 +272,87 @@ class CartController extends Notifier<CartState> {
     }
   }
 
+
+  Timer? _discountDebounce;
+  int _discountRequestId = 0;
+
+
+  String _signature(List<CartLineItem> items) =>
+      items.map((i) => '${i.id}:${i.quantity}:${i.unitPrice}').join('|');
+
+  void _scheduleDiscountRefresh() {
+    _discountDebounce?.cancel();
+    _discountDebounce =
+        Timer(const Duration(milliseconds: 400), () => getGetDiscount());
+  }
+
+  void _clearDiscount() {
+    _discountRequestId++; // invalidate any in-flight response
+    state = state.copyWith(
+      clearDiscount: true,
+      isGetDiscountLoading: false,
+      bothChoice: false,
+      discountInput: 0,
+      discountFieldRevision: state.discountFieldRevision + 1,
+    );
+  }
+
   // ───────────────────────────────────────────────
-  // GET
+  // GET /get_discount (needs a customer + at least one item)
   // ───────────────────────────────────────────────
-  Future<bool> getGetDiscount() async {
+  Future<bool> getGetDiscount({bool basisChange = false}) async {
+    final customer = state.selectedCustomer;
+    final items = state.items;
+    if (customer == null || items.isEmpty) {
+      _clearDiscount();
+      return false;
+    }
+
+    final requestId = ++_discountRequestId;
     state = state.copyWith(isGetDiscountLoading: true);
+
     try {
-      final getDiscount = await _repository.getGetDiscount();
-      state = state.copyWith(
-        isGetDiscountLoading: false,
-        getDiscountModel: getDiscount,
+      final model = await _repository.getGetDiscount(
+        customerId: customer.customerNo,
+        amounts: [for (final i in items) i.unitPrice],
+        productIds: [for (final i in items) i.id],
+        quantities: [for (final i in items) i.quantity],
+        discountType: state.bothChoice ? state.discountBasis.name : null,
       );
+      if (requestId != _discountRequestId) return false; // stale
+
+      final scope = (model.resultData?.discountScope ?? '').toLowerCase();
+      final applied = model.resultData?.discountApplied == true;
+      final both = applied &&
+          (scope == 'both' ||
+              (basisChange &&
+                  state.bothChoice &&
+                  (scope == 'bill' || scope == 'product')));
+
+      var next = state.copyWith(
+        getDiscountModel: model,
+        isGetDiscountLoading: false,
+        bothChoice: both,
+      );
+      // Rule changed (e.g. Regular -> Bill): drop any manually typed value.
+      if (next.rule != state.rule) {
+        next = next.copyWith(
+          discountInput: 0,
+          discountFieldRevision: state.discountFieldRevision + 1,
+        );
+      }
+      state = next;
       return true;
     } catch (error, stackTrace) {
+      if (requestId != _discountRequestId) return false;
+      // Never leave a stale discount applied after a failed check.
       state = state.copyWith(
+        clearDiscount: true,
+        bothChoice: false,
         isGetDiscountLoading: false,
-        errorMessage: getErrorMessage(error, stackTrace),
+        discountInput: 0,
+        discountFieldRevision: state.discountFieldRevision + 1,
+        discountErrorMessage: getErrorMessage(error, stackTrace),
       );
       return false;
     }

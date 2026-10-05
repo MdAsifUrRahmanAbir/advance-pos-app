@@ -4,13 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
 import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
-// import '../../../master_data/data/models/payment_system_model.dart' as ps;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/payment_state.dart';
 import '../../../cart/presentation/controllers/cart_controller.dart';
 import 'dart:math' as math;
 import '../../../../core/utils/error_mapper.dart';
-import '../../../cart/presentation/states/cart_state.dart' show CartState, DiscountType;
+import '../../../cart/presentation/states/cart_state.dart' show CartState;
 import '../../../new_sale/presentation/controllers/new_sale_controller.dart';
 import '../../data/repositories/payment_repository.dart';
 
@@ -171,9 +170,7 @@ class PaymentController extends Notifier<PaymentState> {
 
     // Percent typed by the seller is sent exactly; an amount-mode discount
     // is converted to a percent with extra precision to avoid cent drift.
-    final discountRate = cart.discountType == DiscountType.percent
-        ? cart.discountInput.clamp(0.0, 100.0).toStringAsFixed(2)
-        : cart.discountPercent.toStringAsFixed(4);
+
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
 
     final payments =
@@ -198,7 +195,8 @@ class PaymentController extends Notifier<PaymentState> {
         for (var i = 0; i < items.length; i++) '$i': '${items[i].quantity}',
       },
       'prod_dis_rate_arr': {
-        for (var i = 0; i < items.length; i++) '$i': discountRate,
+        for (var i = 0; i < items.length; i++)
+          '$i': cart.lineDiscountRate(items[i]).toStringAsFixed(4),
       },
       'prod_vat_rate_arr': {
         for (var i = 0; i < items.length; i++) '$i': vatRate,

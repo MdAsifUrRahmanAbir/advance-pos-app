@@ -507,4 +507,17 @@ class AppStrings {
   static const String remainingAmountLabel = 'Remaining Amount';
   static const String returnToCustomerLabel = 'Return to Customer';
   static const String returnFromCashNote = 'Return this amount from the cash received';
+
+  // ---- Cart: server discounts ----
+  static const String discountTypeChoiceLabel = 'DISCOUNT TYPE';
+  static const String discountProductWise = 'Product wise';
+  static const String discountBillWise = 'Bill wise';
+  static const String discountAutoLabel = 'DISCOUNT (AUTO)';
+  static const String discountSelectCustomerHint =
+      'Select a customer to check available discounts';
+  static const String discountNotAvailable = 'No discount available';
+  static const String discountChecking = 'Checking discounts...';
+  static String discountMaxHint(String max) => 'Max allowed: $max';
+  static String discountCodesLabel(String codes) => 'Applied: $codes';
+  static String lineDiscountLabel(String amount) => 'Discount: -$amount';
 }
