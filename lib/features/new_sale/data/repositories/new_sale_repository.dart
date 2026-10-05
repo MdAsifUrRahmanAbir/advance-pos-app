@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
-import '../models/get_discount.dart';
 import '../models/stocks_model.dart';
 
 final newSaleRepositoryProvider = Provider<NewSaleRepository>((ref) {
@@ -32,12 +31,5 @@ class NewSaleRepository {
       },
     );
     return StocksModel.fromJson(response.data);
-  }
-
-
-  // AUTO-GENERATED API METHOD
-  Future<GetDiscountModel> getGetDiscount() async {
-    final response = await _apiClient.get(ApiEndpoints.getDiscount);
-    return GetDiscountModel.fromJson(response.data);
   }
 }

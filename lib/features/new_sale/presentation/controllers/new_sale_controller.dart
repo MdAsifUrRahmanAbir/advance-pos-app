@@ -259,26 +259,4 @@ class NewSaleController extends Notifier<NewSaleState> {
   }
 
 
-
-  // ───────────────────────────────────────────────
-  // GET
-  // ───────────────────────────────────────────────
-  Future<bool> getGetDiscount() async {
-    state = state.copyWith(isGetDiscountLoading: true);
-    try {
-      final getDiscount = await _repository.getGetDiscount();
-      state = state.copyWith(
-        isGetDiscountLoading: false,
-        getDiscountModel: getDiscount,
-      );
-      return true;
-    } catch (error, stackTrace) {
-      state = state.copyWith(
-        isGetDiscountLoading: false,
-        errorMessage: getErrorMessage(error, stackTrace),
-      );
-      return false;
-    }
-  }
-
 }

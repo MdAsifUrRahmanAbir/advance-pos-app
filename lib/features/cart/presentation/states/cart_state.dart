@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../../data/models/customers_model.dart';
+import '../../data/models/get_discount.dart';
 
 /// Discount can be entered either as a percentage of the subtotal or as
 /// a fixed amount — the seller picks which via the toggle in
@@ -70,7 +71,8 @@ class CartState {
   // --- Add-customer (POST /customer/add), for AddCustomerSheet ---
   final bool isAddingCustomer;
   final String? addCustomerErrorMessage;
-
+  final GetDiscountModel? getDiscountModel;
+  final bool isGetDiscountLoading;
 
   const CartState({
     this.isLoading = false,
@@ -92,7 +94,8 @@ class CartState {
     this.customerHasMore = true,
     this.isAddingCustomer = false,
     this.addCustomerErrorMessage,
-
+      this.getDiscountModel,
+    this.isGetDiscountLoading = false,
 });
 
   factory CartState.initial() => const CartState();
@@ -139,7 +142,8 @@ class CartState {
     bool? customerHasMore,
     bool? isAddingCustomer,
     String? addCustomerErrorMessage,
-
+      GetDiscountModel? getDiscountModel,
+    bool? isGetDiscountLoading,
 }) {
     return CartState(
       isLoading: isLoading ?? this.isLoading,
@@ -161,7 +165,8 @@ class CartState {
       customerHasMore: customerHasMore ?? this.customerHasMore,
       isAddingCustomer: isAddingCustomer ?? this.isAddingCustomer,
       addCustomerErrorMessage: addCustomerErrorMessage,
-
+          getDiscountModel: getDiscountModel ?? this.getDiscountModel,
+      isGetDiscountLoading: isGetDiscountLoading ?? this.isGetDiscountLoading,
 );
   }
 }
