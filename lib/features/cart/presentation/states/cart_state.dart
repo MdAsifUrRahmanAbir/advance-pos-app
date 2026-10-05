@@ -1,3 +1,4 @@
+import '../../data/models/get_discount.dart';
 import 'package:flutter/foundation.dart';
 import '../../data/models/customers_model.dart';
 
@@ -70,6 +71,8 @@ class CartState {
   // --- Add-customer (POST /customer/add), for AddCustomerSheet ---
   final bool isAddingCustomer;
   final String? addCustomerErrorMessage;
+  final GetDiscountModel? getDiscountModel;
+  final bool isGetDiscountLoading;
 
   const CartState({
     this.isLoading = false,
@@ -91,7 +94,9 @@ class CartState {
     this.customerHasMore = true,
     this.isAddingCustomer = false,
     this.addCustomerErrorMessage,
-  });
+      this.getDiscountModel,
+    this.isGetDiscountLoading = false,
+});
 
   factory CartState.initial() => const CartState();
 
@@ -137,7 +142,9 @@ class CartState {
     bool? customerHasMore,
     bool? isAddingCustomer,
     String? addCustomerErrorMessage,
-  }) {
+      GetDiscountModel? getDiscountModel,
+    bool? isGetDiscountLoading,
+}) {
     return CartState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
@@ -158,6 +165,8 @@ class CartState {
       customerHasMore: customerHasMore ?? this.customerHasMore,
       isAddingCustomer: isAddingCustomer ?? this.isAddingCustomer,
       addCustomerErrorMessage: addCustomerErrorMessage,
-    );
+          getDiscountModel: getDiscountModel ?? this.getDiscountModel,
+      isGetDiscountLoading: isGetDiscountLoading ?? this.isGetDiscountLoading,
+);
   }
 }

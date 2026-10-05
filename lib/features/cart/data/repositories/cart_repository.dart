@@ -3,6 +3,7 @@ import 'package:advance_pos_app/core/network/api_client.dart';
 import 'package:advance_pos_app/core/constants/api_endpoints.dart';
 import '../models/customers_model.dart';
 import '../models/add_customer_model.dart';
+import '../models/get_discount.dart';
 
 final cartRepositoryProvider = Provider<CartRepository>((ref) {
   return CartRepository(ref.watch(apiClientProvider));
@@ -57,4 +58,11 @@ class CartRepository {
     );
     return AddCustomerModel.fromJson(response.data);
   }
+
+  // AUTO-GENERATED API METHOD
+  Future<GetDiscountModel> getGetDiscount() async {
+    final response = await _apiClient.get(ApiEndpoints.getDiscount);
+    return GetDiscountModel.fromJson(response.data);
+  }
+
 }

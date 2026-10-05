@@ -10,7 +10,7 @@ import '../../data/repositories/cart_repository.dart';
 import '../states/cart_state.dart';
 
 final cartControllerProvider =
-NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
+    NotifierProvider.autoDispose<CartController, CartState>(CartController.new);
 
 /// Owns everything checkout-related EXCEPT the product cart itself:
 /// customer, remarks, reference no., discount/tax/rounding, and the
@@ -52,31 +52,42 @@ class CartController extends Notifier<CartState> {
       _debounce?.cancel();
     });
 
-    ref.listen<new_sale.NewSaleState>(newSaleControllerProvider, (previous, next) {
+    ref.listen<new_sale.NewSaleState>(newSaleControllerProvider, (
+      previous,
+      next,
+    ) {
       state = state.copyWith(items: _mapFromNewSale(next.cartItems));
     });
 
-    final initialItems = _mapFromNewSale(ref.read(newSaleControllerProvider).cartItems);
+    final initialItems = _mapFromNewSale(
+      ref.read(newSaleControllerProvider).cartItems,
+    );
 
     return CartState.initial().copyWith(items: initialItems);
   }
 
   // --- Cart line mutations: delegate to NewSaleController, the single
   // owner of stock-capping logic. ---
-  void incrementQuantity(String itemId) => ref.read(newSaleControllerProvider.notifier).increaseQty(itemId);
+  void incrementQuantity(String itemId) =>
+      ref.read(newSaleControllerProvider.notifier).increaseQty(itemId);
 
-  void decrementQuantity(String itemId) => ref.read(newSaleControllerProvider.notifier).decreaseQty(itemId);
+  void decrementQuantity(String itemId) =>
+      ref.read(newSaleControllerProvider.notifier).decreaseQty(itemId);
 
-  void removeItem(String itemId) => ref.read(newSaleControllerProvider.notifier).removeFromCart(itemId);
+  void removeItem(String itemId) =>
+      ref.read(newSaleControllerProvider.notifier).removeFromCart(itemId);
 
   void clearAll() => ref.read(newSaleControllerProvider.notifier).clearAll();
 
   // --- Checkout fields owned here ---
-  void selectCustomer(ResultDatum customer) => state = state.copyWith(selectedCustomer: customer);
+  void selectCustomer(ResultDatum customer) =>
+      state = state.copyWith(selectedCustomer: customer);
 
-  void updateRemarks(String remarks) => state = state.copyWith(remarks: remarks);
+  void updateRemarks(String remarks) =>
+      state = state.copyWith(remarks: remarks);
 
-  void updateReferenceNo(String referenceNo) => state = state.copyWith(referenceNo: referenceNo);
+  void updateReferenceNo(String referenceNo) =>
+      state = state.copyWith(referenceNo: referenceNo);
 
   double _round2(double v) => (v * 100).round() / 100;
 
@@ -91,10 +102,12 @@ class CartController extends Notifier<CartState> {
     state = state.copyWith(discountType: type, discountInput: converted);
   }
 
-  void updateDiscountInput(double value) => state = state.copyWith(discountInput: value < 0 ? 0 : value);
+  void updateDiscountInput(double value) =>
+      state = state.copyWith(discountInput: value < 0 ? 0 : value);
 
-  void updateTaxPercent(double value) => state = state.copyWith(taxPercent: value < 0 ? 0 : value);
-  
+  void updateTaxPercent(double value) =>
+      state = state.copyWith(taxPercent: value < 0 ? 0 : value);
+
   // --- Customer search / pagination ---
   void updateCustomerSearchQuery(String query) {
     customerSearchController.value = customerSearchController.value.copyWith(
@@ -119,7 +132,9 @@ class CartController extends Notifier<CartState> {
     );
     try {
       final effectiveSearch =
-      state.customerSearchQuery.length >= _minCustomerSearchLength ? state.customerSearchQuery : '';
+          state.customerSearchQuery.length >= _minCustomerSearchLength
+          ? state.customerSearchQuery
+          : '';
       final customers = await _repository.getCustomers(
         start: 0,
         length: _customerPageLength,
@@ -129,22 +144,34 @@ class CartController extends Notifier<CartState> {
         isCustomerLoading: false,
         customerResults: customers.resultData,
         customerCurrentStart: 0,
-        customerHasMore: customers.resultData.length < customers.recordsFiltered,
+        customerHasMore:
+            customers.resultData.length < customers.recordsFiltered,
       );
       return true;
     } catch (error, stackTrace) {
-      state = state.copyWith(isCustomerLoading: false, customerErrorMessage: getErrorMessage(error, stackTrace));
+      state = state.copyWith(
+        isCustomerLoading: false,
+        customerErrorMessage: getErrorMessage(error, stackTrace),
+      );
       return false;
     }
   }
 
   Future<void> loadMoreCustomers() async {
-    if (state.isCustomerLoadingMore || state.isCustomerLoading || !state.customerHasMore) return;
-    state = state.copyWith(isCustomerLoadingMore: true, customerErrorMessage: null);
+    if (state.isCustomerLoadingMore ||
+        state.isCustomerLoading ||
+        !state.customerHasMore)
+      return;
+    state = state.copyWith(
+      isCustomerLoadingMore: true,
+      customerErrorMessage: null,
+    );
     try {
       final nextStart = state.customerCurrentStart + _customerPageLength;
       final effectiveSearch =
-      state.customerSearchQuery.length >= _minCustomerSearchLength ? state.customerSearchQuery : '';
+          state.customerSearchQuery.length >= _minCustomerSearchLength
+          ? state.customerSearchQuery
+          : '';
       final customers = await _repository.getCustomers(
         start: nextStart,
         length: _customerPageLength,
@@ -154,10 +181,15 @@ class CartController extends Notifier<CartState> {
         isCustomerLoadingMore: false,
         customerResults: [...state.customerResults, ...customers.resultData],
         customerCurrentStart: nextStart,
-        customerHasMore: (nextStart + customers.resultData.length) < customers.recordsFiltered,
+        customerHasMore:
+            (nextStart + customers.resultData.length) <
+            customers.recordsFiltered,
       );
     } catch (error, stackTrace) {
-      state = state.copyWith(isCustomerLoadingMore: false, customerErrorMessage: getErrorMessage(error, stackTrace));
+      state = state.copyWith(
+        isCustomerLoadingMore: false,
+        customerErrorMessage: getErrorMessage(error, stackTrace),
+      );
     }
   }
 
@@ -187,7 +219,10 @@ class CartController extends Notifier<CartState> {
     String email = '',
     String address = '',
   }) async {
-    state = state.copyWith(isAddingCustomer: true, addCustomerErrorMessage: null);
+    state = state.copyWith(
+      isAddingCustomer: true,
+      addCustomerErrorMessage: null,
+    );
     try {
       await _repository.createCustomer(
         customerName: name,
@@ -196,23 +231,58 @@ class CartController extends Notifier<CartState> {
         address: address,
       );
 
-      final lookup = await _repository.getCustomers(start: 0, length: 5, search: mobile);
-      final created = lookup.resultData.where((c) => c.customerMobile == mobile).firstOrNull ??
+      final lookup = await _repository.getCustomers(
+        start: 0,
+        length: 5,
+        search: mobile,
+      );
+      final created =
+          lookup.resultData
+              .where((c) => c.customerMobile == mobile)
+              .firstOrNull ??
           lookup.resultData.firstOrNull;
 
       if (created == null) {
         state = state.copyWith(
           isAddingCustomer: false,
-          addCustomerErrorMessage: 'Customer was created but could not be found in the list. Please search manually.',
+          addCustomerErrorMessage:
+              'Customer was created but could not be found in the list. Please search manually.',
         );
         return null;
       }
 
-      state = state.copyWith(isAddingCustomer: false, selectedCustomer: created);
+      state = state.copyWith(
+        isAddingCustomer: false,
+        selectedCustomer: created,
+      );
       return created;
     } catch (error, stackTrace) {
-      state = state.copyWith(isAddingCustomer: false, addCustomerErrorMessage: getErrorMessage(error, stackTrace));
+      state = state.copyWith(
+        isAddingCustomer: false,
+        addCustomerErrorMessage: getErrorMessage(error, stackTrace),
+      );
       return null;
+    }
+  }
+
+  // ───────────────────────────────────────────────
+  // GET
+  // ───────────────────────────────────────────────
+  Future<bool> getGetDiscount() async {
+    state = state.copyWith(isGetDiscountLoading: true);
+    try {
+      final getDiscount = await _repository.getGetDiscount();
+      state = state.copyWith(
+        isGetDiscountLoading: false,
+        getDiscountModel: getDiscount,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isGetDiscountLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
     }
   }
 }

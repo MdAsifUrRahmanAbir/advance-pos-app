@@ -139,8 +139,9 @@ class PaymentMobileView extends ConsumerWidget {
                 _showPaymentSuccessSheet(context, ref);
               } else {
                 final error = ref.read(paymentControllerProvider).errorMessage;
-                if (error != null)
+                if (error != null) {
                   CustomSnackbar.show(context, error, error: true);
+                }
               }
             },
           ),

@@ -8,7 +8,6 @@ import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../states/payment_state.dart';
 import '../../../cart/presentation/controllers/cart_controller.dart';
-import '../../../cart/presentation/states/cart_state.dart' show CartState;
 import 'dart:math' as math;
 import '../../../../core/utils/error_mapper.dart';
 import '../../../cart/presentation/states/cart_state.dart' show CartState, DiscountType;

@@ -31,6 +31,8 @@ class ApiEndpoints {
   static const String subcategories = "/subcategory/all";
   static const String brands = "/model/all";
 
+  static const String getDiscount = "/get_discount";
+
   static const String paymentSystem = "/gnl/payment_system/all";
   static const String paymentAccount = "/gnl/payment_account/all";
 }
