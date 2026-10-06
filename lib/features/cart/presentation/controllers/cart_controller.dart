@@ -59,6 +59,9 @@ class CartController extends Notifier<CartState> {
       ref.read(newSaleControllerProvider).cartItems,
     );
 
+    // Customer is optional — check discounts as soon as the cart opens.
+    Future.microtask(getGetDiscount);
+
     return CartState.initial().copyWith(items: initialItems);
   }
 
@@ -298,12 +301,14 @@ class CartController extends Notifier<CartState> {
   }
 
   // ───────────────────────────────────────────────
-  // GET /get_discount (needs a customer + at least one item)
+  // GET /get_discount
+  // Runs on cart open, on every cart change, and when a customer is
+  // selected (membership customers can have special discounts). The
+  // customer is optional — customerId is simply omitted until chosen.
   // ───────────────────────────────────────────────
   Future<bool> getGetDiscount({bool basisChange = false}) async {
-    final customer = state.selectedCustomer;
     final items = state.items;
-    if (customer == null || items.isEmpty) {
+    if (items.isEmpty) {
       _clearDiscount();
       return false;
     }
@@ -313,13 +318,14 @@ class CartController extends Notifier<CartState> {
 
     try {
       final model = await _repository.getGetDiscount(
-        customerId: customer.customerNo,
-        amounts: [for (final i in items) i.unitPrice],
+        customerId: state.selectedCustomer?.customerNo,
+        // amount = unit price × quantity (line total), per the API contract
+        amounts: [for (final i in items) _round2(i.lineTotal)],
         productIds: [for (final i in items) i.id],
         quantities: [for (final i in items) i.quantity],
         discountType: state.bothChoice ? state.discountBasis.name : null,
       );
-      if (requestId != _discountRequestId) return false; // stale
+      if (requestId != _discountRequestId) return false; // stale response
 
       final scope = (model.resultData?.discountScope ?? '').toLowerCase();
       final applied = model.resultData?.discountApplied == true;
@@ -334,7 +340,8 @@ class CartController extends Notifier<CartState> {
         isGetDiscountLoading: false,
         bothChoice: both,
       );
-      // Rule changed (e.g. Regular -> Bill): drop any manually typed value.
+      // Rule changed (e.g. Regular -> Bill, or a membership rule kicked in):
+      // drop any manually typed value.
       if (next.rule != state.rule) {
         next = next.copyWith(
           discountInput: 0,

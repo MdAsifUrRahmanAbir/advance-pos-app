@@ -1,3 +1,4 @@
+import '../../data/models/dashboard_model.dart';
 import 'package:flutter/material.dart';
 
 /// Small display-only value classes for the dashboard.
@@ -62,6 +63,8 @@ class HomeState {
   final String dailyTargetGoal;
   final List<TopProductData> topProducts;
   final List<RecentSaleData> recentSales;
+  final DashboardModel? dashboardModel;
+  final bool isDashboardLoading;
 
   const HomeState({
     this.isLoading = false,
@@ -74,7 +77,9 @@ class HomeState {
     this.dailyTargetGoal = '',
     this.topProducts = const [],
     this.recentSales = const [],
-  });
+      this.dashboardModel,
+    this.isDashboardLoading = false,
+});
 
   factory HomeState.initial() => const HomeState();
 
@@ -89,7 +94,9 @@ class HomeState {
     String? dailyTargetGoal,
     List<TopProductData>? topProducts,
     List<RecentSaleData>? recentSales,
-  }) {
+      DashboardModel? dashboardModel,
+    bool? isDashboardLoading,
+}) {
     return HomeState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
@@ -101,6 +108,8 @@ class HomeState {
       dailyTargetGoal: dailyTargetGoal ?? this.dailyTargetGoal,
       topProducts: topProducts ?? this.topProducts,
       recentSales: recentSales ?? this.recentSales,
-    );
+          dashboardModel: dashboardModel ?? this.dashboardModel,
+      isDashboardLoading: isDashboardLoading ?? this.isDashboardLoading,
+);
   }
 }

@@ -97,11 +97,9 @@ class DiscountVatSection extends StatelessWidget {
                 field: _LockedBox(
                   text: state.isGetDiscountLoading
                       ? AppStrings.discountChecking
-                      : state.selectedCustomer == null
-                      ? AppStrings.discountSelectCustomerHint
                       : state.effectiveRule == DiscountRule.none
                       ? AppStrings.discountNotAvailable
-                      : '৳${state.discountAmount.toStringAsFixed(2)}',
+                      : state.discountAmount.toStringAsFixed(2),
                 ),
                 helper: state.effectiveRule == DiscountRule.none
                     ? (state.discountErrorMessage ?? '')

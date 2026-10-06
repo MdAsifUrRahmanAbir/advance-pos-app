@@ -7,6 +7,17 @@ class ApiEndpoints {
   static const String login = "/auth/login";
   static const String register = "/auth/register";
 
+  // Dashboard
+  static const String dashboard = "/dashboard";
+
+
+  // Master data — fetched once per day, shared across all product features.
+  static const String groups = "/group/all";
+  static String categories({int topSaleCategoryLimit = 10, int branchId = 2}) =>
+      "/category?top_sale_category_limit=$topSaleCategoryLimit&branch_id=$branchId";
+  static const String subcategories = "/subcategory/all";
+  static const String brands = "/model/all";
+
   // Products /product/view/
   static String products ({int branchId = 2}) =>"/product?branch_id=$branchId";
   static String productDetails(String id) => "/products/$id";
@@ -24,15 +35,10 @@ class ApiEndpoints {
   static String customers(String length) => "/customer?length=$length";
   static const String customerAdd = "/customer/add";
 
-  // Master data — fetched once per day, shared across all product features.
-  static const String groups = "/group/all";
-  static String categories({int topSaleCategoryLimit = 10, int branchId = 2}) =>
-      "/category?top_sale_category_limit=$topSaleCategoryLimit&branch_id=$branchId";
-  static const String subcategories = "/subcategory/all";
-  static const String brands = "/model/all";
-
+  // Get Discount
   static const String getDiscount = "/get_discount";
 
+  // Payment Systems and Accounts
   static const String paymentSystem = "/gnl/payment_system/all";
   static const String paymentAccount = "/gnl/payment_account/all";
 }

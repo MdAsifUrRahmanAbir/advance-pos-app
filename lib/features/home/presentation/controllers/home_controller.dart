@@ -1,3 +1,5 @@
+import '../../../../core/utils/error_mapper.dart';
+import '../../data/repositories/home_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -117,4 +119,27 @@ class HomeController extends Notifier<HomeState> {
       amount: '৳450',
     ),
   ];
+
+  HomeRepository get _repository => ref.read(homeRepositoryProvider);
+
+  // ───────────────────────────────────────────────
+  // GET
+  // ───────────────────────────────────────────────
+  Future<bool> getDashboard() async {
+    state = state.copyWith(isDashboardLoading: true);
+    try {
+      final dashboard = await _repository.getDashboard();
+      state = state.copyWith(
+        isDashboardLoading: false,
+        dashboardModel: dashboard,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isDashboardLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    }
+  }
 }

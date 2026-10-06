@@ -60,10 +60,14 @@ class CartRepository {
   }
 
   /// GET /get_discount with a JSON body (same contract as the web
-  /// `GetDiscount` call). [amounts] are UNIT prices, parallel to
-  /// [productIds] and [quantities].
+  /// `GetDiscount` call).
+  /// - [customerId] is optional: omitted until a customer is selected, so
+  ///   regular/product/bill discounts still resolve; with a customer,
+  ///   membership-specific discounts can apply.
+  /// - [amounts] are LINE TOTALS (unit price × quantity), parallel to
+  ///   [productIds] and [quantities] — bill-range rules depend on this.
   Future<GetDiscountModel> getGetDiscount({
-    required String customerId,
+    String? customerId,
     required List<double> amounts,
     required List<String> productIds,
     required List<int> quantities,
@@ -78,7 +82,8 @@ class CartRepository {
     final response = await _apiClient.get(
       ApiEndpoints.getDiscount,
       data: {
-        'customerId': int.tryParse(customerId) ?? customerId,
+        if (customerId != null && customerId.isNotEmpty)
+          'customerId': int.tryParse(customerId) ?? customerId,
         'amount': amounts,
         'Product': [for (final id in productIds) int.tryParse(id) ?? id],
         'Qnt': quantities,

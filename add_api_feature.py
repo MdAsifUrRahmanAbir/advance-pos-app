@@ -237,7 +237,7 @@ def main():
       await _repository.{method_name}({repo_call_args});
       state = state.copyWith({loading_field}: false);
       return true;
-    }} catch (error) {{
+    }} catch (error, stackTrace) {{
       state = state.copyWith(
         {loading_field}: false,
         errorMessage: getErrorMessage(error, stackTrace),
