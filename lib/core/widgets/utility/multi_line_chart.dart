@@ -22,12 +22,15 @@ class MultiLineChart extends StatelessWidget {
   final List<String> yAxisLabels;
   final List<String> xAxisLabels;
   final double height;
+  final double? minValue; // NEW — pass 0 for a zero-based axis
 
   const MultiLineChart({
     super.key,
     required this.series,
     required this.yAxisLabels,
     required this.xAxisLabels,
+    this.minValue, // NEW
+
     this.height = 200,
   });
 
@@ -66,6 +69,7 @@ class MultiLineChart extends StatelessWidget {
                     painter: _MultiLinePainter(
                       series: series,
                       gridLines: yAxisLabels.length,
+                      minValue: minValue,
                     ),
                   ),
                 ),
@@ -95,8 +99,13 @@ class MultiLineChart extends StatelessWidget {
 class _MultiLinePainter extends CustomPainter {
   final List<ChartSeries> series;
   final int gridLines;
+  final double? minValue;
 
-  _MultiLinePainter({required this.series, required this.gridLines});
+  _MultiLinePainter({
+    required this.series,
+    required this.gridLines,
+    this.minValue,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -111,10 +120,9 @@ class _MultiLinePainter extends CustomPainter {
 
     final allValues = series.expand((s) => s.values).toList();
     if (allValues.isEmpty) return;
-    final minVal = allValues.reduce((a, b) => a < b ? a : b);
+    final minVal = minValue ?? allValues.reduce((a, b) => a < b ? a : b);
     final maxVal = allValues.reduce((a, b) => a > b ? a : b);
     final range = (maxVal - minVal) == 0 ? 1 : (maxVal - minVal);
-
     for (final s in series) {
       if (s.values.length < 2) continue;
       final path = Path();
