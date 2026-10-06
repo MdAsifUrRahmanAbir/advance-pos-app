@@ -1,115 +1,88 @@
 import '../../data/models/dashboard_model.dart';
-import 'package:flutter/material.dart';
 
-/// Small display-only value classes for the dashboard.
-/// These are NOT data/models — they're presentation-layer shapes until
-/// the real API is wired via add_api_feature.py, at which point this file
-/// should be patched to map from the real DTOs.
+/// Display-only shapes derived from [DashboardModel] (see
+/// dashboard_view_mapper.dart). These are NOT data/models.
 
-class StatCardData {
-  final IconData icon;
-  final String label;
-  final String value;
-  final String? trendLabel;
-  final bool isPositiveTrend;
+class OverviewData {
+  final double amount;
+  final int orders;
+  final int items;
+  final double? discount; // today only
+  final double? vat; // today only
 
-  const StatCardData({
-    required this.icon,
-    required this.label,
-    required this.value,
-    this.trendLabel,
-    this.isPositiveTrend = true,
-  });
-}
-
-class TopProductData {
-  final int rank;
-  final String name;
-  final int unitsSold;
-  final String revenue;
-
-  const TopProductData({
-    required this.rank,
-    required this.name,
-    required this.unitsSold,
-    required this.revenue,
-  });
-}
-
-class RecentSaleData {
-  final String saleId;
-  final String customerName;
-  final int itemCount;
-  final String timeAgo;
-  final String amount;
-
-  const RecentSaleData({
-    required this.saleId,
-    required this.customerName,
-    required this.itemCount,
-    required this.timeAgo,
+  const OverviewData({
     required this.amount,
+    required this.orders,
+    required this.items,
+    this.discount,
+    this.vat,
   });
+}
+
+class SalesTrendData {
+  final List<String> labels;
+  final List<double> values;
+  final double maxAmount;
+  final double totalAmount;
+  final int orderCount;
+  final int itemCount;
+  final bool isMonthlyRange;
+  final String peakLabel;
+
+  const SalesTrendData({
+    required this.labels,
+    required this.values,
+    required this.maxAmount,
+    required this.totalAmount,
+    required this.orderCount,
+    required this.itemCount,
+    required this.isMonthlyRange,
+    required this.peakLabel,
+  });
+
+  bool get hasData => maxAmount > 0 && values.isNotEmpty;
 }
 
 class HomeState {
-  final bool isLoading;
+  /// Overview scope.
+  static const List<String> periods = ['today', 'monthly'];
+
+  /// Chart scope.
+  static const List<String> chartRanges = ['7days', '12months'];
+
   final String? errorMessage;
   final bool isOnline;
-  final String selectedPeriod; // 'today' | 'weekly' | 'monthly'
-  final List<StatCardData> stats;
-  final double dailyTargetPercent; // 0.0–1.0
-  final String dailyTargetAchieved;
-  final String dailyTargetGoal;
-  final List<TopProductData> topProducts;
-  final List<RecentSaleData> recentSales;
+  final String selectedPeriod; // 'today' | 'monthly'
+  final String selectedChartRange; // '7days' | '12months'
   final DashboardModel? dashboardModel;
   final bool isDashboardLoading;
 
   const HomeState({
-    this.isLoading = false,
     this.errorMessage,
     this.isOnline = true,
     this.selectedPeriod = 'today',
-    this.stats = const [],
-    this.dailyTargetPercent = 0,
-    this.dailyTargetAchieved = '',
-    this.dailyTargetGoal = '',
-    this.topProducts = const [],
-    this.recentSales = const [],
-      this.dashboardModel,
+    this.selectedChartRange = '7days',
+    this.dashboardModel,
     this.isDashboardLoading = false,
-});
+  });
 
   factory HomeState.initial() => const HomeState();
 
   HomeState copyWith({
-    bool? isLoading,
     String? errorMessage,
     bool? isOnline,
     String? selectedPeriod,
-    List<StatCardData>? stats,
-    double? dailyTargetPercent,
-    String? dailyTargetAchieved,
-    String? dailyTargetGoal,
-    List<TopProductData>? topProducts,
-    List<RecentSaleData>? recentSales,
-      DashboardModel? dashboardModel,
+    String? selectedChartRange,
+    DashboardModel? dashboardModel,
     bool? isDashboardLoading,
-}) {
+  }) {
     return HomeState(
-      isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       isOnline: isOnline ?? this.isOnline,
       selectedPeriod: selectedPeriod ?? this.selectedPeriod,
-      stats: stats ?? this.stats,
-      dailyTargetPercent: dailyTargetPercent ?? this.dailyTargetPercent,
-      dailyTargetAchieved: dailyTargetAchieved ?? this.dailyTargetAchieved,
-      dailyTargetGoal: dailyTargetGoal ?? this.dailyTargetGoal,
-      topProducts: topProducts ?? this.topProducts,
-      recentSales: recentSales ?? this.recentSales,
-          dashboardModel: dashboardModel ?? this.dashboardModel,
+      selectedChartRange: selectedChartRange ?? this.selectedChartRange,
+      dashboardModel: dashboardModel ?? this.dashboardModel,
       isDashboardLoading: isDashboardLoading ?? this.isDashboardLoading,
-);
+    );
   }
 }

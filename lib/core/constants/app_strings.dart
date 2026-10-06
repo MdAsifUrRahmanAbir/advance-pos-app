@@ -282,14 +282,11 @@ class AppStrings {
   static const String periodWeekly = 'Weekly';
   static const String periodMonthly = 'Monthly';
 
-  static const String dailyTargetProgress = 'Daily Target Progress';
   static String dailyTargetSubtitle(String achieved, String target) =>
       '$achieved of $target target achieved';
 
-  static const String topProductsToday = 'Top Products Today';
   static String unitsSoldLabel(int units) => '$units units sold';
 
-  static const String recentSales = 'Recent Sales';
   static String saleMetaLabel(int items, String timeAgo) =>
       '$items items • $timeAgo';
 
@@ -298,9 +295,6 @@ class AppStrings {
   static const String searchProductHint = 'Search product or scan barcode...';
 
   static const String categoryAll = 'All';
-  static const String categoryBeverages = 'Beverages';
-  static const String categorySnacks = 'Snacks';
-  static const String categoryGrocery = 'Grocery';
 
   static String skuLabel(String sku) => 'SKU: $sku';
   static String viewCartLabel(String total) => 'View Cart — $total';
@@ -309,14 +303,9 @@ class AppStrings {
   static const String paymentTitle = 'Payment';
   static const String payableAmountLabel = 'PAYABLE AMOUNT';
   static const String givenAmountLabel = 'GIVEN AMOUNT';
-  static const String changeDueLabel = 'Change Due';
   static const String salesAgentLabel = 'SALES AGENT';
   static const String completeSaleAction = 'Complete Sale';
 
-  static const String paymentMethodCash = 'Cash';
-  static const String paymentMethodBank = 'Bank';
-  static const String paymentMethodCard = 'Card';
-  static const String paymentMethodMobile = 'Mobile';
 
   // --- Cart review additions ---
   static const String reviewCartTitle = 'Review Cart';
@@ -370,13 +359,10 @@ class AppStrings {
   // ---- Added: Stock report screen card tiles + filters ----
   static const String stockFilterAll = 'All';
   static const String stockFilterInStock = 'In Stock';
-  static const String stockFilterLowStock = 'Low Stock';
   static const String stockFilterOutOfStock = 'Out of Stock';
-  static const String stockFilterSlowMoving = 'Slow Moving';
   static const String stockStatusInStock = 'In Stock';
   static const String stockStatusLowStock = 'Low Stock';
   static const String stockStatusOutOfStock = 'Out of Stock';
-  static const String stockStatusSlowMoving = 'Slow Moving';
   static const String stockQuantityLabel = 'Stock';
   static const String sellingPriceLabel = 'Selling Price';
   static const String buyingPriceLabel = 'Buying Price';
@@ -427,13 +413,10 @@ class AppStrings {
   static const String allReportTitle = 'All Report';
   static const String allReportSubtitle =
       'Combined revenue, expenses & category breakdown';
-  static const String customerReportTitle = 'Customer Report';
   static const String customerReportSubtitle =
       'Customer information, contact details and accounts';
 
   // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
-  static const String todayRevenueLabel = 'Today\'s Revenue';
-  static const String todaySalesTrendTitle = 'Today\'s Sales Trend';
 
   static const String invoicePaymentAccountLabel = 'Payment Account';
   static const String invoiceBarcodeLabel = 'Barcode';
@@ -513,11 +496,56 @@ class AppStrings {
   static const String discountProductWise = 'Product wise';
   static const String discountBillWise = 'Bill wise';
   static const String discountAutoLabel = 'DISCOUNT (AUTO)';
-  static const String discountSelectCustomerHint =
-      'Select a customer to check available discounts';
   static const String discountNotAvailable = 'No discount available';
   static const String discountChecking = 'Checking discounts...';
   static String discountMaxHint(String max) => 'Max allowed: $max';
   static String discountCodesLabel(String codes) => 'Applied: $codes';
   static String lineDiscountLabel(String amount) => 'Discount: -$amount';
+
+
+  // ── Dashboard (home) ──
+  static const String dashCurrencySymbol = '';
+  static const String dashSales = 'Sales';
+  static const String dashCollection = 'Collection';
+  static const String dashOrders = 'Orders';
+  static const String dashItemsSold = 'Items Sold';
+  static const String dashAvgOrderValue = 'Avg. Order Value';
+  static const String dashNetBalance = 'Net Balance';
+  static const String dashLast7Days = 'Last 7 Days Sales';
+  static const String dashLast12Months = 'Last 12 Months Sales';
+  static const String dashTotalSales = 'Total Sales';
+  static const String dashCollectionBreakdown = 'Collection Breakdown';
+  static const String dashPayCash = 'Cash';
+  static const String dashPayCard = 'Card';
+  static const String dashPayBankCard = 'Bank Card';
+  static const String dashPayMobile = 'Mobile Banking';
+  static const String dashPayBank = 'Bank';
+  static const String dashTopCategories = 'Top Categories';
+  static const String dashTopProducts = 'Top Products';
+  static const String dashNoData = 'No data available';
+  static const String dashLoadFailed = "Couldn't load dashboard";
+  static const String dashRetry = 'Try again';
+  static String dashOrdersCount(int n) => '$n orders';
+  static String dashItemsCount(int n) => '$n items';
+  static String dashCollectedPercent(int percent) => '$percent% collected';
+  static String dashExpenseLabel(String amount) => 'Expense $amount';
+
+  static const String dashOverview = 'Overview';
+  static const String dashToday = 'Today';
+  static const String dashThisMonth = 'This Month';
+  static const String dashRange7Days = '7 Days';
+  static const String dashRange12Months = '12 Months';
+  static const String dashSalesTrend = 'Sales Trend';
+  static const String dashDiscount = 'Discount';
+  static const String dashVat = 'VAT';
+  static const String dashDeliveryCharge = 'Delivery Charge';
+  static const String dashOtherCharge = 'Other Charge';
+  static const String dashCharges = 'Charges';
+  static const String dashSalesReturn = 'Sales Return';
+  static const String dashReceived = 'Received';
+  static const String dashExpense = 'Expense';
+  static const String dashHighest = 'Highest';
+  static String dashPeakValue(String label, String amount) => '$label · $amount';
+  static String dashQtySold(int qty) => '$qty sold';
+  static String dashReturnMeta(int orders, int items) => '$orders orders · $items items';
 }

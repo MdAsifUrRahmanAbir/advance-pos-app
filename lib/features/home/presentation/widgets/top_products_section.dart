@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../states/home_state.dart';
+import '../../../../core/widgets/common/custom_card.dart';
+import '../../data/models/dashboard_model.dart';
+import '../states/dashboard_format.dart';
+import 'dashboard_rank_badge.dart';
+import 'dashboard_section_header.dart';
 
+/// All top products: rank, name, barcode · units sold, revenue.
 class TopProductsSection extends StatelessWidget {
-  final List<TopProductData> products;
+  final List<Product> products;
 
   const TopProductsSection({super.key, required this.products});
 
@@ -15,90 +20,80 @@ class TopProductsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          AppStrings.topProductsToday,
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: AppSizes.fontMd,
-            fontWeight: FontWeight.w700,
+        const DashboardSectionHeader(title: AppStrings.dashTopProducts),
+        CustomCard(
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: products.isEmpty
+              ? const Padding(
+            padding: EdgeInsets.all(AppSizes.md),
+            child: Text(
+              AppStrings.dashNoData,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: AppSizes.fontSm,
+              ),
+            ),
+          )
+              : Column(
+            children: [
+              for (var i = 0; i < products.length; i++) ...[
+                _ProductRow(rank: i + 1, data: products[i]),
+                if (i != products.length - 1)
+                  const Divider(height: 1, color: AppColors.border),
+              ],
+            ],
           ),
-        ),
-        const SizedBox(height: AppSizes.sm),
-        ...products.asMap().entries.map(
-          (entry) => _TopProductRow(data: entry.value, isAlt: entry.key.isOdd),
         ),
       ],
     );
   }
 }
 
-class _TopProductRow extends StatelessWidget {
-  final TopProductData data;
-  final bool isAlt;
+class _ProductRow extends StatelessWidget {
+  final int rank;
+  final Product data;
 
-  const _TopProductRow({required this.data, required this.isAlt});
+  const _ProductRow({required this.rank, required this.data});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(bottom: 2),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSizes.md,
-        vertical: AppSizes.sm,
-      ),
-      decoration: BoxDecoration(
-        color: isAlt ? AppColors.background : AppColors.surface,
-        borderRadius: BorderRadius.circular(AppSizes.radiusSm),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm + 2),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          DashboardRankBadge(rank: rank),
+          const SizedBox(width: AppSizes.sm),
           Expanded(
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: AppSizes.md,
-                  child: Text(
-                    '${data.rank}',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: AppSizes.fontSm,
-                      fontWeight: FontWeight.w700,
-                    ),
+                Text(
+                  data.productName,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: AppSizes.fontSm,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: AppSizes.sm),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: AppSizes.fontSm,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        AppStrings.unitsSoldLabel(data.unitsSold),
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: AppSizes.fontXs,
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 2),
+                Text(
+                  '${data.prodBarcode} · ${AppStrings.dashQtySold(data.totalQuantity)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: AppSizes.fontXs,
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: AppSizes.sm),
           Text(
-            data.revenue,
-            style: TextStyle(
+            DashboardFormat.money(data.totalAmount),
+            style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: AppSizes.fontSm,
               fontWeight: FontWeight.w700,
