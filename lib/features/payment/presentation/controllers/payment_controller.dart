@@ -245,7 +245,7 @@ class PaymentController extends Notifier<PaymentState> {
         }
       }
       final success = await ThermalPrinterService.printReceipt(
-        storeName: 'POS Pro', // TODO: source from store settings once available
+        storeName: 'Advance POS', // TODO: source from store settings once available
         // saleId: state.saleId,
         saleDate: state.saleDate,
         methodLabel: state.methodLabel,

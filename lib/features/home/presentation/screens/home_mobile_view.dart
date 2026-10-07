@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-// TODO: adjust path to wherever WidgetSkeletonizer lives.
+
 import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../controllers/home_controller.dart';

@@ -72,9 +72,9 @@
 
     <!-- Bluetooth — required for thermal printer discovery/connection -->
     <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>POS Pro uses Bluetooth to connect to your thermal receipt printer.</string>
+    <string>Advance POS uses Bluetooth to connect to your thermal receipt printer.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>POS Pro uses Bluetooth to connect to your thermal receipt printer.</string>
+    <string>Advance POS uses Bluetooth to connect to your thermal receipt printer.</string>
 
 </dict>
 </plist>

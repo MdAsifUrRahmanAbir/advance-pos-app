@@ -274,13 +274,10 @@ class AppStrings {
   static const String stockEmptyMessage = 'Stock management is coming soon.';
 
   // --- Home dashboard additions ---
-  static const String appBrandName = 'POS Pro';
+  static const String appBrandName = 'Advance POS';
   static const String statusOnline = 'Online';
   static const String statusOffline = 'Offline';
 
-  static const String periodToday = 'Today';
-  static const String periodWeekly = 'Weekly';
-  static const String periodMonthly = 'Monthly';
 
   static String dailyTargetSubtitle(String achieved, String target) =>
       '$achieved of $target target achieved';
@@ -506,13 +503,9 @@ class AppStrings {
   // ── Dashboard (home) ──
   static const String dashCurrencySymbol = '';
   static const String dashSales = 'Sales';
-  static const String dashCollection = 'Collection';
   static const String dashOrders = 'Orders';
   static const String dashItemsSold = 'Items Sold';
-  static const String dashAvgOrderValue = 'Avg. Order Value';
   static const String dashNetBalance = 'Net Balance';
-  static const String dashLast7Days = 'Last 7 Days Sales';
-  static const String dashLast12Months = 'Last 12 Months Sales';
   static const String dashTotalSales = 'Total Sales';
   static const String dashCollectionBreakdown = 'Collection Breakdown';
   static const String dashPayCash = 'Cash';
@@ -524,7 +517,6 @@ class AppStrings {
   static const String dashTopProducts = 'Top Products';
   static const String dashNoData = 'No data available';
   static const String dashLoadFailed = "Couldn't load dashboard";
-  static const String dashRetry = 'Try again';
   static String dashOrdersCount(int n) => '$n orders';
   static String dashItemsCount(int n) => '$n items';
   static String dashCollectedPercent(int percent) => '$percent% collected';
