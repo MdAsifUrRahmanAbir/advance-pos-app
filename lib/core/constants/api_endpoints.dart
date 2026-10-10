@@ -30,6 +30,7 @@ class ApiEndpoints {
   static const String invoices = "/sales?sales_type=1";
   static String invoiceDetails(String id) => "/sales/view/$id?sales_type=1";
   static const String salesAdd = "/sales/add";
+  static String salesDelete(String billNo) => "/sales/delete/$billNo?sales_type=1";
 
   // Invoices /sales/view/
   static String customers(String length) => "/customer?length=$length";

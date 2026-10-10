@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../master_data/data/models/common_success_model.dart';
 import '../model/invoices_model.dart';
 
 final invoicesRepositoryProvider = Provider<InvoicesRepository>((ref) {
@@ -53,5 +54,11 @@ class InvoicesRepository {
     String two(int n) => n.toString().padLeft(2, '0');
     return '${date.day}-${two(date.month)}-${two(date.year)}';
   }
-}
 
+  // AUTO-GENERATED API METHOD
+  Future<CommonSuccessModel> deleteCommonSuccess(String billNo) async {
+    final response = await _apiClient.delete(ApiEndpoints.salesDelete(billNo));
+    return CommonSuccessModel.fromJson(response.data);
+  }
+
+}

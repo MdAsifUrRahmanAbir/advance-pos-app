@@ -17,6 +17,7 @@ class InvoicesState {
   final List<ResultDatum> allItems;
   final int currentStart;
   final bool hasMore;
+  final bool isCommonSuccessLoading;
 
   const InvoicesState({
     this.isInvoicesLoading = false,
@@ -31,7 +32,8 @@ class InvoicesState {
     this.allItems = const [],
     this.currentStart = 0,
     this.hasMore = true,
-  });
+    this.isCommonSuccessLoading = false,
+});
 
   factory InvoicesState.initial() => const InvoicesState();
 
@@ -58,7 +60,8 @@ class InvoicesState {
     List<ResultDatum>? allItems,
     int? currentStart,
     bool? hasMore,
-  }) {
+    bool? isCommonSuccessLoading,
+}) {
     return InvoicesState(
       isInvoicesLoading: isInvoicesLoading ?? this.isInvoicesLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
@@ -72,6 +75,7 @@ class InvoicesState {
       allItems: allItems ?? this.allItems,
       currentStart: currentStart ?? this.currentStart,
       hasMore: hasMore ?? this.hasMore,
-    );
+      isCommonSuccessLoading: isCommonSuccessLoading ?? this.isCommonSuccessLoading,
+);
   }
 }

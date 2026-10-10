@@ -34,7 +34,8 @@ class HomeMobileView extends ConsumerWidget {
     final period = state.selectedPeriod;
     final range = state.selectedChartRange;
 
-    final isSkeleton = state.dashboardModel == null && state.isDashboardLoading;
+    final isFirstLoad = state.dashboardModel == null && state.isDashboardLoading;
+    final isSkeleton = state.isDashboardLoading; // first load AND refresh
     final showError = state.dashboardModel == null && !state.isDashboardLoading;
     final model = state.dashboardModel ?? DashboardSkeletonData.model;
 
@@ -68,7 +69,7 @@ class HomeMobileView extends ConsumerWidget {
             color: AppColors.primary,
             onRefresh: refresh,
             child: ListView(
-              physics: isSkeleton
+              physics: isFirstLoad
                   ? const NeverScrollableScrollPhysics()
                   : const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(AppSizes.md),

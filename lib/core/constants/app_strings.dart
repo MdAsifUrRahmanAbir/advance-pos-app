@@ -171,6 +171,7 @@ class AppStrings {
   static const String openSourceLicenses = 'Open Source Licenses';
   static const String logOut = 'Log Out';
   static const String deleteAccount = 'Delete Account';
+  static const String deleteInvoice = 'Delete Invoice';
 
   // ---- Added: Terms & Privacy screen ----
   static const String termsPrivacyTitle = 'Terms & Privacy';

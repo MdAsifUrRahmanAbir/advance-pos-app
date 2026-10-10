@@ -197,4 +197,29 @@ class InvoicesController extends Notifier<InvoicesState> {
       return false;
     }
   }
+
+
+  // ───────────────────────────────────────────────
+  // DELETE
+  // ───────────────────────────────────────────────
+  Future<bool> invoiceDelete(String billNo) async {
+    state = state.copyWith(isCommonSuccessLoading: true, errorMessage: null);
+    try {
+      await _repository.deleteCommonSuccess(billNo);
+      state = state.copyWith(
+        isCommonSuccessLoading: false,
+        allItems: state.allItems
+            .where((invoice) => invoice.salesBillNo != billNo)
+            .toList(),
+      );
+      return true;
+    } catch (error, stackTrace) {
+      state = state.copyWith(
+        isCommonSuccessLoading: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    }
+  }
+
 }

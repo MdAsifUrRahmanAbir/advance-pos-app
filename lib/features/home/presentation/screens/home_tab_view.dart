@@ -33,7 +33,8 @@ class HomeTabView extends ConsumerWidget {
     final period = state.selectedPeriod;
     final range = state.selectedChartRange;
 
-    final isSkeleton = state.dashboardModel == null && state.isDashboardLoading;
+    final isFirstLoad = state.dashboardModel == null && state.isDashboardLoading;
+    final isSkeleton = state.isDashboardLoading; // first load AND refresh
     final showError = state.dashboardModel == null && !state.isDashboardLoading;
     final model = state.dashboardModel ?? DashboardSkeletonData.model;
 
@@ -72,7 +73,7 @@ class HomeTabView extends ConsumerWidget {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 960),
                   child: ListView(
-                    physics: isSkeleton
+                    physics: isFirstLoad
                         ? const NeverScrollableScrollPhysics()
                         : const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(AppSizes.lg),

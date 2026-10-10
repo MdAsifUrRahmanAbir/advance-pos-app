@@ -107,7 +107,7 @@ class Payment {
 class Collection {
   final int paymentSystemId;
   final String paymentSystemName;
-  final int amount;
+  final double amount;
 
   Collection({
     required this.paymentSystemId,
@@ -118,7 +118,7 @@ class Collection {
   factory Collection.fromJson(Map<String, dynamic> json) => Collection(
     paymentSystemId: json["payment_system_id"],
     paymentSystemName: json["payment_system_name"],
-    amount: json["amount"],
+    amount: json["amount"].toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -136,7 +136,7 @@ class PaymentSystem {
 
   factory PaymentSystem.fromJson(Map<String, dynamic> json) => PaymentSystem(
     id: json["id"],
-    name: json["name"],
+    name: json["name"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {"id": id, "name": name};
@@ -208,10 +208,10 @@ class SaleDetail {
   final String productName;
   final String quantity;
   final String unitPrice;
-  final int totalPrice;
+  final double totalPrice;
   final String disRate;
   final String disAmount;
-  final int taAfterDiscount;
+  final double taAfterDiscount;
 
   SaleDetail({
     required this.productId,
@@ -231,10 +231,10 @@ class SaleDetail {
     productName: json["product_name"],
     quantity: json["quantity"],
     unitPrice: json["unit_price"],
-    totalPrice: json["total_price"],
+    totalPrice: json["total_price"].toDouble(),
     disRate: json["dis_rate"],
     disAmount: json["dis_amount"],
-    taAfterDiscount: json["ta_after_discount"],
+    taAfterDiscount: json["ta_after_discount"].toDouble(),
   );
 
   Map<String, dynamic> toJson() => {

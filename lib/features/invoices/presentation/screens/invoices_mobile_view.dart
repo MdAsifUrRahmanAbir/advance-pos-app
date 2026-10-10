@@ -9,6 +9,7 @@ import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/utils/widget_animation_extension.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/search_field.dart';
+import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
@@ -56,7 +57,11 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
-  void _viewTechnicalDetails(BuildContext context, InvoicesState state, InvoicesController controller) {
+  void _viewTechnicalDetails(
+    BuildContext context,
+    InvoicesState state,
+    InvoicesController controller,
+  ) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => TechnicalErrorScreen(
@@ -66,7 +71,9 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
             controller.getInvoices(reset: true);
           },
           onReportIssue: () {
-            Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
+            Clipboard.setData(
+              ClipboardData(text: state.technicalDetails ?? ''),
+            );
             CustomSnackbar.show(context, 'Technical details copied.');
           },
         ),
@@ -75,7 +82,6 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
   }
 
   static const int _staggerResetAt = 15;
-
 
   @override
   Widget build(BuildContext context) {
@@ -106,84 +112,115 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         isInitialLoading
             ? SizedBox.shrink()
             : Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: InvoiceQuickFilterTabs(
-            selectedStatus: state.selectedStatus,
-            selectedDatePreset: state.selectedDatePreset,
-            onStatusSelected: controller.selectStatus,
-            onDatePresetSelected: controller.selectDatePreset,
-          ),
-        ),
+                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                child: InvoiceQuickFilterTabs(
+                  selectedStatus: state.selectedStatus,
+                  selectedDatePreset: state.selectedDatePreset,
+                  onStatusSelected: controller.selectStatus,
+                  onDatePresetSelected: controller.selectDatePreset,
+                ),
+              ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
           child: hasError
               ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: AppSizes.bottomNavBarHeight * 2),
-              Expanded(
-                child: ErrorState(
-                  message: state.errorMessage ?? AppStrings.errorOccurred,
-                  onRetry: () => controller.getInvoices(reset: true),
-                ),
-              ),
-              if (state.technicalDetails != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSizes.md),
-                  child: TextButton(
-                    onPressed: () => _viewTechnicalDetails(context, state, controller),
-                    child: const Text('View technical details'),
-                  ),
-                ),
-              SizedBox(height: AppSizes.bottomNavBarHeight * 3),
-            ],
-          )
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: AppSizes.bottomNavBarHeight * 2),
+                    Expanded(
+                      child: ErrorState(
+                        message: state.errorMessage ?? AppStrings.errorOccurred,
+                        onRetry: () => controller.getInvoices(reset: true),
+                      ),
+                    ),
+                    if (state.technicalDetails != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSizes.md),
+                        child: TextButton(
+                          onPressed: () =>
+                              _viewTechnicalDetails(context, state, controller),
+                          child: const Text('View technical details'),
+                        ),
+                      ),
+                    SizedBox(height: AppSizes.bottomNavBarHeight * 3),
+                  ],
+                )
               : (!isInitialLoading && invoices.isEmpty)
               ? EmptyState(
-            title: AppStrings.invoicesTitle,
-            message: AppStrings.invoicesEmptyMessage,
-            icon: Icons.receipt_long_outlined,
-          )
+                  title: AppStrings.invoicesTitle,
+                  message: AppStrings.invoicesEmptyMessage,
+                  icon: Icons.receipt_long_outlined,
+                )
               : CustomRefreshWrapper(
-            onRefresh: controller.refresh,
-            child: isInitialLoading
-                ? ListView.separated(
-              padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.md),
-              itemCount: 6,
-              separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),
-              itemBuilder: (context, index) => _placeholderCard().fadeSlideIn(delay: (index * 60).ms),
-            ).skeletonizer(enabled: true)
-                : ListView(
-              controller: _scrollController,
-              shrinkWrap: true,
-              children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.fromLTRB(AppSizes.md, 0, AppSizes.md, AppSizes.md),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: invoices.length + (state.hasMore ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index >= invoices.length) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(vertical: AppSizes.md),
-                        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-                      );
-                    }
-                    final invoice = invoices[index];
-                    final staggerIndex = index % _staggerResetAt;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
-                      child: InvoiceCardItem(
-                        invoice: invoice,
-                        onTap: () => _openDetail(context, invoice),
-                      ).fadeSlideIn(delay: (staggerIndex * 40).ms),
-                    );
-                  },
+                  onRefresh: controller.refresh,
+                  child: isInitialLoading
+                      ? ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSizes.md,
+                            0,
+                            AppSizes.md,
+                            AppSizes.md,
+                          ),
+                          itemCount: 6,
+                          separatorBuilder: (_, _) =>
+                              const SizedBox(height: AppSizes.sm + AppSizes.xs),
+                          itemBuilder: (context, index) => _placeholderCard()
+                              .fadeSlideIn(delay: (index * 60).ms),
+                        ).skeletonizer(enabled: true)
+                      : ListView(
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.fromLTRB(
+                                AppSizes.md,
+                                0,
+                                AppSizes.md,
+                                AppSizes.md,
+                              ),
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount:
+                                  invoices.length + (state.hasMore ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index >= invoices.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: AppSizes.md,
+                                    ),
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                final invoice = invoices[index];
+                                final staggerIndex = index % _staggerResetAt;
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                    bottom: AppSizes.sm + AppSizes.xs,
+                                  ),
+                                  child: InvoiceCardItem(
+                                    invoice: invoice,
+                                    onTap: () => _openDetail(context, invoice),
+                                    onEdit: () {
+                                      // Navigate to edit sale
+                                    },
+                                    onDelete: () {
+                                      _confirmDeleteInvoice(context, ref, invoice.salesBillNo);
+                                    },
+                                    onReturnSale: () {
+                                      // Navigate to return sale
+                                    },
+                                  ).fadeSlideIn(delay: (staggerIndex * 40).ms),
+                                );
+                              },
+                            ),
+                            SizedBox(height: AppSizes.bottomNavBarHeight / 2),
+                          ],
+                        ),
                 ),
-                SizedBox(height: AppSizes.bottomNavBarHeight / 2),
-              ],
-            ),
-          ),
         ),
       ],
     );
@@ -191,6 +228,15 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
 
   Widget _placeholderCard() {
     return InvoiceCardItem(
+      onEdit: () {
+        // Navigate to edit sale
+      },
+      onDelete: () {
+        // Show delete confirmation
+      },
+      onReturnSale: () {
+        // Navigate to return sale
+      },
       invoice: ResultDatum(
         sl: 0,
         salesDate: '',
@@ -215,5 +261,35 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         salesBy: '',
       ),
     );
+  }
+
+
+  Future<void> _confirmDeleteInvoice(
+      BuildContext context,
+      WidgetRef ref,
+      String billNo
+      ) async {
+    final confirmed = await CustomAlertDialog.confirm(
+      context,
+      title: AppStrings.deleteInvoice,
+      message: 'This action is permanent and cannot be undone. Are you sure?',
+      confirmText: AppStrings.deleteInvoice,
+      destructive: true,
+    );
+
+    if (confirmed == true) {
+      final success = await ref
+          .read(invoicesControllerProvider.notifier)
+          .invoiceDelete(billNo);
+      if (!context.mounted) return;
+      CustomSnackbar.show(
+        context,
+        success
+            ? 'Invoice $billNo deleted'
+            : (ref.read(invoicesControllerProvider).errorMessage ??
+            AppStrings.errorOccurred),
+        error: !success,
+      );
+    }
   }
 }
