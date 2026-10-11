@@ -4,6 +4,7 @@ import '../../../../core/network/api_client.dart';
 import '../models/brand_model.dart';
 import '../models/category_model.dart';
 import '../models/group_model.dart';
+import '../models/head_model.dart';
 import '../models/payment_accounts_model.dart';
 import '../models/payment_system_model.dart';
 import '../models/subcategory_model.dart';
@@ -47,5 +48,10 @@ class MasterDataRepository {
   Future<PaymentAccountsModel> getPaymentAccounts() async {
     final response = await _apiClient.get(ApiEndpoints.paymentAccount);
     return PaymentAccountsModel.fromJson(response.data);
+  }
+
+  Future<HeadModel> getAccountHead() async {
+    final response = await _apiClient.get(ApiEndpoints.accountHead);
+    return HeadModel.fromJson(response.data);
   }
 }

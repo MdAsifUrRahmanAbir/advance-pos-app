@@ -40,7 +40,7 @@ class ProfileMobileView extends ConsumerWidget {
                     onStockReportTap: () => context.push(RouteNames.error),
                     onSalesReportTap: () =>
                         context.push(RouteNames.maintenance),
-                    onAllReportTap: () => context.push(RouteNames.notFound),
+                    onExpenseTap: () => context.push(RouteNames.expense),
                   ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileSettingsSections(

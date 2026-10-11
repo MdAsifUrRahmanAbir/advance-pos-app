@@ -411,6 +411,9 @@ class AppStrings {
   static const String allReportTitle = 'All Report';
   static const String allReportSubtitle =
       'Combined revenue, expenses & category breakdown';
+  static const String expense = 'Expense';
+  static const String expenseSubtitle =
+      'Track expenses, costs and payment history';
   static const String customerReportSubtitle =
       'Customer information, contact details and accounts';
 
@@ -541,4 +544,37 @@ class AppStrings {
   static String dashPeakValue(String label, String amount) => '$label · $amount';
   static String dashQtySold(int qty) => '$qty sold';
   static String dashReturnMeta(int orders, int items) => '$orders orders · $items items';
+
+  // ── Expense ──
+  static const String expTitle = 'Expenses';
+  static const String expDetailTitle = 'Expense Details';
+  static const String expSearchHint = 'Search expense no, category, remarks';
+  static const String expAllDates = 'All dates';
+  static const String expFilterByDate = 'Filter by date';
+  static const String expDateToday = 'Today';
+  static const String expDateYesterday = 'Yesterday';
+  static const String expDateLast7Days = 'Last 7 Days';
+  static const String expDateThisMonth = 'This Month';
+  static const String expDateLastMonth = 'Last Month';
+  static const String expDateCustomRange = 'Custom Range';
+  static const String expEmptyTitle = 'No expenses found';
+  static const String expEmptySubtitle = 'Try a different search or date range.';
+  static const String expLoadFailed = "Couldn't load expenses";
+  static const String expDetailLoadFailed = "Couldn't load expense details";
+  static const String expLoadMoreFailed = "Couldn't load more";
+  static const String expRetry = 'Retry';
+  static const String expExpenseNo = 'Expense No';
+  static const String expExpenseDate = 'Expense Date';
+  static const String expOutlet = 'Outlet';
+  static const String expAmount = 'Amount';
+  static const String expEntryBy = 'Entry By';
+  static const String expEntryDateTime = 'Entry Date & Time';
+  static const String expGlobalNarration = 'Global Narration';
+  static const String expExpenseHeads = 'Expense Heads';
+  static const String expTotal = 'Total';
+  static const String expEmptyValue = '-';
+  static String expRecordsCount(int shown, int total) => 'Showing $shown of $total';
+  static String expHeadsCount(int n) => n == 1 ? '1 head' : '$n heads';
+  static String expPaymentAccountFallback(int id) => 'Account #$id';
+  static String expShareSubject(String no) => 'Expense $no';
 }

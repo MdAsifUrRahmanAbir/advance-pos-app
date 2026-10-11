@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../../data/models/brand_model.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/group_model.dart';
+import '../../data/models/head_model.dart';
 import '../../data/models/payment_accounts_model.dart' as pa;
 import '../../data/models/payment_system_model.dart' as ps;
 import '../../data/models/subcategory_model.dart';
@@ -16,6 +17,7 @@ class MasterDataState {
   final List<BrandItem> brands;
   final List<ps.ResultDatum> paymentSystems;
   final List<pa.ResultDatum> paymentAccounts;
+  final List<HeadDatum> accountHeads;
   final DateTime? lastSyncedAt;
 
   const MasterDataState({
@@ -27,6 +29,7 @@ class MasterDataState {
     this.brands = const [],
     this.paymentSystems = const [],
     this.paymentAccounts = const [],
+    this.accountHeads = const [],
     this.lastSyncedAt,
   });
 
@@ -43,6 +46,7 @@ class MasterDataState {
     List<BrandItem>? brands,
     List<ps.ResultDatum>? paymentSystems,
     List<pa.ResultDatum>? paymentAccounts,
+    List<HeadDatum>? accountHeads,
     DateTime? lastSyncedAt,
   }) {
     return MasterDataState(
@@ -54,6 +58,7 @@ class MasterDataState {
       brands: brands ?? this.brands,
       paymentSystems: paymentSystems ?? this.paymentSystems,
       paymentAccounts: paymentAccounts ?? this.paymentAccounts,
+      accountHeads: accountHeads ?? this.accountHeads,
       lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
     );
   }

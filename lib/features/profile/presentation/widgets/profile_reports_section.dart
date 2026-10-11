@@ -9,7 +9,7 @@ import '../../../../core/widgets/common/settings_tile.dart';
 class ProfileReportsSection extends StatelessWidget {
   final VoidCallback? onStockReportTap;
   final VoidCallback? onSalesReportTap;
-  final VoidCallback? onAllReportTap;
+  final VoidCallback? onExpenseTap;
   final VoidCallback? onCustomerTap;
 
   const ProfileReportsSection({
@@ -17,7 +17,7 @@ class ProfileReportsSection extends StatelessWidget {
     this.onCustomerTap,
     this.onStockReportTap,
     this.onSalesReportTap,
-    this.onAllReportTap,
+    this.onExpenseTap,
   });
 
   @override
@@ -33,9 +33,9 @@ class ProfileReportsSection extends StatelessWidget {
         ),
         SettingsTile(
           icon: Icons.bar_chart_rounded,
-          title: AppStrings.allReportTitle,
-          subtitle: AppStrings.allReportSubtitle,
-          onTap: onAllReportTap,
+          title: AppStrings.expense,
+          subtitle: AppStrings.expenseSubtitle,
+          onTap: onExpenseTap,
         ),
         SettingsTile(
           icon: Icons.inventory_2_outlined,

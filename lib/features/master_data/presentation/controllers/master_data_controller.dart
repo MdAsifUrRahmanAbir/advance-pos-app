@@ -6,6 +6,7 @@ import '../../../../core/utils/error_mapper.dart';
 import '../../data/models/brand_model.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/group_model.dart';
+import '../../data/models/head_model.dart';
 import '../../data/models/payment_accounts_model.dart' as pa;
 import '../../data/models/payment_system_model.dart' as ps;
 import '../../data/models/subcategory_model.dart';
@@ -13,9 +14,9 @@ import '../../data/repositories/master_data_repository.dart';
 import '../states/master_data_state.dart';
 
 final masterDataControllerProvider =
-    NotifierProvider<MasterDataController, MasterDataState>(
-      MasterDataController.new,
-    );
+NotifierProvider<MasterDataController, MasterDataState>(
+  MasterDataController.new,
+);
 
 class MasterDataController extends Notifier<MasterDataState> {
   static const _ttl = Duration(days: 1);
@@ -25,6 +26,7 @@ class MasterDataController extends Notifier<MasterDataState> {
   static const _brandsKey = 'master_data_brands';
   static const _paymentSystemsKey = 'master_data_payment_systems';
   static const _paymentAccountsKey = 'master_data_payment_accounts';
+  static const _accountHeadsKey = 'master_data_account_heads';
 
   MasterDataRepository get _repository =>
       ref.read(masterDataRepositoryProvider);
@@ -54,8 +56,14 @@ class MasterDataController extends Notifier<MasterDataState> {
       final paymentAccountsResult = await _loadPaymentAccounts(
         forceRefresh: forceRefresh,
       );
+      final accountHeadsResult = await _loadAccountHeads(
+        forceRefresh: forceRefresh,
+      );
 
-      _printPaymentData(paymentSystems: paymentSystemsResult.data, paymentAccounts: paymentAccountsResult.data);
+      _printPaymentData(
+        paymentSystems: paymentSystemsResult.data,
+        paymentAccounts: paymentAccountsResult.data,
+      );
 
       state = state.copyWith(
         isLoading: false,
@@ -65,6 +73,7 @@ class MasterDataController extends Notifier<MasterDataState> {
         brands: brandsResult.data,
         paymentSystems: paymentSystemsResult.data,
         paymentAccounts: paymentAccountsResult.data,
+        accountHeads: accountHeadsResult.data,
         lastSyncedAt: DateTime.now(),
       );
       AppLogger.masterDataSynced(
@@ -104,7 +113,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       _groupsKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
   }
@@ -125,7 +134,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       _categoriesKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
   }
@@ -146,7 +155,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       _subcategoriesKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
   }
@@ -167,7 +176,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       _brandsKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
   }
@@ -188,7 +197,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       _paymentSystemsKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
   }
@@ -209,9 +218,32 @@ class MasterDataController extends Notifier<MasterDataState> {
       _paymentAccountsKey,
       fresh,
       CachePolicy.standard(ttl: _ttl),
-      (m) => m.toJson(),
+          (m) => m.toJson(),
     );
     return (data: fresh.resultData, fromCache: false);
+  }
+
+  /// Account heads (ledger heads) — same daily-cache pattern as the other
+  /// master data lists.
+  Future<({List<HeadDatum> data, bool fromCache})> _loadAccountHeads({
+    required bool forceRefresh,
+  }) async {
+    if (!forceRefresh) {
+      final cached = _cache.read<HeadModel>(
+        _accountHeadsKey,
+        CacheSensitivity.standard,
+        HeadModel.fromJson,
+      );
+      if (cached != null) return (data: cached.headData, fromCache: true);
+    }
+    final fresh = await _repository.getAccountHead();
+    await _cache.write<HeadModel>(
+      _accountHeadsKey,
+      fresh,
+      CachePolicy.standard(ttl: _ttl),
+          (m) => m.toJson(),
+    );
+    return (data: fresh.headData, fromCache: false);
   }
 
   void _printPaymentData({
@@ -232,7 +264,6 @@ class MasterDataController extends Notifier<MasterDataState> {
       print('│ Name            : ${item.paymentSystemName}');
       print('│ Short Name      : ${item.shortName}');
       print('│ Status          : ${item.status}');
-      // print('│ Is Active       : ${item.isActive}');
       print('└─────────────────────────────────────────────');
     }
 
@@ -257,9 +288,7 @@ class MasterDataController extends Notifier<MasterDataState> {
       print('│');
       print('│ ───── Payment System ─────');
       print('│ ID              : ${item.paymentSystem.id}');
-      print(
-        '│ Name            : ${item.paymentSystem.paymentSystemName}',
-      );
+      print('│ Name            : ${item.paymentSystem.paymentSystemName}');
       print('│ Short Name      : ${item.paymentSystem.shortName}');
       print('│ Status          : ${item.paymentSystem.status}');
       print('│ Is Active       : ${item.paymentSystem.isActive}');

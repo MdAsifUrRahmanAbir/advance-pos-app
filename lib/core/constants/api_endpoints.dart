@@ -36,10 +36,18 @@ class ApiEndpoints {
   static String customers(String length) => "/customer?length=$length";
   static const String customerAdd = "/customer/add";
 
+  // Expense
+  static const String expense = "/daily_expense";
+  static String expenseDetails(String expenseNo) => "/daily_expense/view/$expenseNo";
+
   // Get Discount
   static const String getDiscount = "/get_discount";
+
+  // Account Head
+  static const String accountHead = "/daily_expense/getData?context=loadAccountHeads";
 
   // Payment Systems and Accounts
   static const String paymentSystem = "/gnl/payment_system/all";
   static const String paymentAccount = "/gnl/payment_account/all";
+
 }

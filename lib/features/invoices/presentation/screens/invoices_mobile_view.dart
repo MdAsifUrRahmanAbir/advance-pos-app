@@ -99,7 +99,7 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
           trailingIcon: Icons.filter_alt_sharp,
           onTrailingTap: () => Scaffold.of(context).openEndDrawer(),
         ),
-        const SizedBox(height: AppSizes.sm),
+        const SizedBox(height: AppSizes.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: SearchField(
