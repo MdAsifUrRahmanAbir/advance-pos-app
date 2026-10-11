@@ -40,6 +40,11 @@ class ApiEndpoints {
   static const String expense = "/daily_expense";
   static String expenseDetails(String expenseNo) => "/daily_expense/view/$expenseNo";
 
+  static const String expenseAdd = "/daily_expense/add";
+  static String expenseEdit(String expenseNo) => "/daily_expense/edit/$expenseNo";
+  static String expenseDelete(String expenseNo) => "/daily_expense/delete/$expenseNo";
+
+
   // Get Discount
   static const String getDiscount = "/get_discount";
 
