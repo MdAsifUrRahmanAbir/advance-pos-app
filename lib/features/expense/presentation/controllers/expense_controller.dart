@@ -161,6 +161,41 @@ class ExpenseController extends Notifier<ExpenseState> {
     }
   }
 
+  // ───────────────────────────────────────────────
+  // DELETE
+  // ───────────────────────────────────────────────
+  /// Deletes one expense, then removes it from the loaded list locally so
+  /// the server offset stays in step with [ExpenseState.expenses.length].
+  /// Returns false on failure ([ExpenseState.errorMessage] is set) or when
+  /// another delete is already running.
+  Future<bool> deleteExpense(String expenseNo) async {
+    if (state.isDeleting) return false;
+    state = state.copyWith(deletingExpenseNo: expenseNo);
+    try {
+      await _repository.deleteExpense(expenseNo);
+      if (!ref.mounted) return true;
+
+      final remaining =
+      state.expenses.where((e) => e.expenseNo != expenseNo).toList();
+      final removed = state.expenses.length - remaining.length;
+      final total = state.totalCount - removed;
+      state = state.copyWith(
+        clearDeleting: true,
+        expenses: remaining,
+        totalCount: total < 0 ? 0 : total,
+        hasMore: state.hasMore && remaining.length < total,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      if (!ref.mounted) return false;
+      state = state.copyWith(
+        clearDeleting: true,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    }
+  }
+
   void _onScroll() {
     if (!scrollController.hasClients || state.isLoadMoreFailed) return;
     final position = scrollController.position;

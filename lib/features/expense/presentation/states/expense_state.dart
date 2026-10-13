@@ -23,6 +23,9 @@ class ExpenseState {
   final DateTime? fromDate;
   final DateTime? toDate;
 
+  /// expenseNo currently being deleted; null when no delete is in flight.
+  final String? deletingExpenseNo;
+
   const ExpenseState({
     this.isInitialLoading = false,
     this.isLoadingMore = false,
@@ -35,7 +38,10 @@ class ExpenseState {
     this.datePreset = ExpenseDatePreset.all,
     this.fromDate,
     this.toDate,
+    this.deletingExpenseNo,
   });
+
+  bool get isDeleting => deletingExpenseNo != null;
 
   ExpenseState copyWith({
     bool? isInitialLoading,
@@ -50,6 +56,8 @@ class ExpenseState {
     DateTime? fromDate,
     DateTime? toDate,
     bool clearDates = false,
+    String? deletingExpenseNo,
+    bool clearDeleting = false,
   }) {
     return ExpenseState(
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
@@ -63,6 +71,9 @@ class ExpenseState {
       datePreset: datePreset ?? this.datePreset,
       fromDate: clearDates ? null : (fromDate ?? this.fromDate),
       toDate: clearDates ? null : (toDate ?? this.toDate),
+      deletingExpenseNo: clearDeleting
+          ? null
+          : (deletingExpenseNo ?? this.deletingExpenseNo),
     );
   }
 }

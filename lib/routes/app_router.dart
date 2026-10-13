@@ -1,3 +1,4 @@
+import 'package:advance_pos_app/features/expense_form/presentation/screens/expense_form_screen.dart';
 import 'package:advance_pos_app/features/expense/presentation/screens/expense_screen.dart';
 import 'package:advance_pos_app/features/customers/presentation/screens/customers_screen.dart';
 import 'package:advance_pos_app/features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
@@ -359,7 +360,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: const CustomersScreen(),
         ),
       ),
-      GoRoute(path: RouteNames.expense, builder: (context, state) => const ExpenseScreen()),
-  ],
+      GoRoute(
+        path: RouteNames.expense,
+        // builder: (context, state) => const ExpenseScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ExpenseScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.expenseForm,
+        // builder: (context, state) => const ExpenseFormScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: ExpenseFormScreen(expenseNo: state.extra as String?),
+        ),
+      ),
+    ],
   );
 });

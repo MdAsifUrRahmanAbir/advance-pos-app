@@ -19,11 +19,18 @@ class ExpenseListSection extends StatelessWidget {
   final bool isLoadingMore;
   final bool isLoadMoreFailed;
   final String? errorMessage;
+  final String? deletingExpenseNo;
   final ScrollController scrollController;
   final Future<void> Function() onRefresh;
   final VoidCallback onRetry;
   final VoidCallback onRetryLoadMore;
   final ValueChanged<ResultDatum> onTapItem;
+  final ValueChanged<ResultDatum> onEditItem;
+  final ValueChanged<ResultDatum> onDeleteItem;
+
+  /// Extra scroll room at the bottom so a floating button never covers the
+  /// last row.
+  final double bottomSpace;
 
   const ExpenseListSection({
     super.key,
@@ -32,11 +39,15 @@ class ExpenseListSection extends StatelessWidget {
     required this.isLoadingMore,
     required this.isLoadMoreFailed,
     required this.errorMessage,
+    required this.deletingExpenseNo,
     required this.scrollController,
     required this.onRefresh,
     required this.onRetry,
     required this.onRetryLoadMore,
     required this.onTapItem,
+    required this.onEditItem,
+    required this.onDeleteItem,
+    this.bottomSpace = 0,
   });
 
   static const double _emptyTopSpace = 64;
@@ -81,7 +92,7 @@ class ExpenseListSection extends StatelessWidget {
           AppSizes.md,
           AppSizes.sm,
           AppSizes.md,
-          AppSizes.md + bottomInset,
+          AppSizes.md + bottomInset + bottomSpace,
         ),
         itemCount: data.length + (hasFooter ? 1 : 0),
         separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm),
@@ -95,7 +106,10 @@ class ExpenseListSection extends StatelessWidget {
           final item = data[index];
           return ExpenseListItem(
             data: item,
+            isDeleting: deletingExpenseNo == item.expenseNo,
             onTap: showSkeleton ? null : () => onTapItem(item),
+            onEdit: showSkeleton ? null : () => onEditItem(item),
+            onDelete: showSkeleton ? null : () => onDeleteItem(item),
           );
         },
       ).skeletonizer(enabled: showSkeleton),

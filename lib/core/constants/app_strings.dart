@@ -408,9 +408,6 @@ class AppStrings {
   static const String salesReportTitle = 'Sales Report';
   static const String salesReportSubtitle =
       'Daily and periodic sales summaries';
-  static const String allReportTitle = 'All Report';
-  static const String allReportSubtitle =
-      'Combined revenue, expenses & category breakdown';
   static const String expense = 'Expense';
   static const String expenseSubtitle =
       'Track expenses, costs and payment history';
@@ -546,11 +543,9 @@ class AppStrings {
   static String dashReturnMeta(int orders, int items) => '$orders orders · $items items';
 
   // ── Expense ──
-  static const String expTitle = 'Expenses';
   static const String expDetailTitle = 'Expense Details';
   static const String expSearchHint = 'Search expense no, category, remarks';
   static const String expAllDates = 'All dates';
-  static const String expFilterByDate = 'Filter by date';
   static const String expDateToday = 'Today';
   static const String expDateYesterday = 'Yesterday';
   static const String expDateLast7Days = 'Last 7 Days';
@@ -577,4 +572,50 @@ class AppStrings {
   static String expHeadsCount(int n) => n == 1 ? '1 head' : '$n heads';
   static String expPaymentAccountFallback(int id) => 'Account #$id';
   static String expShareSubject(String no) => 'Expense $no';
+
+  // ---- Expense: row actions / add (append only) ----
+  static const String expEdit = 'Edit';
+  static const String expDelete = 'Delete';
+  static const String expCancel = 'Cancel';
+  static const String expMenuTooltip = 'More options';
+  static const String expAddTooltip = 'Add expense';
+  static const String expDeleteTitle = 'Delete expense';
+  static const String expDeleteFailed = "Couldn't delete expense";
+  static String expDeleteMessage(String no) =>
+      'Expense $no will be permanently deleted. This cannot be undone.';
+  static String expDeleted(String no) => 'Expense $no deleted';
+
+  // ---- Expense form (append only) ----
+  static const String expFormAddTitle = 'Add Expense';
+  static const String expFormEditTitle = 'Edit Expense';
+  static const String expFormHead = 'Head Name *';
+  static const String expFormSelectHead = 'Select head';
+  static const String expFormPaymentAccount = 'Payment Account *';
+  static const String expFormSelectAccount = 'Select account';
+  static const String expFormLocalNarration = 'Local Narration';
+  static const String expFormLocalNarrationHint = 'Enter local narration';
+  static const String expFormAmountLabel = 'Amount *';
+  static const String expFormAmountHint = '0';
+  static const String expFormAddLine = 'Add line';
+  static const String expFormRemoveLine = 'Remove line';
+  static const String expFormLinesEmpty = 'No lines yet. Fill in the row above and tap Add line.';
+  static const String expFormGlobalNarration = 'Global Narration Details';
+  static const String expFormGlobalNarrationHint = 'Enter global narration';
+  static const String expFormSave = 'Save';
+  static const String expFormUpdate = 'Update';
+  static const String expFormHeadRequired = 'Select a head';
+  static const String expFormAccountRequired = 'Select a payment account';
+  static const String expFormAmountInvalid = 'Enter an amount greater than 0';
+  static const String expFormNoLines = 'Add at least one expense line';
+  static const String expFormCreated = 'Expense created';
+  static const String expFormUpdated = 'Expense updated';
+  static const String expFormSaveFailed = "Couldn't save expense";
+  static const String expFormMasterMissing = "Heads and payment accounts aren't loaded yet";
+  static String expFormLinesTitle(int count) => 'Expense lines ($count)';
+
+  // ---- Expense form: strings that used to be borrowed from expense (append only) ----
+  static const String expFormTotal = 'Total';
+  static const String expFormRetry = 'Retry';
+  static const String expFormEmptyValue = '-';
+  static String expFormAccountFallback(int id) => 'Account #$id';
 }
