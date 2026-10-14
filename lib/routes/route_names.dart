@@ -28,7 +28,7 @@ class RouteNames {
   static const String dashboard = '/dashboard';
   static const String termsPrivacy = '/terms_privacy';
   static const String orderList = '/order_list';
-  static const String product = '/product';
+  // static const String product = '/product';
   static const String stock = '/stock_screen';
   static const String newSale = '/new_sale';
   static const String payment = '/payment';
@@ -37,4 +37,6 @@ class RouteNames {
   static const String customers = '/customers';
   static const String expense = '/expense';
   static const String expenseForm = '/expense_form';
+  static const String salesReturn = '/sales_return';
+  static const String salesReturnDetail = '/sales_return_detail';
 }

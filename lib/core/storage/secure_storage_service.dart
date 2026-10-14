@@ -48,9 +48,6 @@ class SecureStorageService {
     await _storage.delete(key: _keyRefreshToken);
   }
 
-  /// "Clear all app data" / account-deletion flow. Pass
-  /// [includeCacheKey]: true to also rotate the cache-encryption key,
-  /// which permanently invalidates every encrypted cache entry.
   Future<void> clearAll({bool includeCacheKey = false}) async {
     await clearAuthTokens();
     await clearSessionProfile();

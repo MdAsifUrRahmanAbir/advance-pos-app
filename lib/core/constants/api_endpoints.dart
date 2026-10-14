@@ -18,6 +18,17 @@ class ApiEndpoints {
   static const String subcategories = "/subcategory/all"; /// DONE
   static const String brands = "/model/all"; /// DONE
 
+
+  // Get Discount
+  static const String getDiscount = "/get_discount"; /// DONE
+
+  // Account Head
+  static const String accountHead = "/daily_expense/getData?context=loadAccountHeads"; /// DONE
+
+  // Payment Systems and Accounts
+  static const String paymentSystem = "/gnl/payment_system/all"; /// DONE
+  static const String paymentAccount = "/gnl/payment_account/all"; /// DONE
+  ///
   // Products /product/view/
   static String products ({int branchId = 2}) =>"/product?branch_id=$branchId";
   static String productDetails(String id) => "/products/$id";
@@ -45,14 +56,16 @@ class ApiEndpoints {
   static String expenseDelete(String expenseNo) => "/daily_expense/delete/$expenseNo"; /// DONE
 
 
-  // Get Discount
-  static const String getDiscount = "/get_discount"; /// DONE
+  // Expense
+  static const String salesReturn = "/sales_return";
+  static String salesReturnDelete(String returnBillNo) => "/sales_return/delete/$returnBillNo";
+  static String salesReturnDetails(String returnBillNo) => "/sales_return/view/$returnBillNo";
+  // static String expenseDetails(String expenseNo) => "/daily_expense/view/$expenseNo"; /// DONE
 
-  // Account Head
-  static const String accountHead = "/daily_expense/getData?context=loadAccountHeads"; /// DONE
+  // static const String expenseAdd = "/daily_expense/add"; /// DONE
+  // static String expenseEdit(String expenseNo) => "/daily_expense/edit/$expenseNo"; /// DONE
+  // static String expenseDelete(String expenseNo) => "/daily_expense/delete/$expenseNo"; /// DONE
 
-  // Payment Systems and Accounts
-  static const String paymentSystem = "/gnl/payment_system/all"; /// DONE
-  static const String paymentAccount = "/gnl/payment_account/all"; /// DONE
+
 
 }

@@ -413,7 +413,9 @@ class AppStrings {
       'Track expenses, costs and payment history';
   static const String customerReportSubtitle =
       'Customer information, contact details and accounts';
-
+  static const String salesReturnTitle = 'Sales Return';
+  static const String salesReturnSubtitle =
+      'Track returned items and refund history';
   // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
 
   static const String invoicePaymentAccountLabel = 'Payment Account';
@@ -618,4 +620,76 @@ class AppStrings {
   static const String expFormRetry = 'Retry';
   static const String expFormEmptyValue = '-';
   static String expFormAccountFallback(int id) => 'Account #$id';
+
+  // ---- Sales return (append only) ----
+  static const String srTitle = 'Sales Return';
+  static const String srSearchHint = 'Search sales returns';
+  static const String srEmptyMessage = 'No sales returns found for these filters.';
+  static const String srStatusActive = 'Active';
+  static const String srStatusInactive = 'Inactive';
+  static const String srSalesBillPrefix = 'Sales bill: ';
+  static const String srNoProducts = 'No products';
+  static String srMoreProducts(int count) => '+$count more';
+  static const String srQuantityLabel = 'Qty';
+  static const String srDiscountLabel = 'Discount';
+  static const String srPayableLabel = 'Payable';
+  static const String srInfoTooltip = 'Show info';
+  static const String srMenuTooltip = 'More options';
+  static const String srEdit = 'Edit';
+  static const String srDelete = 'Delete';
+  static const String srCancel = 'Cancel';
+  static const String srRetry = 'Retry';
+  static const String srDeleteTitle = 'Delete sales return';
+  static String srDeleteMessage(String no) =>
+      'Sales return $no will be permanently deleted. This cannot be undone.';
+  static String srDeleted(String no) => 'Sales return $no deleted';
+  static const String srDeleteFailed = "Couldn't delete sales return";
+  static const String srEditComingSoon = 'Sales return editing is coming soon';
+  static const String srLoadFailed = "Couldn't load sales returns";
+  static const String srLoadMoreFailed = "Couldn't load more.";
+  static const String srViewTechnicalDetails = 'View technical details';
+  static const String srTechnicalCopied = 'Technical details copied.';
+  static String srRecordsCount(int shown, int total) => 'Showing $shown of $total';
+  static const String srDateToday = 'Today';
+  static const String srDateYesterday = 'Yesterday';
+  static const String srDateLast7Days = 'Last 7 Days';
+  static const String srDateThisMonth = 'This Month';
+  static const String srDateLastMonth = 'Last Month';
+  static const String srDateCustom = 'Custom Range';
+  static const String srDetailReturnBill = 'Return bill no';
+  static const String srDetailSalesBill = 'Sales bill no';
+  static const String srDetailDate = 'Return date';
+  static const String srDetailCustomer = 'Customer';
+  static const String srDetailReturnBy = 'Returned by';
+  static const String srDetailTotalAmount = 'Total return amount';
+  static const String srDetailStatus = 'Status';
+  static const String srDetailProducts = 'Products';
+
+  // ---- Sales return detail (append only) ----
+  static const String srdTitle = 'Sales Return Details';
+  static const String srdInfoSectionTitle = 'Sales Return Information';
+  static const String srdReturnBillNoLabel = 'Return Bill No';
+  static const String srdReturnDateLabel = 'Return Date';
+  static const String srdSalesBillNoLabel = 'Sales Bill No';
+  static const String srdCustomerLabel = 'Customer';
+  static const String srdReturnByLabel = 'Returned By';
+  static const String srdPaymentSystemLabel = 'Payment System';
+  static const String srdPaymentAccountLabel = 'Payment Account';
+  static const String srdRemarksLabel = 'Remarks';
+  static const String srdTotalReturnAmountLabel = 'Total Return Amount';
+  static const String srdDiscountLabel = 'Discount';
+  static const String srdAfterDiscountLabel = 'Amount After Discount';
+  static const String srdPayableLabel = 'Payable Return Amount';
+  static const String srdProductsSectionTitle = 'Products';
+  static const String srdBarcodeLabel = 'Barcode';
+  static const String srdUnitPriceLabel = 'Unit Price';
+  static const String srdTotalQuantityLabel = 'Total Quantity';
+  static const String srdTotalAmountLabel = 'Total Amount';
+  static const String srdNoProducts = 'No products in this return';
+  static const String srdShare = 'Share';
+  static String srdShareSubject(String no) => 'Sales return $no';
+  static const String srdLoadFailed = "Couldn't load sales return";
+  static const String srdViewTechnicalDetails = 'View technical details';
+  static const String srdTechnicalCopied = 'Technical details copied.';
+  static const String srdEmptyValue = '-';
 }

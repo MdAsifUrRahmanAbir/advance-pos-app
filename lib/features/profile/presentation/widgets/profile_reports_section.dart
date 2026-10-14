@@ -8,7 +8,7 @@ import '../../../../core/widgets/common/settings_tile.dart';
 /// as the other Profile sections ([SettingsGroup] + [SettingsTile]s).
 class ProfileReportsSection extends StatelessWidget {
   final VoidCallback? onStockReportTap;
-  final VoidCallback? onSalesReportTap;
+  final VoidCallback? onSalesReturnTap;
   final VoidCallback? onExpenseTap;
   final VoidCallback? onCustomerTap;
 
@@ -16,7 +16,7 @@ class ProfileReportsSection extends StatelessWidget {
     super.key,
     this.onCustomerTap,
     this.onStockReportTap,
-    this.onSalesReportTap,
+    this.onSalesReturnTap,
     this.onExpenseTap,
   });
 
@@ -45,9 +45,9 @@ class ProfileReportsSection extends StatelessWidget {
         ),
         SettingsTile(
           icon: Icons.trending_up_rounded,
-          title: AppStrings.salesReportTitle,
-          subtitle: AppStrings.salesReportSubtitle,
-          onTap: onSalesReportTap,
+          title: AppStrings.salesReturnTitle,
+          subtitle: AppStrings.salesReturnSubtitle,
+          onTap: onSalesReturnTap,
         ),
       ],
     );

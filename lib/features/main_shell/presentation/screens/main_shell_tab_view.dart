@@ -37,7 +37,7 @@ class MainShellTabView extends ConsumerWidget {
                 onTap: () {
                   // TODO: replace with a dedicated POS/Sales screen once
                   // features/pos_sale is built.
-                  context.push(RouteNames.product);
+                  context.push(RouteNames.newSale);
                 },
                 child: Container(
                   width: AppSizes.xxl - AppSizes.xs,

@@ -1,45 +1,46 @@
-import 'package:advance_pos_app/features/expense_form/presentation/screens/expense_form_screen.dart';
-import 'package:advance_pos_app/features/expense/presentation/screens/expense_screen.dart';
-import 'package:advance_pos_app/features/customers/presentation/screens/customers_screen.dart';
-import 'package:advance_pos_app/features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
-import 'package:advance_pos_app/features/invoices/presentation/screens/invoices_screen.dart';
-import 'package:advance_pos_app/features/product/presentation/screens/product_screen.dart';
+import 'package:advance_pos_app/features/sales_return_detail/presentation/screens/sales_return_detail_screen.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:advance_pos_app/features/order_list/presentation/screens/order_list_screen.dart';
-import 'package:advance_pos_app/features/terms_privacy/presentation/screens/terms_privacy_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:advance_pos_app/routes/route_names.dart';
-import 'package:advance_pos_app/features/onboarding/presentation/screens/splash_screen.dart';
-import 'package:advance_pos_app/features/onboarding/presentation/screens/onboarding_screen.dart';
-import 'package:advance_pos_app/features/onboarding/presentation/screens/welcome_screen.dart';
-import 'package:advance_pos_app/features/login/presentation/screens/login_screen.dart';
-import 'package:advance_pos_app/features/forgot_password/presentation/screens/forgot_password_screen.dart';
-import 'package:advance_pos_app/features/reset_password/presentation/screens/reset_password_screen.dart';
-import 'package:advance_pos_app/features/main_shell/presentation/screens/main_shell_screen.dart';
-import 'package:advance_pos_app/features/home/presentation/screens/home_screen.dart';
-import 'package:advance_pos_app/features/search/presentation/screens/search_screen.dart';
-import 'package:advance_pos_app/features/notifications/presentation/screens/notifications_screen.dart';
-import 'package:advance_pos_app/features/profile/presentation/screens/profile_screen.dart';
-import 'package:advance_pos_app/features/settings/presentation/screens/settings_screen.dart';
-import 'package:advance_pos_app/features/system/presentation/screens/not_found_screen.dart';
-import 'package:advance_pos_app/features/system/presentation/screens/error_screen.dart';
-import 'package:advance_pos_app/features/system/presentation/screens/no_internet_screen.dart';
-import 'package:advance_pos_app/features/system/presentation/screens/maintenance_screen.dart';
-// Added: imports for the newly added basic screens
-import 'package:advance_pos_app/features/register/presentation/screens/register_screen.dart';
-import 'package:advance_pos_app/features/otp_verification/presentation/screens/otp_verification_screen.dart';
-import 'package:advance_pos_app/features/change_password/presentation/screens/change_password_screen.dart';
-import 'package:advance_pos_app/features/help_support/presentation/screens/help_support_screen.dart';
-import 'package:advance_pos_app/features/cart/presentation/screens/cart_screen.dart';
 
+import 'build_page_with_transition.dart';
+import 'route_names.dart';
 import '../core/network/connectivity_provider.dart';
 import '../core/observers/logging_observer.dart';
+
+import '../features/sales_return/presentation/screens/sales_return_screen.dart';
+import '../features/expense/presentation/screens/expense_screen.dart';
+import '../features/customers/presentation/screens/customers_screen.dart';
+import '../features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
+import '../features/invoices/presentation/screens/invoices_screen.dart';
+import '../features/order_list/presentation/screens/order_list_screen.dart';
+import '../features/terms_privacy/presentation/screens/terms_privacy_screen.dart';
+import '../features/onboarding/presentation/screens/splash_screen.dart';
+import '../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../features/onboarding/presentation/screens/welcome_screen.dart';
+import '../features/login/presentation/screens/login_screen.dart';
+import '../features/forgot_password/presentation/screens/forgot_password_screen.dart';
+import '../features/reset_password/presentation/screens/reset_password_screen.dart';
+import '../features/main_shell/presentation/screens/main_shell_screen.dart';
+import '../features/home/presentation/screens/home_screen.dart';
+import '../features/search/presentation/screens/search_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
+import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
+import '../features/system/presentation/screens/not_found_screen.dart';
+import '../features/system/presentation/screens/error_screen.dart';
+import '../features/system/presentation/screens/no_internet_screen.dart';
+import '../features/system/presentation/screens/maintenance_screen.dart';
+import '../features/register/presentation/screens/register_screen.dart';
+import '../features/otp_verification/presentation/screens/otp_verification_screen.dart';
+import '../features/change_password/presentation/screens/change_password_screen.dart';
+import '../features/help_support/presentation/screens/help_support_screen.dart';
+import '../features/cart/presentation/screens/cart_screen.dart';
 import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
+import '../features/expense_form/presentation/screens/expense_form_screen.dart';
 import '../features/new_sale/presentation/screens/new_sale_screen.dart';
 import '../features/payment/presentation/screens/payment_screen.dart';
 import '../features/stock/presentation/screens/stock_screen.dart';
-import 'build_page_with_transition.dart';
 
 final hasCompletedInitialNavigationProvider = StateProvider<bool>(
   (ref) => false,
@@ -299,15 +300,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        path: RouteNames.product,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const ProductScreen(),
-        ),
-      ),
-
-      GoRoute(
         path: RouteNames.stock,
         pageBuilder: (context, state) => buildPageWithTransition(
           context: context,
@@ -376,6 +368,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: ExpenseFormScreen(expenseNo: state.extra as String?),
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.salesReturn,
+        builder: (context, state) => const SalesReturnScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.salesReturnDetail,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: SalesReturnDetailScreen(returnBillNo: state.extra as String),
         ),
       ),
     ],

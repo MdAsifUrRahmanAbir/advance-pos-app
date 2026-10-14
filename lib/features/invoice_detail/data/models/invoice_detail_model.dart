@@ -58,7 +58,7 @@ class ResultData {
     payment: Payment.fromJson(json["payment"]),
     referenceNo: json["reference_no"],
     remarks: json["remarks"],
-    customerName: json["customer_name"],
+    customerName: json["customer_name"] ?? "-",
     customerMobile: json["customer_mobile"],
     salesBy: json["sales_by"],
     saleDetails: List<SaleDetail>.from(json["saleDetails"].map((x) => SaleDetail.fromJson(x))),
