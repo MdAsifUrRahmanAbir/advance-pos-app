@@ -5,7 +5,6 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/search_field.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
-import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
@@ -14,6 +13,7 @@ import '../controllers/customers_controller.dart';
 import '../widgets/customer_card_item.dart';
 import '../widgets/customer_detail_sheet.dart';
 import '../widgets/customer_filter_tabs.dart';
+import '../widgets/customer_list_skeleton.dart';
 
 class CustomersMobileView extends ConsumerStatefulWidget {
   const CustomersMobileView({super.key});
@@ -62,8 +62,8 @@ class _CustomersMobileViewState extends ConsumerState<CustomersMobileView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const AppHeaderBar(title: AppStrings.customersTitle, backStyle: HeaderBackStyle.chevron,),
-        const SizedBox(height: AppSizes.sm),
+        const AppHeaderBar(title: AppStrings.customersTitle, backStyle: HeaderBackStyle.chevron),
+        const SizedBox(height: AppSizes.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: SearchField(
@@ -72,20 +72,20 @@ class _CustomersMobileViewState extends ConsumerState<CustomersMobileView> {
             onChanged: controller.updateSearchQuery,
           ),
         ),
-        const SizedBox(height: AppSizes.sm),
-        isInitialLoad
-            ? const SizedBox.shrink()
-            : Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: CustomerFilterTabs(
-            selectedType: state.selectedType,
-            onTypeSelected: controller.selectType,
-          ),
-        ),
-        const SizedBox(height: AppSizes.sm),
+        const SizedBox(height: AppSizes.md),
+        // if (!isInitialLoad) ...[
+        //   Padding(
+        //     padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+        //     child: CustomerFilterTabs(
+        //       selectedType: state.selectedType,
+        //       onTypeSelected: controller.selectType,
+        //     ),
+        //   ),
+        //   const SizedBox(height: AppSizes.sm),
+        // ],
         Expanded(
           child: isInitialLoad
-              ? const CustomLoader()
+              ? const CustomerListSkeleton()
               : hasError
               ? ErrorState(
             message: state.errorMessage!,

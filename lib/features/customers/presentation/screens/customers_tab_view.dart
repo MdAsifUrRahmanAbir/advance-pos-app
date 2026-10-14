@@ -5,7 +5,6 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/search_field.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
-import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
@@ -14,6 +13,7 @@ import '../controllers/customers_controller.dart';
 import '../widgets/customer_card_item.dart';
 import '../widgets/customer_detail_sheet.dart';
 import '../widgets/customer_filter_tabs.dart';
+import '../widgets/customer_list_skeleton.dart';
 
 /// Same content as [CustomersMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -79,16 +79,21 @@ class _CustomersTabViewState extends ConsumerState<CustomersTabView> {
                       onChanged: controller.updateSearchQuery,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSizes.lg),
-                    child: CustomerFilterTabs(
-                      selectedType: state.selectedType,
-                      onTypeSelected: controller.selectType,
-                    ),
-                  ),
+                  // if (isInitialLoad)
+                  //   const SizedBox(height: AppSizes.lg)
+                  // else
+                  //   Padding(
+                  //     padding: const EdgeInsets.all(AppSizes.lg),
+                  //     child: CustomerFilterTabs(
+                  //       selectedType: state.selectedType,
+                  //       onTypeSelected: controller.selectType,
+                  //     ),
+                  //   ),
                   Expanded(
                     child: isInitialLoad
-                        ? const CustomLoader()
+                        ? const CustomerListSkeleton(
+                      padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
+                    )
                         : hasError
                         ? ErrorState(
                       message: state.errorMessage!,

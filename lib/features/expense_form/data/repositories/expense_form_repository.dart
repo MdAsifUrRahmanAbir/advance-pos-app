@@ -50,7 +50,7 @@ class ExpenseFormRepository {
     };
     final response = isUpdate
         ? await _apiClient.put(
-      ApiEndpoints.expenseEdit('$expenseId'),
+      ApiEndpoints.expenseEdit('$expenseNo'),
       data: body,
     )
         : await _apiClient.post(ApiEndpoints.expenseAdd, data: body);

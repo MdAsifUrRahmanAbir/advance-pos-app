@@ -6,7 +6,7 @@ class CommonSuccessModel {
 
   factory CommonSuccessModel.fromJson(Map<String, dynamic> json) =>
       CommonSuccessModel(
-        status: json["status"] ?? json["alert_type"],
+        status: json["status"] ?? json["alert_type"] ?? json["alert-type"],
         message: json["message"] == null
             ? json["data"]
             : json["message"].toString().isNotEmpty

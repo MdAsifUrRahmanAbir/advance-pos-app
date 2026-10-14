@@ -12,6 +12,7 @@ import '../widgets/login_header.dart';
 import '../widgets/login_form.dart';
 import '../widgets/social_login_section.dart';
 import '../widgets/register_prompt.dart';
+import '../../../../core/session/session_profile.dart';
 
 class LoginMobileView extends ConsumerWidget {
   const LoginMobileView({super.key});
@@ -41,6 +42,12 @@ class LoginMobileView extends ConsumerWidget {
                                 .onLoginSuccess(
                                   accessToken: "response.accessToken",
                                   refreshToken: "response.refreshToken",
+                                  profile: const SessionProfile(
+                                    branchId: 2, // placeholder until login API
+                                    employeeId: 0,
+                                    sellerType: '',
+                                    userName: '',
+                                  ),
                                 );
 
                             if (!context.mounted) return;
