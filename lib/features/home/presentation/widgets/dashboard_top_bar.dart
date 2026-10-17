@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/widgets/common/icon_button.dart';
 import '../../../../core/widgets/common/status_badge.dart';
 
 /// Dashboard top bar: brand mark, online/offline status, notifications.
-///
 /// NOTE: StatusBadge has no "dot" shape (only pill/square), so the small
 /// status dot from the Figma is composed here as a plain feature-local
 /// Container next to a compact StatusBadge. If a dot indicator is needed
@@ -57,11 +55,11 @@ class DashboardTopBar extends StatelessWidget {
                     : StatusBadgeType.neutral,
                 compact: true,
               ),
-              const SizedBox(width: AppSizes.sm),
-              AppIconButton(
-                icon: Icons.notifications_none_rounded,
-                onPressed: onNotificationsTap,
-              ),
+              // const SizedBox(width: AppSizes.sm),
+              // AppIconButton(
+              //   icon: Icons.notifications_none_rounded,
+              //   onPressed: onNotificationsTap,
+              // ),
             ],
           ),
         ],

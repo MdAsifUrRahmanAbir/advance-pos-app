@@ -363,7 +363,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.expenseForm,
-        // builder: (context, state) => const ExpenseFormScreen(),
         pageBuilder: (context, state) => buildPageWithTransition(
           context: context,
           state: state,
@@ -372,7 +371,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: RouteNames.salesReturn,
-        builder: (context, state) => const SalesReturnScreen(),
+        // builder: (context, state) => const SalesReturnScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: SalesReturnScreen(),
+        ),
       ),
       GoRoute(
         path: RouteNames.salesReturnDetail,
