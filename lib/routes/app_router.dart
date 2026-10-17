@@ -41,6 +41,8 @@ import '../features/expense_form/presentation/screens/expense_form_screen.dart';
 import '../features/new_sale/presentation/screens/new_sale_screen.dart';
 import '../features/payment/presentation/screens/payment_screen.dart';
 import '../features/stock/presentation/screens/stock_screen.dart';
+import '../features/edit_sale_cart/presentation/screens/edit_sale_cart_screen.dart';
+import '../features/edit_sale_payment/presentation/screens/edit_sale_payment_screen.dart';
 
 final hasCompletedInitialNavigationProvider = StateProvider<bool>(
   (ref) => false,
@@ -384,6 +386,25 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: SalesReturnDetailScreen(returnBillNo: state.extra as String),
+        ),
+      ),
+
+
+      GoRoute(
+        path: RouteNames.editSaleCart,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: EditSaleCartScreen(billNo: state.pathParameters['billNo']!),
+        ),
+      ),
+
+      GoRoute(
+        path: RouteNames.editSalePayment,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: EditSalePaymentScreen(billNo: state.pathParameters['billNo']!),
         ),
       ),
     ],

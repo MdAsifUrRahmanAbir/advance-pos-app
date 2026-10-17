@@ -692,4 +692,58 @@ class AppStrings {
   static const String srdViewTechnicalDetails = 'View technical details';
   static const String srdTechnicalCopied = 'Technical details copied.';
   static const String srdEmptyValue = '-';
+
+
+  // ───────────────────────────────────────────────
+  // Edit Sale (edit_sale_cart + edit_sale_payment)
+  // ───────────────────────────────────────────────
+  static const String editSaleTitle = 'Edit Sale';
+  static const String editSalePaymentTitle = 'Update Payment';
+  static const String editSaleLoadFailed = "Couldn't load this invoice for editing";
+  static const String editSaleEditingLabel = 'EDITING INVOICE';
+  static const String editSaleOriginalTotalLabel = 'Original total';
+  static const String editSaleOriginalPaidLabel = 'Paid';
+  static const String editSaleWalkInCustomer = 'Walk-in Customer';
+  static const String editSaleNoItemsTitle = 'No products in this sale';
+  static const String editSaleNoItemsMessage = 'Search or scan a product to add it.';
+  static const String editSaleSearchResultsTitle = 'Search results';
+  static const String editSaleNoProductsFound = 'No matching products';
+  static const String editSaleSearchFailed = "Couldn't search products";
+  static const String editSaleCloseResults = 'Close';
+  static String editSaleAvailableLabel(int count) => '$count available';
+  static String editSaleNoMoreStock(String name) => 'No more stock available for $name';
+  static const String editSaleProceedAction = 'Continue to Payment';
+  static const String editSaleCartEmptyError = 'Add at least one product before continuing.';
+  static const String editSaleDiscountPendingError = 'Please wait — checking discounts.';
+  static const String editSaleDiscardTitle = 'Discard changes?';
+  static const String editSaleDiscardMessage = 'Your changes to this invoice will be lost.';
+  static const String editSaleDiscardConfirm = 'Discard';
+  static const String editSaleKeepEditing = 'Keep editing';
+  static const String editSaleCustomerNotMatched =
+      'The original customer could not be matched — please select the customer again.';
+  static const String editSaleCustomerCreatedNotFound =
+      'Customer was created but could not be found. Please search for them.';
+  static const String editSaleViewTechnicalDetails = 'View technical details';
+  static const String editSaleTechnicalCopied = 'Technical details copied.';
+  static const String editSalePaymentMethodSection = 'PAYMENT METHOD';
+  static const String editSaleUpdateAction = 'Update Sale';
+  static const String editSaleConfirmTitle = 'Update this invoice?';
+  static String editSaleConfirmMessage(String billNo, String amount) =>
+      'Invoice $billNo will be saved with a new total of $amount.';
+  static const String editSaleUpdatedTitle = 'Sale Updated';
+  static String editSaleUpdatedSubtitle(String billNo) => 'Invoice $billNo has been updated.';
+  static String editSaleUpdatedMessage(String billNo) => 'Invoice $billNo updated';
+  static const String editSaleDoneAction = 'Done';
+  static const String editSaleUpdateFailed = "Couldn't update the sale";
+  static const String editSaleNotSignedIn = 'Your session has expired. Please sign in again.';
+  static const String editSaleReceiptBillLabel = 'Bill No';
+  static const String editSaleReceiptSubtotal = 'Subtotal';
+  static const String editSaleReceiptDiscount = 'Discount';
+  static const String editSaleReceiptVat = 'VAT';
+  static const String editSaleReceiptTotal = 'Total';
+  static const String editSaleReceiptPaid = 'Paid';
+  static const String editSaleReceiptChange = 'Change';
+  /// Printed receipt header. TODO: replace with the store name from
+  /// branch settings once an endpoint provides it.
+  static const String receiptStoreName = 'Advance POS';
 }

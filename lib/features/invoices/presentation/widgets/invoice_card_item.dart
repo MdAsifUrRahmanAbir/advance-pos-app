@@ -152,14 +152,14 @@ class InvoiceCardItem extends StatelessWidget {
                   foregroundColor: AppColors.error,
                 ),
               ),
-              const SizedBox(width: AppSizes.sm),
-              Expanded(
-                child: _InvoiceActionButton(
-                  icon: Icons.assignment_return_outlined,
-                  label: 'Return Sale',
-                  onPressed: onReturnSale,
-                ),
-              ),
+              // const SizedBox(width: AppSizes.sm),
+              // Expanded(
+              //   child: _InvoiceActionButton(
+              //     icon: Icons.assignment_return_outlined,
+              //     label: 'Return Sale',
+              //     onPressed: onReturnSale,
+              //   ),
+              // ),
             ],
           ),
         ],

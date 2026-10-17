@@ -39,4 +39,13 @@ class RouteNames {
   static const String expenseForm = '/expense_form';
   static const String salesReturn = '/sales_return';
   static const String salesReturnDetail = '/sales_return_detail';
+
+  // Edit Sale flow — the bill number is a path parameter (not `extra`)
+  // so deep links, web refresh and process restore keep working.
+  static const String editSaleCart = '/edit_sale_cart/:billNo';
+  static const String editSalePayment = '/edit_sale_payment/:billNo';
+  static String editSaleCartPath(String billNo) =>
+      '/edit_sale_cart/${Uri.encodeComponent(billNo)}';
+  static String editSalePaymentPath(String billNo) =>
+      '/edit_sale_payment/${Uri.encodeComponent(billNo)}';
 }

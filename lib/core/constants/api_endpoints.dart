@@ -42,6 +42,7 @@ class ApiEndpoints {
   static String invoiceDetails(String id) => "/sales/view/$id?sales_type=1"; /// DONE
   static const String salesAdd = "/sales/add"; /// DONE
   static String salesDelete(String billNo) => "/sales/delete/$billNo?sales_type=1"; /// DONE
+  static String salesEdit(String billNo) => "/sales/edit/${Uri.encodeComponent(billNo)}";
 
   // Invoices /sales/view/
   static String customers(String length) => "/customer?length=$length"; /// DONE

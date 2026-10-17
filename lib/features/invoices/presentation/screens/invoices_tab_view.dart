@@ -56,6 +56,18 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
+  /// Opens Edit Sale for this invoice. Edit Sale pops with `true` once the
+  /// update is saved — then the list refreshes to show the new totals.
+  Future<void> _openEdit(ResultDatum invoice) async {
+    final updated = await context.push<bool>(
+      RouteNames.editSaleCartPath(invoice.salesBillNo),
+    );
+    if (updated != true || !mounted) return;
+    CustomSnackbar.show(context, AppStrings.editSaleUpdatedMessage(invoice.salesBillNo));
+    ref.read(invoicesControllerProvider.notifier).refresh();
+  }
+
+
   void _viewTechnicalDetails(
     InvoicesState state,
     InvoicesController controller,
@@ -191,9 +203,7 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                                   ),
                                   child: InvoiceCardItem(
                                     invoice: invoice,
-                                    onEdit: () {
-                                      // Navigate to edit sale
-                                    },
+                                    onEdit: () => _openEdit(invoice),
                                     onDelete: () {
                                       _confirmDeleteInvoice(
                                         context,

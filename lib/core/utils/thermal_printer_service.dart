@@ -34,6 +34,10 @@ class ThermalPrinterService {
     required double total,
     required double givenAmount,
     required double changeDue,
+    String? billNo,
+    double? subtotal,
+    double? discount,
+    double? vat,
   }) async {
     final bytes = await _buildReceiptBytes(
       storeName: storeName,
@@ -44,6 +48,10 @@ class ThermalPrinterService {
       total: total,
       givenAmount: givenAmount,
       changeDue: changeDue,
+      billNo: billNo,
+      subtotal: subtotal,
+      discount: discount,
+      vat: vat,
     );
     return PrintBluetoothThermal.writeBytes(bytes);
   }
@@ -57,6 +65,10 @@ class ThermalPrinterService {
     required double total,
     required double givenAmount,
     required double changeDue,
+    String? billNo,
+    double? subtotal,
+    double? discount,
+    double? vat,
   }) async {
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
@@ -72,6 +84,9 @@ class ThermalPrinterService {
     bytes.addAll(generator.hr());
 
     // bytes.addAll(generator.text('Sale ID: $saleId'));
+    if (billNo != null && billNo.isNotEmpty) {
+      bytes.addAll(generator.text('Bill No: $billNo', styles: const PosStyles(bold: true)));
+    }
     bytes.addAll(generator.text('Payment: $methodLabel'));
     bytes.addAll(generator.hr());
 
@@ -84,6 +99,21 @@ class ThermalPrinterService {
       );
     }
     bytes.addAll(generator.hr());
+
+    // Optional breakdown — printed only when the caller provides it.
+    void amountRow(String label, double? value) {
+      if (value == null) return;
+      bytes.addAll(
+        generator.row([
+          PosColumn(text: label, width: 8),
+          PosColumn(text: value.toStringAsFixed(2), width: 4, styles: const PosStyles(align: PosAlign.right)),
+        ]),
+      );
+    }
+
+    amountRow('Subtotal', subtotal);
+    if (discount != null && discount > 0) amountRow('Discount', -discount);
+    if (vat != null && vat > 0) amountRow('VAT', vat);
 
     bytes.addAll(
       generator.row([
