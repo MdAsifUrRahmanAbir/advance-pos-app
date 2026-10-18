@@ -133,24 +133,26 @@ class _EditSaleCustomerSearchSheetState extends ConsumerState<EditSaleCustomerSe
                       );
                     }
                     final customer = results[index];
-                    return ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        customer.customerName,
-                        style: TextStyle(
-                          fontSize: AppSizes.fontSm,
-                          fontWeight: FontWeight.w600,
-                          color: colors.textPrimary,
+                    return Material(
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          customer.customerName,
+                          style: TextStyle(
+                            fontSize: AppSizes.fontSm,
+                            fontWeight: FontWeight.w600,
+                            color: colors.textPrimary,
+                          ),
                         ),
-                      ),
-                      subtitle: Text(
-                        customer.customerMobile,
-                        style: TextStyle(
-                          fontSize: AppSizes.fontXs,
-                          color: colors.textSecondary,
+                        subtitle: Text(
+                          customer.customerMobile,
+                          style: TextStyle(
+                            fontSize: AppSizes.fontXs,
+                            color: colors.textSecondary,
+                          ),
                         ),
+                        onTap: () => Navigator.of(context).pop(customer),
                       ),
-                      onTap: () => Navigator.of(context).pop(customer),
                     );
                   },
                 ),

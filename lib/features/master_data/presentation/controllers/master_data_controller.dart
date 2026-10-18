@@ -39,61 +39,107 @@ class MasterDataController extends Notifier<MasterDataState> {
   }
 
   Future<void> loadAll({bool forceRefresh = true}) async {
-    state = state.copyWith(isLoading: true, errorMessage: null);
+    state = state.copyWith(
+      isLoading: true,
+      errorMessage: null,
+    );
+
+    final errors = <String>[];
+
+    Future<void> safeLoad(
+        String name,
+        Future<void> Function() task,
+        ) async {
+      try {
+        await task();
+      } catch (error, stackTrace) {
+        AppLogger.controllerFailed(
+          'MasterDataController.$name',
+          error,
+        );
+
+        errors.add(
+          '$name: ${getErrorMessage(error, stackTrace)}',
+        );
+      }
+    }
 
     try {
-      final groupsResult = await _loadGroups(forceRefresh: forceRefresh);
-      final subcategoriesResult = await _loadSubcategories(
-        forceRefresh: forceRefresh,
-      );
-      final brandsResult = await _loadBrands(forceRefresh: forceRefresh);
-      final categoriesResult = await _loadCategories(
-        forceRefresh: forceRefresh,
-      );
-      final paymentSystemsResult = await _loadPaymentSystems(
-        forceRefresh: forceRefresh,
-      );
-      final paymentAccountsResult = await _loadPaymentAccounts(
-        forceRefresh: forceRefresh,
-      );
-      final accountHeadsResult = await _loadAccountHeads(
-        forceRefresh: forceRefresh,
-      );
+      await Future.wait([
+        safeLoad('groups', () async {
+          final result = await _loadGroups(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(groups: result.data);
+        }),
 
-      _printPaymentData(
-        paymentSystems: paymentSystemsResult.data,
-        paymentAccounts: paymentAccountsResult.data,
-      );
+        safeLoad('categories', () async {
+          final result = await _loadCategories(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(
+            categoryData: result.data,
+          );
+        }),
+
+        safeLoad('subcategories', () async {
+          final result = await _loadSubcategories(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(
+            subcategories: result.data,
+          );
+        }),
+
+        safeLoad('brands', () async {
+          final result = await _loadBrands(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(brands: result.data);
+        }),
+
+        safeLoad('paymentSystems', () async {
+          final result = await _loadPaymentSystems(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(
+            paymentSystems: result.data,
+          );
+        }),
+
+        safeLoad('paymentAccounts', () async {
+          final result = await _loadPaymentAccounts(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(
+            paymentAccounts: result.data,
+          );
+        }),
+
+        safeLoad('accountHeads', () async {
+          final result = await _loadAccountHeads(
+            forceRefresh: forceRefresh,
+          );
+          state = state.copyWith(
+            accountHeads: result.data,
+          );
+        }),
+      ]);
+
+      if (errors.isNotEmpty) {
+        state = state.copyWith(
+          errorMessage: errors.join('\n'),
+        );
+      }
 
       state = state.copyWith(
-        isLoading: false,
-        groups: groupsResult.data,
-        categoryData: categoriesResult.data,
-        subcategories: subcategoriesResult.data,
-        brands: brandsResult.data,
-        paymentSystems: paymentSystemsResult.data,
-        paymentAccounts: paymentAccountsResult.data,
-        accountHeads: accountHeadsResult.data,
         lastSyncedAt: DateTime.now(),
       );
-      AppLogger.masterDataSynced(
-        groups: groupsResult.data.length,
-        categories: categoriesResult.data.categories.length,
-        subcategories: subcategoriesResult.data.length,
-        brands: brandsResult.data.length,
-        groupsFromCache: groupsResult.fromCache,
-        categoriesFromCache: categoriesResult.fromCache,
-        subcategoriesFromCache: subcategoriesResult.fromCache,
-        brandsFromCache: brandsResult.fromCache,
-      );
-    } catch (error, stackTrace) {
-      AppLogger.controllerFailed('MasterDataController.loadAll', error);
-      state = state.copyWith(
-        isLoading: false,
-        errorMessage: getErrorMessage(error, stackTrace),
-      );
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
   }
+
 
   Future<void> refresh() => loadAll(forceRefresh: true);
 
@@ -223,8 +269,6 @@ class MasterDataController extends Notifier<MasterDataState> {
     return (data: fresh.resultData, fromCache: false);
   }
 
-  /// Account heads (ledger heads) — same daily-cache pattern as the other
-  /// master data lists.
   Future<({List<HeadDatum> data, bool fromCache})> _loadAccountHeads({
     required bool forceRefresh,
   }) async {
@@ -246,60 +290,4 @@ class MasterDataController extends Notifier<MasterDataState> {
     return (data: fresh.headData, fromCache: false);
   }
 
-  void _printPaymentData({
-    required List<ps.ResultDatum> paymentSystems,
-    required List<pa.ResultDatum> paymentAccounts,
-  }) {
-    print('');
-    print('╔══════════════════════════════════════════════╗');
-    print('║          PAYMENT SYSTEMS                    ║');
-    print('╚══════════════════════════════════════════════╝');
-
-    for (int i = 0; i < paymentSystems.length; i++) {
-      final item = paymentSystems[i];
-
-      print('');
-      print('┌──────────── Payment System [$i] ────────────');
-      print('│ ID              : ${item.id}');
-      print('│ Name            : ${item.paymentSystemName}');
-      print('│ Short Name      : ${item.shortName}');
-      print('│ Status          : ${item.status}');
-      print('└─────────────────────────────────────────────');
-    }
-
-    print('');
-    print('╔══════════════════════════════════════════════╗');
-    print('║          PAYMENT ACCOUNTS                   ║');
-    print('╚══════════════════════════════════════════════╝');
-
-    for (int i = 0; i < paymentAccounts.length; i++) {
-      final item = paymentAccounts[i];
-
-      print('');
-      print('┌──────────── Payment Account [$i] ───────────');
-      print('│ ID              : ${item.id}');
-      print('│ Status          : ${item.status}');
-      print('│ Provider Name   : ${item.providerName}');
-      print('│ Account Holder  : ${item.accHolderName}');
-      print('│ Account No      : ${item.accountNo}');
-      print('│ Ledger ID       : ${item.ledgerId}');
-      print('│ Payment System ID: ${item.paymentSystemId}');
-      print('│ Ledger          : ${item.ledger}');
-      print('│');
-      print('│ ───── Payment System ─────');
-      print('│ ID              : ${item.paymentSystem.id}');
-      print('│ Name            : ${item.paymentSystem.paymentSystemName}');
-      print('│ Short Name      : ${item.paymentSystem.shortName}');
-      print('│ Status          : ${item.paymentSystem.status}');
-      print('│ Is Active       : ${item.paymentSystem.isActive}');
-      print('└─────────────────────────────────────────────');
-    }
-
-    print('');
-    print('══════════════════════════════════════════════');
-    print('Payment Systems Count  : ${paymentSystems.length}');
-    print('Payment Accounts Count : ${paymentAccounts.length}');
-    print('══════════════════════════════════════════════');
-    print('');
-  }
 }

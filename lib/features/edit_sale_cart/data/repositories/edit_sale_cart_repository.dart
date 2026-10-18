@@ -10,11 +10,6 @@ final editSaleCartRepositoryProvider = Provider<EditSaleCartRepository>((ref) {
   return EditSaleCartRepository(ref.watch(apiClientProvider));
 });
 
-/// Data access for the Edit Sale cart.
-///
-/// Customer search/creation and `/get_discount` are NOT duplicated here —
-/// the controller reuses `CartRepository` for those (read-only reuse, the
-/// cart feature itself is untouched).
 class EditSaleCartRepository {
   final ApiClient _apiClient;
   EditSaleCartRepository(this._apiClient);
@@ -23,17 +18,12 @@ class EditSaleCartRepository {
   Future<EditSaleSource> getInvoiceForEdit(String billNo) async {
     final response = await _apiClient.get(ApiEndpoints.invoiceDetails(billNo));
     final json = response.data as Map<String, dynamic>;
-    final raw = json['resultData'];
-    String? customerNo;
-    if (raw is Map<String, dynamic>) {
-      final value = raw['customer_no'] ?? raw['customer_id'];
-      if (value != null && value.toString().trim().isNotEmpty) {
-        customerNo = value.toString().trim();
-      }
-    }
+
+    final invoiceDetail = InvoiceDetailModel.fromJson(json);
+
     return EditSaleSource(
       detail: InvoiceDetailModel.fromJson(json),
-      customerNo: customerNo,
+      customerNo: invoiceDetail.resultData.customerNo,
     );
   }
 

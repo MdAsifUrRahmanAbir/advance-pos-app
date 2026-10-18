@@ -38,6 +38,7 @@ class ResultData {
   final String referenceNo;
   final String remarks;
   final String customerName;
+  final String customerNo;
   final dynamic customerMobile;
   final String salesBy;
   final List<SaleDetail> saleDetails;
@@ -48,6 +49,7 @@ class ResultData {
     required this.referenceNo,
     required this.remarks,
     required this.customerName,
+    required this.customerNo,
     required this.customerMobile,
     required this.salesBy,
     required this.saleDetails,
@@ -60,6 +62,7 @@ class ResultData {
     remarks: json["remarks"],
     customerName: json["customer_name"] ?? "-",
     customerMobile: json["customer_mobile"],
+    customerNo: json["customer_no"],
     salesBy: json["sales_by"],
     saleDetails: List<SaleDetail>.from(json["saleDetails"].map((x) => SaleDetail.fromJson(x))),
   );
