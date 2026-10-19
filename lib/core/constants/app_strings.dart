@@ -657,4 +657,34 @@ class AppStrings {
   static String editSaleUpdatedMessage(String billNo) => 'Invoice $billNo updated';
   static const String editSaleUpdateFailed = "Couldn't update the sale";
   static const String editSaleNotSignedIn = 'Your session has expired. Please sign in again.';
+
+
+  // ---- Sales replacement (append only) ----
+  static const String repTitle = 'Sales Replacement';
+  static const String repSubtitle = 'Track replaced items and exchange history';
+  static const String repSearchHint = 'Search sales replacements';
+  static const String repEmptyMessage = 'No sales replacements found for these filters.';
+  static const String repLoadFailed = "Couldn't load sales replacements";
+  static const String repEditComingSoon = 'Sales replacement editing is coming soon';
+  static const String repDeleteTitle = 'Delete sales replacement';
+  static String repDeleteMessage(String no) =>
+      'Sales replacement $no will be permanently deleted. This cannot be undone.';
+  static String repDeleted(String no) => 'Sales replacement $no deleted';
+  static const String repDeleteFailed = "Couldn't delete sales replacement";
+
+  // ---- Sales replacement detail (append only) ----
+  static const String repdTitle = 'Sales Replacement Details';
+  static const String repdLoadFailed = "Couldn't load sales replacement";
+  static String repdShareSubject(String no) => 'Sales replacement $no';
+  static const String repdInfoSectionTitle = 'Replacement Information';
+  static const String repdReturnedSectionTitle = 'Returned Products';
+  static const String repdReplacementSectionTitle = 'Replacement Products';
+  static const String repdPaymentSectionTitle = 'Payment Summary';
+  static const String repdNoReplacementProducts = 'No replacement products';
+  static const String repdReplacementBillLabel = 'Replacement Bill No';
+  static const String repdReplacementDateLabel = 'Replacement Date';
+  static const String repdProcessingFeeLabel = 'Processing Fee';
+  static const String repdGrandTotalLabel = 'Grand Total';
+  static const String repdPayableAfterReturnLabel = 'Payable After Return';
+  static const String repdGivenAmountLabel = 'Given Amount';
 }

@@ -61,12 +61,12 @@ class ApiEndpoints {
   static const String salesReturn = "/sales_return";
   static String salesReturnDelete(String returnBillNo) => "/sales_return/delete/$returnBillNo";
   static String salesReturnDetails(String returnBillNo) => "/sales_return/view/$returnBillNo";
-  // static String expenseDetails(String expenseNo) => "/daily_expense/view/$expenseNo"; /// DONE
 
-  // static const String expenseAdd = "/daily_expense/add"; /// DONE
-  // static String expenseEdit(String expenseNo) => "/daily_expense/edit/$expenseNo"; /// DONE
-  // static String expenseDelete(String expenseNo) => "/daily_expense/delete/$expenseNo"; /// DONE
 
+  // Sales replacement
+  static const String salesReplacement = "/s_return";
+  static String salesReplacementDetails(String returnBillNo) => "/s_return/view/$returnBillNo";
+  static String salesReplacementDelete(String returnBillNo) => "/s_return/delete/$returnBillNo";
 
 
 }

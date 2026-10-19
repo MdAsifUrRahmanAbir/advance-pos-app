@@ -48,4 +48,7 @@ class RouteNames {
       '/edit_sale_cart/${Uri.encodeComponent(billNo)}';
   static String editSalePaymentPath(String billNo) =>
       '/edit_sale_payment/${Uri.encodeComponent(billNo)}';
+
+  static const String salesReplacement = '/sales_replacement';
+  static const String salesReplacementDetail = '/sales_replacement_detail';
 }

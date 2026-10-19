@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/sales_replacement/presentation/screens/sales_replacement_screen.dart';
+import '../features/sales_replacement_detail/presentation/screens/sales_replacement_detail_screen.dart';
 import 'build_page_with_transition.dart';
 import 'route_names.dart';
 import '../core/network/connectivity_provider.dart';
@@ -405,6 +407,26 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: EditSalePaymentScreen(billNo: state.pathParameters['billNo']!),
+        ),
+      ),
+
+
+      GoRoute(
+        path: RouteNames.salesReplacement,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SalesReplacementScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.salesReplacementDetail,
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: SalesReplacementDetailScreen(
+            returnBillNo: state.extra as String,
+          ),
         ),
       ),
     ],

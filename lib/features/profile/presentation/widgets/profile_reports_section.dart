@@ -9,6 +9,7 @@ import '../../../../core/widgets/common/settings_tile.dart';
 class ProfileReportsSection extends StatelessWidget {
   final VoidCallback? onStockReportTap;
   final VoidCallback? onSalesReturnTap;
+  final VoidCallback? onSalesReplacementTap;
   final VoidCallback? onExpenseTap;
   final VoidCallback? onCustomerTap;
 
@@ -17,6 +18,7 @@ class ProfileReportsSection extends StatelessWidget {
     this.onCustomerTap,
     this.onStockReportTap,
     this.onSalesReturnTap,
+    this.onSalesReplacementTap,
     this.onExpenseTap,
   });
 
@@ -37,17 +39,23 @@ class ProfileReportsSection extends StatelessWidget {
           subtitle: AppStrings.expenseSubtitle,
           onTap: onExpenseTap,
         ),
-        SettingsTile(
-          icon: Icons.inventory_2_outlined,
-          title: AppStrings.stockReportTitle,
-          subtitle: AppStrings.stockReportSubtitle,
-          onTap: onStockReportTap,
-        ),
+        // SettingsTile(
+        //   icon: Icons.inventory_2_outlined,
+        //   title: AppStrings.stockReportTitle,
+        //   subtitle: AppStrings.stockReportSubtitle,
+        //   onTap: onStockReportTap,
+        // ),
         SettingsTile(
           icon: Icons.trending_up_rounded,
           title: AppStrings.salesReturnTitle,
           subtitle: AppStrings.salesReturnSubtitle,
           onTap: onSalesReturnTap,
+        ),
+        SettingsTile(
+          icon: Icons.swap_horiz_rounded,
+          title: AppStrings.repTitle,
+          subtitle: AppStrings.repSubtitle,
+          onTap: onSalesReplacementTap,
         ),
       ],
     );

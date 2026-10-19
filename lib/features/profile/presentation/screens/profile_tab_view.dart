@@ -44,6 +44,7 @@ class ProfileTabView extends ConsumerWidget {
                   onStockReportTap: () => context.push(RouteNames.error),
                   onSalesReturnTap: () => context.push(RouteNames.salesReturn),
                   onExpenseTap: () => context.push(RouteNames.expense),
+                  onSalesReplacementTap: () => context.push(RouteNames.salesReplacement),
                 ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileSettingsSections(
