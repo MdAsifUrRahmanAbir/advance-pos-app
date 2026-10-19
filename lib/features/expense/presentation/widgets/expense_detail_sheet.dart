@@ -92,7 +92,7 @@ class ExpenseDetailSheet extends ConsumerWidget {
                   message: state.errorMessage ??
                       AppStrings.expDetailLoadFailed,
                   onRetry: controller.getExpenseDetail,
-                  retryLabel: AppStrings.expRetry,
+                  retryLabel: AppStrings.retry,
                 ),
               ],
             )

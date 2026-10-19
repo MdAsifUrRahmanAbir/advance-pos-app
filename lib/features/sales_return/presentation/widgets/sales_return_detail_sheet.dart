@@ -36,7 +36,7 @@ class SalesReturnDetailSheet extends StatelessWidget {
         ),
         _DetailRow(label: AppStrings.srDetailDate, value: item.returnDate),
         _DetailRow(
-          label: AppStrings.srDetailCustomer,
+          label: AppStrings.customerLabel,
           value: item.customerName,
         ),
         _DetailRow(label: AppStrings.srDetailReturnBy, value: item.returnBy),
@@ -49,7 +49,7 @@ class SalesReturnDetailSheet extends StatelessWidget {
           value: item.totalReturnAmount,
         ),
         _DetailRow(
-          label: AppStrings.srDiscountLabel,
+          label: AppStrings.invoiceDiscountLabel,
           value: item.returnDisAmount,
         ),
         _DetailRow(
@@ -66,7 +66,7 @@ class SalesReturnDetailSheet extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.md),
         Text(
-          AppStrings.srDetailProducts,
+          AppStrings.productsTitle,
           style: TextStyle(
             fontSize: AppSizes.fontSm,
             color: context.appColors.textSecondary,

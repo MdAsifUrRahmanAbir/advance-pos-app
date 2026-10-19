@@ -70,7 +70,7 @@ class SalesReturnDetailMobileView extends ConsumerWidget {
               Clipboard.setData(
                 ClipboardData(text: state.technicalDetails ?? ''),
               );
-              CustomSnackbar.show(context, AppStrings.srdTechnicalCopied);
+              CustomSnackbar.show(context, AppStrings.technicalDetailsCopied);
             },
           ),
         ),
@@ -93,7 +93,7 @@ class SalesReturnDetailMobileView extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: AppSizes.md),
               child: TextButton(
                 onPressed: viewTechnicalDetails,
-                child: const Text(AppStrings.srdViewTechnicalDetails),
+                child: const Text(AppStrings.viewTechnicalDetails),
               ),
             ),
         ],

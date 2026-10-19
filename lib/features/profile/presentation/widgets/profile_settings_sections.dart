@@ -87,7 +87,7 @@ class ProfileSettingsSections extends StatelessWidget {
           children: [
             SettingsTile(
               icon: Icons.lock_outline_rounded,
-              title: AppStrings.twoFactorAuthTitle,
+              title: AppStrings.twoFactorAuth,
               subtitle: 'Enabled • Authenticator App',
               onTap: onTwoFactorAuthTap,
             ),

@@ -56,7 +56,7 @@ class ExpenseFormEntryCard extends StatelessWidget {
           const SizedBox(height: AppSizes.md),
           SearchableDropdownField<int>(
             label: AppStrings.expFormPaymentAccount,
-            hintText: AppStrings.expFormSelectAccount,
+            hintText: AppStrings.selectAccountLabel,
             items: accountItems,
             selectedId: accountId,
             onChanged: onAccountChanged,
@@ -80,7 +80,7 @@ class ExpenseFormEntryCard extends StatelessWidget {
                 flex: 2,
                 child: PrimaryInputField(
                   label: AppStrings.expFormAmountLabel,
-                  hint: AppStrings.expFormAmountHint,
+                  hint: AppStrings.discountInputHint,
                   controller: amountController,
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,

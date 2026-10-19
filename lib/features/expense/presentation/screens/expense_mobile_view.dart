@@ -69,8 +69,8 @@ class ExpenseMobileView extends ConsumerWidget {
         context,
         title: AppStrings.expDeleteTitle,
         message: AppStrings.expDeleteMessage(item.expenseNo),
-        confirmText: AppStrings.expDelete,
-        cancelText: AppStrings.expCancel,
+        confirmText: AppStrings.delete,
+        cancelText: AppStrings.cancel,
         destructive: true,
       );
       if (confirmed != true || !context.mounted) return;

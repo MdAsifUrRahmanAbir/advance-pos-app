@@ -37,7 +37,7 @@ class SalesReturnCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  AppStrings.dashSalesReturn,
+                  AppStrings.salesReturnTitle,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: AppSizes.fontSm,

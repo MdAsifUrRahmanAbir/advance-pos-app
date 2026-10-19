@@ -56,6 +56,12 @@ class PaymentState {
   final String? errorMessage;
 
   final double payableAmount;
+
+  /// Snapshotted from the cart so the receipt reconciles with the lines.
+  final double subtotal;
+  final double discountAmount;
+  final double vatAmount;
+
   final String saleDate;
 
   final List<ReceiptLineItem> receiptItems;
@@ -73,6 +79,9 @@ class PaymentState {
     this.isProcessing = false,
     this.errorMessage,
     this.payableAmount = 0,
+    this.subtotal = 0,
+    this.discountAmount = 0,
+    this.vatAmount = 0,
     this.saleDate = '',
     this.receiptItems = const [],
     this.selectedEntries = const [],
@@ -84,10 +93,8 @@ class PaymentState {
     this.salesBillNo,
   });
 
-
   static const int maxSelectable = 2;
   static const double _eps = 0.005;
-
 
   double get totalCollected => selectedEntries.fold(0, (s, e) => s + e.amount);
 
@@ -105,11 +112,11 @@ class PaymentState {
   /// Amount still missing.
   double get shortfall => changeDue < -_eps ? -changeDue : 0;
 
-// lock: exactly one method and it's not cash (reward included)
+  // lock: exactly one method and it's not cash (reward included)
   bool get lockSingleNonCashAmount =>
       selectedEntries.length == 1 && !selectedEntries.first.isCash;
 
-// every entry (cash too) needs an account id for the API
+  // every entry (cash too) needs an account id for the API
   bool get canComplete {
     if (isProcessing || isSaleCompleted || selectedEntries.isEmpty) return false;
     if (selectedEntries.any((e) => e.account == null)) return false;
@@ -126,6 +133,9 @@ class PaymentState {
     bool? isProcessing,
     String? errorMessage,
     double? payableAmount,
+    double? subtotal,
+    double? discountAmount,
+    double? vatAmount,
     String? saleDate,
     List<ReceiptLineItem>? receiptItems,
     List<SelectedPaymentEntry>? selectedEntries,
@@ -135,12 +145,14 @@ class PaymentState {
     String? printError,
     bool? isSaleCompleted,
     String? salesBillNo,
-
   }) {
     return PaymentState(
       isProcessing: isProcessing ?? this.isProcessing,
       errorMessage: errorMessage,
       payableAmount: payableAmount ?? this.payableAmount,
+      subtotal: subtotal ?? this.subtotal,
+      discountAmount: discountAmount ?? this.discountAmount,
+      vatAmount: vatAmount ?? this.vatAmount,
       saleDate: saleDate ?? this.saleDate,
       receiptItems: receiptItems ?? this.receiptItems,
       selectedEntries: selectedEntries ?? this.selectedEntries,

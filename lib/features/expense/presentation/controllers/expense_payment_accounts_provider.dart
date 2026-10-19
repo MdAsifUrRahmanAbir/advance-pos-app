@@ -58,5 +58,5 @@ String resolvePaymentAccountLabel(
   }
   return accountId > 0
       ? AppStrings.expPaymentAccountFallback(accountId)
-      : AppStrings.expEmptyValue;
+      : AppStrings.emptyValue;
 }

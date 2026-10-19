@@ -29,7 +29,7 @@ class CategoryFilterBar extends StatelessWidget {
       filters: allKeys,
       selectedFilters: {selectedKey},
       labelBuilder: (key) {
-        if (key == 'all') return AppStrings.categoryAll;
+        if (key == 'all') return AppStrings.filterAll;
         final id = int.parse(key.split(':').last);
         return topCategories.firstWhere((c) => c.categoryId == id).categoryName;
       },

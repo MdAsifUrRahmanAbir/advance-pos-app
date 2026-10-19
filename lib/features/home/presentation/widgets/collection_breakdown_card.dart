@@ -1,5 +1,6 @@
+import 'package:advance_pos_app/core/widgets/utility/widget_padding_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+// import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
@@ -15,7 +16,7 @@ class CollectionBreakdownCard extends StatelessWidget {
 
   const CollectionBreakdownCard({super.key, required this.collection});
 
-  static const double _barHeight = 10;
+  // static const double _barHeight = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -68,31 +69,31 @@ class CollectionBreakdownCard extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: AppSizes.md),
-          Skeleton.leaf(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(AppSizes.radiusFull),
-              child: SizedBox(
-                height: _barHeight,
-                child: total > 0
-                    ? Row(
-                  children: slices
-                      .where((s) => s.amount > 0)
-                      .map(
-                        (s) => Expanded(
-                      flex: (s.amount / total * 1000)
-                          .round()
-                          .clamp(1, 1000),
-                      child: ColoredBox(color: s.color),
-                    ),
-                  )
-                      .toList(),
-                )
-                    : const ColoredBox(color: AppColors.border),
-              ),
-            ),
-          ),
+          ).paddingAll(0),
+          // const SizedBox(height: AppSizes.md),
+          // Skeleton.leaf(
+          //   child: ClipRRect(
+          //     borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+          //     child: SizedBox(
+          //       height: _barHeight,
+          //       child: total > 0
+          //           ? Row(
+          //         children: slices
+          //             .where((s) => s.amount > 0)
+          //             .map(
+          //               (s) => Expanded(
+          //             flex: (s.amount / total * 1000)
+          //                 .round()
+          //                 .clamp(1, 1000),
+          //             child: ColoredBox(color: s.color),
+          //           ),
+          //         )
+          //             .toList(),
+          //       )
+          //           : const ColoredBox(color: AppColors.border),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: AppSizes.md),
           ...slices.map((s) => _MethodRow(slice: s, total: total)),
           const Divider(height: AppSizes.lg, color: AppColors.border),
@@ -105,7 +106,7 @@ class CollectionBreakdownCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSizes.sm),
-          _ChargeRow(AppStrings.dashVat, collection.vatAmount),
+          _ChargeRow(AppStrings.invoiceVatLabel, collection.vatAmount),
           _ChargeRow(
             AppStrings.dashDeliveryCharge,
             collection.deliveryChargeAmount,

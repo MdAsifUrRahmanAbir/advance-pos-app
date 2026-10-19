@@ -68,7 +68,7 @@ class ExpenseFormMobileView extends ConsumerWidget {
       body = ErrorState(
         message: state.loadError!,
         onRetry: controller.loadDetail,
-        retryLabel: AppStrings.expFormRetry,
+        retryLabel: AppStrings.retry,
       );
     } else if (!masterReady) {
       body = masterLoading
@@ -79,7 +79,7 @@ class ExpenseFormMobileView extends ConsumerWidget {
         message: AppStrings.expFormMasterMissing,
         onRetry: () =>
             ref.read(masterDataControllerProvider.notifier).refresh(),
-        retryLabel: AppStrings.expFormRetry,
+        retryLabel: AppStrings.retry,
       );
     } else {
       body = ListView(

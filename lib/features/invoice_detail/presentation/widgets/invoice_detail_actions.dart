@@ -43,7 +43,7 @@ class InvoiceDetailActions extends StatelessWidget {
               const SizedBox(width: AppSizes.sm),
               Expanded(
                 child: SecondaryButton(
-                  label: AppStrings.invoicePrintAction,
+                  label: AppStrings.actionPrintReceipt,
                   icon: Icons.print_outlined,
                   onPressed: () {
                     // TODO: wire to a real printer/PDF flow once available.

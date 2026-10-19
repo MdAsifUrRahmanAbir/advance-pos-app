@@ -29,16 +29,16 @@ class ExpenseFormat {
 
   static String orDash(String? value) =>
       (value == null || value.trim().isEmpty)
-          ? AppStrings.expEmptyValue
+          ? AppStrings.emptyValue
           : value.trim();
 
   static String presetLabel(ExpenseDatePreset preset) => switch (preset) {
     ExpenseDatePreset.all => AppStrings.expAllDates,
-    ExpenseDatePreset.today => AppStrings.expDateToday,
-    ExpenseDatePreset.yesterday => AppStrings.expDateYesterday,
-    ExpenseDatePreset.last7Days => AppStrings.expDateLast7Days,
-    ExpenseDatePreset.thisMonth => AppStrings.expDateThisMonth,
-    ExpenseDatePreset.lastMonth => AppStrings.expDateLastMonth,
+    ExpenseDatePreset.today => AppStrings.invoiceDatePresetToday,
+    ExpenseDatePreset.yesterday => AppStrings.invoiceDatePresetYesterday,
+    ExpenseDatePreset.last7Days => AppStrings.invoiceDatePresetLast7Days,
+    ExpenseDatePreset.thisMonth => AppStrings.invoiceDatePresetThisMonth,
+    ExpenseDatePreset.lastMonth => AppStrings.invoiceDatePresetLastMonth,
     ExpenseDatePreset.custom => AppStrings.expDateCustomRange,
   };
 
@@ -68,7 +68,7 @@ class ExpenseFormat {
 
     b
       ..writeln()
-      ..write('${AppStrings.expTotal}: ${money(d.totalAmount)}');
+      ..write('${AppStrings.totalLabel}: ${money(d.totalAmount)}');
 
     if (d.globalNarration.trim().isNotEmpty) {
       b

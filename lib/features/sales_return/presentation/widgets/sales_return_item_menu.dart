@@ -41,7 +41,7 @@ class SalesReturnItemMenu extends StatelessWidget {
     }
 
     return PopupMenuButton<SalesReturnMenuAction>(
-      tooltip: AppStrings.srMenuTooltip,
+      tooltip: AppStrings.moreOptions,
       enabled: onEdit != null || onDelete != null,
       color: context.appColors.surface,
       shape: RoundedRectangleBorder(
@@ -65,7 +65,7 @@ class SalesReturnItemMenu extends StatelessWidget {
           value: SalesReturnMenuAction.edit,
           child: _MenuRow(
             icon: Icons.edit_outlined,
-            label: AppStrings.srEdit,
+            label: AppStrings.edit,
             color: context.appColors.textPrimary,
           ),
         ),
@@ -73,7 +73,7 @@ class SalesReturnItemMenu extends StatelessWidget {
           value: SalesReturnMenuAction.delete,
           child: _MenuRow(
             icon: Icons.delete_outline_rounded,
-            label: AppStrings.srDelete,
+            label: AppStrings.delete,
             color: AppColors.error,
           ),
         ),

@@ -140,7 +140,7 @@ class _EditSaleAddCustomerSheetState extends ConsumerState<EditSaleAddCustomerSh
                 ),
                 const SizedBox(height: AppSizes.lg),
                 PrimaryButton(
-                  label: AppStrings.addCustomerAction,
+                  label: AppStrings.addCustomerTitle,
                   loading: busy,
                   onPressed: busy ? null : _submit,
                 ),

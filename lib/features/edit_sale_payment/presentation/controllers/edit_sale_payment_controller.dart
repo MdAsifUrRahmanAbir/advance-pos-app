@@ -314,7 +314,7 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
           await ThermalPrinterService.connect(printerMac);
       final success = connected &&
           await ThermalPrinterService.printReceipt(
-            storeName: AppStrings.receiptStoreName,
+            storeName: AppStrings.appBrandName,
             billNo: state.updatedBillNo ?? billNo,
             saleDate: state.saleDate,
             methodLabel: state.methodLabel,

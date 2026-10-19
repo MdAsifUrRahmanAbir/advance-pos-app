@@ -22,7 +22,6 @@ import '../widgets/payment_top_bar.dart';
 import '../widgets/printer_selection_sheet.dart';
 import '../states/payment_systems_from_accounts.dart';
 
-
 class PaymentMobileView extends ConsumerWidget {
   const PaymentMobileView({super.key});
 
@@ -49,7 +48,7 @@ class PaymentMobileView extends ConsumerWidget {
                 saleDate: state.saleDate,
               ),
               const SizedBox(height: AppSizes.lg),
-              _SectionLabel(text: 'PAYMENT METHOD'),
+               _SectionLabel(text: AppStrings.receiptPaymentMethodLabel.toUpperCase()),
               const SizedBox(height: AppSizes.xs),
               Text(
                 AppStrings.selectPaymentMethodsHint,
@@ -96,7 +95,7 @@ class PaymentMobileView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.md),
                 for (final entry in state.selectedEntries) ...[
                   PaymentEntryCard(
-                    key: ValueKey(entry.system.id), // <-- add this
+                    key: ValueKey(entry.system.id),
                     entry: entry,
                     accountsForThisSystem: controller.accountsForSystem(
                       entry.system,
@@ -123,7 +122,6 @@ class PaymentMobileView extends ConsumerWidget {
                     ),
                   ),
                 ),
-
               const SizedBox(height: AppSizes.xxl),
             ],
           ),
@@ -185,10 +183,10 @@ class PaymentMobileView extends ConsumerWidget {
                   receiptBoundaryKey,
                 );
                 if (!success && consumerContext.mounted) {
-                  ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    const SnackBar(
-                      content: Text(AppStrings.shareFailedMessage),
-                    ),
+                  CustomSnackbar.show(
+                    consumerContext,
+                    AppStrings.shareFailedMessage,
+                    error: true,
                   );
                 }
               },
@@ -203,14 +201,12 @@ class PaymentMobileView extends ConsumerWidget {
 
                 final success = await controller.printReceipt(device.macAdress);
                 if (consumerContext.mounted) {
-                  ScaffoldMessenger.of(consumerContext).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        success
-                            ? AppStrings.printSuccessMessage
-                            : AppStrings.printFailedMessage,
-                      ),
-                    ),
+                  CustomSnackbar.show(
+                    consumerContext,
+                    success
+                        ? AppStrings.printSuccessMessage
+                        : AppStrings.printFailedMessage,
+                    error: !success,
                   );
                 }
               },
@@ -220,7 +216,6 @@ class PaymentMobileView extends ConsumerWidget {
       },
     );
   }
-
 }
 
 class _SectionLabel extends StatelessWidget {

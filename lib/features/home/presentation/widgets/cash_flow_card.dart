@@ -76,7 +76,7 @@ class CashFlowCard extends StatelessWidget {
               ),
               Expanded(
                 child: DashboardMetric(
-                  label: AppStrings.dashExpense,
+                  label: AppStrings.expense,
                   value: DashboardFormat.money(balance.totalExpense),
                   valueColor: AppColors.error,
                 ),

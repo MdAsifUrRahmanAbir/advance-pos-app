@@ -53,6 +53,6 @@ String resolveExpenseFormAccountLabel(
     if (o.accountId == accountId) return o.label;
   }
   return accountId > 0
-      ? AppStrings.expFormAccountFallback(accountId)
-      : AppStrings.expFormEmptyValue;
+      ? AppStrings.expPaymentAccountFallback(accountId)
+      : AppStrings.emptyValue;
 }

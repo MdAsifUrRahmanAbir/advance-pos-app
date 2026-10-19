@@ -52,7 +52,7 @@ class ExpenseHeadsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  AppStrings.expTotal,
+                  AppStrings.totalLabel,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: AppSizes.fontSm,
@@ -123,7 +123,7 @@ class _HeadTile extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (narration.isNotEmpty && narration != AppStrings.expEmptyValue)
+                if (narration.isNotEmpty && narration != AppStrings.emptyValue)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
                     child: Text(

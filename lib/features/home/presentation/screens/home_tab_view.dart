@@ -82,8 +82,8 @@ class HomeTabView extends ConsumerWidget {
                         title: AppStrings.dashOverview,
                         trailing: DashboardSegmentedToggle(
                           labels: const [
-                            AppStrings.dashToday,
-                            AppStrings.dashThisMonth,
+                            AppStrings.invoiceDatePresetToday,
+                            AppStrings.invoiceDatePresetThisMonth,
                           ],
                           selectedIndex:
                           HomeState.periods.indexOf(period),

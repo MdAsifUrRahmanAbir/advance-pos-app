@@ -114,7 +114,7 @@ class DiscountVatSection extends StatelessWidget {
                 label: AppStrings.vatInputLabel,
                 field: _NumberField(
                   initialValue: state.taxPercent,
-                  hint: AppStrings.vatInputHint,
+                  hint: AppStrings.vatInputLabel,
                   suffix: '%',
                   onChanged: onTaxChanged,
                 ),

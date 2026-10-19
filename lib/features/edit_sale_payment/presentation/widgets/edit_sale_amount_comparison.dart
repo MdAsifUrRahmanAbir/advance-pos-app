@@ -36,7 +36,7 @@ class EditSaleAmountComparison extends StatelessWidget {
           child: Text(
             '${AppStrings.editSaleOriginalTotalLabel}: '
                 '${CurrencyFormatter.format(originalPayable)}  •  '
-                '${AppStrings.editSaleOriginalPaidLabel}: '
+                '${AppStrings.invoicePaidLabel}: '
                 '${CurrencyFormatter.format(originalPaid)}',
             style: TextStyle(color: colors.textSecondary, fontSize: AppSizes.fontXs),
           ),

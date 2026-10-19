@@ -1,6 +1,18 @@
 class AppStrings {
   AppStrings._();
 
+  // ---- Shared strings (merged duplicates — use these everywhere) ----
+  static const String cancel = 'Cancel';
+  static const String edit = 'Edit';
+  static const String delete = 'Delete';
+  static const String moreOptions = 'More options';
+  static const String emptyValue = '-';
+  static const String totalLabel = 'Total';
+  static const String billLabel = 'Bill No';
+  static const String change = 'Change';
+  static const String viewTechnicalDetails = 'View technical details';
+  static const String technicalDetailsCopied = 'Technical details copied.';
+
   // ---- Added: Splash screen ----
   static const String appTagline = 'Next-Gen Business Platform';
   static const String connectingToServers = 'Connecting to secure servers...';
@@ -86,7 +98,6 @@ class AppStrings {
       'New password must be different from current password';
 
   // ---- Added: Forgot Password screen ----
-  static const String forgotPasswordTitle = 'Forgot Password?';
   static const String forgotPasswordSubtitle =
       "Enter your email address and we'll send you a reset link";
   static const String sendResetLink = 'Send Reset Link';
@@ -114,12 +125,10 @@ class AppStrings {
   static const String notificationSettingsTitle = 'Notification Settings';
   static const String notificationSettingsSubtitle =
       'Push triggers, emails & Slack integrations';
-  static const String languageTitle = 'Language';
   static const String privacyTitle = 'Privacy';
   static const String privacySubtitle =
       'Control visibility and cluster logs exposure';
   static const String connectedAppsTitle = 'Connected Apps';
-  static const String twoFactorAuthTitle = 'Two-Factor Auth';
   static const String helpCenterTitle = 'Help Center';
   static const String helpCenterSubtitle =
       'Documentation, ticket desk & server diagnostics';
@@ -139,9 +148,7 @@ class AppStrings {
   // static const String fullNameRequired = 'Full name is required';
 
   // ---- Added: Activity screen ----
-  static const String filterToday = 'Today';
   static const String filterThisWeek = 'This Week';
-  static const String filterThisMonth = 'This Month';
 
   // ---- Added: Notifications screen ----
   static const String notificationsTitle = 'Notifications';
@@ -219,7 +226,6 @@ class AppStrings {
 
   // ---- Added: Order List screen ----
   static const String myOrdersTitle = 'My Orders';
-  static const String orderTabAll = 'All';
   static const String orderTabPending = 'Pending';
   static const String orderTabCompleted = 'Completed';
   static const String orderTabCancelled = 'Cancelled';
@@ -253,8 +259,6 @@ class AppStrings {
 
   // ---- Added: Error screen ----
   static const String errorTitle = 'Something Went Wrong';
-  static const String errorSubtitle =
-      'An unexpected error occurred. Please try again.';
   static const String retry = 'Retry';
   static const String reportIssue = 'Report Issue';
 
@@ -266,7 +270,6 @@ class AppStrings {
   static const String exitAppTitle = 'Exit App?';
   static const String exitAppMessage = 'Are you sure you want to exit the app?';
   static const String exitAppConfirm = 'Exit';
-  static const String exitAppCancel = 'Cancel';
 
   static const String noInternetBannerMessage = 'No internet connection';
 
@@ -275,10 +278,11 @@ class AppStrings {
   static const String stockEmptyMessage = 'Stock management is coming soon.';
 
   // --- Home dashboard additions ---
+  /// Also the printed receipt header. TODO: replace with the store name from
+  /// branch settings once an endpoint provides it.
   static const String appBrandName = 'Advance POS';
   static const String statusOnline = 'Online';
   static const String statusOffline = 'Offline';
-
 
   static String dailyTargetSubtitle(String achieved, String target) =>
       '$achieved of $target target achieved';
@@ -292,8 +296,6 @@ class AppStrings {
   static const String newSaleTitle = 'New Sale';
   static const String searchProductHint = 'Search product or scan barcode...';
 
-  static const String categoryAll = 'All';
-
   static String skuLabel(String sku) => 'SKU: $sku';
   static String viewCartLabel(String total) => 'View Cart — $total';
 
@@ -303,7 +305,6 @@ class AppStrings {
   static const String givenAmountLabel = 'GIVEN AMOUNT';
   static const String salesAgentLabel = 'SALES AGENT';
   static const String completeSaleAction = 'Complete Sale';
-
 
   // --- Cart review additions ---
   static const String reviewCartTitle = 'Review Cart';
@@ -317,8 +318,6 @@ class AppStrings {
   static const String referenceNoHint = 'Invoice / LC...';
 
   static const String subtotalLabel = 'Subtotal';
-  static String discountLabel(int percent) => 'Discount ($percent%)';
-  static String vatTaxLabel(int percent) => 'VAT / Tax ($percent%)';
   static const String roundingLabel = 'Rounding';
   static const String totalPayableLabel = 'Total Payable';
   static const String proceedToPaymentAction = 'Proceed to Payment';
@@ -329,12 +328,13 @@ class AppStrings {
   static const String paymentCollectedTitle = 'Payment Collected';
   static String paymentCollectedSubtitle(String amount) =>
       'Amount received: $amount';
+  static String paymentCollectedBillSubtitle(String billNo, String amount) =>
+      'Invoice $billNo · Received $amount';
 
   static const String receiptSaleIdLabel = 'Sale ID';
   static const String receiptDateLabel = 'Date';
   static const String receiptPaymentMethodLabel = 'Payment Method';
 
-  static const String actionNewSale = 'New Sale';
   static const String actionGoToDashboard = 'Go to Dashboard';
   static const String actionShareReceipt = 'Share Receipt';
   static const String actionPrintReceipt = 'Print Receipt';
@@ -355,13 +355,9 @@ class AppStrings {
   static const String receiptThankYouLine = 'Thank you for your purchase!';
 
   // ---- Added: Stock report screen card tiles + filters ----
-  static const String stockFilterAll = 'All';
-  static const String stockFilterInStock = 'In Stock';
-  static const String stockFilterOutOfStock = 'Out of Stock';
   static const String stockStatusInStock = 'In Stock';
   static const String stockStatusLowStock = 'Low Stock';
   static const String stockStatusOutOfStock = 'Out of Stock';
-  static const String stockQuantityLabel = 'Stock';
   static const String sellingPriceLabel = 'Selling Price';
   static const String buyingPriceLabel = 'Buying Price';
   static const String stockSkuPrefix = 'SKU: ';
@@ -375,7 +371,6 @@ class AppStrings {
   static const String invoicesTitle = 'Invoices';
   static const String invoiceSearchHint = 'Search invoice # or customer...';
   static const String invoicesEmptyMessage = 'No invoices match this filter.';
-  static const String invoiceDateLabel = 'Date';
   static const String invoicePaidLabel = 'Paid';
   static const String invoiceDueLabel = 'Due';
   static const String invoiceStatusPartial = 'Partial';
@@ -384,20 +379,16 @@ class AppStrings {
   // ---- Added: Invoice detail screen ----
   static const String invoiceDetailTitle = 'Invoice Details';
   static const String invoiceInfoSectionTitle = 'Cash Sale Information';
-  static const String invoiceProductsSectionTitle = 'Products';
   static const String invoiceBillNoLabel = 'Bill No.';
   static const String invoiceCustomerLabel = 'Customer';
   static const String invoiceMobileLabel = 'Mobile No.';
   static const String invoiceSalesByLabel = 'Sales By';
   static const String invoicePaymentSystemLabel = 'Payment System';
-  static const String invoiceSubtotalLabel = 'Subtotal';
   static const String invoiceDiscountLabel = 'Discount';
   static const String invoiceVatLabel = 'VAT';
-  static const String invoiceTotalPayableLabel = 'Total Payable';
   static const String invoiceRemarksLabel = 'Remarks';
   static const String invoiceTotalQuantityLabel = 'Total Quantity';
   static const String invoiceTotalAmountLabel = 'Total Amount';
-  static const String invoicePrintAction = 'Print Receipt';
   static const String invoicePayDuesAction = 'Pay Dues';
 
   // ---- Added: Profile "More" screen — Reports section ----
@@ -419,8 +410,6 @@ class AppStrings {
   // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
 
   static const String invoicePaymentAccountLabel = 'Payment Account';
-  static const String invoiceBarcodeLabel = 'Barcode';
-
 
   static const String stockLowStockNoteTemplate =
       'Only {qty} {unit} left — below the reorder threshold of {threshold} {unit}.';
@@ -434,13 +423,11 @@ class AppStrings {
   static const String invoiceDatePresetThisMonth = 'This Month';
   static const String invoiceDatePresetLastMonth = 'Last Month';
 
-
   static const String outOfStockLabel = 'Out of stock';
   static String stockPcsLabel(int stock) => '$stock pcs';
   static String productAddedMessage(String name) => 'Added: $name';
   static String productOutOfStockMessage(String name) => 'Out of stock: $name';
   static String productNotFoundMessage(String code) => 'No product found for code $code';
-
 
   // ---- Cart: customer picker ----
   static const String selectCustomerTitle = 'Select Customer';
@@ -461,7 +448,6 @@ class AppStrings {
   static const String customerEmailHint = 'e.g. name@example.com';
   static const String customerAddressLabel = 'Address (optional)';
   static const String customerAddressHint = 'e.g. House 12, Road 4, Dhaka';
-  static const String addCustomerAction = 'Add Customer';
   static String customerAddedSuccessMessage(String name) => 'Customer "$name" added successfully';
 
   // ---- Customers screen ----
@@ -482,10 +468,8 @@ class AppStrings {
   static const String discountInputLabel = 'DISCOUNT';
   static const String discountInputHint = '0';
   static const String vatInputLabel = 'VAT (%)';
-  static const String vatInputHint = '0';
   static String discountPercentLabel(String percent) => 'Discount ($percent%)';
   static String vatTaxPercentLabel(String percent) => 'VAT / Tax ($percent%)';
-
 
   static const String remainingAmountLabel = 'Remaining Amount';
   static const String returnToCustomerLabel = 'Return to Customer';
@@ -501,7 +485,6 @@ class AppStrings {
   static String discountMaxHint(String max) => 'Max allowed: $max';
   static String discountCodesLabel(String codes) => 'Applied: $codes';
   static String lineDiscountLabel(String amount) => 'Discount: -$amount';
-
 
   // ── Dashboard (home) ──
   static const String dashCurrencySymbol = '';
@@ -526,19 +509,13 @@ class AppStrings {
   static String dashExpenseLabel(String amount) => 'Expense $amount';
 
   static const String dashOverview = 'Overview';
-  static const String dashToday = 'Today';
-  static const String dashThisMonth = 'This Month';
   static const String dashRange7Days = '7 Days';
   static const String dashRange12Months = '12 Months';
   static const String dashSalesTrend = 'Sales Trend';
-  static const String dashDiscount = 'Discount';
-  static const String dashVat = 'VAT';
   static const String dashDeliveryCharge = 'Delivery Charge';
   static const String dashOtherCharge = 'Other Charge';
   static const String dashCharges = 'Charges';
-  static const String dashSalesReturn = 'Sales Return';
   static const String dashReceived = 'Received';
-  static const String dashExpense = 'Expense';
   static const String dashHighest = 'Highest';
   static String dashPeakValue(String label, String amount) => '$label · $amount';
   static String dashQtySold(int qty) => '$qty sold';
@@ -548,18 +525,12 @@ class AppStrings {
   static const String expDetailTitle = 'Expense Details';
   static const String expSearchHint = 'Search expense no, category, remarks';
   static const String expAllDates = 'All dates';
-  static const String expDateToday = 'Today';
-  static const String expDateYesterday = 'Yesterday';
-  static const String expDateLast7Days = 'Last 7 Days';
-  static const String expDateThisMonth = 'This Month';
-  static const String expDateLastMonth = 'Last Month';
   static const String expDateCustomRange = 'Custom Range';
   static const String expEmptyTitle = 'No expenses found';
   static const String expEmptySubtitle = 'Try a different search or date range.';
   static const String expLoadFailed = "Couldn't load expenses";
   static const String expDetailLoadFailed = "Couldn't load expense details";
   static const String expLoadMoreFailed = "Couldn't load more";
-  static const String expRetry = 'Retry';
   static const String expExpenseNo = 'Expense No';
   static const String expExpenseDate = 'Expense Date';
   static const String expOutlet = 'Outlet';
@@ -568,18 +539,12 @@ class AppStrings {
   static const String expEntryDateTime = 'Entry Date & Time';
   static const String expGlobalNarration = 'Global Narration';
   static const String expExpenseHeads = 'Expense Heads';
-  static const String expTotal = 'Total';
-  static const String expEmptyValue = '-';
   static String expRecordsCount(int shown, int total) => 'Showing $shown of $total';
   static String expHeadsCount(int n) => n == 1 ? '1 head' : '$n heads';
   static String expPaymentAccountFallback(int id) => 'Account #$id';
   static String expShareSubject(String no) => 'Expense $no';
 
   // ---- Expense: row actions / add (append only) ----
-  static const String expEdit = 'Edit';
-  static const String expDelete = 'Delete';
-  static const String expCancel = 'Cancel';
-  static const String expMenuTooltip = 'More options';
   static const String expAddTooltip = 'Add expense';
   static const String expDeleteTitle = 'Delete expense';
   static const String expDeleteFailed = "Couldn't delete expense";
@@ -593,11 +558,9 @@ class AppStrings {
   static const String expFormHead = 'Head Name *';
   static const String expFormSelectHead = 'Select head';
   static const String expFormPaymentAccount = 'Payment Account *';
-  static const String expFormSelectAccount = 'Select account';
   static const String expFormLocalNarration = 'Local Narration';
   static const String expFormLocalNarrationHint = 'Enter local narration';
   static const String expFormAmountLabel = 'Amount *';
-  static const String expFormAmountHint = '0';
   static const String expFormAddLine = 'Add line';
   static const String expFormRemoveLine = 'Remove line';
   static const String expFormLinesEmpty = 'No lines yet. Fill in the row above and tap Add line.';
@@ -615,14 +578,7 @@ class AppStrings {
   static const String expFormMasterMissing = "Heads and payment accounts aren't loaded yet";
   static String expFormLinesTitle(int count) => 'Expense lines ($count)';
 
-  // ---- Expense form: strings that used to be borrowed from expense (append only) ----
-  static const String expFormTotal = 'Total';
-  static const String expFormRetry = 'Retry';
-  static const String expFormEmptyValue = '-';
-  static String expFormAccountFallback(int id) => 'Account #$id';
-
   // ---- Sales return (append only) ----
-  static const String srTitle = 'Sales Return';
   static const String srSearchHint = 'Search sales returns';
   static const String srEmptyMessage = 'No sales returns found for these filters.';
   static const String srStatusActive = 'Active';
@@ -631,14 +587,8 @@ class AppStrings {
   static const String srNoProducts = 'No products';
   static String srMoreProducts(int count) => '+$count more';
   static const String srQuantityLabel = 'Qty';
-  static const String srDiscountLabel = 'Discount';
   static const String srPayableLabel = 'Payable';
   static const String srInfoTooltip = 'Show info';
-  static const String srMenuTooltip = 'More options';
-  static const String srEdit = 'Edit';
-  static const String srDelete = 'Delete';
-  static const String srCancel = 'Cancel';
-  static const String srRetry = 'Retry';
   static const String srDeleteTitle = 'Delete sales return';
   static String srDeleteMessage(String no) =>
       'Sales return $no will be permanently deleted. This cannot be undone.';
@@ -647,23 +597,12 @@ class AppStrings {
   static const String srEditComingSoon = 'Sales return editing is coming soon';
   static const String srLoadFailed = "Couldn't load sales returns";
   static const String srLoadMoreFailed = "Couldn't load more.";
-  static const String srViewTechnicalDetails = 'View technical details';
-  static const String srTechnicalCopied = 'Technical details copied.';
-  static String srRecordsCount(int shown, int total) => 'Showing $shown of $total';
-  static const String srDateToday = 'Today';
-  static const String srDateYesterday = 'Yesterday';
-  static const String srDateLast7Days = 'Last 7 Days';
-  static const String srDateThisMonth = 'This Month';
-  static const String srDateLastMonth = 'Last Month';
-  static const String srDateCustom = 'Custom Range';
   static const String srDetailReturnBill = 'Return bill no';
   static const String srDetailSalesBill = 'Sales bill no';
   static const String srDetailDate = 'Return date';
-  static const String srDetailCustomer = 'Customer';
   static const String srDetailReturnBy = 'Returned by';
   static const String srDetailTotalAmount = 'Total return amount';
   static const String srDetailStatus = 'Status';
-  static const String srDetailProducts = 'Products';
 
   // ---- Sales return detail (append only) ----
   static const String srdTitle = 'Sales Return Details';
@@ -671,28 +610,14 @@ class AppStrings {
   static const String srdReturnBillNoLabel = 'Return Bill No';
   static const String srdReturnDateLabel = 'Return Date';
   static const String srdSalesBillNoLabel = 'Sales Bill No';
-  static const String srdCustomerLabel = 'Customer';
   static const String srdReturnByLabel = 'Returned By';
-  static const String srdPaymentSystemLabel = 'Payment System';
-  static const String srdPaymentAccountLabel = 'Payment Account';
-  static const String srdRemarksLabel = 'Remarks';
   static const String srdTotalReturnAmountLabel = 'Total Return Amount';
-  static const String srdDiscountLabel = 'Discount';
   static const String srdAfterDiscountLabel = 'Amount After Discount';
   static const String srdPayableLabel = 'Payable Return Amount';
-  static const String srdProductsSectionTitle = 'Products';
-  static const String srdBarcodeLabel = 'Barcode';
   static const String srdUnitPriceLabel = 'Unit Price';
-  static const String srdTotalQuantityLabel = 'Total Quantity';
-  static const String srdTotalAmountLabel = 'Total Amount';
   static const String srdNoProducts = 'No products in this return';
-  static const String srdShare = 'Share';
   static String srdShareSubject(String no) => 'Sales return $no';
   static const String srdLoadFailed = "Couldn't load sales return";
-  static const String srdViewTechnicalDetails = 'View technical details';
-  static const String srdTechnicalCopied = 'Technical details copied.';
-  static const String srdEmptyValue = '-';
-
 
   // ───────────────────────────────────────────────
   // Edit Sale (edit_sale_cart + edit_sale_payment)
@@ -702,7 +627,6 @@ class AppStrings {
   static const String editSaleLoadFailed = "Couldn't load this invoice for editing";
   static const String editSaleEditingLabel = 'EDITING INVOICE';
   static const String editSaleOriginalTotalLabel = 'Original total';
-  static const String editSaleOriginalPaidLabel = 'Paid';
   static const String editSaleWalkInCustomer = 'Walk-in Customer';
   static const String editSaleNoItemsTitle = 'No products in this sale';
   static const String editSaleNoItemsMessage = 'Search or scan a product to add it.';
@@ -723,8 +647,6 @@ class AppStrings {
       'The original customer could not be matched — please select the customer again.';
   static const String editSaleCustomerCreatedNotFound =
       'Customer was created but could not be found. Please search for them.';
-  static const String editSaleViewTechnicalDetails = 'View technical details';
-  static const String editSaleTechnicalCopied = 'Technical details copied.';
   static const String editSalePaymentMethodSection = 'PAYMENT METHOD';
   static const String editSaleUpdateAction = 'Update Sale';
   static const String editSaleConfirmTitle = 'Update this invoice?';
@@ -733,17 +655,6 @@ class AppStrings {
   static const String editSaleUpdatedTitle = 'Sale Updated';
   static String editSaleUpdatedSubtitle(String billNo) => 'Invoice $billNo has been updated.';
   static String editSaleUpdatedMessage(String billNo) => 'Invoice $billNo updated';
-  static const String editSaleDoneAction = 'Done';
   static const String editSaleUpdateFailed = "Couldn't update the sale";
   static const String editSaleNotSignedIn = 'Your session has expired. Please sign in again.';
-  static const String editSaleReceiptBillLabel = 'Bill No';
-  static const String editSaleReceiptSubtotal = 'Subtotal';
-  static const String editSaleReceiptDiscount = 'Discount';
-  static const String editSaleReceiptVat = 'VAT';
-  static const String editSaleReceiptTotal = 'Total';
-  static const String editSaleReceiptPaid = 'Paid';
-  static const String editSaleReceiptChange = 'Change';
-  /// Printed receipt header. TODO: replace with the store name from
-  /// branch settings once an endpoint provides it.
-  static const String receiptStoreName = 'Advance POS';
 }

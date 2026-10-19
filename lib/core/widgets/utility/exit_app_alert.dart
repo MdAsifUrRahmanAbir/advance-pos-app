@@ -37,7 +37,7 @@ class AppExitAlert extends StatelessWidget {
           title: title ?? AppStrings.exitAppTitle,
           message: message ?? AppStrings.exitAppMessage,
           confirmText: confirmText ?? AppStrings.exitAppConfirm,
-          cancelText: cancelText ?? AppStrings.exitAppCancel,
+          cancelText: cancelText ?? AppStrings.cancel,
           destructive: true,
         );
         if (confirmed == true) {

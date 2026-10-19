@@ -19,7 +19,7 @@ class ForgotPasswordHeader extends StatelessWidget {
         ),
         SizedBox(height: AppSizes.xl),
         Text(
-          AppStrings.forgotPasswordTitle,
+          AppStrings.forgotPassword,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppSizes.fontDisplay,

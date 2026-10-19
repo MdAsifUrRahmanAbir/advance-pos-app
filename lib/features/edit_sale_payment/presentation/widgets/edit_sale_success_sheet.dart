@@ -89,7 +89,7 @@ class EditSaleSuccessSheet extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSizes.sm),
-                PrimaryButton(label: AppStrings.editSaleDoneAction, onPressed: onDone),
+                PrimaryButton(label: AppStrings.done, onPressed: onDone),
               ],
             ),
           ),

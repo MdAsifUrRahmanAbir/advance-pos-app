@@ -157,7 +157,7 @@ mixin EditSaleCartViewActions<T extends ConsumerStatefulWidget> on ConsumerState
           },
           onReportIssue: () {
             Clipboard.setData(ClipboardData(text: state.technicalDetails ?? ''));
-            CustomSnackbar.show(routeContext, AppStrings.editSaleTechnicalCopied);
+            CustomSnackbar.show(routeContext, AppStrings.technicalDetailsCopied);
           },
         ),
       ),

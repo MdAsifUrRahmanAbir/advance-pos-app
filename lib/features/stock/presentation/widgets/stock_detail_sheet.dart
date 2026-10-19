@@ -50,7 +50,7 @@ class StockDetailSheet extends StatelessWidget {
         _DetailRow(label: AppStrings.stockSkuLabel, value: item.sku),
         _DetailRow(label: AppStrings.stockBarcodeLabel, value: item.barcode),
         _DetailRow(
-          label: AppStrings.stockQuantityLabel,
+          label: AppStrings.srQuantityLabel,
           value: '${item.quantity} ${item.unit}',
         ),
         _DetailRow(

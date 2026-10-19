@@ -1,30 +1,34 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
+import '../../../cart/presentation/controllers/cart_controller.dart';
+import '../../../cart/presentation/states/cart_state.dart' show CartState;
 import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
-import '../states/payment_state.dart';
-import '../../../cart/presentation/controllers/cart_controller.dart';
-import 'dart:math' as math;
-import '../../../../core/utils/error_mapper.dart';
-import '../../../cart/presentation/states/cart_state.dart' show CartState;
 import '../../../new_sale/presentation/controllers/new_sale_controller.dart';
 import '../../data/repositories/payment_repository.dart';
+import '../states/payment_state.dart';
 
 final paymentControllerProvider =
-    NotifierProvider.autoDispose<PaymentController, PaymentState>(
-      PaymentController.new,
-    );
+NotifierProvider.autoDispose<PaymentController, PaymentState>(
+  PaymentController.new,
+);
 
 class PaymentController extends Notifier<PaymentState> {
-
   @override
   PaymentState build() {
     final cart = ref.read(cartControllerProvider);
     return PaymentState().copyWith(
       payableAmount: _round2(cart.totalPayable),
+      subtotal: _round2(cart.subtotal),
+      discountAmount: _round2(cart.discountAmount),
+      vatAmount: _round2(cart.taxAmount),
       saleDate: _formatDate(DateTime.now()),
       receiptItems: _receiptItemsFrom(cart),
     );
@@ -74,12 +78,13 @@ class PaymentController extends Notifier<PaymentState> {
     final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
     return accounts.where((a) => a.paymentSystem.id == system.id).toList();
   }
+
   /// - 1 entry selected -> defaults to the full payable amount (locked
   ///   in the UI afterward if that entry is non-cash).
   /// - 2 entries selected -> starting 50/50 split, both editable.
   List<SelectedPaymentEntry> _recalculateAmounts(
-    List<SelectedPaymentEntry> entries,
-  ) {
+      List<SelectedPaymentEntry> entries,
+      ) {
     if (entries.isEmpty) return entries;
     if (entries.length == 1) {
       return [entries.first.copyWith(amount: state.payableAmount)];
@@ -96,7 +101,6 @@ class PaymentController extends Notifier<PaymentState> {
       ],
     );
   }
-
 
   /// Editing one amount auto-fills the other (when two methods are
   /// selected) with `payable - edited`, never below 0. Non-cash amounts
@@ -129,8 +133,8 @@ class PaymentController extends Notifier<PaymentState> {
     );
   }
 
-// TODO: replace these statics once branch / employee come from the
-// logged-in session instead of being fixed.
+  // TODO: replace these statics once branch / employee come from the
+  // logged-in session instead of being fixed.
   static const _salesType = '1';
   static const _branchId = '2';
   static const _employeeId = '2';
@@ -144,6 +148,7 @@ class PaymentController extends Notifier<PaymentState> {
 
     try {
       final result = await _repository.completeSale(_buildSalePayload());
+      if (!ref.mounted) return true;
       state = state.copyWith(
         isProcessing: false,
         isSaleCompleted: true,
@@ -153,6 +158,7 @@ class PaymentController extends Notifier<PaymentState> {
       ref.read(newSaleControllerProvider.notifier).clearAll();
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted) return false;
       state = state.copyWith(
         isProcessing: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -167,9 +173,6 @@ class PaymentController extends Notifier<PaymentState> {
     final cart = ref.read(cartControllerProvider);
     final items = cart.items;
     final payable = _money(state.payableAmount);
-
-    // Percent typed by the seller is sent exactly; an amount-mode discount
-    // is converted to a percent with extra precision to avoid cent drift.
 
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
 
@@ -217,15 +220,18 @@ class PaymentController extends Notifier<PaymentState> {
     try {
       await ReceiptShareService.shareReceiptImage(
         boundaryKey: boundaryKey,
-        saleId: DateTime.now().millisecondsSinceEpoch.toString(),
+        saleId:
+        state.salesBillNo ?? DateTime.now().millisecondsSinceEpoch.toString(),
       );
-      state = state.copyWith(isSharing: false);
+      if (ref.mounted) state = state.copyWith(isSharing: false);
       return true;
     } catch (_) {
-      state = state.copyWith(
-        isSharing: false,
-        shareError: 'shareFailedMessage',
-      );
+      if (ref.mounted) {
+        state = state.copyWith(
+          isSharing: false,
+          shareError: 'shareFailedMessage',
+        );
+      }
       return false;
     }
   }
@@ -233,37 +239,36 @@ class PaymentController extends Notifier<PaymentState> {
   Future<bool> printReceipt(String printerMac) async {
     state = state.copyWith(isPrinting: true, printError: null);
     try {
-      final connected = await ThermalPrinterService.isConnected();
-      if (!connected) {
-        final ok = await ThermalPrinterService.connect(printerMac);
-        if (!ok) {
-          state = state.copyWith(
-            isPrinting: false,
-            printError: 'printFailedMessage',
+      final connected = await ThermalPrinterService.isConnected() ||
+          await ThermalPrinterService.connect(printerMac);
+      final success = connected &&
+          await ThermalPrinterService.printReceipt(
+            storeName: AppStrings.appBrandName,
+            billNo: state.salesBillNo,
+            saleDate: state.saleDate,
+            methodLabel: state.methodLabel,
+            items: state.receiptItems,
+            total: state.payableAmount,
+            givenAmount: state.totalCollected,
+            changeDue: state.cashReturn,
+            subtotal: state.subtotal,
+            discount: state.discountAmount,
+            vat: state.vatAmount,
           );
-          return false;
-        }
+      if (ref.mounted) {
+        state = state.copyWith(
+          isPrinting: false,
+          printError: success ? null : 'printFailedMessage',
+        );
       }
-      final success = await ThermalPrinterService.printReceipt(
-        storeName: 'Advance POS', // TODO: source from store settings once available
-        // saleId: state.saleId,
-        saleDate: state.saleDate,
-        methodLabel: state.methodLabel,
-        items: state.receiptItems,
-        total: state.payableAmount,
-        givenAmount: state.totalCollected,
-        changeDue: state.changeDue,
-      );
-      state = state.copyWith(
-        isPrinting: false,
-        printError: success ? null : 'printFailedMessage',
-      );
       return success;
     } catch (_) {
-      state = state.copyWith(
-        isPrinting: false,
-        printError: 'printFailedMessage',
-      );
+      if (ref.mounted) {
+        state = state.copyWith(
+          isPrinting: false,
+          printError: 'printFailedMessage',
+        );
+      }
       return false;
     }
   }

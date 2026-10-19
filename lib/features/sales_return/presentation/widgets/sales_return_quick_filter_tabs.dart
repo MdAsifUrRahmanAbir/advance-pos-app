@@ -74,7 +74,7 @@ class SalesReturnQuickFilterTabs extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  AppStrings.srRecordsCount(shownCount, totalCount),
+                  AppStrings.expRecordsCount(shownCount, totalCount),
                   style: TextStyle(
                     color: context.appColors.textHint,
                     fontSize: AppSizes.fontXs,

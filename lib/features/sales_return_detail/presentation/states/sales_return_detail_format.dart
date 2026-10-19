@@ -10,7 +10,7 @@ class SalesReturnDetailFormat {
   /// '2790' -> '2,790.00'. Unreadable values are returned as they came.
   static String money(String raw) {
     final v = _parse(raw);
-    if (v == null) return raw.isEmpty ? AppStrings.srdEmptyValue : raw;
+    if (v == null) return raw.isEmpty ? AppStrings.emptyValue : raw;
     final parts = v.abs().toStringAsFixed(2).split('.');
     final grouped = parts.first.replaceAllMapped(
       RegExp(r'\B(?=(\d{3})+(?!\d))'),
@@ -22,7 +22,7 @@ class SalesReturnDetailFormat {
   /// '1.00' -> '1' · '1.50' -> '1.5'
   static String quantity(String raw) {
     final v = _parse(raw);
-    if (v == null) return raw.isEmpty ? AppStrings.srdEmptyValue : raw;
+    if (v == null) return raw.isEmpty ? AppStrings.emptyValue : raw;
     return v == v.roundToDouble() ? v.toInt().toString() : v.toString();
   }
 
@@ -30,7 +30,7 @@ class SalesReturnDetailFormat {
 
   static String names(List<SalesReturnNamedItem> items) {
     final joined = items.map((e) => e.name).where((n) => n.isNotEmpty).join(', ');
-    return joined.isEmpty ? AppStrings.srdEmptyValue : joined;
+    return joined.isEmpty ? AppStrings.emptyValue : joined;
   }
 
   /// Plain-text summary for the share sheet.
@@ -40,16 +40,16 @@ class SalesReturnDetailFormat {
       ..writeln(r.returnBillNo)
       ..writeln('${AppStrings.srdReturnDateLabel}: ${r.returnDate}')
       ..writeln('${AppStrings.srdSalesBillNoLabel}: ${r.salesBillNo}')
-      ..writeln('${AppStrings.srdCustomerLabel}: ${d.customerName}')
+      ..writeln('${AppStrings.customerLabel}: ${d.customerName}')
       ..writeln('${AppStrings.srdReturnByLabel}: ${d.returnBy}')
       ..writeln(
-        '${AppStrings.srdPaymentSystemLabel}: ${names(d.payment.paymentSystems)}',
+        '${AppStrings.invoicePaymentSystemLabel}: ${names(d.payment.paymentSystems)}',
       )
       ..writeln(
-        '${AppStrings.srdPaymentAccountLabel}: ${names(d.payment.paymentAccounts)}',
+        '${AppStrings.invoicePaymentAccountLabel}: ${names(d.payment.paymentAccounts)}',
       )
       ..writeln()
-      ..writeln('${AppStrings.srdProductsSectionTitle}:');
+      ..writeln('${AppStrings.productsTitle}:');
     for (final l in d.returnDetails) {
       b.writeln(
         '• ${l.productName} × ${quantity(l.quantity)} — ${money(l.totalAmount)}',
@@ -58,12 +58,12 @@ class SalesReturnDetailFormat {
     b
       ..writeln()
       ..writeln(
-        '${AppStrings.srdTotalQuantityLabel}: ${quantity(r.totalReturnQuantity)}',
+        '${AppStrings.invoiceTotalQuantityLabel}: ${quantity(r.totalReturnQuantity)}',
       )
       ..writeln(
         '${AppStrings.srdTotalReturnAmountLabel}: ${money(r.totalReturnAmount)}',
       )
-      ..writeln('${AppStrings.srdDiscountLabel}: ${money(r.returnDisAmount)}')
+      ..writeln('${AppStrings.invoiceDiscountLabel}: ${money(r.returnDisAmount)}')
       ..write(
         '${AppStrings.srdPayableLabel}: ${money(r.payableReturnAmount)}',
       );

@@ -15,7 +15,7 @@ class SalesReturnDetailActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomActionBar(
       child: PrimaryButton(
-        label: AppStrings.srdShare,
+        label: AppStrings.invoiceShareAction,
         icon: Icons.share_outlined,
         onPressed: () {
           final box = context.findRenderObject() as RenderBox?;

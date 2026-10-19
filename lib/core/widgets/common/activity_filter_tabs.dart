@@ -19,9 +19,9 @@ class ActivityFilterTabs extends StatelessWidget {
       filters: const ['today', 'week', 'month'],
       selectedFilters: {selected},
       labelBuilder: (f) => switch (f) {
-        'today' => AppStrings.filterToday,
-        'week' => AppStrings.filterThisWeek,
-        _ => AppStrings.filterThisMonth,
+        'today' => AppStrings.invoiceDatePresetToday,
+        'week' => AppStrings.invoiceDatePresetThisMonth,
+        _ => AppStrings.invoiceDatePresetThisMonth,
       },
       onSelected: onChanged,
     );

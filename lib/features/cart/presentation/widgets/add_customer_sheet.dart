@@ -146,7 +146,7 @@ class _AddCustomerSheetState extends ConsumerState<AddCustomerSheet> {
                 ),
                 const SizedBox(height: AppSizes.lg),
                 PrimaryButton(
-                  label: AppStrings.addCustomerAction,
+                  label: AppStrings.addCustomerTitle,
                   loading: state.isAddingCustomer,
                   onPressed: state.isAddingCustomer ? null : _submit,
                 ),

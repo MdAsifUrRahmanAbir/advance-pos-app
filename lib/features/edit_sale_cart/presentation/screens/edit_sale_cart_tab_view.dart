@@ -55,7 +55,7 @@ class _EditSaleCartTabViewState extends ConsumerState<EditSaleCartTabView>
           if (state.technicalDetails != null)
             TextButton(
               onPressed: () => viewTechnicalDetails(state),
-              child: const Text(AppStrings.editSaleViewTechnicalDetails),
+              child: const Text(AppStrings.viewTechnicalDetails),
             ),
           const SizedBox(height: AppSizes.lg),
         ],

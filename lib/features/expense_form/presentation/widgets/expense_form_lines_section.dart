@@ -194,7 +194,7 @@ class _TotalRow extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            AppStrings.expFormTotal,
+            AppStrings.totalLabel,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: AppSizes.fontMd,

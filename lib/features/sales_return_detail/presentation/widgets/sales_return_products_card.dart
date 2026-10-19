@@ -23,7 +23,7 @@ class SalesReturnProductsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.srdProductsSectionTitle,
+            AppStrings.productsTitle,
             style: TextStyle(
               fontSize: AppSizes.fontMd,
               fontWeight: FontWeight.w700,
@@ -50,7 +50,7 @@ class SalesReturnProductsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${AppStrings.srdTotalQuantityLabel}: ${SalesReturnDetailFormat.quantity(r.totalReturnQuantity)}',
+                '${AppStrings.invoiceTotalQuantityLabel}: ${SalesReturnDetailFormat.quantity(r.totalReturnQuantity)}',
                 style: TextStyle(
                   fontSize: AppSizes.fontSm,
                   fontWeight: FontWeight.w700,
@@ -58,7 +58,7 @@ class SalesReturnProductsCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '${AppStrings.srdTotalAmountLabel}: ${SalesReturnDetailFormat.money(r.totalReturnAmount)}',
+                '${AppStrings.invoiceTotalAmountLabel}: ${SalesReturnDetailFormat.money(r.totalReturnAmount)}',
                 style: TextStyle(
                   fontSize: AppSizes.fontSm,
                   fontWeight: FontWeight.w700,
@@ -102,7 +102,7 @@ class _LineRow extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.xs / 2),
               Text(
-                '${AppStrings.srdBarcodeLabel}: ${line.productBarcode.isEmpty ? AppStrings.srdEmptyValue : line.productBarcode}',
+                '${AppStrings.stockBarcodeLabel}: ${line.productBarcode.isEmpty ? AppStrings.emptyValue : line.productBarcode}',
                 style: TextStyle(
                   fontSize: AppSizes.fontXs,
                   color: context.appColors.textHint,
@@ -111,7 +111,7 @@ class _LineRow extends StatelessWidget {
               const SizedBox(height: AppSizes.xs / 2),
               Text(
                 hasDiscount
-                    ? '${AppStrings.srdUnitPriceLabel}: ${SalesReturnDetailFormat.money(line.salesPrice)}  •  ${AppStrings.srdDiscountLabel}: ${line.disRate}% (- ${SalesReturnDetailFormat.money(line.disAmount)})'
+                    ? '${AppStrings.srdUnitPriceLabel}: ${SalesReturnDetailFormat.money(line.salesPrice)}  •  ${AppStrings.invoiceDiscountLabel}: ${line.disRate}% (- ${SalesReturnDetailFormat.money(line.disAmount)})'
                     : '${AppStrings.srdUnitPriceLabel}: ${SalesReturnDetailFormat.money(line.salesPrice)}',
                 style: TextStyle(
                   fontSize: AppSizes.fontXs,

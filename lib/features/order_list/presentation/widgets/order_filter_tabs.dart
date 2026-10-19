@@ -15,7 +15,7 @@ class OrderFilterTabs extends ConsumerWidget {
       filters: const ['all', 'pending', 'completed', 'cancelled'],
       selectedFilters: {selected},
       labelBuilder: (f) => switch (f) {
-        'all' => AppStrings.orderTabAll,
+        'all' => AppStrings.filterAll,
         'pending' => AppStrings.orderTabPending,
         'completed' => AppStrings.orderTabCompleted,
         _ => AppStrings.orderTabCancelled,

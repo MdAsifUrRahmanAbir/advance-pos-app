@@ -36,7 +36,7 @@ class EditSaleReceiptCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _MetaRow(
-              label: AppStrings.editSaleReceiptBillLabel,
+              label: AppStrings.billLabel,
               value: state.updatedBillNo ?? state.billNo,
             ),
             _MetaRow(label: AppStrings.receiptDateLabel, value: state.saleDate),
@@ -45,22 +45,22 @@ class EditSaleReceiptCard extends StatelessWidget {
             for (final item in state.receiptItems)
               _AmountRow(label: '${item.quantity}× ${item.name}', value: item.lineTotal),
             const Divider(height: AppSizes.lg, color: AppColors.border),
-            _AmountRow(label: AppStrings.editSaleReceiptSubtotal, value: state.subtotal),
+            _AmountRow(label: AppStrings.subtotalLabel, value: state.subtotal),
             if (state.discountAmount > 0)
               _AmountRow(
-                label: AppStrings.editSaleReceiptDiscount,
+                label: AppStrings.invoiceDiscountLabel,
                 value: -state.discountAmount,
               ),
             if (state.vatAmount > 0)
-              _AmountRow(label: AppStrings.editSaleReceiptVat, value: state.vatAmount),
+              _AmountRow(label: AppStrings.vatInputLabel, value: state.vatAmount),
             _AmountRow(
-              label: AppStrings.editSaleReceiptTotal,
+              label: AppStrings.totalLabel,
               value: state.payableAmount,
               emphasized: true,
             ),
-            _AmountRow(label: AppStrings.editSaleReceiptPaid, value: state.totalCollected),
+            _AmountRow(label: AppStrings.invoicePaidLabel, value: state.totalCollected),
             if (state.cashReturn > 0)
-              _AmountRow(label: AppStrings.editSaleReceiptChange, value: state.cashReturn),
+              _AmountRow(label: AppStrings.change, value: state.cashReturn),
             const SizedBox(height: AppSizes.sm),
             Text(
               AppStrings.receiptThankYouLine,

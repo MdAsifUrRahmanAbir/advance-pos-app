@@ -22,7 +22,7 @@ class InvoiceProductsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.invoiceProductsSectionTitle,
+            AppStrings.productsTitle,
             style: TextStyle(fontSize: AppSizes.fontMd, fontWeight: FontWeight.w700, color: context.appColors.textPrimary),
           ),
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
@@ -71,7 +71,7 @@ class _LineRow extends StatelessWidget {
               ),
               const SizedBox(height: AppSizes.xs / 2),
               Text(
-                '${AppStrings.invoiceBarcodeLabel}: ${line.productBarcode.isEmpty ? '-' : line.productBarcode}',
+                '${AppStrings.stockBarcodeLabel}: ${line.productBarcode.isEmpty ? '-' : line.productBarcode}',
                 style: TextStyle(fontSize: AppSizes.fontXs, color: context.appColors.textHint),
               ),
               const SizedBox(height: AppSizes.xs / 2),

@@ -61,7 +61,7 @@ class ExpenseListSection extends StatelessWidget {
       return ErrorState(
         message: errorMessage!,
         onRetry: onRetry,
-        retryLabel: AppStrings.expRetry,
+        retryLabel: AppStrings.retry,
       );
     }
 
@@ -151,7 +151,7 @@ class _Footer extends StatelessWidget {
             ),
             TextButton(
               onPressed: onRetry,
-              child: const Text(AppStrings.expRetry),
+              child: const Text(AppStrings.retry),
             ),
           ],
         ),

@@ -23,8 +23,8 @@ class SalesReturnInfoCard extends StatelessWidget {
     final hasRate =
         r.salesDisRate != null && r.salesDisRate!.trim().isNotEmpty;
     final discountLabel = hasRate
-        ? '${AppStrings.srdDiscountLabel} (${r.salesDisRate}%)'
-        : AppStrings.srdDiscountLabel;
+        ? '${AppStrings.invoiceDiscountLabel} (${r.salesDisRate}%)'
+        : AppStrings.invoiceDiscountLabel;
     final hasDiscount = SalesReturnDetailFormat.isPositive(r.returnDisAmount);
 
     return CustomCard(
@@ -43,22 +43,22 @@ class SalesReturnInfoCard extends StatelessWidget {
           _row(context, AppStrings.srdReturnBillNoLabel, r.returnBillNo),
           _row(context, AppStrings.srdReturnDateLabel, r.returnDate),
           _row(context, AppStrings.srdSalesBillNoLabel, r.salesBillNo),
-          _row(context, AppStrings.srdCustomerLabel, data.customerName),
+          _row(context, AppStrings.customerLabel, data.customerName),
           _row(context, AppStrings.srdReturnByLabel, data.returnBy),
           _row(
             context,
-            AppStrings.srdPaymentSystemLabel,
+            AppStrings.invoicePaymentSystemLabel,
             SalesReturnDetailFormat.names(data.payment.paymentSystems),
           ),
           _row(
             context,
-            AppStrings.srdPaymentAccountLabel,
+            AppStrings.invoicePaymentAccountLabel,
             SalesReturnDetailFormat.names(data.payment.paymentAccounts),
           ),
           _row(
             context,
-            AppStrings.srdRemarksLabel,
-            r.remarks.isEmpty ? AppStrings.srdEmptyValue : r.remarks,
+            AppStrings.remarksLabel,
+            r.remarks.isEmpty ? AppStrings.emptyValue : r.remarks,
           ),
           const SizedBox(height: AppSizes.sm),
           Divider(color: context.appColors.divider),
@@ -110,7 +110,7 @@ class SalesReturnInfoCard extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              value.isEmpty ? AppStrings.srdEmptyValue : value,
+              value.isEmpty ? AppStrings.emptyValue : value,
               style: TextStyle(
                 fontSize: AppSizes.fontSm,
                 fontWeight: FontWeight.w600,

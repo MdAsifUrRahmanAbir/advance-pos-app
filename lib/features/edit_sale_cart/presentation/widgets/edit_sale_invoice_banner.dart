@@ -66,7 +66,7 @@ class EditSaleInvoiceBanner extends StatelessWidget {
                 style: TextStyle(color: colors.textSecondary, fontSize: AppSizes.fontXs),
               ),
               Text(
-                '${AppStrings.editSaleOriginalPaidLabel}: '
+                '${AppStrings.invoicePaidLabel}: '
                     '${CurrencyFormatter.format(sale.paidAmountValue)}',
                 style: TextStyle(color: colors.textSecondary, fontSize: AppSizes.fontXs),
               ),

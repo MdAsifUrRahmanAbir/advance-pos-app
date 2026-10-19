@@ -40,7 +40,7 @@ class ExpenseItemMenu extends StatelessWidget {
     }
 
     return PopupMenuButton<ExpenseMenuAction>(
-      tooltip: AppStrings.expMenuTooltip,
+      tooltip: AppStrings.moreOptions,
       enabled: onEdit != null || onDelete != null,
       color: AppColors.surface,
       shape: RoundedRectangleBorder(
@@ -64,7 +64,7 @@ class ExpenseItemMenu extends StatelessWidget {
           value: ExpenseMenuAction.edit,
           child: _MenuRow(
             icon: Icons.edit_outlined,
-            label: AppStrings.expEdit,
+            label: AppStrings.edit,
             color: AppColors.textPrimary,
           ),
         ),
@@ -72,7 +72,7 @@ class ExpenseItemMenu extends StatelessWidget {
           value: ExpenseMenuAction.delete,
           child: _MenuRow(
             icon: Icons.delete_outline_rounded,
-            label: AppStrings.expDelete,
+            label: AppStrings.delete,
             color: AppColors.error,
           ),
         ),

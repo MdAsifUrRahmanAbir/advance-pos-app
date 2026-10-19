@@ -35,7 +35,7 @@ class SalesReturnListFooter extends StatelessWidget {
             ),
             TextButton(
               onPressed: onRetry,
-              child: const Text(AppStrings.srRetry),
+              child: const Text(AppStrings.retry),
             ),
           ],
         ),

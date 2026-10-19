@@ -46,7 +46,7 @@ class ErrorContent extends StatelessWidget {
         ),
         const SizedBox(height: AppSizes.sm + AppSizes.xs),
         Text(
-          AppStrings.errorSubtitle,
+          AppStrings.errorOccurred,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppSizes.fontMd,

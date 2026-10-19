@@ -80,8 +80,8 @@ class SalesReturnMobileView extends ConsumerWidget {
         context,
         title: AppStrings.srDeleteTitle,
         message: AppStrings.srDeleteMessage(item.returnBillNo),
-        confirmText: AppStrings.srDelete,
-        cancelText: AppStrings.srCancel,
+        confirmText: AppStrings.delete,
+        cancelText: AppStrings.cancel,
         destructive: true,
       );
       if (confirmed != true || !context.mounted) return;
@@ -111,7 +111,7 @@ class SalesReturnMobileView extends ConsumerWidget {
               Clipboard.setData(
                 ClipboardData(text: state.technicalDetails ?? ''),
               );
-              CustomSnackbar.show(context, AppStrings.srTechnicalCopied);
+              CustomSnackbar.show(context, AppStrings.technicalDetailsCopied);
             },
           ),
         ),
@@ -136,14 +136,14 @@ class SalesReturnMobileView extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: AppSizes.md),
               child: TextButton(
                 onPressed: viewTechnicalDetails,
-                child: const Text(AppStrings.srViewTechnicalDetails),
+                child: const Text(AppStrings.viewTechnicalDetails),
               ),
             ),
         ],
       );
     } else if (items.isEmpty) {
       body = const EmptyState(
-        title: AppStrings.srTitle,
+        title: AppStrings.salesReturnTitle,
         message: AppStrings.srEmptyMessage,
         icon: Icons.assignment_return_outlined,
       );
@@ -186,7 +186,7 @@ class SalesReturnMobileView extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppHeaderBar(
-          title: AppStrings.srTitle,
+          title: AppStrings.salesReturnTitle ,
           backStyle: context.canPop()
               ? HeaderBackStyle.chevron
               : HeaderBackStyle.none,

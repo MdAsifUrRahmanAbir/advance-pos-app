@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../../../../core/widgets/common/secondary_button.dart';
 
@@ -29,7 +29,7 @@ class PaymentSuccessActions extends StatelessWidget {
     return Column(
       children: [
         PrimaryButton(
-          label: AppStrings.actionNewSale,
+          label: AppStrings.newSaleTitle,
           icon: Icons.add_shopping_cart_rounded,
           onPressed: onNewSale,
         ),
@@ -81,42 +81,39 @@ class _OutlinedActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: AppSizes.sm + 2),
-        side: const BorderSide(color: AppColors.border),
+        side: BorderSide(color: colors.border),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
         ),
       ),
       child: isLoading
-          ? const SizedBox(
-              height: AppSizes.iconSm,
-              width: AppSizes.iconSm,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppColors.textSecondary,
-              ),
-            )
+          ? SizedBox(
+        height: AppSizes.iconSm,
+        width: AppSizes.iconSm,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: colors.textSecondary,
+        ),
+      )
           : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: AppSizes.iconSm,
-                  color: AppColors.textSecondary,
-                ),
-                const SizedBox(width: AppSizes.xs),
-                Text(
-                  label,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: AppSizes.fontSm,
-                  ),
-                ),
-              ],
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: AppSizes.iconSm, color: colors.textSecondary),
+          const SizedBox(width: AppSizes.xs),
+          Text(
+            label,
+            style: TextStyle(
+              color: colors.textSecondary,
+              fontSize: AppSizes.fontSm,
             ),
+          ),
+        ],
+      ),
     );
   }
 }

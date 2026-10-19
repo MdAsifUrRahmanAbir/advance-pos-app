@@ -86,14 +86,14 @@ class SalesOverviewCard extends StatelessWidget {
                 if (data.discount != null)
                   Expanded(
                     child: DashboardMetric(
-                      label: AppStrings.dashDiscount,
+                      label: AppStrings.invoiceDiscountLabel,
                       value: DashboardFormat.money(data.discount!),
                     ),
                   ),
                 if (data.vat != null)
                   Expanded(
                     child: DashboardMetric(
-                      label: AppStrings.dashVat,
+                      label: AppStrings.invoiceVatLabel,
                       value: DashboardFormat.money(data.vat!),
                     ),
                   ),

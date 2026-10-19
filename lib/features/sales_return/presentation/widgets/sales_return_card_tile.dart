@@ -168,7 +168,7 @@ class SalesReturnCardTile extends StatelessWidget {
               ),
               Expanded(
                 child: _Stat(
-                  label: AppStrings.srDiscountLabel,
+                  label: AppStrings.invoiceDiscountLabel,
                   value: item.returnDisAmount,
                 ),
               ),

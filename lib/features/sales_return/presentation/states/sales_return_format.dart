@@ -20,17 +20,17 @@ class SalesReturnFormat {
       case SalesReturnDatePreset.all:
         return AppStrings.filterAll;
       case SalesReturnDatePreset.today:
-        return AppStrings.srDateToday;
+        return AppStrings.invoiceDatePresetToday;
       case SalesReturnDatePreset.yesterday:
-        return AppStrings.srDateYesterday;
+        return AppStrings.invoiceDatePresetYesterday;
       case SalesReturnDatePreset.last7Days:
-        return AppStrings.srDateLast7Days;
+        return AppStrings.invoiceDatePresetLast7Days;
       case SalesReturnDatePreset.thisMonth:
-        return AppStrings.srDateThisMonth;
+        return AppStrings.invoiceDatePresetThisMonth;
       case SalesReturnDatePreset.lastMonth:
-        return AppStrings.srDateLastMonth;
+        return AppStrings.invoiceDatePresetLastMonth;
       case SalesReturnDatePreset.custom:
-        return AppStrings.srDateCustom;
+        return AppStrings.expDateCustomRange;
     }
   }
 }

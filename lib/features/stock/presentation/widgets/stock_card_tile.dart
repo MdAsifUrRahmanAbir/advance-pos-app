@@ -105,7 +105,7 @@ class StockCardTile extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSizes.sm / 2),
                   _StatColumn(
-                    label: AppStrings.stockQuantityLabel,
+                    label: AppStrings.srQuantityLabel,
                     value: '${item.quantity} pcs',
                     isTable: false,
                   ),

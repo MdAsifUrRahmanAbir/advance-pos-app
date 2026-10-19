@@ -50,11 +50,11 @@ class StockQuickFilterTabs extends StatelessWidget {
       labelBuilder: (key) {
         switch (key) {
           case 'all':
-            return AppStrings.stockFilterAll;
+            return AppStrings.filterAll;
           case 'inStock':
-            return AppStrings.stockFilterInStock;
+            return AppStrings.stockStatusInStock;
           case 'outOfStock':
-            return AppStrings.stockFilterOutOfStock;
+            return AppStrings.stockStatusOutOfStock;
           default:
             final id = int.parse(key.split(':').last);
             final category = topCategories.firstWhere((c) => c.categoryId == id);
