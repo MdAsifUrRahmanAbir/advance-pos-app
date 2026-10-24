@@ -68,8 +68,6 @@ class AppStrings {
   static const String verifyAndProceed = 'Verify & Proceed';
   static const String didntReceiveCode = "Didn't receive code? ";
   static const String resendOtp = 'Resend OTP';
-
-  // ---- Added: Register screen ----
   static const String registerWorkspace = 'Register Workspace';
   static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
@@ -78,6 +76,8 @@ class AppStrings {
   static const String registerPasswordHint = 'MySecureP@ss1';
   static const String confirmPassword = 'Confirm Password';
   static const String agreeToTermsPrefix = 'I agree to the ';
+
+  // ---- Added: Register screen ----
   static const String termsAndConditions = 'Terms & Conditions';
   static const String createAccount = 'Create Account';
   static const String alreadyHaveAccount = 'Already have an account? ';
@@ -687,4 +687,14 @@ class AppStrings {
   static const String repdGrandTotalLabel = 'Grand Total';
   static const String repdPayableAfterReturnLabel = 'Payable After Return';
   static const String repdGivenAmountLabel = 'Given Amount';
+
+
+  // ---- Sales replacement detail: sections (append only) ----
+  static const String repdSalesInfoSectionTitle = 'Sales Information';
+  static const String repdReturnSectionTitle = 'Return Information';
+  static const String repdSaleSectionTitle = 'Replacement Sale';
+  static const String repdSaleDateLabel = 'Sale Date';
+  static const String repdReturnedQtyLabel = 'Returned';
+  static const String repdVatChalanLabel = 'VAT Invoice No.';
+  static const String repdReturnAmountLabel = 'Return Amount';
 }

@@ -1,15 +1,15 @@
-class SalesReplacmentDetailModel {
+class SalesReplacementDetailModel {
   final String status;
   final String message;
   final ResultData resultData;
 
-  SalesReplacmentDetailModel({
+  SalesReplacementDetailModel({
     required this.status,
     required this.message,
     required this.resultData,
   });
 
-  factory SalesReplacmentDetailModel.fromJson(Map<String, dynamic> json) => SalesReplacmentDetailModel(
+  factory SalesReplacementDetailModel.fromJson(Map<String, dynamic> json) => SalesReplacementDetailModel(
     status: json["status"],
     message: json["message"],
     resultData: ResultData.fromJson(json["resultData"]),

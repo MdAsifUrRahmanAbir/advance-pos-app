@@ -27,6 +27,7 @@ class SalesReplacementPaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = data.replacementSale;
+    final returnAmount = data.resultDataReturn.payableReturnAmount;
     final hasDiscount = SalesReplacementDetailFormat.isPositive(
       s.discountAmount,
     );
@@ -75,6 +76,12 @@ class SalesReplacementPaymentCard extends StatelessWidget {
             label: AppStrings.repdGrandTotalLabel,
             value: SalesReplacementDetailFormat.money(s.grandTotal),
           ),
+          if (SalesReplacementDetailFormat.isPositive(returnAmount))
+            SalesReplacementAmountRow(
+              label: AppStrings.repdReturnAmountLabel,
+              value: '- ${SalesReplacementDetailFormat.money(returnAmount)}',
+              color: AppColors.warning,
+            ),
           SalesReplacementAmountRow(
             label: AppStrings.repdPayableAfterReturnLabel,
             value: SalesReplacementDetailFormat.money(s.payableAfterReturn),

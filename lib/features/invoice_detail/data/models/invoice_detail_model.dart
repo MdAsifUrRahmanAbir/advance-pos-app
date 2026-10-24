@@ -1,12 +1,3 @@
-// To parse this JSON data, do
-//
-//     final invoiceDetailModel = invoiceDetailModelFromJson(jsonString);
-
-import 'dart:convert';
-
-InvoiceDetailModel invoiceDetailModelFromJson(String str) => InvoiceDetailModel.fromJson(json.decode(str));
-
-String invoiceDetailModelToJson(InvoiceDetailModel data) => json.encode(data.toJson());
 
 class InvoiceDetailModel {
   final String status;

@@ -16,6 +16,7 @@ class SalesReplacementDetailController extends Notifier<SalesReplacementDetailSt
 
   final String returnBillNo;
   bool _loading = false;
+  bool _invoiceLoading = false;
 
   SalesReplacementDetailRepository get _repository =>
       ref.read(salesReplacementDetailRepositoryProvider);
@@ -28,16 +29,19 @@ class SalesReplacementDetailController extends Notifier<SalesReplacementDetailSt
     return const SalesReplacementDetailState(isLoading: true);
   }
 
-  /// First load, retry and pull-to-refresh. Keeps the visible detail while
-  /// reloading. Returns false on failure ([errorMessage] is set).
+  /// First load, retry and pull-to-refresh: the replacement detail, then
+  /// the original invoice. Keeps the visible data while reloading. Returns
+  /// false only when the replacement detail fails ([errorMessage] is set);
+  /// an invoice failure is reported separately by [loadInvoice].
   Future<bool> load() async {
     if (_loading) return false;
     _loading = true;
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       final detail = await _repository.getSalesReplacementDetail(returnBillNo);
       if (!ref.mounted) return true;
       state = state.copyWith(isLoading: false, detail: detail);
+      await loadInvoice();
       return true;
     } catch (error, stackTrace) {
       if (!ref.mounted) return false;
@@ -53,6 +57,30 @@ class SalesReplacementDetailController extends Notifier<SalesReplacementDetailSt
       return false;
     } finally {
       _loading = false;
+    }
+  }
+
+  /// Loads the original sale ("Sales Information") using the original sales
+  /// bill number from the replacement detail. Also the card's Retry.
+  Future<bool> loadInvoice() async {
+    final billNo = state.detail?.resultData.resultDataReturn.originalSalesBillNo;
+    if (billNo == null || billNo.isEmpty || _invoiceLoading) return false;
+    _invoiceLoading = true;
+    state = state.copyWith(isInvoiceLoading: true, clearInvoiceError: true);
+    try {
+      final invoice = await _repository.getInvoiceDetail(billNo);
+      if (!ref.mounted) return true;
+      state = state.copyWith(isInvoiceLoading: false, invoice: invoice);
+      return true;
+    } catch (error, stackTrace) {
+      if (!ref.mounted) return false;
+      state = state.copyWith(
+        isInvoiceLoading: false,
+        invoiceErrorMessage: getErrorMessage(error, stackTrace),
+      );
+      return false;
+    } finally {
+      _invoiceLoading = false;
     }
   }
 

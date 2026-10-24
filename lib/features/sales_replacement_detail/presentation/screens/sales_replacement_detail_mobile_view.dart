@@ -16,10 +16,11 @@ import '../controllers/sales_replacement_detail_controller.dart';
 import '../states/sales_replacement_detail_format.dart';
 import '../states/sales_replacement_detail_skeleton_data.dart';
 import '../widgets/sales_replacement_detail_actions.dart';
-import '../widgets/sales_replacement_info_card.dart';
 import '../widgets/sales_replacement_payment_card.dart';
 import '../widgets/sales_replacement_replacement_products_card.dart';
-import '../widgets/sales_replacement_returned_products_card.dart';
+import '../widgets/sales_replacement_return_card.dart';
+import '../widgets/sales_replacement_sale_info_card.dart';
+import '../widgets/sales_replacement_sales_info_card.dart';
 
 class SalesReplacementDetailMobileView extends ConsumerWidget {
   final String returnBillNo;
@@ -112,9 +113,20 @@ class SalesReplacementDetailMobileView extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SalesReplacementInfoCard(data: shown),
+              SalesReplacementSalesInfoCard(
+                invoice: state.invoice,
+                isLoading: state.isInvoiceLoading,
+                errorMessage: state.invoiceErrorMessage,
+                onRetry: controller.loadInvoice,
+                returnedQuantities:
+                SalesReplacementDetailFormat.returnedQuantities(
+                  shown.returnDetails,
+                ),
+              ),
               const SizedBox(height: AppSizes.md),
-              SalesReplacementReturnedProductsCard(data: shown),
+              SalesReplacementReturnCard(data: shown),
+              const SizedBox(height: AppSizes.md),
+              SalesReplacementSaleInfoCard(data: shown),
               const SizedBox(height: AppSizes.md),
               SalesReplacementReplacementProductsCard(data: shown),
               const SizedBox(height: AppSizes.md),

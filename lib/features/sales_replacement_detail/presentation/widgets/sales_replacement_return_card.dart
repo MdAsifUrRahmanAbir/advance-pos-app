@@ -8,18 +8,19 @@ import '../../../../core/widgets/common/custom_card.dart';
 import '../../data/models/sales_replacement_detail_model.dart' show ResultData;
 import '../states/sales_replacement_detail_format.dart';
 import 'sales_replacement_detail_rows.dart';
+import 'sales_replacement_line_row.dart';
+import 'sales_replacement_totals_row.dart';
 
-/// "Replacement Information": who, when, bills and payment, then the
-/// returned-amount breakdown ending in the payable return amount.
-class SalesReplacementInfoCard extends StatelessWidget {
+/// "Return Information": return bill, date and staff, the returned product
+/// lines with their totals, then the discount and payable return amount.
+class SalesReplacementReturnCard extends StatelessWidget {
   final ResultData data;
 
-  const SalesReplacementInfoCard({super.key, required this.data});
+  const SalesReplacementReturnCard({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     final r = data.resultDataReturn;
-    final s = data.replacementSale;
     final rate = r.salesDisRate?.toString().trim() ?? '';
     final discountLabel = rate.isEmpty
         ? AppStrings.invoiceDiscountLabel
@@ -33,7 +34,7 @@ class SalesReplacementInfoCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            AppStrings.repdInfoSectionTitle,
+            AppStrings.repdReturnSectionTitle,
             style: TextStyle(
               fontSize: AppSizes.fontMd,
               fontWeight: FontWeight.w700,
@@ -50,49 +51,42 @@ class SalesReplacementInfoCard extends StatelessWidget {
             value: r.returnDate,
           ),
           SalesReplacementInfoRow(
-            label: AppStrings.srdSalesBillNoLabel,
-            value: r.originalSalesBillNo,
-          ),
-          SalesReplacementInfoRow(
-            label: AppStrings.repdReplacementBillLabel,
-            value: s.salesBillNo,
-          ),
-          SalesReplacementInfoRow(
-            label: AppStrings.repdReplacementDateLabel,
-            value: s.salesDate,
-          ),
-          SalesReplacementInfoRow(
-            label: AppStrings.invoiceCustomerLabel,
-            value: data.customerName,
-          ),
-          if (data.customerMobile.isNotEmpty)
-            SalesReplacementInfoRow(
-              label: AppStrings.invoiceMobileLabel,
-              value: data.customerMobile,
-            ),
-          SalesReplacementInfoRow(
             label: AppStrings.srdReturnByLabel,
             value: data.returnBy,
-          ),
-          SalesReplacementInfoRow(
-            label: AppStrings.invoicePaymentSystemLabel,
-            value: SalesReplacementDetailFormat.names(
-              s.paymentSystems.map((e) => e.name),
-            ),
-          ),
-          SalesReplacementInfoRow(
-            label: AppStrings.invoicePaymentAccountLabel,
-            value: SalesReplacementDetailFormat.names(
-              s.paymentAccounts.map((e) => e.name),
-            ),
           ),
           const SizedBox(height: AppSizes.sm),
           Divider(color: context.appColors.divider),
           const SizedBox(height: AppSizes.sm),
-          SalesReplacementAmountRow(
-            label: AppStrings.srdTotalReturnAmountLabel,
-            value: SalesReplacementDetailFormat.money(r.totalReturnAmount),
+          if (data.returnDetails.isEmpty)
+            Text(
+              AppStrings.srdNoProducts,
+              style: TextStyle(
+                fontSize: AppSizes.fontSm,
+                color: context.appColors.textHint,
+              ),
+            )
+          else
+            for (final line in data.returnDetails) ...[
+              SalesReplacementLineRow(
+                name: line.productName,
+                barcode: line.productBarcode,
+                unitPrice: line.salesPrice,
+                discountRate: line.disRate,
+                discountAmount: line.disAmount,
+                quantity: line.quantity,
+                total: line.totalAmount,
+              ),
+              const SizedBox(height: AppSizes.sm),
+            ],
+          Divider(color: context.appColors.divider),
+          const SizedBox(height: AppSizes.sm),
+          SalesReplacementTotalsRow(
+            quantity: SalesReplacementDetailFormat.quantity(
+              r.totalReturnQuantity,
+            ),
+            amount: SalesReplacementDetailFormat.money(r.totalReturnAmount),
           ),
+          const SizedBox(height: AppSizes.sm),
           SalesReplacementAmountRow(
             label: discountLabel,
             value:

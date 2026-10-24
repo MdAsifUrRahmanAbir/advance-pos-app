@@ -7,9 +7,10 @@ import '../../../../core/theme/app_color_scheme.dart';
 import '../states/sales_replacement_detail_format.dart';
 
 /// One product line: name, barcode, unit price (+ discount when there is
-/// one), quantity and line total. Shared by the returned and replacement
-/// product cards; values are `Object?` because the API mixes strings and
-/// numbers.
+/// one), quantity and line total. Shared by the sales, return and
+/// replacement cards; values are `Object?` because the API mixes strings
+/// and numbers. [returnedQuantity] adds a "Returned" badge (original sale
+/// lines only) and is ignored when null or zero.
 class SalesReplacementLineRow extends StatelessWidget {
   final String name;
   final String barcode;
@@ -18,6 +19,7 @@ class SalesReplacementLineRow extends StatelessWidget {
   final Object? discountAmount;
   final Object? quantity;
   final Object? total;
+  final Object? returnedQuantity;
 
   const SalesReplacementLineRow({
     super.key,
@@ -28,14 +30,17 @@ class SalesReplacementLineRow extends StatelessWidget {
     required this.discountAmount,
     required this.quantity,
     required this.total,
+    this.returnedQuantity,
   });
 
   static const double _qtyWidth = 40;
   static const double _amountWidth = 90;
+  static const double _badgeAlpha = 0.12; // no AppSizes/AppColors token
 
   @override
   Widget build(BuildContext context) {
     final hasDiscount = SalesReplacementDetailFormat.isPositive(discountAmount);
+    final hasReturn = SalesReplacementDetailFormat.isPositive(returnedQuantity);
     final price = SalesReplacementDetailFormat.money(unitPrice);
 
     return Row(
@@ -73,6 +78,27 @@ class SalesReplacementLineRow extends StatelessWidget {
                       : context.appColors.textHint,
                 ),
               ),
+              if (hasReturn) ...[
+                const SizedBox(height: AppSizes.xs),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs / 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withValues(alpha: _badgeAlpha),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+                  ),
+                  child: Text(
+                    '${AppStrings.repdReturnedQtyLabel}: ${SalesReplacementDetailFormat.quantity(returnedQuantity)}',
+                    style: const TextStyle(
+                      fontSize: AppSizes.fontXs,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

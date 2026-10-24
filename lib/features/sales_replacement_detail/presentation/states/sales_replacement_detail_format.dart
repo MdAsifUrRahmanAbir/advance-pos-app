@@ -1,5 +1,6 @@
 import '../../../../core/constants/app_strings.dart';
-import '../../data/models/sales_replacement_detail_model.dart' show ResultData;
+import '../../data/models/sales_replacement_detail_model.dart'
+    show ResultData, ReturnDetail;
 
 /// Number formatting and share text for the sales replacement detail.
 ///
@@ -38,6 +39,16 @@ class SalesReplacementDetailFormat {
   }
 
   static bool isPositive(Object? raw) => (_parse(raw) ?? 0) > 0;
+
+  /// Returned quantity per product id, summed over the return lines. Used
+  /// for the "Returned" badge on the original sale's lines.
+  static Map<int, num> returnedQuantities(Iterable<ReturnDetail> lines) {
+    final totals = <int, num>{};
+    for (final l in lines) {
+      totals[l.productId] = (totals[l.productId] ?? 0) + (_parse(l.quantity) ?? 0);
+    }
+    return totals;
+  }
 
   static String names(Iterable<String> items) {
     final joined = items.where((n) => n.isNotEmpty).join(', ');
