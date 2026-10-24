@@ -1,3 +1,4 @@
+import 'package:advance_pos_app/core/widgets/common/add_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -82,20 +83,14 @@ class ExpenseMobileView extends ConsumerWidget {
         ok
             ? AppStrings.expDeleted(item.expenseNo)
             : (ref.read(expenseControllerProvider).errorMessage ??
-            AppStrings.expDeleteFailed),
+                  AppStrings.expDeleteFailed),
         error: !ok,
       );
     }
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => openForm(),
-        tooltip: AppStrings.expAddTooltip,
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.textWhite,
-        child: const Icon(Icons.add_rounded),
-      ),
+      floatingActionButton: AddButtonWidget(onTap: () => openForm()),
       body: Column(
         children: [
           ExpenseHeader(onBack: () => context.pop()),

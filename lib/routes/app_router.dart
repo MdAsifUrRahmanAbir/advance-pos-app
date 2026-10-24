@@ -1,3 +1,5 @@
+import 'package:advance_pos_app/features/sales_replacement_edit/presentation/screens/sales_replacement_edit_screen.dart';
+import 'package:advance_pos_app/features/sales_replacement_add/presentation/screens/sales_replacement_add_screen.dart';
 import 'package:advance_pos_app/features/sales_return_detail/presentation/screens/sales_return_detail_screen.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -391,7 +393,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-
       GoRoute(
         path: RouteNames.editSaleCart,
         pageBuilder: (context, state) => buildPageWithTransition(
@@ -410,7 +411,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-
       GoRoute(
         path: RouteNames.salesReplacement,
         pageBuilder: (context, state) => buildPageWithTransition(
@@ -427,6 +427,24 @@ final routerProvider = Provider<GoRouter>((ref) {
           child: SalesReplacementDetailScreen(
             returnBillNo: state.extra as String,
           ),
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.salesReplacementAdd,
+        builder: (context, state) => const SalesReplacementAddScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SalesReplacementAddScreen(),
+        ),
+      ),
+      GoRoute(
+        path: RouteNames.salesReplacementEdit,
+        builder: (context, state) => const SalesReplacementEditScreen(),
+        pageBuilder: (context, state) => buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const SalesReplacementEditScreen(),
         ),
       ),
     ],

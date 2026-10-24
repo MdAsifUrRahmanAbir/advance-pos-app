@@ -51,4 +51,6 @@ class RouteNames {
 
   static const String salesReplacement = '/sales_replacement';
   static const String salesReplacementDetail = '/sales_replacement_detail';
+  static const String salesReplacementAdd = '/sales_replacement_add';
+  static const String salesReplacementEdit = '/sales_replacement_edit';
 }
