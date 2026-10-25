@@ -90,38 +90,55 @@ class _CustomersTabViewState extends ConsumerState<CustomersTabView> {
                   //     ),
                   //   ),
                   Expanded(
-                    child: isInitialLoad
-                        ? const CustomerListSkeleton(
-                      padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
-                    )
-                        : hasError
+                    child: hasError && !isInitialLoad
                         ? ErrorState(
                       message: state.errorMessage!,
                       onRetry: () => controller.getCustomers(reset: true),
                     )
-                        : items.isEmpty
+                        : items.isEmpty && !isInitialLoad
                         ? EmptyState(
                       title: AppStrings.customersTitle,
                       message: AppStrings.customersEmptyMessage,
                       icon: Icons.people_outline_rounded,
                     )
+                    // The refresh indicator stays mounted while the
+                    // skeleton shows (pull-to-refresh keeps its spinner).
                         : CustomRefreshWrapper(
                       onRefresh: controller.refresh,
-                      child: ListView.builder(
+                      child: isInitialLoad
+                          ? const CustomerListSkeleton(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.lg,
+                        ),
+                      )
+                          : ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.fromLTRB(AppSizes.lg, 0, AppSizes.lg, AppSizes.lg),
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSizes.lg,
+                          0,
+                          AppSizes.lg,
+                          AppSizes.lg,
+                        ),
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: items.length + (state.hasMore ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index >= items.length) {
                             return const Padding(
-                              padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
-                              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSizes.lg,
+                              ),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
                             );
                           }
                           final item = items[index];
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
+                            padding: const EdgeInsets.only(
+                              bottom: AppSizes.sm + AppSizes.xs,
+                            ),
                             child: CustomerCardItem(
                               item: item,
                               onShowInfo: () => _showInfo(context, item),

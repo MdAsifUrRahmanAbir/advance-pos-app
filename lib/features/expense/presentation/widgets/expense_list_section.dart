@@ -16,6 +16,9 @@ import 'expense_list_item.dart';
 class ExpenseListSection extends StatelessWidget {
   final List<ResultDatum> items;
   final bool isInitialLoading;
+
+  /// Pull-to-refresh in flight: shows the skeleton over the current list.
+  final bool isRefreshing;
   final bool isLoadingMore;
   final bool isLoadMoreFailed;
   final String? errorMessage;
@@ -47,6 +50,7 @@ class ExpenseListSection extends StatelessWidget {
     required this.onTapItem,
     required this.onEditItem,
     required this.onDeleteItem,
+    this.isRefreshing = false,
     this.bottomSpace = 0,
   });
 
@@ -54,7 +58,7 @@ class ExpenseListSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showSkeleton = isInitialLoading && items.isEmpty;
+    final showSkeleton = (isInitialLoading && items.isEmpty) || isRefreshing;
     final bottomInset = MediaQuery.of(context).padding.bottom;
 
     if (!showSkeleton && items.isEmpty && errorMessage != null) {
@@ -151,7 +155,7 @@ class _Footer extends StatelessWidget {
             ),
             TextButton(
               onPressed: onRetry,
-              child: const Text(AppStrings.retry),
+              child:  Text(AppStrings.retry),
             ),
           ],
         ),

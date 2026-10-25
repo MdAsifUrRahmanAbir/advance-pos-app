@@ -84,30 +84,37 @@ class _CustomersMobileViewState extends ConsumerState<CustomersMobileView> {
         //   const SizedBox(height: AppSizes.sm),
         // ],
         Expanded(
-          child: isInitialLoad
-              ? const CustomerListSkeleton()
-              : hasError
+          child: hasError && !isInitialLoad
               ? ErrorState(
             message: state.errorMessage!,
             onRetry: () => controller.getCustomers(reset: true),
           )
-              : items.isEmpty
+              : items.isEmpty && !isInitialLoad
               ? EmptyState(
             title: AppStrings.customersTitle,
             message: AppStrings.customersEmptyMessage,
             icon: Icons.people_outline_rounded,
           )
+          // The refresh indicator stays mounted while the skeleton shows,
+          // so a pull-to-refresh keeps its spinner AND the skeleton.
               : CustomRefreshWrapper(
             onRefresh: controller.refresh,
-            child: ListView(
+            child: isInitialLoad
+                ? const CustomerListSkeleton()
+                : ListView(
               controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
               children: [
                 ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSizes.md,
+                  ),
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: items.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: AppSizes.sm + AppSizes.xs),
+                  separatorBuilder: (_, _) => const SizedBox(
+                    height: AppSizes.sm + AppSizes.xs,
+                  ),
                   itemBuilder: (context, index) {
                     final item = items[index];
                     return CustomerCardItem(
@@ -118,8 +125,12 @@ class _CustomersMobileViewState extends ConsumerState<CustomersMobileView> {
                 ),
                 if (state.isLoadingMore)
                   const Padding(
-                    padding: EdgeInsets.symmetric(vertical: AppSizes.md),
-                    child: Center(child: CircularProgressIndicator()),
+                    padding: EdgeInsets.symmetric(
+                      vertical: AppSizes.md,
+                    ),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
                 const SizedBox(height: AppSizes.bottomNavBarHeight / 2),
               ],

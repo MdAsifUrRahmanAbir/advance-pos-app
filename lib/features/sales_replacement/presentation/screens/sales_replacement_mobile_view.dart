@@ -148,9 +148,13 @@ class SalesReplacementMobileView extends ConsumerWidget {
         icon: Icons.swap_horiz_rounded,
       );
     } else {
+      // The refresh indicator stays mounted while the skeleton replaces the
+      // list, so a pull-to-refresh keeps its spinner AND shows the skeleton.
       body = CustomRefreshWrapper(
         onRefresh: refresh,
-        child: ListView.separated(
+        child: state.isRefreshing
+            ? const SalesReplacementListSkeleton(itemCount: 6)
+            : ListView.separated(
           controller: controller.scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.fromLTRB(

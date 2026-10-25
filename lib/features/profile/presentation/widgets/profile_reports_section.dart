@@ -45,12 +45,12 @@ class ProfileReportsSection extends StatelessWidget {
         //   subtitle: AppStrings.stockReportSubtitle,
         //   onTap: onStockReportTap,
         // ),
-        SettingsTile(
-          icon: Icons.trending_up_rounded,
-          title: AppStrings.salesReturnTitle,
-          subtitle: AppStrings.salesReturnSubtitle,
-          onTap: onSalesReturnTap,
-        ),
+        // SettingsTile(
+        //   icon: Icons.trending_up_rounded,
+        //   title: AppStrings.salesReturnTitle,
+        //   subtitle: AppStrings.salesReturnSubtitle,
+        //   onTap: onSalesReturnTap,
+        // ),
         SettingsTile(
           icon: Icons.swap_horiz_rounded,
           title: AppStrings.repTitle,

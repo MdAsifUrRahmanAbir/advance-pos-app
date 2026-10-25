@@ -92,14 +92,16 @@ class ExpenseController extends Notifier<ExpenseState> {
   // ───────────────────────────────────────────────
   // GET (list + pagination)
   // ───────────────────────────────────────────────
-  /// Full reload. [keepCurrent] keeps the visible list (pull-to-refresh);
-  /// otherwise the list is cleared and the skeleton shows.
+  /// Full reload; the skeleton shows either way. [keepCurrent] (pull-to-
+  /// refresh) keeps the old list in state so a failed refresh can fall back
+  /// to it; otherwise the list is cleared.
   Future<bool> loadExpenses({bool keepCurrent = false}) {
     state = keepCurrent
-        ? state.copyWith(isLoadMoreFailed: false)
+        ? state.copyWith(isLoadMoreFailed: false, isRefreshing: true)
         : state.copyWith(
       expenses: const [],
       isInitialLoading: true,
+      isRefreshing: false,
       hasMore: false,
       totalCount: 0,
       isLoadMoreFailed: false,
@@ -110,7 +112,12 @@ class ExpenseController extends Notifier<ExpenseState> {
   Future<bool> refresh() => loadExpenses(keepCurrent: true);
 
   Future<bool> loadMore() {
-    if (state.isInitialLoading || state.isLoadingMore || !state.hasMore) {
+    // A load-more must never start while a reset or refresh is running: it
+    // would bump the request counter and drop that response.
+    if (state.isInitialLoading ||
+        state.isRefreshing ||
+        state.isLoadingMore ||
+        !state.hasMore) {
       return Future.value(false);
     }
     state = state.copyWith(isLoadingMore: true, isLoadMoreFailed: false);
@@ -141,6 +148,7 @@ class ExpenseController extends Notifier<ExpenseState> {
         isInitialLoading: false,
         isLoadingMore: false,
         isLoadMoreFailed: false,
+        isRefreshing: false,
         expenses: merged,
         totalCount: result.recordsFiltered,
         hasMore:
@@ -155,6 +163,7 @@ class ExpenseController extends Notifier<ExpenseState> {
         isInitialLoading: false,
         isLoadingMore: false,
         isLoadMoreFailed: !reset,
+        isRefreshing: false,
         errorMessage: getErrorMessage(error, stackTrace),
       );
       return false;

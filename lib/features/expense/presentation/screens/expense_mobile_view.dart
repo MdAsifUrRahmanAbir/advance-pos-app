@@ -117,6 +117,7 @@ class ExpenseMobileView extends ConsumerWidget {
             child: ExpenseListSection(
               items: state.expenses,
               isInitialLoading: state.isInitialLoading,
+              isRefreshing: state.isRefreshing,
               isLoadingMore: state.isLoadingMore,
               isLoadMoreFailed: state.isLoadMoreFailed,
               errorMessage: state.errorMessage,

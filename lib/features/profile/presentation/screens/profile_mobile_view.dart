@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
-import '../widgets/profile_stats_row.dart';
+// import '../widgets/profile_stats_row.dart';
 import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
 
@@ -29,19 +29,20 @@ class ProfileMobileView extends ConsumerWidget {
               ),
               child: Column(
                 children: [
-                  const ProfileStatsRow(
-                    projects: '24',
-                    tasks: '156',
-                    rating: '4.8',
-                  ),
-                  const SizedBox(height: AppSizes.lg),
+                  // const ProfileStatsRow(
+                  //   projects: '24',
+                  //   tasks: '156',
+                  //   rating: '4.8',
+                  // ),
+                  // const SizedBox(height: AppSizes.lg),
                   ProfileReportsSection(
                     onCustomerTap: () => context.push(RouteNames.customers),
                     onStockReportTap: () => context.push(RouteNames.error),
                     onSalesReturnTap: () =>
                         context.push(RouteNames.salesReturn),
                     onExpenseTap: () => context.push(RouteNames.expense),
-                    onSalesReplacementTap: () => context.push(RouteNames.salesReplacement),
+                    onSalesReplacementTap: () =>
+                        context.push(RouteNames.salesReplacement),
                   ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileSettingsSections(

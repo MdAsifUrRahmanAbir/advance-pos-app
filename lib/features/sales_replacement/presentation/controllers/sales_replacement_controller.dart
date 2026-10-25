@@ -99,14 +99,16 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
   // ───────────────────────────────────────────────
   // GET (list + pagination)
   // ───────────────────────────────────────────────
-  /// Full reload. [keepCurrent] keeps the visible list (pull-to-refresh);
-  /// otherwise the list is cleared and the skeleton shows.
+  /// Full reload; the skeleton shows either way. [keepCurrent] (pull-to-
+  /// refresh) keeps the old list in state so a failed refresh can fall back
+  /// to it; otherwise the list is cleared.
   Future<bool> loadItems({bool keepCurrent = false}) {
     state = keepCurrent
-        ? state.copyWith(isLoadMoreFailed: false)
+        ? state.copyWith(isLoadMoreFailed: false, isRefreshing: true)
         : state.copyWith(
       items: const [],
       isInitialLoading: true,
+      isRefreshing: false,
       hasMore: false,
       totalCount: 0,
       isLoadMoreFailed: false,
@@ -149,6 +151,7 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
         isInitialLoading: false,
         isLoadingMore: false,
         isLoadMoreFailed: false,
+        isRefreshing: false,
         items: merged,
         totalCount: result.recordsFiltered,
         hasMore:
@@ -163,6 +166,7 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
         isInitialLoading: false,
         isLoadingMore: false,
         isLoadMoreFailed: !reset,
+        isRefreshing: false,
         errorMessage: getErrorMessage(error, stackTrace),
         technicalDetails: buildTechnicalErrorDetails(
           error,

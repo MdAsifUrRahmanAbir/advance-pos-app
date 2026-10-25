@@ -14,6 +14,10 @@ class ExpenseState {
   final bool isInitialLoading;
   final bool isLoadingMore;
   final bool isLoadMoreFailed;
+
+  /// Pull-to-refresh in flight: the old list is kept (to fall back on if the
+  /// refresh fails) but the skeleton is shown in its place.
+  final bool isRefreshing;
   final String? errorMessage;
   final List<ResultDatum> expenses;
   final int totalCount;
@@ -30,6 +34,7 @@ class ExpenseState {
     this.isInitialLoading = false,
     this.isLoadingMore = false,
     this.isLoadMoreFailed = false,
+    this.isRefreshing = false,
     this.errorMessage,
     this.expenses = const [],
     this.totalCount = 0,
@@ -47,6 +52,7 @@ class ExpenseState {
     bool? isInitialLoading,
     bool? isLoadingMore,
     bool? isLoadMoreFailed,
+    bool? isRefreshing,
     String? errorMessage,
     List<ResultDatum>? expenses,
     int? totalCount,
@@ -63,6 +69,7 @@ class ExpenseState {
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       isLoadMoreFailed: isLoadMoreFailed ?? this.isLoadMoreFailed,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
       errorMessage: errorMessage,
       expenses: expenses ?? this.expenses,
       totalCount: totalCount ?? this.totalCount,

@@ -32,12 +32,12 @@ class ProfileTabView extends ConsumerWidget {
                   name: 'Alex Johnson',
                   role: 'Workspace Admin',
                 ),
-                const SizedBox(height: AppSizes.xl),
-                const ProfileStatsRow(
-                  projects: '24',
-                  tasks: '156',
-                  rating: '4.8',
-                ),
+                // const SizedBox(height: AppSizes.xl),
+                // const ProfileStatsRow(
+                //   projects: '24',
+                //   tasks: '156',
+                //   rating: '4.8',
+                // ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileReportsSection(
                   onCustomerTap: () => context.push(RouteNames.customers),

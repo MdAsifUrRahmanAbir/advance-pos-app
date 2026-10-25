@@ -15,6 +15,10 @@ class SalesReplacementState {
   final bool isInitialLoading;
   final bool isLoadingMore;
   final bool isLoadMoreFailed;
+
+  /// Pull-to-refresh in flight: the old list is kept (to fall back on if the
+  /// refresh fails) but the skeleton is shown in its place.
+  final bool isRefreshing;
   final String? errorMessage;
 
   /// Dev-facing breakdown for the full "Technical Details" screen.
@@ -34,6 +38,7 @@ class SalesReplacementState {
     this.isInitialLoading = false,
     this.isLoadingMore = false,
     this.isLoadMoreFailed = false,
+    this.isRefreshing = false,
     this.errorMessage,
     this.technicalDetails,
     this.items = const [],
@@ -52,6 +57,7 @@ class SalesReplacementState {
     bool? isInitialLoading,
     bool? isLoadingMore,
     bool? isLoadMoreFailed,
+    bool? isRefreshing,
     String? errorMessage,
     String? technicalDetails,
     List<ResultDatum>? items,
@@ -69,6 +75,7 @@ class SalesReplacementState {
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       isLoadMoreFailed: isLoadMoreFailed ?? this.isLoadMoreFailed,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
       errorMessage: errorMessage,
       technicalDetails: technicalDetails,
       items: items ?? this.items,
