@@ -24,7 +24,9 @@ class InvoiceQuickFilterTabs extends StatelessWidget {
     required this.onDatePresetSelected,
   });
 
-  static const _statusKeys = ['all', 'paid', 'due', 'partial'];
+  static const _statusKeys = ['all'
+    // , 'paid', 'due', 'partial'
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +44,9 @@ class InvoiceQuickFilterTabs extends StatelessWidget {
       selectedFilters: selected,
       labelBuilder: (key) => switch (key) {
         'all' => AppStrings.filterAll,
-        'paid' => AppStrings.invoicePaidLabel,
-        'due' => AppStrings.invoiceDueLabel,
-        'partial' => AppStrings.invoiceStatusPartial,
+        // 'paid' => AppStrings.invoicePaidLabel,
+        // 'due' => AppStrings.invoiceDueLabel,
+        // 'partial' => AppStrings.invoiceStatusPartial,
         'today' => AppStrings.invoiceDatePresetToday,
         'yesterday' => AppStrings.invoiceDatePresetYesterday,
         'last7days' => AppStrings.invoiceDatePresetLast7Days,

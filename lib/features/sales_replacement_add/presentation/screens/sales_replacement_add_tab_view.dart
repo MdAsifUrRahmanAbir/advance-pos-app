@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../controllers/sales_replacement_add_controller.dart';
 
-class SalesReplacementAddTabView extends ConsumerWidget {
+import 'sales_replacement_add_mobile_view.dart';
+
+/// Tablet: the same two-step flow, centered in a single column.
+class SalesReplacementAddTabView extends StatelessWidget {
   const SalesReplacementAddTabView({super.key});
 
+  static const double _contentMaxWidth = 640; // same width the list uses
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // 👈 Accessing State and Controller
-    final state = ref.watch(salesReplacementAddControllerProvider);
-    final controller = ref.read(salesReplacementAddControllerProvider.notifier);
-
-    if (state.isInitialLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    return SizedBox();
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: _contentMaxWidth),
+        child: SalesReplacementAddMobileView(),
+      ),
+    );
   }
 }

@@ -67,6 +67,7 @@ class ApiEndpoints {
   static const String salesReplacement = "/s_return";
   static String salesReplacementDetails(String returnBillNo) => "/s_return/view/$returnBillNo";
   static String salesReplacementDelete(String returnBillNo) => "/s_return/delete/$returnBillNo";
-
+  static const String salesReplacementBills = "/s_return/getData";
+  static const String salesReplacementAdd = "/s_return/add";
 
 }

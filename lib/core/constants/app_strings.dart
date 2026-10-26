@@ -697,4 +697,32 @@ class AppStrings {
   static const String repdReturnedQtyLabel = 'Returned';
   static const String repdVatChalanLabel = 'VAT Invoice No.';
   static const String repdReturnAmountLabel = 'Return Amount';
+
+  // ---- Sales replacement add (append only) ----
+  static const String repaTitle = 'New Replacement';
+  static const String repaCustomerLabel = 'Customer (optional)';
+  static const String repaBillHint = 'Select a sales bill';
+  static const String repaSelectBillTitle = 'Select Sales Bill';
+  static const String repaSearchBillHint = 'Search sales bill...';
+  static const String repaNoBillsTitle = 'No sales bills found';
+  static const String repaPickBillHint = 'Choose a sales bill to see its products.';
+  static const String repaLoadInvoiceFailed = "Couldn't load this sale";
+  static const String repaSaleLinesTitle = 'Products in this sale';
+  static const String repaSelectReturnHint = 'Select the products being returned';
+  static String repaSoldQtyLabel(int qty) => 'Sold: $qty';
+  static String repaReturnSummaryLabel(int items, String amount) =>
+      '$items returned · Credit $amount';
+  static const String repaNewProductsTitle = 'New Products';
+  static const String repaNoNewProductsTitle = 'No replacement products yet';
+  static const String repaNewItemsTotalLabel = 'New Items Total';
+  static const String repaNetPayableLabel = 'Net Payable';
+  static const String repaNewLessThanReturn =
+      'The new items must cost at least as much as the returned ones.';
+  static const String repaNoPaymentNeeded = 'No payment needed — the exchange is even.';
+  static const String repaReturnReasonLabel = 'Return Reason';
+  static const String repaReturnReasonHint = 'Enter description';
+  static const String repaSubmitAction = 'Create Replacement';
+  static const String repaCreatedTitle = 'Replacement Created';
+  static String repaCreatedSubtitle(String billNo) =>
+      'Replacement $billNo has been created.';
 }
