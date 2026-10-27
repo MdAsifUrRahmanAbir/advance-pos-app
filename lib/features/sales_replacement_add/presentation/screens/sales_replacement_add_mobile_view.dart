@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -13,6 +14,7 @@ import '../../../../core/widgets/common/picker_trigger_field.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../../../../core/widgets/common/primary_input_field.dart';
 import '../../../../core/widgets/common/search_field.dart';
+import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
@@ -21,8 +23,9 @@ import '../../../cart/presentation/widgets/cart_item_list.dart';
 import '../../../edit_sale_cart/presentation/widgets/edit_sale_product_results.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../../../new_sale/presentation/states/new_sale_state.dart'
-    show ProductItem;
+    show ProductItem, ScanOutcome;
 import '../../../payment/presentation/states/payment_systems_from_accounts.dart';
+import '../../../payment/presentation/widgets/printer_selection_sheet.dart';
 import '../../../sales_replacement/presentation/controllers/sales_replacement_controller.dart';
 import '../controllers/sales_replacement_add_controller.dart';
 import '../controllers/sales_replacement_replace_controller.dart';
@@ -33,6 +36,7 @@ import '../widgets/sales_replacement_payment_section.dart';
 import '../widgets/sales_replacement_return_line_tile.dart';
 import '../widgets/sales_replacement_return_summary_card.dart';
 import '../widgets/sales_replacement_sale_banner.dart';
+import '../widgets/sales_replacement_scan_button.dart';
 import '../widgets/sales_replacement_select_footer.dart';
 import '../widgets/sales_replacement_totals_card.dart';
 
@@ -97,6 +101,15 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
       ) {
     final colors = context.appColors;
     final customer = add.selectedCustomer;
+
+    Future<void> scanBill() async {
+      final code = await BarcodeScannerScreen.scan(context);
+      if (code == null || !context.mounted) return;
+      final ok = await ctrl.selectBillByScan(code);
+      if (!ok && context.mounted) {
+        CustomSnackbar.show(context, AppStrings.repaBillNotFound(code), error: true);
+      }
+    }
 
     final Widget sale;
     if (add.selectedBillNo == null) {
@@ -169,12 +182,21 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
                 onClear: customer == null ? null : ctrl.clearCustomer,
               ),
               const SizedBox(height: AppSizes.md),
-              PickerTriggerField(
-                label: AppStrings.srdSalesBillNoLabel,
-                hintText: AppStrings.repaBillHint,
-                valueText: add.selectedBillNo,
-                isLoading: add.isInvoiceLoading,
-                onTap: () => _openBillPicker(context, ref),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: PickerTriggerField(
+                      label: AppStrings.srdSalesBillNoLabel,
+                      hintText: AppStrings.repaBillHint,
+                      valueText: add.selectedBillNo,
+                      isLoading: add.isInvoiceLoading,
+                      onTap: () => _openBillPicker(context, ref),
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.sm),
+                  SalesReplacementScanButton(onPressed: scanBill),
+                ],
               ),
               const SizedBox(height: AppSizes.md),
               sale,
@@ -301,6 +323,25 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
       if (name != null) noMoreStock(name);
     }
 
+    Future<void> scanProduct() async {
+      final code = await BarcodeScannerScreen.scan(context);
+      if (code == null || !context.mounted) return;
+      final result = await ctrl.handleScannedCode(code);
+      if (!context.mounted) return;
+      if (result == null) {
+        CustomSnackbar.show(context, AppStrings.editSaleSearchFailed, error: true);
+        return;
+      }
+      switch (result.outcome) {
+        case ScanOutcome.added:
+          CustomSnackbar.show(context, AppStrings.productAddedMessage(result.product!.name));
+        case ScanOutcome.outOfStock:
+          noMoreStock(result.product!.name);
+        case ScanOutcome.notFound:
+          CustomSnackbar.show(context, AppStrings.productNotFoundMessage(code), error: true);
+      }
+    }
+
     Future<void> submit() async {
       final ok = await ctrl.submit();
       if (!context.mounted) return;
@@ -309,20 +350,59 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
         if (error != null) CustomSnackbar.show(context, error, error: true);
         return;
       }
-      final billNo =
-          ref.read(salesReplacementReplaceControllerProvider).createdBillNo ?? '';
+      final receiptKey = GlobalKey();
       showModalBottomSheet<void>(
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         isDismissible: false,
         enableDrag: false,
-        builder: (sheetContext) => SalesReplacementAddSuccessSheet(
-          billNo: billNo,
-          onDone: () {
-            Navigator.of(sheetContext).pop();
-            ref.invalidate(salesReplacementControllerProvider); // refresh the list
-            context.pop();
+        builder: (sheetContext) => Consumer(
+          builder: (consumerContext, sheetRef, _) {
+            final s = sheetRef.watch(salesReplacementReplaceControllerProvider);
+            final receipt = s.receipt;
+            if (receipt == null) return const SizedBox.shrink();
+
+            return SalesReplacementAddSuccessSheet(
+              receipt: receipt,
+              receiptBoundaryKey: receiptKey,
+              isSharing: s.isSharing,
+              isPrinting: s.isPrinting,
+              onShare: () async {
+                final shared = await ctrl.shareReceipt(receiptKey);
+                if (!shared && consumerContext.mounted) {
+                  CustomSnackbar.show(
+                    consumerContext,
+                    AppStrings.shareFailedMessage,
+                    error: true,
+                  );
+                }
+              },
+              onPrint: () async {
+                final device = await showModalBottomSheet<BluetoothInfo>(
+                  context: consumerContext,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => const PrinterSelectionSheet(),
+                );
+                if (device == null) return;
+                final printed = await ctrl.printReceipt(device.macAdress);
+                if (consumerContext.mounted) {
+                  CustomSnackbar.show(
+                    consumerContext,
+                    printed
+                        ? AppStrings.printSuccessMessage
+                        : AppStrings.printFailedMessage,
+                    error: !printed,
+                  );
+                }
+              },
+              onDone: () {
+                Navigator.of(sheetContext).pop();
+                ref.invalidate(salesReplacementControllerProvider); // refresh the list
+                context.pop();
+              },
+            );
           },
         ),
       );
@@ -345,11 +425,19 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
                 total: add.returnTotal,
               ),
               const SizedBox(height: AppSizes.md),
-              SearchField(
-                controller: ctrl.productSearchController,
-                hintText: AppStrings.searchProductHint,
-                onChanged: ctrl.updateProductQuery,
-                onClear: ctrl.clearProductSearch,
+              Row(
+                children: [
+                  Expanded(
+                    child: SearchField(
+                      controller: ctrl.productSearchController,
+                      hintText: AppStrings.searchProductHint,
+                      onChanged: ctrl.updateProductQuery,
+                      onClear: ctrl.clearProductSearch,
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.sm),
+                  SalesReplacementScanButton(onPressed: scanProduct),
+                ],
               ),
               const SizedBox(height: AppSizes.sm),
               if (replace.showProductResults) ...[

@@ -4,6 +4,7 @@ import '../../../new_sale/presentation/states/new_sale_state.dart'
 import '../../../payment/presentation/states/payment_state.dart'
     show SelectedPaymentEntry;
 import 'sales_replacement_add_calc.dart';
+import 'sales_replacement_receipt.dart';
 
 /// Step 2 (replacement items, totals, payment, submit). Product search,
 /// the cart and the submit run independently, hence their own flags.
@@ -32,6 +33,11 @@ class SalesReplacementReplaceState {
   final bool isSubmitted;
   final String? createdBillNo;
 
+  /// Snapshot for the success sheet; set once the replacement is created.
+  final SalesReplacementReceipt? receipt;
+  final bool isSharing;
+  final bool isPrinting;
+
   const SalesReplacementReplaceState({
     this.returnTotal = 0,
     this.newLines = const [],
@@ -45,6 +51,9 @@ class SalesReplacementReplaceState {
     this.errorMessage,
     this.isSubmitted = false,
     this.createdBillNo,
+    this.receipt,
+    this.isSharing = false,
+    this.isPrinting = false,
   });
 
   bool get showProductResults =>
@@ -121,6 +130,9 @@ class SalesReplacementReplaceState {
     bool clearError = false,
     bool? isSubmitted,
     String? createdBillNo,
+    SalesReplacementReceipt? receipt,
+    bool? isSharing,
+    bool? isPrinting,
   }) {
     return SalesReplacementReplaceState(
       returnTotal: returnTotal ?? this.returnTotal,
@@ -137,6 +149,9 @@ class SalesReplacementReplaceState {
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       isSubmitted: isSubmitted ?? this.isSubmitted,
       createdBillNo: createdBillNo ?? this.createdBillNo,
+      receipt: receipt ?? this.receipt,
+      isSharing: isSharing ?? this.isSharing,
+      isPrinting: isPrinting ?? this.isPrinting,
     );
   }
 }

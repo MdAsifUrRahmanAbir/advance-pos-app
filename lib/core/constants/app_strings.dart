@@ -725,4 +725,8 @@ class AppStrings {
   static const String repaCreatedTitle = 'Replacement Created';
   static String repaCreatedSubtitle(String billNo) =>
       'Replacement $billNo has been created.';
+
+  // ---- Sales replacement add: scan (append only) ----
+  static const String repaScanTooltip = 'Scan barcode';
+  static String repaBillNotFound(String code) => 'No sale found for code $code';
 }

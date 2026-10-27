@@ -208,6 +208,21 @@ class SalesReplacementAddController extends Notifier<SalesReplacementAddState> {
     }
   }
 
+  /// Scanned / typed bill number: the customer filter no longer applies, so
+  /// it is dropped, then the bill's invoice is loaded. Returns false (and
+  /// leaves nothing selected) when no such sale could be loaded.
+  Future<bool> selectBillByScan(String code) async {
+    final billNo = code.trim();
+    if (billNo.isEmpty) return false;
+    state = state.copyWith(clearSelectedCustomer: true);
+    _resetBillSelection();
+    await selectBill(billNo);
+    if (!ref.mounted) return false;
+    if (state.invoice != null) return true;
+    state = state.copyWith(clearSelectedBill: true, clearInvoiceError: true);
+    return false;
+  }
+
   // ───────────────────────────────────────────────
   // Returned products
   // ───────────────────────────────────────────────

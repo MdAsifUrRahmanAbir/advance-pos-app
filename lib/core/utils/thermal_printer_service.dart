@@ -38,6 +38,10 @@ class ThermalPrinterService {
     double? subtotal,
     double? discount,
     double? vat,
+    List<ReceiptLineItem>? returnedItems,
+    String returnedHeading = 'Returned',
+    String itemsHeading = 'Replacement',
+    String discountLabel = 'Discount',
   }) async {
     final bytes = await _buildReceiptBytes(
       storeName: storeName,
@@ -52,6 +56,10 @@ class ThermalPrinterService {
       subtotal: subtotal,
       discount: discount,
       vat: vat,
+      returnedItems: returnedItems,
+      returnedHeading: returnedHeading,
+      itemsHeading: itemsHeading,
+      discountLabel: discountLabel,
     );
     return PrintBluetoothThermal.writeBytes(bytes);
   }
@@ -69,6 +77,10 @@ class ThermalPrinterService {
     double? subtotal,
     double? discount,
     double? vat,
+    List<ReceiptLineItem>? returnedItems,
+    String returnedHeading = 'Returned',
+    String itemsHeading = 'Replacement',
+    String discountLabel = 'Discount',
   }) async {
     final profile = await CapabilityProfile.load();
     final generator = Generator(PaperSize.mm58, profile);
@@ -90,14 +102,29 @@ class ThermalPrinterService {
     bytes.addAll(generator.text('Payment: $methodLabel'));
     bytes.addAll(generator.hr());
 
-    for (final item in items) {
-      bytes.addAll(
-        generator.row([
-          PosColumn(text: '${item.quantity}x ${item.name}', width: 8),
-          PosColumn(text: item.lineTotal.toStringAsFixed(2), width: 4, styles: const PosStyles(align: PosAlign.right)),
-        ]),
-      );
+    void itemRows(List<ReceiptLineItem> rows, {bool negative = false}) {
+      for (final item in rows) {
+        bytes.addAll(
+          generator.row([
+            PosColumn(text: '${item.quantity}x ${item.name}', width: 8),
+            PosColumn(
+              text: (negative ? -item.lineTotal : item.lineTotal).toStringAsFixed(2),
+              width: 4,
+              styles: const PosStyles(align: PosAlign.right),
+            ),
+          ]),
+        );
+      }
     }
+
+    // Replacement receipts print the returned products first, as credits.
+    if (returnedItems != null && returnedItems.isNotEmpty) {
+      bytes.addAll(generator.text(returnedHeading, styles: const PosStyles(bold: true)));
+      itemRows(returnedItems, negative: true);
+      bytes.addAll(generator.hr());
+      bytes.addAll(generator.text(itemsHeading, styles: const PosStyles(bold: true)));
+    }
+    itemRows(items);
     bytes.addAll(generator.hr());
 
     // Optional breakdown — printed only when the caller provides it.
@@ -112,7 +139,7 @@ class ThermalPrinterService {
     }
 
     amountRow('Subtotal', subtotal);
-    if (discount != null && discount > 0) amountRow('Discount', -discount);
+    if (discount != null && discount > 0) amountRow(discountLabel, -discount);
     if (vat != null && vat > 0) amountRow('VAT', vat);
 
     bytes.addAll(

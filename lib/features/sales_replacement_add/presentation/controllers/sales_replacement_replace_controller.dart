@@ -9,6 +9,8 @@ import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/session/session_profile.dart';
 import '../../../../core/utils/currency_formatter.dart' show parseAmount;
 import '../../../../core/utils/error_mapper.dart';
+import '../../../../core/utils/receipt_share_service.dart';
+import '../../../../core/utils/thermal_printer_service.dart';
 import '../../../cart/presentation/states/cart_state.dart' show CartLineItem;
 import '../../../invoice_detail/data/models/invoice_detail_model.dart'
     show InvoiceDetailModel;
@@ -16,12 +18,13 @@ import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../../../new_sale/data/models/stocks_model.dart' as stock;
 import '../../../new_sale/presentation/states/new_sale_state.dart'
-    show ProductItem;
+    show ProductItem, ScanOutcome, ScanResult;
 import '../../../payment/presentation/states/payment_state.dart'
-    show SelectedPaymentEntry;
+    show ReceiptLineItem, SelectedPaymentEntry;
 import '../../data/repositories/sales_replacement_add_repository.dart';
 import '../states/sales_replacement_add_calc.dart';
 import '../states/sales_replacement_add_state.dart';
+import '../states/sales_replacement_receipt.dart';
 import '../states/sales_replacement_replace_state.dart';
 import 'sales_replacement_add_controller.dart';
 
@@ -157,6 +160,37 @@ class SalesReplacementReplaceController
       isProductSearching: false,
       clearProductSearchError: true,
     );
+  }
+
+  /// Exact barcode/SKU lookup for the scanner: adds the product straight
+  /// to the replacement items without touching the search box. Returns
+  /// null when the lookup itself failed.
+  Future<ScanResult?> handleScannedCode(String code) async {
+    try {
+      final branchId = ref.read(sessionBranchIdProvider);
+      final result = await _repository.searchProducts(
+        branchId: branchId,
+        search: code,
+        length: 10,
+      );
+      if (!ref.mounted) return null;
+      final match = result.resultData
+          .map((r) => _mapProduct(r, branchId))
+          .where((p) => p.barcode == code || p.sku == code)
+          .firstOrNull;
+      if (match == null) {
+        return const ScanResult(product: null, outcome: ScanOutcome.notFound);
+      }
+      final outcome = addProduct(match);
+      return ScanResult(
+        product: match,
+        outcome: outcome == ReplaceAddOutcome.added
+            ? ScanOutcome.added
+            : ScanOutcome.outOfStock,
+      );
+    } catch (_) {
+      return null;
+    }
   }
 
   int _branchStock(stock.Stock s, int branchId) {
@@ -360,6 +394,7 @@ class SalesReplacementReplaceController
         isSubmitting: false,
         isSubmitted: true,
         createdBillNo: created,
+        receipt: _buildReceipt(created, add, invoice),
       );
       return true;
     } catch (error, stackTrace) {
@@ -368,6 +403,94 @@ class SalesReplacementReplaceController
         isSubmitting: false,
         errorMessage: getErrorMessage(error, stackTrace),
       );
+      return false;
+    }
+  }
+
+  String _formatDate(DateTime d) {
+    String two(int n) => n.toString().padLeft(2, '0');
+    return '${two(d.day)}/${two(d.month)}/${d.year}';
+  }
+
+  /// Frozen copy of what was just created, for the success sheet, the
+  /// shared image and the printed slip.
+  SalesReplacementReceipt _buildReceipt(
+      String billNo,
+      SalesReplacementAddState add,
+      InvoiceDetailModel invoice,
+      ) {
+    return SalesReplacementReceipt(
+      billNo: billNo,
+      originalBillNo: add.selectedBillNo ?? '',
+      date: _formatDate(DateTime.now()),
+      customerName: invoice.resultData.customerName,
+      methodLabel: state.selectedEntries.isEmpty
+          ? AppStrings.emptyValue
+          : state.selectedEntries.map((e) => e.system.paymentSystemName).join(' + '),
+      returned: [
+        for (final l in add.returnLines)
+          ReceiptLineItem(name: l.sold.name, quantity: l.quantity, lineTotal: l.net),
+      ],
+      replacement: [
+        for (final l in state.newLines)
+          ReceiptLineItem(name: l.name, quantity: l.quantity, lineTotal: l.lineTotal),
+      ],
+      returnTotal: add.returnTotal,
+      newTotal: state.newTotal,
+      netPayable: state.payable,
+      collected: state.needsPayment ? state.totalCollected : 0,
+      change: state.cashReturn,
+    );
+  }
+
+  // ───────────────────────────────────────────────
+  // Share / print the created replacement
+  // ───────────────────────────────────────────────
+  Future<bool> shareReceipt(GlobalKey boundaryKey) async {
+    final receipt = state.receipt;
+    if (receipt == null) return false;
+    state = state.copyWith(isSharing: true);
+    try {
+      await ReceiptShareService.shareReceiptImage(
+        boundaryKey: boundaryKey,
+        saleId: receipt.billNo,
+      );
+      if (ref.mounted) state = state.copyWith(isSharing: false);
+      return true;
+    } catch (_) {
+      if (ref.mounted) state = state.copyWith(isSharing: false);
+      return false;
+    }
+  }
+
+  Future<bool> printReceipt(String printerMac) async {
+    final receipt = state.receipt;
+    if (receipt == null) return false;
+    state = state.copyWith(isPrinting: true);
+    try {
+      final connected = await ThermalPrinterService.isConnected() ||
+          await ThermalPrinterService.connect(printerMac);
+      final success = connected &&
+          await ThermalPrinterService.printReceipt(
+            storeName: AppStrings.appBrandName,
+            billNo: receipt.billNo,
+            saleDate: receipt.date,
+            methodLabel: receipt.methodLabel,
+            returnedItems: receipt.returned,
+            returnedHeading: AppStrings.repdReturnedSectionTitle,
+            itemsHeading: AppStrings.repdReplacementSectionTitle,
+            items: receipt.replacement,
+            subtotal: receipt.newTotal,
+            discount: receipt.returnTotal,
+            discountLabel: AppStrings.repdReturnAmountLabel,
+            total: receipt.netPayable,
+            givenAmount: receipt.collected,
+            changeDue: receipt.change,
+          );
+      if (ref.mounted) state = state.copyWith(isPrinting: false);
+      return success;
+    } catch (_) {
+      if (ref.mounted) state = state.copyWith(isPrinting: false);
       return false;
     }
   }
