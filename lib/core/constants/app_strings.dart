@@ -1,6 +1,15 @@
 class AppStrings {
   AppStrings._();
 
+  // Splash (onboarding)
+  static const String splashHeadline = 'Sell faster. Manage smarter.';
+  static const String splashChipSales = 'Sales';
+  static const String splashChipInventory = 'Inventory';
+  static const String splashChipReports = 'Reports';
+  static const String splashStatusSecure = 'Securing your connection...';
+  static const String splashStatusSync = 'Syncing your data...';
+  static const String splashStatusReady = 'Almost ready...';
+
   // ---- Shared strings (merged duplicates — use these everywhere) ----
   static const String cancel = 'Cancel';
   static const String edit = 'Edit';
@@ -144,8 +153,6 @@ class AppStrings {
   static const String phoneNumber = 'Phone Number';
   static const String designationTitle2 = 'Designation / Title';
   static const String bio = 'Bio';
-  // static const String saveChanges = 'Save Changes';
-  // static const String fullNameRequired = 'Full name is required';
 
   // ---- Added: Activity screen ----
   static const String filterThisWeek = 'This Week';
@@ -278,8 +285,6 @@ class AppStrings {
   static const String stockEmptyMessage = 'Stock management is coming soon.';
 
   // --- Home dashboard additions ---
-  /// Also the printed receipt header. TODO: replace with the store name from
-  /// branch settings once an endpoint provides it.
   static const String appBrandName = 'Advance POS';
   static const String statusOnline = 'Online';
   static const String statusOffline = 'Offline';
@@ -407,7 +412,6 @@ class AppStrings {
   static const String salesReturnTitle = 'Sales Return';
   static const String salesReturnSubtitle =
       'Track returned items and refund history';
-  // ---- Added: Home screen — Today's Report / Chart / Sales / Products ----
 
   static const String invoicePaymentAccountLabel = 'Payment Account';
 
@@ -729,4 +733,13 @@ class AppStrings {
   // ---- Sales replacement add: scan (append only) ----
   static const String repaScanTooltip = 'Scan barcode';
   static String repaBillNotFound(String code) => 'No sale found for code $code';
+
+  // ---- Sales replacement list card + menu (append only) ----
+  static const String repQuantityLabel = 'Quantity';
+  static const String repProductLabel = 'Product';
+  static const String repOriginalSalesLabel = 'Original Sales';
+  static const String repReplacementByLabel = 'Replacement By';
+  static const String repNotAvailable = 'N/A';
+  static const String repSendAction = 'Send';
+  static const String repBillPreviewAction = 'Bill Preview';
 }

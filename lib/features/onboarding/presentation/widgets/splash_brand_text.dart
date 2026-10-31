@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_color_scheme.dart';
+import 'splash_style.dart';
 
-/// App name + tagline shown below the [SplashLogo].
+/// App name + headline shown below the logo.
 class SplashBrandText extends StatelessWidget {
   const SplashBrandText({super.key});
 
@@ -11,20 +11,24 @@ class SplashBrandText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
+        const Text(
           AppStrings.appName,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppSizes.fontDisplay,
             fontWeight: FontWeight.w700,
-            color: context.appColors.textPrimary,
+            color: SplashStyle.onPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.xs),
+        const SizedBox(height: AppSizes.xs),
         Text(
-          AppStrings.appTagline,
+          AppStrings.splashHeadline,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppSizes.fontMd,
-            color: context.appColors.textSecondary,
+            color: SplashStyle.onPrimary.withValues(
+              alpha: SplashStyle.softTextAlpha,
+            ),
           ),
         ),
       ],

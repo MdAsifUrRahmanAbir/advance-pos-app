@@ -4,8 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/utils/error_mapper.dart';
+import '../../../../core/utils/receipt_share_service.dart';
+import '../../../../core/utils/thermal_printer_service.dart';
+import '../../../sales_replacement_add/presentation/states/sales_replacement_receipt.dart';
+import '../../../sales_replacement_detail/data/models/sales_replacement_detail_model.dart'
+    show ResultData;
+import '../../../sales_replacement_detail/data/repositories/sales_replacement_detail_repository.dart';
 import '../../data/repositories/sales_replacement_repository.dart';
 import '../states/sales_replacement_format.dart';
 import '../states/sales_replacement_state.dart';
@@ -30,6 +37,9 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
 
   SalesReplacementRepository get _repository =>
       ref.read(salesReplacementRepositoryProvider);
+
+  SalesReplacementDetailRepository get _detailRepository =>
+      ref.read(salesReplacementDetailRepositoryProvider);
 
   @override
   SalesReplacementState build() {
@@ -186,9 +196,9 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
   /// Deletes one replacement, then removes it from the loaded list locally so
   /// the server offset stays in step with [SalesReplacementState.items].length.
   /// Returns false on failure ([SalesReplacementState.errorMessage] is set) or
-  /// when another delete is already running.
+  /// when another row action is already running.
   Future<bool> deleteSalesReplacement(String returnBillNo) async {
-    if (state.isDeleting) return false;
+    if (state.isRowBusy) return false;
     state = state.copyWith(deletingBillNo: returnBillNo);
     try {
       await _repository.deleteSalesReplacement(returnBillNo);
@@ -212,6 +222,70 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
         clearDeleting: true,
         errorMessage: getErrorMessage(error, stackTrace),
       );
+      return false;
+    }
+  }
+
+  // ───────────────────────────────────────────────
+  // Send / Bill preview (one row's full bill)
+  // ───────────────────────────────────────────────
+  /// Loads the whole replacement behind a row, for Send and Bill Preview.
+  /// Returns null on failure ([SalesReplacementState.errorMessage] is set)
+  /// or when another row action is already running.
+  Future<ResultData?> fetchBill(String returnBillNo) async {
+    if (state.isRowBusy) return null;
+    state = state.copyWith(loadingBillNo: returnBillNo);
+    try {
+      final detail = await _detailRepository.getSalesReplacementDetail(returnBillNo);
+      if (!ref.mounted) return null;
+      state = state.copyWith(clearLoadingBill: true);
+      return detail.resultData;
+    } catch (error, stackTrace) {
+      if (!ref.mounted) return null;
+      state = state.copyWith(
+        clearLoadingBill: true,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
+      return null;
+    }
+  }
+
+  /// Shares the previewed bill as an image.
+  Future<bool> shareBillImage(GlobalKey boundaryKey, String billNo) async {
+    try {
+      await ReceiptShareService.shareReceiptImage(
+        boundaryKey: boundaryKey,
+        saleId: billNo,
+      );
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Prints the previewed bill on the chosen Bluetooth printer.
+  Future<bool> printBill(SalesReplacementReceipt receipt, String printerMac) async {
+    try {
+      final connected = await ThermalPrinterService.isConnected() ||
+          await ThermalPrinterService.connect(printerMac);
+      return connected &&
+          await ThermalPrinterService.printReceipt(
+            storeName: AppStrings.appBrandName,
+            billNo: receipt.billNo,
+            saleDate: receipt.date,
+            methodLabel: receipt.methodLabel,
+            returnedItems: receipt.returned,
+            returnedHeading: AppStrings.repdReturnedSectionTitle,
+            itemsHeading: AppStrings.repdReplacementSectionTitle,
+            items: receipt.replacement,
+            subtotal: receipt.newTotal,
+            discount: receipt.returnTotal,
+            discountLabel: AppStrings.repdReturnAmountLabel,
+            total: receipt.netPayable,
+            givenAmount: receipt.collected,
+            changeDue: receipt.change,
+          );
+    } catch (_) {
       return false;
     }
   }

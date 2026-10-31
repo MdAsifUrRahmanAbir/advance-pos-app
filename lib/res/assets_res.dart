@@ -8,4 +8,5 @@ class AssetsRes {
 
   static const String PROJECT_NAME = 'advance_pos_app';
   static const String PROJECT_VERSION = '1.0.0+1';
+  static const String ADVANCE_POS_TRANSPARENT = 'assets/logo/advance_pos_transparent.png';
 }

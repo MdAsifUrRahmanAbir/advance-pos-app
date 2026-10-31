@@ -15,5 +15,6 @@ class AppAssets {
   static const String placeholder2 = 'assets/clip/placeholder2.png';
 
   static const String welcome = 'assets/clip/welcome.png';
+  static const String splashLogo = 'assets/logo/advance_pos_transparent.png';
   static const String aa = '';
 }

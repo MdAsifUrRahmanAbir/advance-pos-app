@@ -5,19 +5,24 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 
-enum SalesReplacementMenuAction { edit, delete }
+enum SalesReplacementMenuAction { edit, delete, send, billPreview }
 
-/// Vertical three-dot menu for a sales replacement row: Edit and Delete.
-/// Shows a small spinner in place of the dots while [isBusy].
+/// Vertical three-dot menu for a sales replacement row: Edit, Delete, Send
+/// and Bill Preview. Shows a small spinner in place of the dots while
+/// [isBusy].
 class SalesReplacementItemMenu extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final VoidCallback? onSend;
+  final VoidCallback? onBillPreview;
   final bool isBusy;
 
   const SalesReplacementItemMenu({
     super.key,
     this.onEdit,
     this.onDelete,
+    this.onSend,
+    this.onBillPreview,
     this.isBusy = false,
   });
 
@@ -42,7 +47,6 @@ class SalesReplacementItemMenu extends StatelessWidget {
 
     return PopupMenuButton<SalesReplacementMenuAction>(
       tooltip: AppStrings.moreOptions,
-      enabled: onEdit != null || onDelete != null,
       color: context.appColors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
@@ -58,6 +62,10 @@ class SalesReplacementItemMenu extends StatelessWidget {
             onEdit?.call();
           case SalesReplacementMenuAction.delete:
             onDelete?.call();
+          case SalesReplacementMenuAction.send:
+            onSend?.call();
+          case SalesReplacementMenuAction.billPreview:
+            onBillPreview?.call();
         }
       },
       itemBuilder: (context) => [
@@ -75,6 +83,22 @@ class SalesReplacementItemMenu extends StatelessWidget {
             icon: Icons.delete_outline_rounded,
             label: AppStrings.delete,
             color: AppColors.error,
+          ),
+        ),
+        PopupMenuItem(
+          value: SalesReplacementMenuAction.send,
+          child: _MenuRow(
+            icon: Icons.send_outlined,
+            label: AppStrings.repSendAction,
+            color: context.appColors.textPrimary,
+          ),
+        ),
+        PopupMenuItem(
+          value: SalesReplacementMenuAction.billPreview,
+          child: _MenuRow(
+            icon: Icons.receipt_long_outlined,
+            label: AppStrings.repBillPreviewAction,
+            color: context.appColors.textPrimary,
           ),
         ),
       ],

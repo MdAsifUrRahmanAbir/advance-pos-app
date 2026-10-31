@@ -4,21 +4,24 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/custom_card.dart';
-import '../../../../core/widgets/common/icon_button.dart';
 import '../../data/models/sales_replacement_model.dart' show ResultDatum;
 import 'sales_replacement_item_menu.dart';
 
-/// One sales replacement row — bill number, sales bill + date, first product,
-/// customer, a status indicator with a three-dot menu, and a quantity /
-/// discount / payable stat row. Same dense, image-less style as the
-/// Stock report card; tap opens the detail screen.
+/// One sales replacement row: bill no with the ⋮ menu, then date, original
+/// sale, quantity, amount, product, customer and who did the replacement.
+/// Tap opens the detail screen.
 class SalesReplacementCardTile extends StatelessWidget {
   final ResultDatum item;
   final VoidCallback? onShowInfo;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-  final bool isDeleting;
+  final VoidCallback? onSend;
+  final VoidCallback? onBillPreview;
+
+  /// A delete or bill load for this row is running.
+  final bool isBusy;
 
   const SalesReplacementCardTile({
     super.key,
@@ -26,28 +29,31 @@ class SalesReplacementCardTile extends StatelessWidget {
     this.onShowInfo,
     this.onEdit,
     this.onDelete,
-    this.isDeleting = false,
+    this.onSend,
+    this.onBillPreview,
+    this.isBusy = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isActive = item.isActive == 1;
-    final statusColor = isActive ? AppColors.success : AppColors.error;
-    final statusLabel = isActive
-        ? AppStrings.srStatusActive
-        : AppStrings.srStatusInactive;
+    final extraProducts = item.productNames.length - 1;
     final firstProduct = item.productNames.isEmpty
         ? AppStrings.srNoProducts
         : item.productNames.first;
-    final extraProducts = item.productNames.length - 1;
+    final product = extraProducts > 0
+        ? '$firstProduct  ${AppStrings.srMoreProducts(extraProducts)}'
+        : firstProduct;
+    final replacedBy = item.returnBy.trim().isEmpty
+        ? AppStrings.repNotAvailable
+        : item.returnBy;
 
     return CustomCard(
-      onTap: isDeleting ? null : onShowInfo,
+      onTap: isBusy ? null : onShowInfo,
       padding: const EdgeInsets.only(
         left: AppSizes.lg,
         right: AppSizes.sm,
         top: AppSizes.sm,
-        bottom: AppSizes.sm,
+        bottom: AppSizes.md,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,137 +61,87 @@ class SalesReplacementCardTile extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: _Field(
+                  label: AppStrings.billLabel,
+                  value: item.returnBillNo,
+                  emphasized: true,
+                ),
+              ),
+              SalesReplacementItemMenu(
+                isBusy: isBusy,
+                onEdit: onEdit,
+                onDelete: onDelete,
+                onSend: onSend,
+                onBillPreview: onBillPreview,
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSizes.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      item.returnBillNo,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: AppSizes.fontMd,
-                        fontWeight: FontWeight.w700,
-                        color: context.appColors.textPrimary,
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.receiptDateLabel,
+                        value: item.returnDate,
                       ),
                     ),
-                    const SizedBox(height: AppSizes.xs / 2),
-                    Text(
-                      '${AppStrings.srSalesBillPrefix}${item.salesBillNo} • ${item.returnDate}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: AppSizes.fontXs,
-                        color: context.appColors.textHint,
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.repOriginalSalesLabel,
+                        value: item.salesBillNo,
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(width: AppSizes.sm),
-              Container(
-                width: AppSizes.xs + AppSizes.xs / 2,
-                height: AppSizes.xs + AppSizes.xs / 2,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: statusColor,
+                const SizedBox(height: AppSizes.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.repQuantityLabel,
+                        value: parseQuantity(item.totalReturnQuantity).toString(),
+                      ),
+                    ),
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.expAmount,
+                        value: CurrencyFormatter.format(
+                          parseAmount(item.totalReturnAmount),
+                        ),
+                        highlighted: true,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: AppSizes.xs + AppSizes.xs / 2),
-              Text(
-                statusLabel,
-                style: TextStyle(
-                  fontSize: AppSizes.fontSm,
-                  fontWeight: FontWeight.w600,
-                  color: statusColor,
+                const SizedBox(height: AppSizes.sm),
+                _Field(
+                  label: AppStrings.repProductLabel,
+                  value: product,
+                  maxLines: 2,
                 ),
-              ),
-              SalesReplacementItemMenu(
-                onEdit: onEdit,
-                onDelete: onDelete,
-                isBusy: isDeleting,
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  firstProduct,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: AppSizes.fontSm,
-                    color: context.appColors.textSecondary,
-                  ),
+                const SizedBox(height: AppSizes.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.invoiceCustomerLabel,
+                        value: item.customerName,
+                      ),
+                    ),
+                    Expanded(
+                      child: _Field(
+                        label: AppStrings.repReplacementByLabel,
+                        value: replacedBy,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              if (extraProducts > 0) ...[
-                const SizedBox(width: AppSizes.sm),
-                Text(
-                  AppStrings.srMoreProducts(extraProducts),
-                  style: const TextStyle(
-                    fontSize: AppSizes.fontXs,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-                const SizedBox(width: AppSizes.sm),
               ],
-            ],
-          ),
-          const SizedBox(height: AppSizes.xs),
-          Row(
-            children: [
-              Icon(
-                Icons.person_outline_rounded,
-                size: AppSizes.iconSm,
-                color: context.appColors.textHint,
-              ),
-              const SizedBox(width: AppSizes.xs),
-              Expanded(
-                child: Text(
-                  item.customerName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: AppSizes.fontXs,
-                    color: context.appColors.textHint,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSizes.sm),
-          Divider(height: 1, color: context.appColors.divider),
-          const SizedBox(height: AppSizes.sm),
-          Row(
-            children: [
-              Expanded(
-                child: _Stat(
-                  label: AppStrings.srQuantityLabel,
-                  value: item.totalReturnQuantity,
-                ),
-              ),
-              Expanded(
-                child: _Stat(
-                  label: AppStrings.invoiceDiscountLabel,
-                  value: item.returnDisAmount,
-                ),
-              ),
-              Expanded(
-                child: _Stat(
-                  label: AppStrings.srPayableLabel,
-                  value: item.payableReturnAmount,
-                  highlight: true,
-                ),
-              ),
-              AppIconButton(
-                icon: Icons.info_outline_rounded,
-                color: AppColors.primary,
-                tooltip: AppStrings.srInfoTooltip,
-                onPressed: isDeleting ? null : onShowInfo,
-              ),
-            ],
+            ),
           ),
         ],
       ),
@@ -193,40 +149,43 @@ class SalesReplacementCardTile extends StatelessWidget {
   }
 }
 
-class _Stat extends StatelessWidget {
+class _Field extends StatelessWidget {
   final String label;
   final String value;
-  final bool highlight;
+  final int maxLines;
+  final bool emphasized;
+  final bool highlighted;
 
-  const _Stat({
+  const _Field({
     required this.label,
     required this.value,
-    this.highlight = false,
+    this.maxLines = 1,
+    this.emphasized = false,
+    this.highlighted = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
-          style: TextStyle(
-            fontSize: AppSizes.fontXs,
-            color: context.appColors.textSecondary,
-          ),
+          style: TextStyle(fontSize: AppSizes.fontXs, color: colors.textHint),
         ),
         const SizedBox(height: AppSizes.xs / 2),
         Text(
           value,
-          maxLines: 1,
+          maxLines: maxLines,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            fontSize: AppSizes.fontMd,
-            fontWeight: FontWeight.w700,
-            color: highlight
-                ? AppColors.primary
-                : context.appColors.textPrimary,
+            fontSize: emphasized ? AppSizes.fontMd : AppSizes.fontSm,
+            fontWeight: emphasized || highlighted
+                ? FontWeight.w700
+                : FontWeight.w600,
+            color: highlighted ? AppColors.primary : colors.textPrimary,
           ),
         ),
       ],

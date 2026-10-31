@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_sizes.dart';
+import 'splash_style.dart';
 
-/// Rounded app-icon mark shown on the splash screen — a filled square
-/// with a soft drop shadow and a simple outlined glyph inside.
+/// Glass-style app-icon tile shown on the primary splash background.
 class SplashLogo extends StatelessWidget {
   final double size;
 
@@ -14,23 +14,15 @@ class SplashLogo extends StatelessWidget {
     return Container(
       width: size,
       height: size,
+      padding: const EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: SplashStyle.onPrimary.withValues(alpha: SplashStyle.glassAlpha),
         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
-            blurRadius: AppSizes.xl,
-            offset: const Offset(0, AppSizes.md),
-          ),
-        ],
+        border: Border.all(
+          color: SplashStyle.onPrimary.withValues(alpha: SplashStyle.borderAlpha),
+        ),
       ),
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.hexagon_outlined,
-        color: AppColors.textWhite,
-        size: size * 0.5,
-      ),
+      child: Image.asset(AppAssets.splashLogo),
     );
   }
 }

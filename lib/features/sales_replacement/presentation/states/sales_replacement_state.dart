@@ -34,6 +34,9 @@ class SalesReplacementState {
   /// returnBillNo currently being deleted; null when no delete is running.
   final String? deletingBillNo;
 
+  /// returnBillNo whose bill is being loaded for Send / Bill Preview.
+  final String? loadingBillNo;
+
   const SalesReplacementState({
     this.isInitialLoading = false,
     this.isLoadingMore = false,
@@ -49,9 +52,13 @@ class SalesReplacementState {
     this.fromDate,
     this.toDate,
     this.deletingBillNo,
+    this.loadingBillNo,
   });
 
   bool get isDeleting => deletingBillNo != null;
+
+  /// A row action (delete or bill load) is running.
+  bool get isRowBusy => deletingBillNo != null || loadingBillNo != null;
 
   SalesReplacementState copyWith({
     bool? isInitialLoading,
@@ -70,6 +77,8 @@ class SalesReplacementState {
     bool clearDates = false,
     String? deletingBillNo,
     bool clearDeleting = false,
+    String? loadingBillNo,
+    bool clearLoadingBill = false,
   }) {
     return SalesReplacementState(
       isInitialLoading: isInitialLoading ?? this.isInitialLoading,
@@ -88,6 +97,9 @@ class SalesReplacementState {
       deletingBillNo: clearDeleting
           ? null
           : (deletingBillNo ?? this.deletingBillNo),
+      loadingBillNo: clearLoadingBill
+          ? null
+          : (loadingBillNo ?? this.loadingBillNo),
     );
   }
 }

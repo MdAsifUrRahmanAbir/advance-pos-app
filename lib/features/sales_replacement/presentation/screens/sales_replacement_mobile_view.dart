@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
@@ -16,9 +18,13 @@ import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../routes/route_names.dart';
+import '../../../payment/presentation/widgets/printer_selection_sheet.dart';
+import '../../../sales_replacement_detail/presentation/states/sales_replacement_detail_format.dart';
 import '../../data/models/sales_replacement_model.dart' show ResultDatum;
 import '../controllers/sales_replacement_controller.dart';
+import '../states/sales_replacement_bill_mapper.dart';
 import '../states/sales_replacement_state.dart';
+import '../widgets/sales_replacement_bill_preview_sheet.dart';
 import '../widgets/sales_replacement_card_tile.dart';
 import '../widgets/sales_replacement_date_range_picker.dart';
 import '../widgets/sales_replacement_list_footer.dart';
@@ -95,6 +101,71 @@ class SalesReplacementMobileView extends ConsumerWidget {
             : (ref.read(salesReplacementControllerProvider).errorMessage ??
             AppStrings.repDeleteFailed),
         error: !ok,
+      );
+    }
+
+    String? billError() => ref.read(salesReplacementControllerProvider).errorMessage;
+
+    /// Send: loads the bill and opens the system share sheet with its text.
+    Future<void> sendBill(ResultDatum item) async {
+      final bill = await controller.fetchBill(item.returnBillNo);
+      if (!context.mounted) return;
+      if (bill == null) {
+        CustomSnackbar.show(context, billError() ?? AppStrings.repLoadFailed, error: true);
+        return;
+      }
+      final box = context.findRenderObject() as RenderBox?;
+      SharePlus.instance.share(
+        ShareParams(
+          text: SalesReplacementDetailFormat.shareText(bill),
+          subject: AppStrings.repdShareSubject(item.returnBillNo),
+          sharePositionOrigin: box == null || !box.hasSize
+              ? null
+              : box.localToGlobal(Offset.zero) & box.size,
+        ),
+      );
+    }
+
+    /// Bill Preview: loads the bill and shows its receipt (share / print).
+    Future<void> previewBill(ResultDatum item) async {
+      final bill = await controller.fetchBill(item.returnBillNo);
+      if (!context.mounted) return;
+      if (bill == null) {
+        CustomSnackbar.show(context, billError() ?? AppStrings.repLoadFailed, error: true);
+        return;
+      }
+      final receipt = SalesReplacementBillMapper.toReceipt(bill);
+      showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (sheetContext) => SalesReplacementBillPreviewSheet(
+          receipt: receipt,
+          onClose: () => Navigator.of(sheetContext).pop(),
+          onShare: (boundaryKey) async {
+            final shared = await controller.shareBillImage(boundaryKey, receipt.billNo);
+            if (!shared && sheetContext.mounted) {
+              CustomSnackbar.show(sheetContext, AppStrings.shareFailedMessage, error: true);
+            }
+          },
+          onPrint: () async {
+            final device = await showModalBottomSheet<BluetoothInfo>(
+              context: sheetContext,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              builder: (_) => const PrinterSelectionSheet(),
+            );
+            if (device == null) return;
+            final printed = await controller.printBill(receipt, device.macAdress);
+            if (sheetContext.mounted) {
+              CustomSnackbar.show(
+                sheetContext,
+                printed ? AppStrings.printSuccessMessage : AppStrings.printFailedMessage,
+                error: !printed,
+              );
+            }
+          },
+        ),
       );
     }
 
@@ -176,10 +247,13 @@ class SalesReplacementMobileView extends ConsumerWidget {
             final item = items[index];
             return SalesReplacementCardTile(
               item: item,
-              isDeleting: state.deletingBillNo == item.returnBillNo,
+              isBusy: state.deletingBillNo == item.returnBillNo ||
+                  state.loadingBillNo == item.returnBillNo,
               onShowInfo: () => showInfo(item),
               onEdit: () => editItem(item),
               onDelete: () => confirmDelete(item),
+              onSend: () => sendBill(item),
+              onBillPreview: () => previewBill(item),
             ).fadeSlideIn(delay: ((index % _staggerResetAt) * 40).ms);
           },
         ),
