@@ -26,7 +26,7 @@ class SalesReplacementDetailRepository {
   }
 
   Future<InvoiceDetailModel> getInvoiceDetail(String id) async {
-    final response = await _apiClient.get(ApiEndpoints.invoiceDetails(id));
+    final response = await _apiClient.get(ApiEndpoints.salesDetails(id));
     return InvoiceDetailModel.fromJson(response.data);
   }
 }

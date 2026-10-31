@@ -42,7 +42,7 @@ class InvoiceDetailController extends Notifier<InvoiceDetailState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.invoiceDetails(invoiceId),
+          endpoint: ApiEndpoints.salesDetails(invoiceId),
         ),
       );
     }

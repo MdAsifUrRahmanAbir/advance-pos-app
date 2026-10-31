@@ -63,33 +63,34 @@ class ProfileSettingsSections extends StatelessWidget {
             ),
           ],
         ),
+        // const SizedBox(height: 24),
+        // SettingsGroup(
+        //   label: AppStrings.preferencesSection,
+        //   children: [
+        //
+        //     // SettingsTile(
+        //     //   icon: Icons.terminal_rounded,
+        //     //   title: AppStrings.connectedAppsTitle,
+        //     //   subtitle: 'Slack, GitHub, AWS Gateway, Jira',
+        //     //   onTap: onConnectedAppsTap,
+        //     // ),
+        //   ],
+        // ),
         const SizedBox(height: 24),
         SettingsGroup(
-          label: AppStrings.preferencesSection,
+          label: AppStrings.securitySupportSection,
           children: [
+            // SettingsTile(
+            //   icon: Icons.lock_outline_rounded,
+            //   title: AppStrings.twoFactorAuth,
+            //   subtitle: 'Enabled • Authenticator App',
+            //   onTap: onTwoFactorAuthTap,
+            // ),
             SettingsTile(
               icon: Icons.shield_outlined,
               title: AppStrings.privacyTitle,
               subtitle: AppStrings.privacySubtitle,
               onTap: onPrivacyTap,
-            ),
-            SettingsTile(
-              icon: Icons.terminal_rounded,
-              title: AppStrings.connectedAppsTitle,
-              subtitle: 'Slack, GitHub, AWS Gateway, Jira',
-              onTap: onConnectedAppsTap,
-            ),
-          ],
-        ),
-        const SizedBox(height: 24),
-        SettingsGroup(
-          label: AppStrings.securitySupportSection,
-          children: [
-            SettingsTile(
-              icon: Icons.lock_outline_rounded,
-              title: AppStrings.twoFactorAuth,
-              subtitle: 'Enabled • Authenticator App',
-              onTap: onTwoFactorAuthTap,
             ),
             SettingsTile(
               icon: Icons.info_outline_rounded,

@@ -153,7 +153,7 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.invoiceDetails(billNo),
+          endpoint: ApiEndpoints.salesDetails(billNo),
         ),
       );
       return false;

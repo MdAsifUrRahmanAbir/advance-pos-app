@@ -146,7 +146,7 @@ class InvoicesController extends Notifier<InvoicesState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.invoices,
+          endpoint: ApiEndpoints.sales,
         ),
       );
     }
@@ -191,7 +191,7 @@ class InvoicesController extends Notifier<InvoicesState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.invoices,
+          endpoint: ApiEndpoints.sales,
         ),
       );
       return false;

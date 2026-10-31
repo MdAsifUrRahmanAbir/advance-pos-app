@@ -16,7 +16,7 @@ class EditSaleCartRepository {
 
   /// GET /sales/view/:billNo — the invoice being edited.
   Future<EditSaleSource> getInvoiceForEdit(String billNo) async {
-    final response = await _apiClient.get(ApiEndpoints.invoiceDetails(billNo));
+    final response = await _apiClient.get(ApiEndpoints.salesDetails(billNo));
     final json = response.data as Map<String, dynamic>;
 
     final invoiceDetail = InvoiceDetailModel.fromJson(json);

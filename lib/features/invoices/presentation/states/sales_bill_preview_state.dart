@@ -1,0 +1,45 @@
+import 'package:flutter/foundation.dart';
+
+import '../../data/model/sales_bill_preview_model.dart';
+
+/// Bill Preview has independent operations (first load, pull-to-refresh,
+/// printing), so it keeps one flag per operation.
+@immutable
+class SalesBillPreviewState {
+  final bool isLoading;
+  final bool isRefreshing;
+  final bool isPrinting;
+  final SalesBillPreviewModel? bill;
+
+  /// When the bill was fetched — shown as the receipt's "PRINT:" stamp.
+  final DateTime? printedAt;
+  final String? errorMessage;
+
+  const SalesBillPreviewState({
+    this.isLoading = false,
+    this.isRefreshing = false,
+    this.isPrinting = false,
+    this.bill,
+    this.printedAt,
+    this.errorMessage,
+  });
+
+  SalesBillPreviewState copyWith({
+    bool? isLoading,
+    bool? isRefreshing,
+    bool? isPrinting,
+    SalesBillPreviewModel? bill,
+    DateTime? printedAt,
+    String? errorMessage,
+    bool clearError = false,
+  }) {
+    return SalesBillPreviewState(
+      isLoading: isLoading ?? this.isLoading,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+      isPrinting: isPrinting ?? this.isPrinting,
+      bill: bill ?? this.bill,
+      printedAt: printedAt ?? this.printedAt,
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+    );
+  }
+}

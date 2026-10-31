@@ -57,7 +57,7 @@ class SalesReplacementAddRepository {
   /// GET /sales/view/{billNo} — the original sale being replaced.
   /// Cache policy: never.
   Future<InvoiceDetailModel> getInvoiceDetail(String billNo) async {
-    final response = await _apiClient.get(ApiEndpoints.invoiceDetails(billNo));
+    final response = await _apiClient.get(ApiEndpoints.salesDetails(billNo));
     return InvoiceDetailModel.fromJson(response.data);
   }
 

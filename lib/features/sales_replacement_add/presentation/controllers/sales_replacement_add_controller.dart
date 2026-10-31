@@ -202,7 +202,7 @@ class SalesReplacementAddController extends Notifier<SalesReplacementAddState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.invoiceDetails(billNo),
+          endpoint: ApiEndpoints.salesDetails(billNo),
         ),
       );
     }

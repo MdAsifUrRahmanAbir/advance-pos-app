@@ -8,7 +8,6 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
 import '../../../../core/widgets/common/bottom_action_bar.dart';
-import '../../../../core/widgets/common/custom_step_indicator.dart';
 import '../../../../core/widgets/common/paginated_picker_sheet.dart';
 import '../../../../core/widgets/common/picker_trigger_field.dart';
 import '../../../../core/widgets/common/primary_button.dart';
@@ -76,10 +75,10 @@ class SalesReplacementAddMobileView extends ConsumerWidget {
             backStyle: HeaderBackStyle.chevron,
             onBackTap: goBack,
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppSizes.sm),
-            child: CustomStepIndicator(stepCount: 2, currentStep: add.step),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.only(bottom: AppSizes.sm),
+          //   child: CustomStepIndicator(stepCount: 2, currentStep: add.step),
+          // ),
           Expanded(
             child: add.step == 0
                 ? _selectStep(context, ref, add, addCtrl)
