@@ -742,4 +742,53 @@ class AppStrings {
   static const String repNotAvailable = 'N/A';
   static const String repSendAction = 'Send';
   static const String repBillPreviewAction = 'Bill Preview';
+
+
+  // ---- Invoices: Bill Preview (append only) ----
+  static const String billPreviewTitle = 'Bill Preview';
+  static const String billPrintAction = 'Print';
+  static const String billLoadFailed = "Couldn't load this bill";
+  static const String billRefreshFailed = "Couldn't refresh this bill";
+  static const String billReceiptHeading = 'RECEIPT';
+  static const String billMobilePrefix = 'Mob: ';
+  static const String billBinLabel = 'BIN: ';
+  static const String billMushakLabel = 'MUSHAK: 6.3';
+  static const String billBillLabel = 'BILL: ';
+  static const String billDateLabel = 'DATE: ';
+  static const String billPrintLabel = 'PRINT: ';
+  static const String billDuplicateCopy = 'DUPLICATE-BILL-COPY';
+  static const String billCounterLabel = 'COUNTER: ';
+  static const String billVatChalanLabel = 'VAT CHALAN: ';
+  static const String billColSl = 'SL';
+  static const String billColItem = 'ITEM';
+  static const String billColRate = 'RATE';
+  static const String billColQty = 'QNT';
+  static const String billColAmount = 'AMOUNT';
+  static const String billColCurrency = ' (BDT)';
+  static const String billTotalAmount = 'TOTAL AMOUNT (+)';
+  static const String billTotalQuantity = 'TOTAL QUANTITY (+)';
+  static const String billDiscount = 'DISCOUNT';
+  static String billDiscountPct(String rate) => ' ($rate%)';
+  static const String billMinusSuffix = ' (-)';
+  static const String billVat = 'VAT ';
+  static const String billVatExcl = 'Excl.';
+  static String billVatRate(String rate) => ' ($rate %)';
+  static const String billAdjustPoint = 'ADJUST POINT (+/-)';
+  static const String billDeliveryCharge = 'DELIVERY CHARGE (+)';
+  static const String billProcessingFee = 'PROCESSING FEE (+)';
+  static const String billGrandTotal = 'GRAND TOTAL';
+  static const String billInWords = 'In Words: ';
+  static const String billPaidBy = 'PAID BY: ';
+  static const String billGivenAmount = 'GIVEN AMOUNT';
+  static const String billChangedAmount = 'CHANGED AMOUNT';
+  static const String billDueAmount = 'DUE AMOUNT';
+  static const String billCustomerLabel = 'CUSTOMER: ';
+  static const String billRewardPoints = 'REWARD POINT REMAINING: ';
+  static const String billSalesBy = 'SALES BY: ';
+  static const String billThankYou = 'Thank You For Shopping.';
+  static const String billReturnPolicyLabel = 'Return Policy: ';
+  static const String billSystemBy = 'System By: TARA TECH LTD. | AdvancePOS';
+
+  // ---- Invoices: Bill Preview terms (append only) ----
+  static String billReturnWithinDays(String days) => 'Exchange within $days day(s)';
 }

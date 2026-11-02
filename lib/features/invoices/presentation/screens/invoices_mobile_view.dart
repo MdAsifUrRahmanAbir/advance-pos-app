@@ -21,6 +21,7 @@ import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_quick_filter_tabs.dart';
+import 'sales_bill_preview_launcher.dart';
 
 class InvoicesMobileView extends ConsumerStatefulWidget {
   const InvoicesMobileView({super.key});
@@ -91,7 +92,10 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
       ),
     );
   }
-
+  /// Opens the thermal-receipt Bill Preview sheet (with Print).
+  void _openBillPreview(ResultDatum invoice) {
+    showSalesBillPreview(context, invoice.salesBillNo);
+  }
   static const int _staggerResetAt = 15;
 
   @override
@@ -216,6 +220,7 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
                                     invoice: invoice,
                                     onTap: () => _openDetail(context, invoice),
                                     onEdit: () => _openEdit(invoice),
+                                    onBillPreview: () => _openBillPreview(invoice),
 
                                     onDelete: () {
                                       _confirmDeleteInvoice(context, ref, invoice.salesBillNo);

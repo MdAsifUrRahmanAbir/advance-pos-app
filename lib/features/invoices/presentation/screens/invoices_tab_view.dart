@@ -18,6 +18,7 @@ import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_quick_filter_tabs.dart';
+import 'sales_bill_preview_launcher.dart';
 
 /// Same content as [InvoicesMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -89,6 +90,11 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
         ),
       ),
     );
+  }
+
+  /// Opens the thermal-receipt Bill Preview sheet (with Print).
+  void _openBillPreview(ResultDatum invoice) {
+    showSalesBillPreview(context, invoice.salesBillNo);
   }
 
   @override
@@ -211,6 +217,7 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                                         invoice.salesBillNo,
                                       );
                                     },
+                                    onBillPreview: () => _openBillPreview(invoice),
                                     onReturnSale: () {
                                       // Navigate to return sale
                                     },

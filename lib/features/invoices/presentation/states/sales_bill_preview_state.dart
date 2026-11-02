@@ -2,12 +2,11 @@ import 'package:flutter/foundation.dart';
 
 import '../../data/model/sales_bill_preview_model.dart';
 
-/// Bill Preview has independent operations (first load, pull-to-refresh,
-/// printing), so it keeps one flag per operation.
+/// Bill Preview has independent operations (loading the bill, printing),
+/// so it keeps one flag per operation.
 @immutable
 class SalesBillPreviewState {
   final bool isLoading;
-  final bool isRefreshing;
   final bool isPrinting;
   final SalesBillPreviewModel? bill;
 
@@ -17,7 +16,6 @@ class SalesBillPreviewState {
 
   const SalesBillPreviewState({
     this.isLoading = false,
-    this.isRefreshing = false,
     this.isPrinting = false,
     this.bill,
     this.printedAt,
@@ -26,7 +24,6 @@ class SalesBillPreviewState {
 
   SalesBillPreviewState copyWith({
     bool? isLoading,
-    bool? isRefreshing,
     bool? isPrinting,
     SalesBillPreviewModel? bill,
     DateTime? printedAt,
@@ -35,7 +32,6 @@ class SalesBillPreviewState {
   }) {
     return SalesBillPreviewState(
       isLoading: isLoading ?? this.isLoading,
-      isRefreshing: isRefreshing ?? this.isRefreshing,
       isPrinting: isPrinting ?? this.isPrinting,
       bill: bill ?? this.bill,
       printedAt: printedAt ?? this.printedAt,

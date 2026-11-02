@@ -1,3 +1,25 @@
+// Null-safe parsing: the bill API may send null (or `[]` instead of `{}`)
+// for any object or field — e.g. `"employee": null`. Missing objects
+// become empty ones, missing text becomes '' (hidden on the receipt),
+// missing numbers become 0.
+
+Map<String, dynamic> _map(dynamic v) =>
+    v is Map ? Map<String, dynamic>.from(v) : <String, dynamic>{};
+
+List<dynamic> _list(dynamic v) => v is List ? v : const [];
+
+String _str(dynamic v) => v == null ? '' : v.toString();
+
+int _int(dynamic v) =>
+    v is num ? v.toInt() : int.tryParse(_str(v).replaceAll(',', '')) ?? 0;
+
+num _num(dynamic v) =>
+    v is num ? v : num.tryParse(_str(v).replaceAll(',', '')) ?? 0;
+
+double _double(dynamic v) => _num(v).toDouble();
+
+bool _bool(dynamic v) => v == true || v == 1 || v == '1' || v == 'true';
+
 class SalesBillPreviewModel {
   final String status;
   final String message;
@@ -30,19 +52,21 @@ class SalesBillPreviewModel {
   });
 
   factory SalesBillPreviewModel.fromJson(Map<String, dynamic> json) => SalesBillPreviewModel(
-    status: json["status"],
-    message: json["message"],
+    status: _str(json["status"]),
+    message: _str(json["message"]),
     printType: json["print_type"],
-    company: Company.fromJson(json["company"]),
-    branch: Branch.fromJson(json["branch"]),
-    counter: Counter.fromJson(json["counter"]),
-    invoice: Invoice.fromJson(json["invoice"]),
-    productRowData: List<ProductRowDatum>.from(json["productRowData"].map((x) => ProductRowDatum.fromJson(x))),
-    summary: Summary.fromJson(json["summary"]),
-    payments: List<Payment>.from(json["payments"].map((x) => Payment.fromJson(x))),
-    customer: Customer.fromJson(json["customer"]),
-    employee: Employee.fromJson(json["employee"]),
-    config: Config.fromJson(json["config"]),
+    company: Company.fromJson(_map(json["company"])),
+    branch: Branch.fromJson(_map(json["branch"])),
+    counter: Counter.fromJson(_map(json["counter"])),
+    invoice: Invoice.fromJson(_map(json["invoice"])),
+    productRowData: _list(json["productRowData"])
+        .map((x) => ProductRowDatum.fromJson(_map(x)))
+        .toList(),
+    summary: Summary.fromJson(_map(json["summary"])),
+    payments: _list(json["payments"]).map((x) => Payment.fromJson(_map(x))).toList(),
+    customer: Customer.fromJson(_map(json["customer"])),
+    employee: Employee.fromJson(_map(json["employee"])),
+    config: Config.fromJson(_map(json["config"])),
   );
 
   Map<String, dynamic> toJson() => {
@@ -76,10 +100,10 @@ class Branch {
   });
 
   factory Branch.fromJson(Map<String, dynamic> json) => Branch(
-    branchName: json["branch_name"],
+    branchName: _str(json["branch_name"]),
     branchCode: json["branch_code"],
-    branchAddr: json["branch_addr"],
-    branchPhone: json["branch_phone"],
+    branchAddr: _str(json["branch_addr"]),
+    branchPhone: _str(json["branch_phone"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -108,12 +132,12 @@ class Company {
   });
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
-    name: json["name"],
-    logoUrl: json["logo_url"],
-    logoViewBill: json["logo_view_bill"],
-    logoWidthPos: json["logo_width_pos"],
-    nameViewBill: json["name_view_bill"],
-    brAddViewBill: json["br_add_view_bill"],
+    name: _str(json["name"]),
+    logoUrl: _str(json["logo_url"]),
+    logoViewBill: _int(json["logo_view_bill"]),
+    logoWidthPos: _str(json["logo_width_pos"]),
+    nameViewBill: _int(json["name_view_bill"]),
+    brAddViewBill: _int(json["br_add_view_bill"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -136,7 +160,7 @@ class Config {
   });
 
   factory Config.fromJson(Map<String, dynamic> json) => Config(
-    returnDayTime: json["return_day_time"],
+    returnDayTime: _str(json["return_day_time"]),
     termsAndConditions: json["terms_and_conditions"],
   );
 
@@ -176,10 +200,10 @@ class Customer {
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
-    customerName: json["customer_name"],
-    customerMobile: json["customer_mobile"],
-    customerNo: json["customer_no"],
-    rewardPoints: json["reward_points"],
+    customerName: _str(json["customer_name"]),
+    customerMobile: _str(json["customer_mobile"]),
+    customerNo: _str(json["customer_no"]),
+    rewardPoints: _int(json["reward_points"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -200,8 +224,8 @@ class Employee {
   });
 
   factory Employee.fromJson(Map<String, dynamic> json) => Employee(
-    empName: json["emp_name"],
-    empCode: json["emp_code"],
+    empName: _str(json["emp_name"]),
+    empCode: _str(json["emp_code"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -224,10 +248,10 @@ class Invoice {
   });
 
   factory Invoice.fromJson(Map<String, dynamic> json) => Invoice(
-    salesBillNo: json["sales_bill_no"],
+    salesBillNo: _str(json["sales_bill_no"]),
     vatChalanNo: json["vat_chalan_no"],
-    date: json["date"],
-    isDuplicate: json["is_duplicate"],
+    date: _str(json["date"]),
+    isDuplicate: _bool(json["is_duplicate"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -250,9 +274,9 @@ class Payment {
   });
 
   factory Payment.fromJson(Map<String, dynamic> json) => Payment(
-    paymentAccId: json["payment_acc_id"],
+    paymentAccId: _int(json["payment_acc_id"]),
     paymentName: json["payment_name"],
-    collectionAmount: json["collection_amount"],
+    collectionAmount: _str(json["collection_amount"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -280,12 +304,12 @@ class ProductRowDatum {
   });
 
   factory ProductRowDatum.fromJson(Map<String, dynamic> json) => ProductRowDatum(
-    productId: json["product_id"],
-    productName: json["product_name"],
-    prodBarcode: json["prod_barcode"],
-    unitPrice: json["unit_price"],
-    quantity: json["quantity"],
-    totalSalesPrice: json["total_sales_price"],
+    productId: _int(json["product_id"]),
+    productName: _str(json["product_name"]),
+    prodBarcode: _str(json["prod_barcode"]),
+    unitPrice: _str(json["unit_price"]),
+    quantity: _str(json["quantity"]),
+    totalSalesPrice: _str(json["total_sales_price"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -309,7 +333,7 @@ class Summary {
   final String vatAmount;
   final String deliveryCharge;
   final String processingFee;
-  final int grandTotal;
+  final num grandTotal;
   final String grandTotalWords;
   final String givenAmount;
   final double changedAmount;
@@ -336,22 +360,22 @@ class Summary {
   });
 
   factory Summary.fromJson(Map<String, dynamic> json) => Summary(
-    totalAmount: json["total_amount"],
-    totalQuantity: json["total_quantity"],
-    discountRate: json["discount_rate"],
-    discountAmount: json["discount_amount"],
-    showDiscountPct: json["show_discount_pct"],
-    adjustPoint: json["adjust_point"],
-    vatRate: json["vat_rate"],
-    vatAmount: json["vat_amount"],
-    deliveryCharge: json["delivery_charge"],
-    processingFee: json["processing_fee"],
-    grandTotal: json["grand_total"],
-    grandTotalWords: json["grand_total_words"],
-    givenAmount: json["given_amount"],
-    changedAmount: json["changed_amount"]?.toDouble(),
+    totalAmount: _str(json["total_amount"]),
+    totalQuantity: _str(json["total_quantity"]),
+    discountRate: _str(json["discount_rate"]),
+    discountAmount: _str(json["discount_amount"]),
+    showDiscountPct: _bool(json["show_discount_pct"]),
+    adjustPoint: _str(json["adjust_point"]),
+    vatRate: _str(json["vat_rate"]),
+    vatAmount: _str(json["vat_amount"]),
+    deliveryCharge: _str(json["delivery_charge"]),
+    processingFee: _str(json["processing_fee"]),
+    grandTotal: _num(json["grand_total"]),
+    grandTotalWords: _str(json["grand_total_words"]),
+    givenAmount: _str(json["given_amount"]),
+    changedAmount: _double(json["changed_amount"]),
     dueAmount: json["due_amount"],
-    salesType: json["sales_type"],
+    salesType: _str(json["sales_type"]),
   );
 
   Map<String, dynamic> toJson() => {

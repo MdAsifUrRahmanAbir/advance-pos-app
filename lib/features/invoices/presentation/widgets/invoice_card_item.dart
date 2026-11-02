@@ -1,15 +1,17 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/custom_card.dart';
 import '../../data/model/invoices_model.dart';
+import 'invoice_item_menu.dart';
 import 'invoice_status_badge.dart';
 
-/// Single invoice card with invoice details and contextual actions.
+/// Single invoice card: bill no, customer, status and a ⋮ menu (Edit /
+/// Delete) on top; date, items and total; then a "Bill Preview" action.
 class InvoiceCardItem extends StatelessWidget {
   final ResultDatum invoice;
   final VoidCallback? onTap;
@@ -17,6 +19,7 @@ class InvoiceCardItem extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final VoidCallback? onReturnSale;
+  final VoidCallback? onBillPreview;
 
   const InvoiceCardItem({
     super.key,
@@ -25,6 +28,7 @@ class InvoiceCardItem extends StatelessWidget {
     this.onEdit,
     this.onDelete,
     this.onReturnSale,
+    this.onBillPreview,
   });
 
   @override
@@ -40,7 +44,7 @@ class InvoiceCardItem extends StatelessWidget {
         children: [
           // Invoice header
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
@@ -57,7 +61,7 @@ class InvoiceCardItem extends StatelessWidget {
                     const SizedBox(height: AppSizes.xs / 2),
                     Text(
                       invoice.customerName.isEmpty
-                          ? 'Walk-in Customer'
+                          ? AppStrings.editSaleWalkInCustomer
                           : invoice.customerName,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -71,6 +75,7 @@ class InvoiceCardItem extends StatelessWidget {
               ),
               const SizedBox(width: AppSizes.sm),
               InvoiceStatusBadge(invoice: invoice),
+              InvoiceItemMenu(onEdit: onEdit, onDelete: onDelete),
             ],
           ),
 
@@ -106,13 +111,12 @@ class InvoiceCardItem extends StatelessWidget {
                 ),
               ),
               Text(
-                '$qty items',
+                AppStrings.dashItemsCount(qty),
                 style: TextStyle(
                   fontSize: AppSizes.fontXs,
                   color: colors.textSecondary,
                 ),
               ),
-              // const SizedBox(width: AppSizes.sm),
               Flexible(
                 child: Text(
                   CurrencyFormatter.format(total),
@@ -129,38 +133,14 @@ class InvoiceCardItem extends StatelessWidget {
             ],
           ),
 
-          // Action buttons
-          // const SizedBox(height: AppSizes.sm),
-          // Divider(height: 1, color: colors.divider),
           const SizedBox(height: AppSizes.md),
 
-          Row(
-            children: [
-              Expanded(
-                child: _InvoiceActionButton(
-                  icon: Icons.edit_outlined,
-                  label: 'Edit',
-                  onPressed: onEdit,
-                ),
-              ),
-              const SizedBox(width: AppSizes.sm),
-              Expanded(
-                child: _InvoiceActionButton(
-                  icon: Icons.delete_outline,
-                  label: 'Delete',
-                  onPressed: onDelete,
-                  foregroundColor: AppColors.error,
-                ),
-              ),
-              // const SizedBox(width: AppSizes.sm),
-              // Expanded(
-              //   child: _InvoiceActionButton(
-              //     icon: Icons.assignment_return_outlined,
-              //     label: 'Return Sale',
-              //     onPressed: onReturnSale,
-              //   ),
-              // ),
-            ],
+          // Primary action — Edit / Delete live in the ⋮ menu above.
+          _InvoiceActionButton(
+            icon: Icons.receipt_long_outlined,
+            label: AppStrings.billPreviewTitle,
+            onPressed: onBillPreview,
+            foregroundColor: AppColors.primary,
           ),
         ],
       ),
@@ -168,7 +148,7 @@ class InvoiceCardItem extends StatelessWidget {
   }
 }
 
-/// Compact, consistent action button with automatic disabled state.
+/// Compact, full-width outlined action with automatic disabled state.
 class _InvoiceActionButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -182,41 +162,44 @@ class _InvoiceActionButton extends StatelessWidget {
     this.foregroundColor,
   });
 
+  /// Compact in-card button height (AppSizes.buttonHeight is too tall
+  /// inside a list card) — flagged.
+  static const double _height = 40;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final enabled = onPressed != null;
-    final color = foregroundColor ?? colors.textSecondary;
+    final color = enabled
+        ? (foregroundColor ?? colors.textSecondary)
+        : colors.textHint;
 
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(
-        icon,
-        size: 16,
-        color: enabled ? color : colors.textHint,
-      ),
-      label: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: AppSizes.fontXs,
-          fontWeight: FontWeight.w600,
-          color: enabled ? color : colors.textHint,
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: AppSizes.iconSm, color: color),
+        label: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: AppSizes.fontXs,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
         ),
-      ),
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 10,
-        ),
-        minimumSize: const Size(0, 40),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        side: BorderSide(
-          color: enabled ? colors.divider : colors.divider,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSizes.xs,
+            vertical: AppSizes.sm,
+          ),
+          minimumSize: const Size(0, _height),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          side: BorderSide(color: colors.divider),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+          ),
         ),
       ),
     );

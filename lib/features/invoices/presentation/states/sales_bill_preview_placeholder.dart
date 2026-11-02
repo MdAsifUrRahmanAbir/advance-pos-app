@@ -69,6 +69,9 @@ class SalesBillPreviewPlaceholder {
       'reward_points': 0,
     },
     'employee': {'emp_name': 'Employee', 'emp_code': '00'},
-    'config': {'return_day_time': '', 'terms_and_conditions': null},
-  });
+    'config': {
+      'return_day_time': '',
+      'terms_and_conditions': '<p><strong>Terms and conditions</strong><br />'
+          'Terms line one goes here<br />Terms line two goes here</p>',
+    },  });
 }

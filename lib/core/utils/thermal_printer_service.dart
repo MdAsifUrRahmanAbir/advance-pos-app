@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:image/image.dart' as img;
 
 import '../../features/payment/presentation/states/payment_state.dart';
 
@@ -167,5 +168,42 @@ class ThermalPrinterService {
     bytes.addAll(generator.cut());
 
     return Uint8List.fromList(bytes);
+  }
+
+  /// Blank lines fed after an image receipt so the cut clears the text.
+  static const int _imageTailFeedLines = 2;
+  /// Prints a pre-rendered receipt image (for example a widget captured
+  /// with `ReceiptShareService.captureAsPng`) so the paper matches the
+  /// on-screen preview exactly. The image is scaled to the printable width
+  /// of [paperSize] before it is rasterized.
+  static Future<bool> printImage(
+      Uint8List pngBytes, {
+        PaperSize paperSize = PaperSize.mm58,
+      }) async {
+    final bytes = await _buildImageBytes(pngBytes, paperSize);
+    return PrintBluetoothThermal.writeBytes(bytes);
+  }
+
+  static Future<Uint8List> _buildImageBytes(
+      Uint8List pngBytes,
+      PaperSize paperSize,
+      ) async {
+    final decoded = img.decodeImage(pngBytes);
+    if (decoded == null) {
+      throw StateError('ThermalPrinterService: could not decode receipt image.');
+    }
+    final fitted = img.copyResize(
+      decoded,
+      width: paperSize.width,
+      interpolation: img.Interpolation.average,
+    );
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(paperSize, profile);
+    return Uint8List.fromList([
+      ...generator.reset(),
+      ...generator.imageRaster(fitted),
+      ...generator.feed(_imageTailFeedLines),
+      ...generator.cut(),
+    ]);
   }
 }

@@ -28,6 +28,8 @@ dependencies:
   print_bluetooth_thermal:
   permission_handler:
   flutter_animate:
+  image: ^3.3.0
+  barcode_widget: ^2.0.4
 
 dev_dependencies:
   flutter_test:
