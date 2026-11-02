@@ -67,11 +67,11 @@ class SettingsSecurityGeneralSection extends StatelessWidget {
               value: regionValue,
               onTap: onRegionTap,
             ),
-            SettingsTile(
-              title: AppStrings.changePasswordTitle,
-              // value: regionValue,
-              onTap: onChangePssword,
-            ),
+            // SettingsTile(
+            //   title: AppStrings.changePasswordTitle,
+            //   // value: regionValue,
+            //   onTap: onChangePssword,
+            // ),
           ],
         ),
       ],

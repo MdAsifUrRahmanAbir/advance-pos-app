@@ -6,7 +6,7 @@ import '../../../../core/widgets/common/app_header_bar.dart';
 /// Top bar for Edit Sale: back chevron, title + bill number, and a
 /// barcode-scan trailing icon (same pattern as New Sale's top bar).
 class EditSaleCartTopBar extends AppHeaderBar {
-  EditSaleCartTopBar({
+  const EditSaleCartTopBar({
     super.key,
     required String billNo,
     required VoidCallback onBack,

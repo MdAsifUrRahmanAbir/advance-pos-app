@@ -12,7 +12,6 @@ import '../../data/models/customers_model.dart';
 import '../controllers/customers_controller.dart';
 import '../widgets/customer_card_item.dart';
 import '../widgets/customer_detail_sheet.dart';
-import '../widgets/customer_filter_tabs.dart';
 import '../widgets/customer_list_skeleton.dart';
 
 class CustomersMobileView extends ConsumerStatefulWidget {

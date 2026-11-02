@@ -18,12 +18,10 @@ class RouteNames {
   static const String maintenance = '/maintenance';
 
   // Added: routes for the newly added basic screens
-  static const String register = '/register';
   static const String otpVerification = '/otp-verification';
   static const String helpSupport = '/help-support';
   static const String cart = '/cart';
   static const String editProfile = '/edit_profile';
-  static const String changePassword = '/change-password';
 
   static const String dashboard = '/dashboard';
   static const String termsPrivacy = '/terms_privacy';

@@ -2,56 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/session/auth_session_controller.dart';
+import '../../../../core/session/session_profile.dart';
+import '../../../../core/utils/error_mapper.dart';
 import '../../data/repositories/login_repository.dart';
+import '../states/login_state.dart';
 
-class LoginFormState {
-  final bool rememberMe;
+class LoginController extends Notifier<LoginState> {
+  /// FLAG: login returns `emp_id: null` for users without an employee
+  /// record; 0 is sent as employee_id until the backend defines this.
+  static const int _unknownEmployeeId = 0;
 
-  const LoginFormState({this.rememberMe = false});
+  /// FLAG: login response has no seller type yet.
+  static const String _unknownSellerType = '';
 
-  LoginFormState copyWith({bool? rememberMe}) {
-    return LoginFormState(rememberMe: rememberMe ?? this.rememberMe);
-  }
-}
-
-/*
-final editProfileControllerProvider = NotifierProvider.autoDispose<EditProfileController, EditProfileState>(
-  EditProfileController.new,
-);
- */
-
-class LoginController extends Notifier<LoginFormState> {
   final formKey = GlobalKey<FormState>();
 
-  late final TextEditingController emailController;
+  late final TextEditingController usernameController;
   late final TextEditingController passwordController;
 
+  LoginRepository get _repository => ref.read(loginRepositoryProvider);
+
   @override
-  LoginFormState build() {
-    emailController = TextEditingController(text: "user@test.com");
-    passwordController = TextEditingController(text: "12345678");
+  LoginState build() {
+    usernameController = TextEditingController();
+    passwordController = TextEditingController();
 
     ref.onDispose(() {
-      emailController.dispose();
+      usernameController.dispose();
       passwordController.dispose();
     });
 
-    return const LoginFormState();
+    return const LoginState();
   }
 
   void setRememberMe(bool value) {
     state = state.copyWith(rememberMe: value);
   }
 
-  String? validateEmail(String? value) {
+  String? validateUsername(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return AppStrings.emailRequired;
+      return AppStrings.loginUsernameRequired;
     }
-
-    if (!value.contains('@')) {
-      return AppStrings.emailInvalid;
-    }
-
     return null;
   }
 
@@ -59,30 +51,63 @@ class LoginController extends Notifier<LoginFormState> {
     if (value == null || value.isEmpty) {
       return AppStrings.passwordRequired;
     }
-
     return null;
   }
 
-  LoginRepository get _repository => ref.read(loginRepositoryProvider);
+  /// Signs in and saves the session. True when the user is signed in;
+  /// on false, [LoginState.errorMessage] holds the reason (null when the
+  /// form itself was invalid).
+  Future<bool> submit() async {
+    if (state.isSubmitting) return false;
+    state = state.copyWith(clearError: true);
+    if (!(formKey.currentState?.validate() ?? false)) return false;
 
-  bool submit(
-    void Function(String email, String password, bool rememberMe) onSignIn,
-  ) {
-    if (!(formKey.currentState?.validate() ?? false)) {
+    state = state.copyWith(isSubmitting: true);
+    try {
+      final result = await _repository.login(
+        username: usernameController.text.trim(),
+        password: passwordController.text,
+      );
+      if (!ref.mounted) return false;
+
+      final data = result.data;
+      if (!result.success || data == null) {
+        state = state.copyWith(
+          isSubmitting: false,
+          errorMessage: result.message ?? AppStrings.loginFailed,
+        );
+        return false;
+      }
+
+      final config = data.userConfig;
+      await ref.read(authSessionControllerProvider.notifier).onLoginSuccess(
+        profile: SessionProfile(
+          branchId: config.branchId,
+          employeeId: config.empId ?? _unknownEmployeeId,
+          sellerType: _unknownSellerType,
+          userName: config.fullName,
+          userId: config.userId,
+          companyId: config.companyId,
+          companyType: config.companyType,
+          historyId: data.historysId,
+        ),
+      );
+      if (!ref.mounted) return true;
+
+      state = state.copyWith(isSubmitting: false);
+      return true;
+    } catch (error, stackTrace) {
+      if (!ref.mounted) return false;
+      state = state.copyWith(
+        isSubmitting: false,
+        errorMessage: getErrorMessage(error, stackTrace),
+      );
       return false;
     }
-
-    onSignIn(
-      emailController.text.trim(),
-      passwordController.text,
-      state.rememberMe,
-    );
-
-    return true;
   }
 }
 
 final loginFormControllerProvider =
-    NotifierProvider.autoDispose<LoginController, LoginFormState>(
-      LoginController.new,
-    );
+NotifierProvider.autoDispose<LoginController, LoginState>(
+  LoginController.new,
+);

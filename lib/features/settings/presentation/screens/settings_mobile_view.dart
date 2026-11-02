@@ -140,7 +140,6 @@ class SettingsMobileView extends ConsumerWidget {
                   },
 
                   onChangePssword: () {
-                    context.push(RouteNames.changePassword);
                   },
                 ),
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/primary_input_field.dart';
@@ -7,56 +6,65 @@ import '../../../../core/widgets/common/password_input_field.dart';
 import '../../../../core/widgets/common/primary_checkbox.dart';
 import '../../../../core/widgets/common/link_button.dart';
 import '../../../../core/widgets/common/primary_button.dart';
-import '../controllers/login_controller.dart';
 
-/// Email + password fields, "Remember me" / "Forgot password?" row, and
-/// the Sign In button.
-class LoginForm extends ConsumerWidget {
-  final bool loading;
-  final void Function(String email, String password, bool rememberMe) onSignIn;
+/// Username + password fields, "Remember me" / "Forgot password?" row,
+/// and the Sign In button. Pure UI: all state and actions come in.
+class LoginForm extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final TextEditingController usernameController;
+  final TextEditingController passwordController;
+  final String? Function(String?) usernameValidator;
+  final String? Function(String?) passwordValidator;
+  final bool rememberMe;
+  final ValueChanged<bool> onRememberMeChanged;
+  final VoidCallback onSubmit;
   final VoidCallback? onForgotPassword;
+  final bool loading;
 
   const LoginForm({
     super.key,
-    required this.onSignIn,
+    required this.formKey,
+    required this.usernameController,
+    required this.passwordController,
+    required this.usernameValidator,
+    required this.passwordValidator,
+    required this.rememberMe,
+    required this.onRememberMeChanged,
+    required this.onSubmit,
     this.onForgotPassword,
     this.loading = false,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(loginFormControllerProvider.notifier);
-    final state = ref.watch(loginFormControllerProvider);
-
+  Widget build(BuildContext context) {
     return Form(
-      key: controller.formKey,
+      key: formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PrimaryInputField(
-            label: AppStrings.emailAddress,
-            hint: AppStrings.emailHint,
-            controller: controller.emailController,
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icon(Icons.mail_outline_rounded),
-            validator: controller.validateEmail,
+            label: AppStrings.loginUsernameLabel,
+            hint: AppStrings.loginUsernameHint,
+            controller: usernameController,
+            keyboardType: TextInputType.text,
+            prefixIcon: const Icon(Icons.person_outline_rounded),
+            validator: usernameValidator,
           ),
           const SizedBox(height: AppSizes.md),
           PasswordInputField(
             label: AppStrings.password,
             hint: AppStrings.passwordHint,
-            controller: controller.passwordController,
-            validator: controller.validatePassword,
+            controller: passwordController,
+            validator: passwordValidator,
           ),
           const SizedBox(height: AppSizes.xs),
           Row(
             children: [
               Expanded(
                 child: PrimaryCheckbox(
-                  value: state.rememberMe,
+                  value: rememberMe,
                   label: AppStrings.rememberMe,
-                  onChanged: (value) =>
-                      controller.setRememberMe(value ?? false),
+                  onChanged: (value) => onRememberMeChanged(value ?? false),
                 ),
               ),
               // Hidden when no handler is given (Forgot Password not offered yet).
@@ -72,7 +80,7 @@ class LoginForm extends ConsumerWidget {
           PrimaryButton(
             label: AppStrings.signIn,
             loading: loading,
-            onPressed: () => controller.submit(onSignIn),
+            onPressed: onSubmit,
           ),
         ],
       ),

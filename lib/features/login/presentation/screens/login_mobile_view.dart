@@ -3,14 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/session/client_session_controller.dart';
-import '../../../../core/session/session_profile.dart';
 import '../../../../core/widgets/common/custom_app_bar.dart';
 import '../../../../core/widgets/common/custom_card.dart';
+import '../../../../core/widgets/utility/custom_alert_dialog.dart';
+import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../routes/route_names.dart';
-import '../widgets/login_change_company_footer.dart';
-import '../widgets/login_client_brand.dart';
+import '../controllers/login_controller.dart';
+import '../widgets/login_company_footer.dart';
 import '../widgets/login_form.dart';
 import '../widgets/login_header.dart';
 
@@ -20,12 +20,33 @@ class LoginMobileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final client = ref.watch(clientSessionControllerProvider);
+    final loginState = ref.watch(loginFormControllerProvider);
+    final controller = ref.read(loginFormControllerProvider.notifier);
 
-    /// Forget the company and go back to company verification.
-    Future<void> changeCompany() async {
+    /// Confirm, then forget the company and go back to company verification.
+    Future<void> switchCompany() async {
+      final confirmed = await CustomAlertDialog.confirm(
+        context,
+        title: AppStrings.companySwitchTitle,
+        message: AppStrings.companySwitchMessage(client?.name ?? ''),
+        confirmText: AppStrings.companySwitchAction,
+        cancelText: AppStrings.cancel,
+      );
+      if (confirmed != true || !context.mounted) return;
       await ref.read(clientSessionControllerProvider.notifier).clear();
       if (!context.mounted) return;
       context.go(RouteNames.welcome);
+    }
+
+    Future<void> signIn() async {
+      final ok = await controller.submit();
+      if (!context.mounted) return;
+      if (ok) {
+        context.go(RouteNames.mainShell);
+        return;
+      }
+      final message = ref.read(loginFormControllerProvider).errorMessage;
+      if (message != null) CustomSnackbar.show(context, message, error: true);
     }
 
     return SafeArea(
@@ -35,53 +56,35 @@ class LoginMobileView extends ConsumerWidget {
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSizes.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (client != null) ...[
-                    Center(
-                      child: LoginClientBrand(
-                        name: client.name,
-                        logoUrl: client.logo,
-                      ),
-                    ),
+              child: CustomCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const LoginHeader(),
                     const SizedBox(height: AppSizes.lg),
-                  ],
-                  CustomCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const LoginHeader(),
-                        const SizedBox(height: AppSizes.lg),
-                        LoginForm(
-                          onSignIn: (email, password, rememberMe) async {
-                            // TODO: wire to the login API once its response is known.
-                            await ref
-                                .read(authSessionControllerProvider.notifier)
-                                .onLoginSuccess(
-                              accessToken: "response.accessToken",
-                              refreshToken: "response.refreshToken",
-                              profile: const SessionProfile(
-                                branchId: 2, // placeholder until login API
-                                employeeId: 0,
-                                sellerType: '',
-                                userName: '',
-                              ),
-                            );
-
-                            if (!context.mounted) return;
-
-                            context.go(RouteNames.mainShell);
-                          },
-                        ),
-                      ],
+                    LoginForm(
+                      formKey: controller.formKey,
+                      usernameController: controller.usernameController,
+                      passwordController: controller.passwordController,
+                      usernameValidator: controller.validateUsername,
+                      passwordValidator: controller.validatePassword,
+                      rememberMe: loginState.rememberMe,
+                      onRememberMeChanged: controller.setRememberMe,
+                      loading: loginState.isSubmitting,
+                      onSubmit: signIn,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-          LoginChangeCompanyFooter(onChangeCompany: changeCompany),
+          if (client != null)
+            LoginCompanyFooter(
+              name: client.name,
+              compCode: client.compCode,
+              logoUrl: client.logo,
+              onSwitch: switchCompany,
+            ),
         ],
       ),
     );

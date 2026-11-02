@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
-import '../widgets/profile_stats_row.dart';
 import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
 

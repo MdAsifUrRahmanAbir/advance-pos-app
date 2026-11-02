@@ -7,7 +7,12 @@ import 'session_profile.dart';
 
 /// Single source of truth for "is someone logged in right now". Read this
 /// from the splash flow to pick the initial route. Never duplicate a
-/// token check anywhere else — everything routes through here.
+/// session check anywhere else — everything routes through here.
+///
+/// A session is the saved [SessionProfile]. The login API currently
+/// returns no token, so the access token is optional: when the backend
+/// starts returning one, pass it to [onLoginSuccess] and it is sent as
+/// `Bearer` automatically.
 class AuthSessionController extends Notifier<AuthSessionState> {
   SecureStorageService get _secureStorage =>
       ref.read(secureStorageServiceProvider);
@@ -16,46 +21,51 @@ class AuthSessionController extends Notifier<AuthSessionState> {
   @override
   AuthSessionState build() => const AuthSessionState();
 
-  /// Call once at startup. Restores the token AND the session profile.
-  /// A token without a readable profile (e.g. saved by an older build)
-  /// can't tell us the branch or user, so it is treated as signed out.
-  /// Pair with a lightweight `/auth/me` call if you need server-side
-  /// validation (expired/revoked tokens), not just presence.
+  /// Call once at startup. A missing or unreadable profile means signed
+  /// out (it is the only place the branch and user come from).
   Future<void> restoreSession() async {
-    final token = await _secureStorage.readAccessToken();
     final profile = SessionProfile.tryDecode(
       await _secureStorage.readSessionProfile(),
     );
 
-    if (token == null || token.isEmpty || profile == null) {
+    if (profile == null) {
       await _secureStorage.clearAuthTokens();
       await _secureStorage.clearSessionProfile();
+      _apiClient.setAuthToken(null);
       state = state.copyWith(status: AuthStatus.unauthenticated);
       return;
     }
 
-    _apiClient.setAuthToken(token);
+    final token = await _secureStorage.readAccessToken();
+    final hasToken = token != null && token.isNotEmpty;
+    _apiClient.setAuthToken(hasToken ? token : null);
     state = AuthSessionState(
       status: AuthStatus.authenticated,
-      accessToken: token,
+      accessToken: hasToken ? token : null,
       profile: profile,
     );
   }
 
   Future<void> onLoginSuccess({
-    required String accessToken,
+    String? accessToken,
     String? refreshToken,
     required SessionProfile profile,
   }) async {
-    await _secureStorage.saveAccessToken(accessToken);
-    if (refreshToken != null) {
-      await _secureStorage.saveRefreshToken(refreshToken);
+    final hasToken = accessToken != null && accessToken.isNotEmpty;
+
+    // Drop any token left by an older session before saving the new one.
+    await _secureStorage.clearAuthTokens();
+    if (hasToken) {
+      await _secureStorage.saveAccessToken(accessToken);
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await _secureStorage.saveRefreshToken(refreshToken);
+      }
     }
     await _secureStorage.saveSessionProfile(profile.encode());
-    _apiClient.setAuthToken(accessToken);
+    _apiClient.setAuthToken(hasToken ? accessToken : null);
     state = AuthSessionState(
       status: AuthStatus.authenticated,
-      accessToken: accessToken,
+      accessToken: hasToken ? accessToken : null,
       profile: profile,
     );
   }

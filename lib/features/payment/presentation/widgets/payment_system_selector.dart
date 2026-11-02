@@ -26,8 +26,8 @@ class PaymentSystemSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     final atCap = selectedEntries.length >= PaymentState.maxSelectable;
 
-    print(systems);
-    print(selectedEntries);
+    // print(systems);
+    // print(selectedEntries);
 
     return Wrap(
       spacing: AppSizes.sm,

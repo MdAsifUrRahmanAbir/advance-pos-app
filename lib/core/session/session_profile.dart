@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// Who is signed in and where they work. Saved with the auth token and
+/// Who is signed in and where they work. Saved with the session and
 /// restored at startup. To add a field later, add it here and in
 /// [toJson]/[fromJson]; a new nullable field keeps old sessions valid.
 class SessionProfile {
@@ -9,11 +9,22 @@ class SessionProfile {
   final String sellerType;
   final String userName;
 
+  /// From login `user_config` / `historys_id`. Nullable so sessions saved
+  /// by older builds still decode.
+  final int? userId;
+  final int? companyId;
+  final int? companyType;
+  final int? historyId;
+
   const SessionProfile({
     required this.branchId,
     required this.employeeId,
     required this.sellerType,
     required this.userName,
+    this.userId,
+    this.companyId,
+    this.companyType,
+    this.historyId,
   });
 
   SessionProfile copyWith({
@@ -21,12 +32,20 @@ class SessionProfile {
     int? employeeId,
     String? sellerType,
     String? userName,
+    int? userId,
+    int? companyId,
+    int? companyType,
+    int? historyId,
   }) {
     return SessionProfile(
       branchId: branchId ?? this.branchId,
       employeeId: employeeId ?? this.employeeId,
       sellerType: sellerType ?? this.sellerType,
       userName: userName ?? this.userName,
+      userId: userId ?? this.userId,
+      companyId: companyId ?? this.companyId,
+      companyType: companyType ?? this.companyType,
+      historyId: historyId ?? this.historyId,
     );
   }
 
@@ -35,6 +54,10 @@ class SessionProfile {
     employeeId: json['employeeId'] as int,
     sellerType: json['sellerType'] as String,
     userName: json['userName'] as String,
+    userId: json['userId'] as int?,
+    companyId: json['companyId'] as int?,
+    companyType: json['companyType'] as int?,
+    historyId: json['historyId'] as int?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,6 +65,10 @@ class SessionProfile {
     'employeeId': employeeId,
     'sellerType': sellerType,
     'userName': userName,
+    'userId': userId,
+    'companyId': companyId,
+    'companyType': companyType,
+    'historyId': historyId,
   };
 
   String encode() => jsonEncode(toJson());

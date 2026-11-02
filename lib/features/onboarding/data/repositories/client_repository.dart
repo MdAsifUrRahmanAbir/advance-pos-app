@@ -21,6 +21,7 @@ class ClientRepository {
       queryParameters: {
         'comp_code': compCode,
         'app': ApiEndpoints.clientApp,
+        'system_token': "2nMDQU2TodIJH9Y8oycSUKNDVcHh5KZKCbLAmamU",
       },
     );
     return ClientInfoModel.fromJson(response.data);

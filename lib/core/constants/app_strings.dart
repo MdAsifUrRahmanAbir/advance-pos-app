@@ -802,4 +802,20 @@ class AppStrings {
 
   // ---- Login: change company footer (append only) ----
   static const String companyWrongPrompt = 'Wrong company?';
+
+  // ---- Login: connected company footer (append only) ----
+  static const String companyConnectedLabel = 'Connected company';
+  static String companyNameWithCode(String name, String code) => '$name · Code $code';
+  static const String companySwitchAction = 'Switch';
+  static const String companySwitchTitle = 'Switch company?';
+  static String companySwitchMessage(String name) =>
+      "You'll need to enter a company code again. "
+          "Data saved for ${name.isEmpty ? 'this company' : name} on this device will be cleared.";
+
+  // ---- Login: username sign-in (append only) ----
+  static const String loginUsernameLabel = 'Username';
+  static const String loginUsernameHint = 'Enter your username';
+  static const String loginUsernameRequired = 'Username is required';
+  static const String loginFailed = 'Sign in failed. Please check your username and password.';
+
 }

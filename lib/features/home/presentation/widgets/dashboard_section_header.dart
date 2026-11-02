@@ -25,7 +25,7 @@ class DashboardSectionHeader extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-          if (trailing != null) trailing!,
+          ?trailing,
         ],
       ),
     );

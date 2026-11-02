@@ -35,9 +35,7 @@ import '../features/system/presentation/screens/not_found_screen.dart';
 import '../features/system/presentation/screens/error_screen.dart';
 import '../features/system/presentation/screens/no_internet_screen.dart';
 import '../features/system/presentation/screens/maintenance_screen.dart';
-import '../features/register/presentation/screens/register_screen.dart';
 import '../features/otp_verification/presentation/screens/otp_verification_screen.dart';
-import '../features/change_password/presentation/screens/change_password_screen.dart';
 import '../features/help_support/presentation/screens/help_support_screen.dart';
 import '../features/cart/presentation/screens/cart_screen.dart';
 import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
@@ -223,14 +221,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      GoRoute(
-        path: RouteNames.register,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const RegisterScreen(),
-        ),
-      ),
 
       GoRoute(
         path: RouteNames.otpVerification,
@@ -256,15 +246,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: const EditProfileScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.changePassword,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const ChangePasswordScreen(),
         ),
       ),
 
