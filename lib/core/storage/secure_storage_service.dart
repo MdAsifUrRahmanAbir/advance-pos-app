@@ -19,6 +19,7 @@ class SecureStorageService {
   static const _keyRefreshToken = 'auth_refresh_token';
   static const _keySessionProfile = 'auth_session_profile';
   static const _keyCacheEncryptionKey = 'cache_encryption_key';
+  static const _keyClientProfile = 'client_profile';
 
   Future<void> saveAccessToken(String token) =>
       _storage.write(key: _keyAccessToken, value: token);
@@ -41,6 +42,14 @@ class SecureStorageService {
   Future<void> saveCacheEncryptionKey(String key) =>
       _storage.write(key: _keyCacheEncryptionKey, value: key);
 
+
+  /// JSON string of the verified company (see ClientProfile.encode()).
+  /// Kept across logout: the device stays bound to the company.
+  Future<void> saveClientProfile(String json) =>
+      _storage.write(key: _keyClientProfile, value: json);
+  Future<String?> readClientProfile() => _storage.read(key: _keyClientProfile);
+  Future<void> clearClientProfile() => _storage.delete(key: _keyClientProfile);
+  
   /// Called on logout. Wipes tokens only (the session profile is cleared
   /// separately via [clearSessionProfile]).
   Future<void> clearAuthTokens() async {

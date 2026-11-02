@@ -59,11 +59,13 @@ class LoginForm extends ConsumerWidget {
                       controller.setRememberMe(value ?? false),
                 ),
               ),
-              LinkButton(
-                label: AppStrings.forgotPassword,
-                fontSize: AppSizes.fontSm,
-                onPressed: onForgotPassword,
-              ),
+              // Hidden when no handler is given (Forgot Password not offered yet).
+              if (onForgotPassword != null)
+                LinkButton(
+                  label: AppStrings.forgotPassword,
+                  fontSize: AppSizes.fontSm,
+                  onPressed: onForgotPassword,
+                ),
             ],
           ),
           const SizedBox(height: AppSizes.sm),

@@ -791,4 +791,15 @@ class AppStrings {
 
   // ---- Invoices: Bill Preview terms (append only) ----
   static String billReturnWithinDays(String days) => 'Exchange within $days day(s)';
+
+  // ---- Onboarding: company verification (append only) ----
+  static const String companyCodeLabel = 'Company Code';
+  static const String companyCodeHint = 'Enter your company code';
+  static const String companyCodeRequired = 'Company code is required';
+  static const String companyCodeInvalid = 'Company code not found. Please check and try again.';
+  static const String companyVerifyAction = 'Verify Company';
+  static const String companyChangeAction = 'Change company';
+
+  // ---- Login: change company footer (append only) ----
+  static const String companyWrongPrompt = 'Wrong company?';
 }

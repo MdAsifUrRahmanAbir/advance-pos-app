@@ -24,10 +24,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _bootstrap() async {
-    final isAuthenticated =
+    final destination =
     await ref.read(splashControllerProvider.notifier).bootstrap();
     if (!mounted) return;
-    context.go(isAuthenticated ? RouteNames.mainShell : RouteNames.welcome);
+    context.go(switch (destination) {
+      SplashDestination.welcome => RouteNames.welcome,
+      SplashDestination.login => RouteNames.login,
+      SplashDestination.home => RouteNames.mainShell,
+    });
   }
 
   @override

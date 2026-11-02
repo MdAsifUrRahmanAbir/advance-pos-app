@@ -78,6 +78,14 @@ class ApiClient {
     _authToken = token;
   }
 
+  /// Points every following request at [url] (the verified company's API).
+  /// Absolute request URLs (e.g. company verification) are not affected.
+  void setBaseUrl(String url) {
+    _dio.options.baseUrl = url;
+  }
+
+  String get baseUrl => _dio.options.baseUrl;
+
   Future<Response> get(
     String path, {
     Map<String, dynamic>? queryParameters,

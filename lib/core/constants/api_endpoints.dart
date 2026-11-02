@@ -1,7 +1,17 @@
 class ApiEndpoints {
   // static const String baseUrl = "https://test.advanceposbd.com/api";
+
   static const String baseUrl =
       "http://192.168.68.76/ttl-products/erp/testing_api/public/api";
+
+  // Company (client) verification — central admin server, NOT the client's
+  // base URL, so this is an absolute URL (Dio ignores baseUrl for it).
+  static const String clientInfo =
+      "http://192.168.68.76/ttl-products/ttl_admin_web/public/api/v1/client/info";
+  static const String clientApp = "pos";
+
+  /// Appended to the verified client's `base_url` to reach its API.
+  static const String apiPathSuffix = "public/api";
 
 
   // Dashboard

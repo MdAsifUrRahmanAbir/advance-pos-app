@@ -16,9 +16,9 @@ class WelcomeContent extends StatelessWidget {
         HeroImageBanner(
           imagePath: AppAssets.welcome,
           fit: BoxFit.cover,
-          scale: 1.2,
+          scale: 1.3,
         ),
-        const SizedBox(height: AppSizes.xl),
+        const SizedBox(height: AppSizes.xxl),
         Text(
           AppStrings.welcomeToApp,
           textAlign: TextAlign.center,
