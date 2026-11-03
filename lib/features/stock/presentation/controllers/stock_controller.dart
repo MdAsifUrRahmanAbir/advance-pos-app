@@ -27,6 +27,10 @@ class StockController extends Notifier<StockState> {
 
   Timer? _debounce;
 
+  /// Bumped on every first-page load. A response whose number is no longer
+  /// the latest belongs to an older search/filter and is ignored.
+  int _requestSeq = 0;
+
   @override
   StockState build() {
     searchController = TextEditingController();
@@ -106,6 +110,9 @@ class StockController extends Notifier<StockState> {
   /// a ScrollController listener near the list's bottom edge.
   Future<void> loadMore() async {
     if (state.isLoadingMore || state.isStocksLoading || !state.hasMore) return;
+    // A first-page load started while this page is in flight makes its
+    // result stale (the list it would append to is gone).
+    final seq = _requestSeq;
 
     state = state.copyWith(isLoadingMore: true, errorMessage: null, technicalDetails: null);
     try {
@@ -121,6 +128,7 @@ class StockController extends Notifier<StockState> {
         brandId: state.filter.brandId,
       );
       final newItems = _mapToStockItems(stocks);
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         stocksModel: stocks,
@@ -129,6 +137,7 @@ class StockController extends Notifier<StockState> {
         hasMore: (nextStart + newItems.length) < stocks.recordsFiltered,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -157,6 +166,7 @@ class StockController extends Notifier<StockState> {
     state = state.copyWith(searchQuery: code, filter: StockFilter.empty);
 
     await getStocks(reset: true);
+    if (!ref.mounted) return null;
 
     final match = state.allItems
         .where((item) => item.barcode == code || item.sku == code)
@@ -176,7 +186,13 @@ class StockController extends Notifier<StockState> {
   /// both the initial build() call, pull-to-refresh, and filter/search
   /// changes.
   Future<bool> getStocks({bool reset = false}) async {
+    // Any direct load (filter, refresh, scan) supersedes a
+    // search still waiting on its debounce.
+    _debounce?.cancel();
+    final seq = ++_requestSeq;
+
     state = state.copyWith(
+      isLoadingMore: false,
       isStocksLoading: true,
       errorMessage: null,
       technicalDetails: null,
@@ -199,6 +215,8 @@ class StockController extends Notifier<StockState> {
 
       final newItems = _mapToStockItems(stocks);
 
+      if (!ref.mounted || seq != _requestSeq) return false;
+
       state = state.copyWith(
         isStocksLoading: false,
         stocksModel: stocks,
@@ -208,6 +226,7 @@ class StockController extends Notifier<StockState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return false;
       state = state.copyWith(
         isStocksLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),

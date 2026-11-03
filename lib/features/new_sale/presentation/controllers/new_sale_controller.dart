@@ -27,6 +27,10 @@ class NewSaleController extends Notifier<NewSaleState> {
 
   Timer? _debounce;
 
+  /// Bumped on every first-page load. A response whose number is no longer
+  /// the latest belongs to an older search/filter and is ignored.
+  int _requestSeq = 0;
+
   @override
   NewSaleState build() {
     searchController = TextEditingController();
@@ -137,6 +141,9 @@ class NewSaleController extends Notifier<NewSaleState> {
     state = state.copyWith(searchQuery: code);
 
     await getProducts(reset: true);
+    if (!ref.mounted) {
+      return ScanResult(product: null, outcome: ScanOutcome.notFound);
+    }
 
     final match = state.allItems.where((p) => p.barcode == code || p.sku == code).firstOrNull;
 
@@ -164,6 +171,9 @@ class NewSaleController extends Notifier<NewSaleState> {
 
   Future<void> loadMore() async {
     if (state.isLoadingMore || state.isProductsLoading || !state.hasMore) return;
+    // A first-page load started while this page is in flight makes its
+    // result stale (the list it would append to is gone).
+    final seq = _requestSeq;
 
     state = state.copyWith(isLoadingMore: true, errorMessage: null, technicalDetails: null);
     try {
@@ -175,6 +185,7 @@ class NewSaleController extends Notifier<NewSaleState> {
         categoryId: state.selectedCategoryId,
       );
       final newItems = products.resultData.map(_mapItem).toList();
+      if (!ref.mounted || seq != _requestSeq) return;
 
       state = state.copyWith(
         isLoadingMore: false,
@@ -184,6 +195,7 @@ class NewSaleController extends Notifier<NewSaleState> {
         hasMore: (nextStart + newItems.length) < products.recordsFiltered,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -197,7 +209,13 @@ class NewSaleController extends Notifier<NewSaleState> {
   }
 
   Future<bool> getProducts({bool reset = false}) async {
+    // Any direct load (category, filter, refresh, scan) supersedes a
+    // search still waiting on its debounce.
+    _debounce?.cancel();
+    final seq = ++_requestSeq;
+
     state = state.copyWith(
+      isLoadingMore: false,
       isProductsLoading: true,
       errorMessage: null,
       technicalDetails: null,
@@ -215,6 +233,8 @@ class NewSaleController extends Notifier<NewSaleState> {
       );
       final newItems = products.resultData.map(_mapItem).toList();
 
+      if (!ref.mounted || seq != _requestSeq) return false;
+
       state = state.copyWith(
         isProductsLoading: false,
         productModel: products,
@@ -224,6 +244,7 @@ class NewSaleController extends Notifier<NewSaleState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return false;
       state = state.copyWith(
         isProductsLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),

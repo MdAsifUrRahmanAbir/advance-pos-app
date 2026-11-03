@@ -20,6 +20,10 @@ class CustomersController extends Notifier<CustomersState> {
 
   Timer? _debounce;
 
+  /// Bumped on every first-page load. A response whose number is no longer
+  /// the latest belongs to an older search/filter and is ignored.
+  int _requestSeq = 0;
+
   @override
   CustomersState build() {
     searchController = TextEditingController();
@@ -66,6 +70,9 @@ class CustomersController extends Notifier<CustomersState> {
 
   Future<void> loadMore() async {
     if (state.isLoadingMore || state.isCustomersLoading || !state.hasMore) return;
+    // A first-page load started while this page is in flight makes its
+    // result stale (the list it would append to is gone).
+    final seq = _requestSeq;
 
     state = state.copyWith(isLoadingMore: true, errorMessage: null);
     try {
@@ -75,6 +82,7 @@ class CustomersController extends Notifier<CustomersState> {
         length: _pageLength,
         search: state.searchQuery,
       );
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         customersModel: customers,
@@ -83,6 +91,7 @@ class CustomersController extends Notifier<CustomersState> {
         hasMore: (nextStart + customers.resultData.length) < customers.recordsFiltered,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -91,7 +100,13 @@ class CustomersController extends Notifier<CustomersState> {
   }
 
   Future<bool> getCustomers({bool reset = false}) async {
+    // A direct load (first load, pull-to-refresh) supersedes a search
+    // still waiting on its debounce.
+    _debounce?.cancel();
+    final seq = ++_requestSeq;
+
     state = state.copyWith(
+      isLoadingMore: false,
       isCustomersLoading: true,
       errorMessage: null,
       allItems: reset ? [] : state.allItems,
@@ -106,6 +121,8 @@ class CustomersController extends Notifier<CustomersState> {
         search: state.searchQuery,
       );
 
+      if (!ref.mounted || seq != _requestSeq) return false;
+
       state = state.copyWith(
         isCustomersLoading: false,
         customersModel: customers,
@@ -115,6 +132,7 @@ class CustomersController extends Notifier<CustomersState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return false;
       state = state.copyWith(
         isCustomersLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),
