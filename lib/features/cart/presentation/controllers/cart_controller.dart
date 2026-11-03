@@ -23,6 +23,10 @@ class CartController extends Notifier<CartState> {
 
   Timer? _debounce;
 
+  /// Bumped on every first-page customer search. A response whose number
+  /// is no longer the latest belongs to an older query and is ignored.
+  int _customerRequestSeq = 0;
+
   List<CartLineItem> _mapFromNewSale(List<new_sale.CartLineItem> lines) {
     return [
       for (final line in lines)
@@ -144,8 +148,14 @@ class CartController extends Notifier<CartState> {
   }
 
   Future<bool> searchCustomers({bool reset = false}) async {
+    // A direct load (sheet opened) supersedes a search still waiting on
+    // its debounce.
+    _debounce?.cancel();
+    final seq = ++_customerRequestSeq;
+
     state = state.copyWith(
       isCustomerLoading: true,
+      isCustomerLoadingMore: false,
       customerErrorMessage: null,
       customerResults: reset ? [] : state.customerResults,
       customerCurrentStart: reset ? 0 : state.customerCurrentStart,
@@ -161,6 +171,7 @@ class CartController extends Notifier<CartState> {
         length: _customerPageLength,
         search: effectiveSearch,
       );
+      if (!ref.mounted || seq != _customerRequestSeq) return false;
       state = state.copyWith(
         isCustomerLoading: false,
         customerResults: customers.resultData,
@@ -170,6 +181,7 @@ class CartController extends Notifier<CartState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _customerRequestSeq) return false;
       state = state.copyWith(
         isCustomerLoading: false,
         customerErrorMessage: getErrorMessage(error, stackTrace),
@@ -184,6 +196,10 @@ class CartController extends Notifier<CartState> {
         !state.customerHasMore) {
       return;
     }
+    // A new first-page search started while this page is in flight makes
+    // its result stale (the list it would append to is gone).
+    final seq = _customerRequestSeq;
+
     state = state.copyWith(
       isCustomerLoadingMore: true,
       customerErrorMessage: null,
@@ -199,6 +215,7 @@ class CartController extends Notifier<CartState> {
         length: _customerPageLength,
         search: effectiveSearch,
       );
+      if (!ref.mounted || seq != _customerRequestSeq) return;
       state = state.copyWith(
         isCustomerLoadingMore: false,
         customerResults: [...state.customerResults, ...customers.resultData],
@@ -208,6 +225,7 @@ class CartController extends Notifier<CartState> {
             customers.recordsFiltered,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _customerRequestSeq) return;
       state = state.copyWith(
         isCustomerLoadingMore: false,
         customerErrorMessage: getErrorMessage(error, stackTrace),
@@ -240,12 +258,14 @@ class CartController extends Notifier<CartState> {
         customerEmail: email,
         address: address,
       );
+      if (!ref.mounted) return null;
 
       final lookup = await _repository.getCustomers(
         start: 0,
         length: 5,
         search: mobile,
       );
+      if (!ref.mounted) return null;
       final created =
           lookup.resultData
               .where((c) => c.customerMobile == mobile)
@@ -267,6 +287,7 @@ class CartController extends Notifier<CartState> {
       );
       return created;
     } catch (error, stackTrace) {
+      if (!ref.mounted) return null;
       state = state.copyWith(
         isAddingCustomer: false,
         addCustomerErrorMessage: getErrorMessage(error, stackTrace),
@@ -285,8 +306,7 @@ class CartController extends Notifier<CartState> {
 
   void _scheduleDiscountRefresh() {
     _discountDebounce?.cancel();
-    _discountDebounce =
-        Timer(const Duration(milliseconds: 400), () => getGetDiscount());
+    _discountDebounce = Timer(_debounceDelay, () => getGetDiscount());
   }
 
   void _clearDiscount() {
@@ -325,7 +345,7 @@ class CartController extends Notifier<CartState> {
         quantities: [for (final i in items) i.quantity],
         discountType: state.bothChoice ? state.discountBasis.name : null,
       );
-      if (requestId != _discountRequestId) return false; // stale response
+      if (!ref.mounted || requestId != _discountRequestId) return false; // stale response
 
       final scope = (model.resultData?.discountScope ?? '').toLowerCase();
       final applied = model.resultData?.discountApplied == true;
@@ -351,7 +371,7 @@ class CartController extends Notifier<CartState> {
       state = next;
       return true;
     } catch (error, stackTrace) {
-      if (requestId != _discountRequestId) return false;
+      if (!ref.mounted || requestId != _discountRequestId) return false;
       // Never leave a stale discount applied after a failed check.
       state = state.copyWith(
         clearDiscount: true,
