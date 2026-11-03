@@ -11,9 +11,11 @@ import '../states/new_sale_state.dart';
 
 /// Single product tile: image, name, SKU, stock pcs, price, add button.
 /// Add button disables (and dims) when [ProductItem.stock] is 0.
+/// [onAddToCart] receives this card's context so the caller can start an
+/// add-to-cart animation from the card.
 class ProductGridCard extends StatelessWidget {
   final ProductItem product;
-  final VoidCallback onAddToCart;
+  final ValueChanged<BuildContext> onAddToCart;
 
   const ProductGridCard({
     super.key,
@@ -37,10 +39,10 @@ class ProductGridCard extends StatelessWidget {
                 color: context.appColors.background,
                 borderRadius: BorderRadius.circular(AppSizes.radiusSm),
                 image: DecorationImage(
-                  image: product.imageUrl == null
-                      ? AssetImage(AppAssets.placeholder2)
-                      : NetworkImage(product.imageUrl!),
-                  fit: BoxFit.cover
+                    image: product.imageUrl == null
+                        ? AssetImage(AppAssets.placeholder2)
+                        : NetworkImage(product.imageUrl!),
+                    fit: BoxFit.cover
                 ),
               ),
             ),
@@ -85,7 +87,7 @@ class ProductGridCard extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: isOutOfStock ? null : onAddToCart,
+                onTap: isOutOfStock ? null : () => onAddToCart(context),
                 borderRadius: BorderRadius.circular(AppSizes.radiusFull),
                 child: Container(
                   padding: const EdgeInsets.all(AppSizes.xs),

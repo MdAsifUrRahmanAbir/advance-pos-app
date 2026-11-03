@@ -6,9 +6,11 @@ import '../../../../core/utils/widget_animation_extension.dart';
 import '../states/new_sale_state.dart';
 import 'product_grid_card.dart';
 
+/// [onAddToCart] gets the product and the tapped card's context (the
+/// starting point for the add-to-cart animation).
 class ProductGrid extends StatelessWidget {
   final List<ProductItem> products;
-  final ValueChanged<ProductItem> onAddToCart;
+  final void Function(ProductItem product, BuildContext origin) onAddToCart;
   final int crossAxisCount;
 
   const ProductGrid({
@@ -37,7 +39,7 @@ class ProductGrid extends StatelessWidget {
         final staggerIndex = index % _staggerResetAt;
         return ProductGridCard(
           product: product,
-          onAddToCart: () => onAddToCart(product),
+          onAddToCart: (origin) => onAddToCart(product, origin),
         ).fadeSlideIn(delay: (staggerIndex * 40).ms);
       },
     );

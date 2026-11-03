@@ -8,7 +8,11 @@ class ProductGridSkeleton extends StatelessWidget {
   final int itemCount;
   final int crossAxisCount;
 
-  const ProductGridSkeleton({super.key, required this.itemCount, this.crossAxisCount = 2});
+  const ProductGridSkeleton({
+    super.key,
+    required this.itemCount,
+    this.crossAxisCount = 2,
+  });
 
   static const _placeholder = ProductItem(
     id: 'skeleton',
@@ -32,7 +36,8 @@ class ProductGridSkeleton extends StatelessWidget {
         crossAxisSpacing: AppSizes.md,
         childAspectRatio: 0.9,
       ),
-      itemBuilder: (context, index) => ProductGridCard(product: _placeholder, onAddToCart: () {}),
+      itemBuilder: (context, index) =>
+          ProductGridCard(product: _placeholder, onAddToCart: (_) {}),
     ).skeletonizer(enabled: true);
   }
 }

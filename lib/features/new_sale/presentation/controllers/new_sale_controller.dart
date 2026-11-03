@@ -74,25 +74,6 @@ class NewSaleController extends Notifier<NewSaleState> {
     await getProducts(reset: true);
   }
 
-  /// Won't add an out-of-stock product, and won't push an existing cart
-  /// line's quantity past the product's available [ProductItem.stock].
-  void addToCart(ProductItem product) {
-    if (product.stock <= 0) return;
-
-    final items = List<CartLineItem>.from(state.cartItems);
-    final existingIndex = items.indexWhere((line) => line.product.id == product.id);
-
-    if (existingIndex == -1) {
-      items.add(CartLineItem(product: product, quantity: 1));
-    } else {
-      final current = items[existingIndex];
-      if (current.quantity >= product.stock) return;
-      items[existingIndex] = current.copyWith(quantity: current.quantity + 1);
-    }
-
-    state = state.copyWith(cartItems: items);
-  }
-
   /// Capped at the product's available stock — won't increment past it.
   void increaseQty(String productId) {
     state = state.copyWith(
@@ -281,5 +262,26 @@ class NewSaleController extends Notifier<NewSaleState> {
     return stock.branchStock.isNotEmpty ? stock.branchStock.first.stock : stock.organizationStock;
   }
 
+
+  /// Won't add an out-of-stock product, and won't push an existing cart
+  /// line's quantity past the product's available [ProductItem.stock].
+  /// Returns whether one more unit was actually added.
+  bool addToCart(ProductItem product) {
+    if (product.stock <= 0) return false;
+
+    final items = List<CartLineItem>.from(state.cartItems);
+    final existingIndex = items.indexWhere((line) => line.product.id == product.id);
+
+    if (existingIndex == -1) {
+      items.add(CartLineItem(product: product, quantity: 1));
+    } else {
+      final current = items[existingIndex];
+      if (current.quantity >= product.stock) return false;
+      items[existingIndex] = current.copyWith(quantity: current.quantity + 1);
+    }
+
+    state = state.copyWith(cartItems: items);
+    return true;
+  }
 
 }
