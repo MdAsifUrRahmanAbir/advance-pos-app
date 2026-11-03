@@ -24,6 +24,7 @@ import '../widgets/category_filter_bar.dart';
 import '../widgets/new_sale_top_bar.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/product_grid_skeleton.dart';
+import 'new_sale_view_actions.dart';
 
 class NewSaleMobileView extends ConsumerStatefulWidget {
   const NewSaleMobileView({super.key});
@@ -32,7 +33,8 @@ class NewSaleMobileView extends ConsumerStatefulWidget {
   ConsumerState<NewSaleMobileView> createState() => _NewSaleMobileViewState();
 }
 
-class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
+class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView>
+    with NewSaleViewActions<NewSaleMobileView> {
   final _scrollController = ScrollController();
 
   @override
@@ -65,6 +67,7 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
 
     switch (result.outcome) {
       case ScanOutcome.added:
+        pulseCart();
         CustomSnackbar.show(context, AppStrings.productAddedMessage(result.product!.name));
         break;
       case ScanOutcome.outOfStock:
@@ -176,7 +179,7 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
                       children: [
                         ProductGrid(
                           products: state.filteredProducts,
-                          onAddToCart: controller.addToCart,
+                          onAddToCart: addToCartWithFlight,
                         ),
                         if (state.isLoadingMore)
                           const Padding(
@@ -194,6 +197,8 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
                   child: CartSummaryBar(
                     itemCount: state.cartItemCount,
                     total: state.cartTotal,
+                    badgeKey: cartBadgeKey,
+                    pulse: cartPulse,
                     onTap: () {
                       CustomBottomSheet.show<void>(
                         context,

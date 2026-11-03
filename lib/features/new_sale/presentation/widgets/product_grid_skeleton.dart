@@ -32,7 +32,7 @@ class ProductGridSkeleton extends StatelessWidget {
         crossAxisSpacing: AppSizes.md,
         childAspectRatio: 0.9,
       ),
-      itemBuilder: (context, index) => ProductGridCard(product: _placeholder, onAddToCart: () {}),
+      itemBuilder: (context, index) => ProductGridCard(product: _placeholder, onAddToCart: (_) {}),
     ).skeletonizer(enabled: true);
   }
 }

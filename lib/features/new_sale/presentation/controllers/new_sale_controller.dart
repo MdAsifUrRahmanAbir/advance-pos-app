@@ -76,8 +76,9 @@ class NewSaleController extends Notifier<NewSaleState> {
 
   /// Won't add an out-of-stock product, and won't push an existing cart
   /// line's quantity past the product's available [ProductItem.stock].
-  void addToCart(ProductItem product) {
-    if (product.stock <= 0) return;
+  /// Returns whether one more unit was actually added.
+  bool addToCart(ProductItem product) {
+    if (product.stock <= 0) return false;
 
     final items = List<CartLineItem>.from(state.cartItems);
     final existingIndex = items.indexWhere((line) => line.product.id == product.id);
@@ -86,11 +87,12 @@ class NewSaleController extends Notifier<NewSaleState> {
       items.add(CartLineItem(product: product, quantity: 1));
     } else {
       final current = items[existingIndex];
-      if (current.quantity >= product.stock) return;
+      if (current.quantity >= product.stock) return false;
       items[existingIndex] = current.copyWith(quantity: current.quantity + 1);
     }
 
     state = state.copyWith(cartItems: items);
+    return true;
   }
 
   /// Capped at the product's available stock — won't increment past it.
