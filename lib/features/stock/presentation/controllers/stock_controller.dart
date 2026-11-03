@@ -127,8 +127,9 @@ class StockController extends Notifier<StockState> {
         subCategoryId: state.filter.subCategoryId,
         brandId: state.filter.brandId,
       );
-      final newItems = _mapToStockItems(stocks);
+      // Checked before mapping: mapping reads providers via ref.
       if (!ref.mounted || seq != _requestSeq) return;
+      final newItems = _mapToStockItems(stocks);
       state = state.copyWith(
         isLoadingMore: false,
         stocksModel: stocks,
@@ -213,9 +214,9 @@ class StockController extends Notifier<StockState> {
         brandId: state.filter.brandId,
       );
 
-      final newItems = _mapToStockItems(stocks);
-
+      // Checked before mapping: mapping reads providers via ref.
       if (!ref.mounted || seq != _requestSeq) return false;
+      final newItems = _mapToStockItems(stocks);
 
       state = state.copyWith(
         isStocksLoading: false,

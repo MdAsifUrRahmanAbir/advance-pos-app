@@ -184,8 +184,9 @@ class NewSaleController extends Notifier<NewSaleState> {
         search: state.searchQuery,
         categoryId: state.selectedCategoryId,
       );
-      final newItems = products.resultData.map(_mapItem).toList();
+      // Checked before mapping: mapping reads providers via ref.
       if (!ref.mounted || seq != _requestSeq) return;
+      final newItems = products.resultData.map(_mapItem).toList();
 
       state = state.copyWith(
         isLoadingMore: false,
@@ -231,9 +232,9 @@ class NewSaleController extends Notifier<NewSaleState> {
         search: state.searchQuery,
         categoryId: state.selectedCategoryId,
       );
-      final newItems = products.resultData.map(_mapItem).toList();
-
+      // Checked before mapping: mapping reads providers via ref.
       if (!ref.mounted || seq != _requestSeq) return false;
+      final newItems = products.resultData.map(_mapItem).toList();
 
       state = state.copyWith(
         isProductsLoading: false,
