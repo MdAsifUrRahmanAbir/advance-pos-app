@@ -857,4 +857,7 @@ class AppStrings {
   static const String saleDoneDashboardAction = 'Dashboard';
   static const String saleDoneBillLoadFailed =
       "The sale is saved, but the bill couldn't load. Retry to print or share it.";
+
+  // ---- Invoices: barcode scan (append only) ----
+  static String invoiceScanNotFound(String code) => 'No invoice found for $code';
 }

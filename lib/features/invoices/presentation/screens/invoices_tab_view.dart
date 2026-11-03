@@ -6,7 +6,8 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
-import '../../../../core/widgets/common/search_field.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
+import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
@@ -55,6 +56,28 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
 
   void _openDetail(BuildContext context, ResultDatum invoice) {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
+  }
+
+  /// Scans a bill barcode, searches for it, and opens that invoice's
+  /// detail when the bill number matches exactly.
+  Future<void> _handleScanBarcode() async {
+    final code = await BarcodeScannerScreen.scan(context);
+    if (code == null || code.trim().isEmpty || !mounted) return;
+
+    final match = await ref
+        .read(invoicesControllerProvider.notifier)
+        .handleScannedCode(code);
+    if (!mounted) return;
+
+    if (match != null) {
+      _openDetail(context, match);
+    } else {
+      CustomSnackbar.show(
+        context,
+        AppStrings.invoiceScanNotFound(code.trim()),
+        error: true,
+      );
+    }
   }
 
   /// Opens Edit Sale for this invoice. Edit Sale pops with `true` once the
@@ -126,10 +149,11 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                       AppSizes.lg,
                       0,
                     ),
-                    child: SearchField(
+                    child: ScanSearchBar(
                       hintText: AppStrings.invoiceSearchHint,
                       controller: controller.searchController,
                       onChanged: controller.updateSearchQuery,
+                      onScanTap: _handleScanBarcode,
                     ),
                   ),
                   Padding(

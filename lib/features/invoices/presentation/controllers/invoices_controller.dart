@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
+import '../../data/model/invoices_model.dart';
 import '../../data/repositories/invoices_repository.dart';
 import '../states/invoice_date_presets.dart';
 import '../states/invoice_filter.dart';
@@ -84,6 +85,31 @@ class InvoicesController extends Notifier<InvoicesState> {
     getInvoices(reset: true);
   }
 
+
+  /// Puts a scanned bill number in the search box, reloads the list with
+  /// every other filter cleared, and returns the invoice whose bill number
+  /// matches exactly (case-insensitive), or null when there is none.
+  Future<ResultDatum?> handleScannedCode(String code) async {
+    final query = code.trim();
+    searchController.value = searchController.value.copyWith(
+      text: query,
+      selection: TextSelection.collapsed(offset: query.length),
+    );
+    state = state.copyWith(
+      searchQuery: query,
+      selectedStatus: 'all',
+      filter: InvoiceFilter.empty,
+      clearSelectedDatePreset: true,
+    );
+
+    final loaded = await getInvoices(reset: true);
+    if (!ref.mounted || !loaded) return null;
+
+    final target = query.toLowerCase();
+    return state.allItems
+        .where((invoice) => invoice.salesBillNo.toLowerCase() == target)
+        .firstOrNull;
+  }
 
   /// Applied by [InvoiceFilterDrawer]'s "Apply" button — replaces the
   /// active filter (including any custom date range picked there) and
