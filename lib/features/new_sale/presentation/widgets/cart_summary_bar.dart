@@ -81,7 +81,6 @@ class CartSummaryBar extends StatelessWidget {
                     ),
                   ),
                 ),
-                ),
                 const SizedBox(width: AppSizes.sm),
                 Text(
                   AppStrings.viewCartLabel(CurrencyFormatter.format(total)),
