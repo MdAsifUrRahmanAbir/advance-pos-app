@@ -8,12 +8,7 @@ import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../core/widgets/utility/shimmer_extension.dart';
 import '../../data/model/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_placeholder.dart';
-import 'sales_bill_customer_section.dart';
-import 'sales_bill_footer_section.dart';
-import 'sales_bill_header_section.dart';
-import 'sales_bill_items_section.dart';
-import 'sales_bill_paper.dart';
-import 'sales_bill_summary_section.dart';
+import 'sales_bill_receipt.dart';
 
 /// Bottom sheet holding only the thermal receipt and a Print button.
 /// Skeleton while [bill] is null and loading; ErrorState when it failed.
@@ -82,8 +77,10 @@ class SalesBillPreviewSheet extends StatelessWidget {
                   : SingleChildScrollView(
                 padding: const EdgeInsets.all(AppSizes.md),
                 child: Center(
-                  child: _receipt(
-                    bill ?? SalesBillPreviewPlaceholder.bill,
+                  child: SalesBillReceipt(
+                    bill: bill ?? SalesBillPreviewPlaceholder.bill,
+                    printedAt: printedAt,
+                    boundaryKey: receiptKey,
                   ).skeletonizer(enabled: bill == null),
                 ),
               ),
@@ -105,31 +102,6 @@ class SalesBillPreviewSheet extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _receipt(SalesBillPreviewModel bill) {
-    return SalesBillPaper(
-      boundaryKey: receiptKey,
-      children: [
-        SalesBillHeaderSection(
-          company: bill.company,
-          branch: bill.branch,
-          counter: bill.counter,
-          invoice: bill.invoice,
-          printedAt: printedAt,
-        ),
-        SalesBillItemsSection(rows: bill.productRowData),
-        SalesBillSummarySection(summary: bill.summary, payments: bill.payments),
-        SalesBillCustomerSection(
-          customer: bill.customer,
-          employee: bill.employee,
-        ),
-        SalesBillFooterSection(
-          billNo: bill.invoice.salesBillNo,
-          config: bill.config,
-        ),
-      ],
     );
   }
 }

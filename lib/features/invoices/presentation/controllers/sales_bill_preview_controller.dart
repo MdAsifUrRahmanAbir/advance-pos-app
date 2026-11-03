@@ -13,16 +13,20 @@ final salesBillPreviewControllerProvider = NotifierProvider.autoDispose
   SalesBillPreviewController.new,
 );
 
-/// Loads `GET /sales/invoice/:billNo` and prints the receipt. Printing
-/// captures the on-screen receipt ([receiptKey]) as an image, so the paper
-/// is the same as the preview.
+/// Loads `GET /sales/invoice/:billNo`, then prints / shares the thermal
+/// receipt. Printing captures an on-screen receipt as an image, so the
+/// paper is the same as the preview.
 class SalesBillPreviewController extends Notifier<SalesBillPreviewState> {
   SalesBillPreviewController(this.billNo);
 
   final String billNo;
 
-  /// Key of the RepaintBoundary that wraps the receipt paper.
+  /// RepaintBoundary key of the full receipt in the Bill Preview sheet.
   final GlobalKey receiptKey = GlobalKey();
+
+  /// RepaintBoundary key of the receipt peek in the sale-complete sheet.
+  /// Separate from [receiptKey] because both sheets can be open at once.
+  final GlobalKey peekReceiptKey = GlobalKey();
 
   /// Only the latest load (first load or retry) may write state.
   int _requestSeq = 0;
@@ -57,12 +61,14 @@ class SalesBillPreviewController extends Notifier<SalesBillPreviewState> {
     }
   }
 
-  /// Prints the previewed receipt on the chosen Bluetooth printer.
-  Future<bool> printBill(String printerMac) async {
+  /// Prints the receipt under [boundaryKey] (defaults to [receiptKey]) on
+  /// the chosen Bluetooth printer.
+  Future<bool> printBill(String printerMac, {GlobalKey? boundaryKey}) async {
     if (state.isPrinting || state.bill == null) return false;
     state = state.copyWith(isPrinting: true);
     try {
-      final image = await ReceiptShareService.captureAsPng(receiptKey);
+      final image =
+          await ReceiptShareService.captureAsPng(boundaryKey ?? receiptKey);
       final connected = await ThermalPrinterService.isConnected() ||
           await ThermalPrinterService.connect(printerMac);
       final printed =
@@ -71,6 +77,24 @@ class SalesBillPreviewController extends Notifier<SalesBillPreviewState> {
       return printed;
     } catch (_) {
       if (ref.mounted) state = state.copyWith(isPrinting: false);
+      return false;
+    }
+  }
+
+  /// Shares the receipt under [boundaryKey] (defaults to [receiptKey]) as
+  /// a PNG image.
+  Future<bool> shareBill({GlobalKey? boundaryKey}) async {
+    if (state.isSharing || state.bill == null) return false;
+    state = state.copyWith(isSharing: true);
+    try {
+      await ReceiptShareService.shareReceiptImage(
+        boundaryKey: boundaryKey ?? receiptKey,
+        saleId: billNo,
+      );
+      if (ref.mounted) state = state.copyWith(isSharing: false);
+      return true;
+    } catch (_) {
+      if (ref.mounted) state = state.copyWith(isSharing: false);
       return false;
     }
   }

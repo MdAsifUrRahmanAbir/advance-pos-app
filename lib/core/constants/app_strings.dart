@@ -850,4 +850,11 @@ class AppStrings {
   // ---- Master data: load status (append only) ----
   static const String masterDataIncomplete =
       "Some setup data didn't load. Lists and payment options may be incomplete.";
+
+  // ---- Sale complete sheet (append only) ----
+  static const String saleDoneViewFullBill = 'View full bill';
+  static const String saleDonePreviewAction = 'Preview';
+  static const String saleDoneDashboardAction = 'Dashboard';
+  static const String saleDoneBillLoadFailed =
+      "The sale is saved, but the bill couldn't load. Retry to print or share it.";
 }

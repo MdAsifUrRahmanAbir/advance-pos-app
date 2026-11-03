@@ -11,9 +11,10 @@ import '../widgets/sales_bill_preview_sheet.dart';
 /// Sheet width cap on tablets (within the 480–960 range).
 const double _sheetMaxWidth = 560;
 
-/// View-layer wiring shared by the Invoices mobile and tab views: opens the
-/// Bill Preview receipt in a bottom sheet and runs the Print flow.
-/// The controller is autoDispose, so closing the sheet disposes it.
+/// View-layer wiring shared by the Invoices, Payment and Edit Sale views:
+/// opens the Bill Preview receipt in a bottom sheet and runs the Print
+/// flow. The controller is autoDispose, so closing the last sheet that
+/// watches it disposes it.
 void showSalesBillPreview(BuildContext context, String billNo) {
   showModalBottomSheet<void>(
     context: context,
@@ -34,17 +35,20 @@ void showSalesBillPreview(BuildContext context, String billNo) {
           isPrinting: state.isPrinting,
           errorMessage: state.errorMessage,
           onRetry: controller.load,
-          onPrint: () => _printBill(context, controller),
+          onPrint: () => printSalesBill(context, controller),
         );
       },
     ),
   );
 }
 
-Future<void> _printBill(
-    BuildContext context,
-    SalesBillPreviewController controller,
-    ) async {
+/// Picks a paired printer, prints the receipt under [boundaryKey]
+/// (defaults to the Bill Preview receipt) and shows the result snackbar.
+Future<void> printSalesBill(
+  BuildContext context,
+  SalesBillPreviewController controller, {
+  GlobalKey? boundaryKey,
+}) async {
   final device = await showModalBottomSheet<BluetoothInfo>(
     context: context,
     isScrollControlled: true,
@@ -52,7 +56,8 @@ Future<void> _printBill(
     builder: (_) => const PrinterSelectionSheet(),
   );
   if (device == null || !context.mounted) return;
-  final printed = await controller.printBill(device.macAdress);
+  final printed =
+      await controller.printBill(device.macAdress, boundaryKey: boundaryKey);
   if (!context.mounted) return;
   CustomSnackbar.show(
     context,
