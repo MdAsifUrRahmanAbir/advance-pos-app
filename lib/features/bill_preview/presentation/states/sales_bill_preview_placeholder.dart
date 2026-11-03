@@ -1,4 +1,4 @@
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 
 /// Fake bill used only as Skeletonizer bones during the first load, so the
 /// skeleton has the real receipt's shape. Never shown as data.

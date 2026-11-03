@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_color_scheme.dart';
+import '../../constants/app_sizes.dart';
+import '../../constants/app_strings.dart';
+import '../../theme/app_color_scheme.dart';
 
-/// Bottom of the list: a spinner while the next page loads, or a message
-/// with Retry when that load failed.
-class SalesReturnListFooter extends StatelessWidget {
+/// Last row of an infinite-scroll list: a spinner while the next page
+/// loads, or a short message with Retry when that load failed.
+///
+/// [message] defaults to [AppStrings.paginationLoadMoreFailed]; pass a
+/// feature string to override it.
+class PaginationFooter extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onRetry;
+  final String? message;
 
-  const SalesReturnListFooter({
+  const PaginationFooter({
     super.key,
     required this.isLoading,
     required this.onRetry,
+    this.message,
   });
 
   @override
@@ -27,7 +32,7 @@ class SalesReturnListFooter extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              AppStrings.srLoadMoreFailed,
+              message ?? AppStrings.paginationLoadMoreFailed,
               style: TextStyle(
                 color: context.appColors.textSecondary,
                 fontSize: AppSizes.fontSm,

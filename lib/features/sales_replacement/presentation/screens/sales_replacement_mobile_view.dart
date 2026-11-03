@@ -18,7 +18,6 @@ import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../routes/route_names.dart';
-import '../../../payment/presentation/widgets/printer_selection_sheet.dart';
 import '../../../sales_replacement_detail/presentation/states/sales_replacement_detail_format.dart';
 import '../../data/models/sales_replacement_model.dart' show ResultDatum;
 import '../controllers/sales_replacement_controller.dart';
@@ -26,10 +25,11 @@ import '../states/sales_replacement_bill_mapper.dart';
 import '../states/sales_replacement_state.dart';
 import '../widgets/sales_replacement_bill_preview_sheet.dart';
 import '../widgets/sales_replacement_card_tile.dart';
-import '../widgets/sales_replacement_date_range_picker.dart';
-import '../widgets/sales_replacement_list_footer.dart';
 import '../widgets/sales_replacement_list_skeleton.dart';
 import '../widgets/sales_replacement_quick_filter_tabs.dart';
+import '../../../../core/widgets/utility/app_date_range_picker.dart';
+import '../../../../core/widgets/utility/pagination_footer.dart';
+import '../../../../core/widgets/utility/printer_selection_sheet.dart';
 
 class SalesReplacementMobileView extends ConsumerWidget {
   const SalesReplacementMobileView({super.key});
@@ -60,7 +60,7 @@ class SalesReplacementMobileView extends ConsumerWidget {
     }
 
     Future<void> pickCustomRange() async {
-      final range = await showSalesReplacementDateRangePicker(
+      final range = await showAppDateRangePicker(
         context: context,
         current: state.fromDate != null && state.toDate != null
             ? DateTimeRange(start: state.fromDate!, end: state.toDate!)
@@ -239,7 +239,7 @@ class SalesReplacementMobileView extends ConsumerWidget {
           const SizedBox(height: AppSizes.sm + AppSizes.xs),
           itemBuilder: (context, index) {
             if (index >= items.length) {
-              return SalesReplacementListFooter(
+              return PaginationFooter(
                 isLoading: state.isLoadingMore,
                 onRetry: controller.loadMore,
               );

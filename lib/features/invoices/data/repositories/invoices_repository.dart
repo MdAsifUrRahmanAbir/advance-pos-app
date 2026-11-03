@@ -3,7 +3,7 @@ import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../master_data/data/models/common_success_model.dart';
 import '../model/invoices_model.dart';
-import '../model/sales_bill_preview_model.dart';
+import '../../../bill_preview/data/models/sales_bill_preview_model.dart';
 
 final invoicesRepositoryProvider = Provider<InvoicesRepository>((ref) {
   return InvoicesRepository(ref.watch(apiClientProvider));
@@ -61,10 +61,10 @@ class InvoicesRepository {
     final response = await _apiClient.delete(ApiEndpoints.salesDelete(billNo));
     return CommonSuccessModel.fromJson(response.data);
   }
-
-  // AUTO-GENERATED API METHOD
-  Future<SalesBillPreviewModel> getSalesBillPreview(String billNo) async {
-    final response = await _apiClient.get(ApiEndpoints.salesBillPreview(billNo));
-    return SalesBillPreviewModel.fromJson(response.data);
-  }
+  //
+  // // AUTO-GENERATED API METHOD
+  // Future<SalesBillPreviewModel> getSalesBillPreview(String billNo) async {
+  //   final response = await _apiClient.get(ApiEndpoints.salesBillPreview(billNo));
+  //   return SalesBillPreviewModel.fromJson(response.data);
+  // }
 }

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
 import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
@@ -23,7 +24,6 @@ import '../widgets/category_filter_bar.dart';
 import '../widgets/new_sale_top_bar.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/product_grid_skeleton.dart';
-import '../widgets/product_search_bar.dart';
 
 class NewSaleMobileView extends ConsumerStatefulWidget {
   const NewSaleMobileView({super.key});
@@ -108,16 +108,15 @@ class _NewSaleMobileViewState extends ConsumerState<NewSaleMobileView> {
     }
     return Column(
       children: [
-        NewSaleTopBar(
-          onBack: () => context.pop(),
-          onScanBarcode: () => _handleScanBarcode(context, ref),
-        ),
+        NewSaleTopBar(onBack: () => context.pop()),
         const SizedBox(height: AppSizes.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: ProductSearchBar(
+          child: ScanSearchBar(
+            hintText: AppStrings.searchProductHint,
             controller: controller.searchController,
             onChanged: controller.updateSearchQuery,
+            onScanTap: () => _handleScanBarcode(context, ref),
           ),
         ),
         const SizedBox(height: AppSizes.sm),

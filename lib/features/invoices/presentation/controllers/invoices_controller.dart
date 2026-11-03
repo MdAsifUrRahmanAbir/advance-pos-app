@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/utils/error_mapper.dart';
+import '../../data/model/invoices_model.dart';
 import '../../data/repositories/invoices_repository.dart';
 import '../states/invoice_date_presets.dart';
 import '../states/invoice_filter.dart';
@@ -20,10 +23,21 @@ class InvoicesController extends Notifier<InvoicesState> {
 
   static const int _pageLength = 15;
 
+  /// Wait this long after the last keystroke before searching.
+  static const Duration _searchDebounce = Duration(milliseconds: 400);
+  Timer? _debounce;
+
+  /// Bumped on every first-page load. A response whose number is no longer
+  /// the latest belongs to an older search/filter and is ignored.
+  int _requestSeq = 0;
+
   @override
   InvoicesState build() {
     searchController = TextEditingController();
-    ref.onDispose(() => searchController.dispose());
+    ref.onDispose(() {
+      _debounce?.cancel();
+      searchController.dispose();
+    });
 
     Future.microtask(getInvoices);
 
@@ -71,6 +85,9 @@ class InvoicesController extends Notifier<InvoicesState> {
   /// A text search and the drawer filter are mutually-exclusive ways of
   /// narrowing the list — running a search clears any active filter
   /// (group/category/etc.) and date preset, same rationale as Stock.
+  /// The field updates on every keystroke; the request waits
+  /// [_searchDebounce] after the last one. Clearing the field reloads
+  /// right away.
   void updateSearchQuery(String query) {
     searchController.value = searchController.value.copyWith(
       text: query,
@@ -81,9 +98,40 @@ class InvoicesController extends Notifier<InvoicesState> {
       filter: InvoiceFilter.empty,
       clearSelectedDatePreset: true,
     );
-    getInvoices(reset: true);
+
+    _debounce?.cancel();
+    if (query.isEmpty) {
+      getInvoices(reset: true);
+      return;
+    }
+    _debounce = Timer(_searchDebounce, () => getInvoices(reset: true));
   }
 
+
+  /// Puts a scanned bill number in the search box, reloads the list with
+  /// every other filter cleared, and returns the invoice whose bill number
+  /// matches exactly (case-insensitive), or null when there is none.
+  Future<ResultDatum?> handleScannedCode(String code) async {
+    final query = code.trim();
+    searchController.value = searchController.value.copyWith(
+      text: query,
+      selection: TextSelection.collapsed(offset: query.length),
+    );
+    state = state.copyWith(
+      searchQuery: query,
+      selectedStatus: 'all',
+      filter: InvoiceFilter.empty,
+      clearSelectedDatePreset: true,
+    );
+
+    final loaded = await getInvoices(reset: true);
+    if (!ref.mounted || !loaded) return null;
+
+    final target = query.toLowerCase();
+    return state.allItems
+        .where((invoice) => invoice.salesBillNo.toLowerCase() == target)
+        .firstOrNull;
+  }
 
   /// Applied by [InvoiceFilterDrawer]'s "Apply" button — replaces the
   /// active filter (including any custom date range picked there) and
@@ -109,6 +157,9 @@ class InvoicesController extends Notifier<InvoicesState> {
     if (state.isLoadingMore || state.isInvoicesLoading || !state.hasMore) {
       return;
     }
+    // A first-page load started while this page is in flight makes its
+    // result stale (the list it would append to is gone).
+    final seq = _requestSeq;
 
     state = state.copyWith(
       isLoadingMore: true,
@@ -130,6 +181,7 @@ class InvoicesController extends Notifier<InvoicesState> {
         startDate: state.filter.startDate,
         endDate: state.filter.endDate,
       );
+      if (!ref.mounted || seq != _requestSeq) return;
 
       state = state.copyWith(
         isLoadingMore: false,
@@ -140,6 +192,7 @@ class InvoicesController extends Notifier<InvoicesState> {
         (nextStart + invoices.resultData.length) < invoices.recordsFiltered,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return;
       state = state.copyWith(
         isLoadingMore: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -153,8 +206,14 @@ class InvoicesController extends Notifier<InvoicesState> {
   }
 
   Future<bool> getInvoices({bool reset = false}) async {
+    // Any direct load (filter, date preset, refresh, scan) supersedes a
+    // search still waiting on its debounce.
+    _debounce?.cancel();
+    final seq = ++_requestSeq;
+
     state = state.copyWith(
       isInvoicesLoading: true,
+      isLoadingMore: false,
       errorMessage: null,
       technicalDetails: null,
       allItems: reset ? [] : state.allItems,
@@ -175,6 +234,7 @@ class InvoicesController extends Notifier<InvoicesState> {
         startDate: state.filter.startDate,
         endDate: state.filter.endDate,
       );
+      if (!ref.mounted || seq != _requestSeq) return false;
 
       state = state.copyWith(
         isInvoicesLoading: false,
@@ -185,6 +245,7 @@ class InvoicesController extends Notifier<InvoicesState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted || seq != _requestSeq) return false;
       state = state.copyWith(
         isInvoicesLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),
@@ -206,6 +267,7 @@ class InvoicesController extends Notifier<InvoicesState> {
     state = state.copyWith(isCommonSuccessLoading: true, errorMessage: null);
     try {
       await _repository.deleteCommonSuccess(billNo);
+      if (!ref.mounted) return true;
       state = state.copyWith(
         isCommonSuccessLoading: false,
         allItems: state.allItems
@@ -214,6 +276,7 @@ class InvoicesController extends Notifier<InvoicesState> {
       );
       return true;
     } catch (error, stackTrace) {
+      if (!ref.mounted) return false;
       state = state.copyWith(
         isCommonSuccessLoading: false,
         errorMessage: getErrorMessage(error, stackTrace),

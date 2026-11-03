@@ -24,7 +24,7 @@ import '../../../master_data/presentation/controllers/master_data_controller.dar
 import '../../../new_sale/presentation/states/new_sale_state.dart'
     show ProductItem, ScanOutcome;
 import '../../../payment/presentation/states/payment_systems_from_accounts.dart';
-import '../../../payment/presentation/widgets/printer_selection_sheet.dart';
+import '../../../../core/widgets/utility/printer_selection_sheet.dart';
 import '../../../sales_replacement/presentation/controllers/sales_replacement_controller.dart';
 import '../controllers/sales_replacement_add_controller.dart';
 import '../controllers/sales_replacement_replace_controller.dart';

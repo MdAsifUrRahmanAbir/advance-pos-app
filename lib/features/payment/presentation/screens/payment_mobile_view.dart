@@ -5,21 +5,21 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
+import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/bottom_action_bar.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
+import '../../../bill_preview/presentation/screens/sale_complete_launcher.dart';
 import '../controllers/payment_controller.dart';
 import '../widgets/change_due_banner.dart';
 import '../widgets/complete_sale_button.dart';
 import '../widgets/payable_amount_card.dart';
 import '../widgets/payment_entry_card.dart';
-import '../widgets/payment_success_sheet.dart';
 import '../widgets/payment_system_selector.dart';
 import '../widgets/payment_top_bar.dart';
-import '../widgets/printer_selection_sheet.dart';
 import '../states/payment_systems_from_accounts.dart';
 
 class PaymentMobileView extends ConsumerWidget {
@@ -48,7 +48,7 @@ class PaymentMobileView extends ConsumerWidget {
                 saleDate: state.saleDate,
               ),
               const SizedBox(height: AppSizes.lg),
-               _SectionLabel(text: AppStrings.receiptPaymentMethodLabel.toUpperCase()),
+              _SectionLabel(text: AppStrings.receiptPaymentMethodLabel.toUpperCase()),
               const SizedBox(height: AppSizes.xs),
               Text(
                 AppStrings.selectPaymentMethodsHint,
@@ -149,70 +149,24 @@ class PaymentMobileView extends ConsumerWidget {
   }
 
   void _showPaymentSuccessSheet(BuildContext context, WidgetRef ref) {
-    final receiptBoundaryKey = GlobalKey();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (sheetContext) {
-        return Consumer(
-          builder: (consumerContext, sheetRef, _) {
-            final state = sheetRef.watch(paymentControllerProvider);
-            final controller = sheetRef.read(
-              paymentControllerProvider.notifier,
-            );
-
-            return PaymentSuccessSheet(
-              paymentState: state,
-              receiptBoundaryKey: receiptBoundaryKey,
-              isSharing: state.isSharing,
-              isPrinting: state.isPrinting,
-              onNewSale: () {
-                Navigator.of(sheetContext).pop();
-                context.restartFlowFrom(RouteNames.newSale);
-              },
-              onGoToDashboard: () {
-                Navigator.of(sheetContext).pop();
-                context.go(RouteNames.mainShell);
-              },
-              onShareReceipt: () async {
-                final success = await controller.shareReceipt(
-                  receiptBoundaryKey,
-                );
-                if (!success && consumerContext.mounted) {
-                  CustomSnackbar.show(
-                    consumerContext,
-                    AppStrings.shareFailedMessage,
-                    error: true,
-                  );
-                }
-              },
-              onPrintReceipt: () async {
-                final device = await showModalBottomSheet(
-                  context: consumerContext,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  builder: (_) => const PrinterSelectionSheet(),
-                );
-                if (device == null) return;
-
-                final success = await controller.printReceipt(device.macAdress);
-                if (consumerContext.mounted) {
-                  CustomSnackbar.show(
-                    consumerContext,
-                    success
-                        ? AppStrings.printSuccessMessage
-                        : AppStrings.printFailedMessage,
-                    error: !success,
-                  );
-                }
-              },
-            );
-          },
-        );
+    final state = ref.read(paymentControllerProvider);
+    // POST /sales/add always returns sales_bill_no on success.
+    final billNo = state.salesBillNo ?? '';
+    showSaleCompleteSheet(
+      context,
+      billNo: billNo,
+      title: AppStrings.paymentCollectedTitle,
+      subtitle: AppStrings.paymentCollectedBillSubtitle(
+        billNo,
+        CurrencyFormatter.format(state.payableAmount),
+      ),
+      onNewSale: (sheetContext) {
+        Navigator.of(sheetContext).pop();
+        context.restartFlowFrom(RouteNames.newSale);
+      },
+      onGoToDashboard: (sheetContext) {
+        Navigator.of(sheetContext).pop();
+        context.go(RouteNames.mainShell);
       },
     );
   }

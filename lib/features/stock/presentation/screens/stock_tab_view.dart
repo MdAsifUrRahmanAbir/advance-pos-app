@@ -5,6 +5,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
 import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
@@ -18,7 +19,6 @@ import '../widgets/stock_card_tile.dart';
 import '../widgets/stock_detail_sheet.dart';
 import '../widgets/stock_list_skeleton.dart';
 import '../widgets/stock_quick_filter_tabs.dart';
-import '../widgets/stock_search_bar.dart';
 
 class StockTabView extends ConsumerStatefulWidget {
   const StockTabView({super.key});
@@ -120,7 +120,8 @@ class _StockTabViewState extends ConsumerState<StockTabView> {
             constraints: const BoxConstraints(maxWidth: 640),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSizes.lg),
-              child: StockSearchBar(
+              child: ScanSearchBar(
+                hintText: AppStrings.searchProductsHint,
                 controller: controller.searchController,
                 onChanged: controller.updateSearchQuery,
                 onScanTap: () => _handleScanBarcode(context, ref),

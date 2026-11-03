@@ -5,7 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/html_text.dart';
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_format.dart';
 import 'sales_bill_dashed_divider.dart';
 

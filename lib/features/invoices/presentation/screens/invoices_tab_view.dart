@@ -6,7 +6,8 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
-import '../../../../core/widgets/common/search_field.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
+import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
@@ -18,7 +19,7 @@ import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_quick_filter_tabs.dart';
-import 'sales_bill_preview_launcher.dart';
+import '../../../bill_preview/presentation/screens/sales_bill_preview_launcher.dart';
 
 /// Same content as [InvoicesMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -57,6 +58,28 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
+  /// Scans a bill barcode, searches for it, and opens that invoice's
+  /// detail when the bill number matches exactly.
+  Future<void> _handleScanBarcode() async {
+    final code = await BarcodeScannerScreen.scan(context);
+    if (code == null || code.trim().isEmpty || !mounted) return;
+
+    final match = await ref
+        .read(invoicesControllerProvider.notifier)
+        .handleScannedCode(code);
+    if (!mounted) return;
+
+    if (match != null) {
+      _openDetail(context, match);
+    } else {
+      CustomSnackbar.show(
+        context,
+        AppStrings.invoiceScanNotFound(code.trim()),
+        error: true,
+      );
+    }
+  }
+
   /// Opens Edit Sale for this invoice. Edit Sale pops with `true` once the
   /// update is saved — then the list refreshes to show the new totals.
   Future<void> _openEdit(ResultDatum invoice) async {
@@ -70,9 +93,9 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
 
 
   void _viewTechnicalDetails(
-    InvoicesState state,
-    InvoicesController controller,
-  ) {
+      InvoicesState state,
+      InvoicesController controller,
+      ) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => TechnicalErrorScreen(
@@ -126,10 +149,11 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                       AppSizes.lg,
                       0,
                     ),
-                    child: SearchField(
+                    child: ScanSearchBar(
                       hintText: AppStrings.invoiceSearchHint,
                       controller: controller.searchController,
                       onChanged: controller.updateSearchQuery,
+                      onScanTap: _handleScanBarcode,
                     ),
                   ),
                   Padding(
@@ -144,89 +168,89 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
                   Expanded(
                     child: hasError
                         ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: ErrorState(
-                                  message:
-                                      state.errorMessage ??
-                                      AppStrings.errorOccurred,
-                                  onRetry: () =>
-                                      controller.getInvoices(reset: true),
-                                ),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: ErrorState(
+                            message:
+                            state.errorMessage ??
+                                AppStrings.errorOccurred,
+                            onRetry: () =>
+                                controller.getInvoices(reset: true),
+                          ),
+                        ),
+                        if (state.technicalDetails != null)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSizes.lg,
+                            ),
+                            child: TextButton(
+                              onPressed: () => _viewTechnicalDetails(
+                                state,
+                                controller,
                               ),
-                              if (state.technicalDetails != null)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppSizes.lg,
-                                  ),
-                                  child: TextButton(
-                                    onPressed: () => _viewTechnicalDetails(
-                                      state,
-                                      controller,
-                                    ),
-                                    child: const Text('View technical details'),
-                                  ),
-                                ),
-                            ],
-                          )
-                        : (!isInitialLoading && invoices.isEmpty)
-                        ? EmptyState(
-                            title: AppStrings.invoicesTitle,
-                            message: AppStrings.invoicesEmptyMessage,
-                            icon: Icons.receipt_long_outlined,
-                          )
-                        : CustomRefreshWrapper(
-                            onRefresh: controller.refresh,
-                            child: ListView.builder(
-                              controller: _scrollController,
-                              padding: const EdgeInsets.fromLTRB(
-                                AppSizes.lg,
-                                0,
-                                AppSizes.lg,
-                                AppSizes.lg,
-                              ),
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount:
-                                  invoices.length + (state.hasMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index >= invoices.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: AppSizes.lg,
-                                    ),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                final invoice = invoices[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppSizes.sm + AppSizes.xs,
-                                  ),
-                                  child: InvoiceCardItem(
-                                    invoice: invoice,
-                                    onEdit: () => _openEdit(invoice),
-                                    onDelete: () {
-                                      _confirmDeleteInvoice(
-                                        context,
-                                        ref,
-                                        invoice.salesBillNo,
-                                      );
-                                    },
-                                    onBillPreview: () => _openBillPreview(invoice),
-                                    onReturnSale: () {
-                                      // Navigate to return sale
-                                    },
-                                    onTap: () => _openDetail(context, invoice),
-                                  ),
-                                );
-                              },
+                              child: const Text('View technical details'),
                             ),
                           ),
+                      ],
+                    )
+                        : (!isInitialLoading && invoices.isEmpty)
+                        ? EmptyState(
+                      title: AppStrings.invoicesTitle,
+                      message: AppStrings.invoicesEmptyMessage,
+                      icon: Icons.receipt_long_outlined,
+                    )
+                        : CustomRefreshWrapper(
+                      onRefresh: controller.refresh,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(
+                          AppSizes.lg,
+                          0,
+                          AppSizes.lg,
+                          AppSizes.lg,
+                        ),
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount:
+                        invoices.length + (state.hasMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index >= invoices.length) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSizes.lg,
+                              ),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            );
+                          }
+                          final invoice = invoices[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSizes.sm + AppSizes.xs,
+                            ),
+                            child: InvoiceCardItem(
+                              invoice: invoice,
+                              onEdit: () => _openEdit(invoice),
+                              onDelete: () {
+                                _confirmDeleteInvoice(
+                                  context,
+                                  ref,
+                                  invoice.salesBillNo,
+                                );
+                              },
+                              onBillPreview: () => _openBillPreview(invoice),
+                              onReturnSale: () {
+                                // Navigate to return sale
+                              },
+                              onTap: () => _openDetail(context, invoice),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -238,10 +262,10 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
   }
 
   Future<void> _confirmDeleteInvoice(
-    BuildContext context,
-    WidgetRef ref,
-    String billNo,
-  ) async {
+      BuildContext context,
+      WidgetRef ref,
+      String billNo,
+      ) async {
     final confirmed = await CustomAlertDialog.confirm(
       context,
       title: AppStrings.deleteInvoice,
@@ -260,7 +284,7 @@ class _InvoicesTabViewState extends ConsumerState<InvoicesTabView> {
         success
             ? 'Invoice $billNo deleted'
             : (ref.read(invoicesControllerProvider).errorMessage ??
-                  AppStrings.errorOccurred),
+            AppStrings.errorOccurred),
         error: !success,
       );
     }

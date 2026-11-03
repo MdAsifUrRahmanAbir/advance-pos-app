@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/permission_service.dart';
-import '../../../../core/utils/thermal_printer_service.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
+import '../../constants/app_strings.dart';
+import '../../utils/permission_service.dart';
+import '../../utils/thermal_printer_service.dart';
 
 /// One-time paired-printer picker. No dedicated printer-setup screen
 /// exists yet in Settings — this is a stopgap so printing is usable now.
@@ -34,7 +34,7 @@ class _PrinterSelectionSheetState extends State<PrinterSelectionSheet> {
     final granted = await PermissionService.requestBluetoothPermissions();
     if (!granted) {
       final permanentlyDenied =
-          await PermissionService.isBluetoothPermissionPermanentlyDenied();
+      await PermissionService.isBluetoothPermissionPermanentlyDenied();
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -88,55 +88,55 @@ class _PrinterSelectionSheetState extends State<PrinterSelectionSheet> {
                 permanentlyDenied: _permissionPermanentlyDenied,
               )
             else if (_devices.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
-                child: Column(
-                  children: [
-                    Text(
-                      AppStrings.noPrintersFoundMessage,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
+                  child: Column(
+                    children: [
+                      Text(
+                        AppStrings.noPrintersFoundMessage,
+                        style: const TextStyle(
+                          color: AppColors.textPrimary,
+                          fontSize: AppSizes.fontSm,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: AppSizes.xs),
+                      Text(
+                        AppStrings.pairPrinterHint,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: AppSizes.fontXs,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                ..._devices.map(
+                      (device) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(
+                      Icons.print_outlined,
+                      color: AppColors.primary,
+                    ),
+                    title: Text(
+                      device.name,
                       style: const TextStyle(
-                        color: AppColors.textPrimary,
                         fontSize: AppSizes.fontSm,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: AppSizes.xs),
-                    Text(
-                      AppStrings.pairPrinterHint,
-                      textAlign: TextAlign.center,
+                    subtitle: Text(
+                      device.macAdress,
                       style: const TextStyle(
-                        color: AppColors.textSecondary,
                         fontSize: AppSizes.fontXs,
+                        color: AppColors.textSecondary,
                       ),
                     ),
-                  ],
+                    onTap: () => Navigator.of(context).pop(device),
+                  ),
                 ),
-              )
-            else
-              ..._devices.map(
-                (device) => ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(
-                    Icons.print_outlined,
-                    color: AppColors.primary,
-                  ),
-                  title: Text(
-                    device.name,
-                    style: const TextStyle(
-                      fontSize: AppSizes.fontSm,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  subtitle: Text(
-                    device.macAdress,
-                    style: const TextStyle(
-                      fontSize: AppSizes.fontXs,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(context).pop(device),
-                ),
-              ),
           ],
         ),
       ),

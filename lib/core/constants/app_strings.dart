@@ -23,8 +23,6 @@ class AppStrings {
   static const String technicalDetailsCopied = 'Technical details copied.';
 
   // ---- Added: Splash screen ----
-  static const String appTagline = 'Next-Gen Business Platform';
-  static const String connectingToServers = 'Connecting to secure servers...';
 
   static const String dataParsingError =
       'Something went wrong while loading data. Please try again.';
@@ -54,15 +52,10 @@ class AppStrings {
   static const String signIn = 'Sign In';
   static const String welcomeBack = 'Welcome Back';
   static const String emailAddress = 'Email Address';
-  static const String emailHint = 'admin@enterprise.com';
   static const String password = 'Password';
   static const String passwordHint = 'secret_password';
   static const String rememberMe = 'Remember Me';
   static const String forgotPassword = 'Forgot Password?';
-  static const String orContinueWith = 'or continue with';
-  static const String google = 'Google';
-  static const String apple = 'Apple';
-  static const String dontHaveAccount = "Don't have an account? ";
   static const String register = 'Register';
   static const String emailRequired = 'Email is required';
   static const String emailInvalid = 'Enter a valid email';
@@ -77,34 +70,18 @@ class AppStrings {
   static const String verifyAndProceed = 'Verify & Proceed';
   static const String didntReceiveCode = "Didn't receive code? ";
   static const String resendOtp = 'Resend OTP';
-  static const String registerWorkspace = 'Register Workspace';
-  static const String createYourAccount = 'Create Your Account';
   static const String fullName = 'Full Name';
-  static const String fullNameHint = 'Alex Carter';
   static const String registerEmailHint = 'alex@enterprise.com';
-  static const String registerPasswordHint = 'MySecureP@ss1';
   static const String confirmPassword = 'Confirm Password';
-  static const String agreeToTermsPrefix = 'I agree to the ';
 
   // ---- Added: Register screen ----
-  static const String termsAndConditions = 'Terms & Conditions';
-  static const String createAccount = 'Create Account';
-  static const String alreadyHaveAccount = 'Already have an account? ';
 
   static const String fullNameRequired = 'Full name is required';
-  static const String confirmPasswordRequired = 'Please confirm your password';
-  static const String passwordsDoNotMatch = 'Passwords do not match';
-  static const String mustAgreeToTerms =
-      'Please agree to the Terms & Conditions';
 
   // ---- Added: Change Password screen ----
   static const String changePasswordTitle = 'Change Password';
-  static const String currentPassword = 'Current Password';
   static const String newPassword = 'New Password';
   static const String saveChanges = 'Save Changes';
-  static const String currentPasswordRequired = 'Current password is required';
-  static const String newPasswordSameAsCurrent =
-      'New password must be different from current password';
 
   // ---- Added: Forgot Password screen ----
   static const String forgotPasswordSubtitle =
@@ -155,7 +132,6 @@ class AppStrings {
   static const String bio = 'Bio';
 
   // ---- Added: Activity screen ----
-  static const String filterThisWeek = 'This Week';
 
   // ---- Added: Notifications screen ----
   static const String notificationsTitle = 'Notifications';
@@ -336,7 +312,6 @@ class AppStrings {
   static String paymentCollectedBillSubtitle(String billNo, String amount) =>
       'Invoice $billNo · Received $amount';
 
-  static const String receiptSaleIdLabel = 'Sale ID';
   static const String receiptDateLabel = 'Date';
   static const String receiptPaymentMethodLabel = 'Payment Method';
 
@@ -401,9 +376,6 @@ class AppStrings {
   static const String stockReportTitle = 'Stock Report';
   static const String stockReportSubtitle =
       'Inventory levels, low/out-of-stock items';
-  static const String salesReportTitle = 'Sales Report';
-  static const String salesReportSubtitle =
-      'Daily and periodic sales summaries';
   static const String expense = 'Expense';
   static const String expenseSubtitle =
       'Track expenses, costs and payment history';
@@ -614,8 +586,6 @@ class AppStrings {
   static const String srDeleteFailed = "Couldn't delete sales return";
   static const String srEditComingSoon = 'Sales return editing is coming soon';
   static const String srLoadFailed = "Couldn't load sales returns";
-  static const String srLoadMoreFailed = "Couldn't load more.";
-  static const String srDetailReturnBill = 'Return bill no';
   static const String srDetailSalesBill = 'Sales bill no';
   static const String srDetailDate = 'Return date';
   static const String srDetailReturnBy = 'Returned by';
@@ -704,7 +674,6 @@ class AppStrings {
   static const String repdTitle = 'Sales Replacement Details';
   static const String repdLoadFailed = "Couldn't load sales replacement";
   static String repdShareSubject(String no) => 'Sales replacement $no';
-  static const String repdInfoSectionTitle = 'Replacement Information';
   static const String repdReturnedSectionTitle = 'Returned Products';
   static const String repdReplacementSectionTitle = 'Replacement Products';
   static const String repdPaymentSectionTitle = 'Payment Summary';
@@ -773,7 +742,6 @@ class AppStrings {
   static const String billPreviewTitle = 'Bill Preview';
   static const String billPrintAction = 'Print';
   static const String billLoadFailed = "Couldn't load this bill";
-  static const String billRefreshFailed = "Couldn't refresh this bill";
   static const String billReceiptHeading = 'RECEIPT';
   static const String billMobilePrefix = 'Mob: ';
   static const String billBinLabel = 'BIN: ';
@@ -811,7 +779,6 @@ class AppStrings {
   static const String billRewardPoints = 'REWARD POINT REMAINING: ';
   static const String billSalesBy = 'SALES BY: ';
   static const String billThankYou = 'Thank You For Shopping.';
-  static const String billReturnPolicyLabel = 'Return Policy: ';
   static const String billSystemBy = 'System By: TARA TECH LTD. | AdvancePOS';
 
   // ---- Invoices: Bill Preview terms (append only) ----
@@ -828,7 +795,6 @@ class AppStrings {
   static const String companyChangeAction = 'Change company';
 
   // ---- Login: change company footer (append only) ----
-  static const String companyWrongPrompt = 'Wrong company?';
 
   // ---- Login: connected company footer (append only) ----
   static const String companyConnectedLabel = 'Connected company';
@@ -850,4 +816,15 @@ class AppStrings {
   // ---- Master data: load status (append only) ----
   static const String masterDataIncomplete =
       "Some setup data didn't load. Lists and payment options may be incomplete.";
+
+  // ---- Sale complete sheet (append only) ----
+  static const String saleDoneViewFullBill = 'View full bill';
+  static const String saleDonePreviewAction = 'Preview';
+  static const String saleDoneDashboardAction = 'Dashboard';
+  static const String saleDoneBillLoadFailed =
+      "The sale is saved, but the bill couldn't load. Retry to print or share it.";
+
+  static String invoiceScanNotFound(String code) => 'No invoice found for $code';
+
+  static const String paginationLoadMoreFailed = "Couldn't load more.";
 }

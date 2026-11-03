@@ -4,17 +4,23 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/bottom_action_bar.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../../../../core/widgets/common/secondary_button.dart';
-import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../data/models/invoice_detail_model.dart';
 import '../../data/models/sale_amounts.dart';
 
-/// Sticky bottom action row — Share and Print Receipt are always
-/// available; Pay Dues only appears while [Sale.amountDue] is > 0.
+/// Sticky bottom action bar. Bill Preview is always available (share and
+/// print happen inside it); Pay Dues only appears while [Sale.amountDue]
+/// is > 0.
 class InvoiceDetailActions extends StatelessWidget {
   final Sale sale;
+  final VoidCallback onBillPreview;
   final VoidCallback? onPayDues;
 
-  const InvoiceDetailActions({super.key, required this.sale, this.onPayDues});
+  const InvoiceDetailActions({
+    super.key,
+    required this.sale,
+    required this.onBillPreview,
+    this.onPayDues,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,37 +30,10 @@ class InvoiceDetailActions extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: SecondaryButton(
-                  label: AppStrings.invoiceShareAction,
-                  icon: Icons.share_outlined,
-                  onPressed: () {
-                    // TODO: wire to a real share flow (e.g. share_plus)
-                    // once available.
-                    CustomSnackbar.show(
-                      context,
-                      'Sharing invoice ${sale.salesBillNo}...',
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(width: AppSizes.sm),
-              Expanded(
-                child: SecondaryButton(
-                  label: AppStrings.actionPrintReceipt,
-                  icon: Icons.print_outlined,
-                  onPressed: () {
-                    // TODO: wire to a real printer/PDF flow once available.
-                    CustomSnackbar.show(
-                      context,
-                      'Preparing receipt for printing...',
-                    );
-                  },
-                ),
-              ),
-            ],
+          SecondaryButton(
+            label: AppStrings.billPreviewTitle,
+            icon: Icons.receipt_long_outlined,
+            onPressed: onBillPreview,
           ),
           if (hasDue) ...[
             const SizedBox(height: AppSizes.sm),

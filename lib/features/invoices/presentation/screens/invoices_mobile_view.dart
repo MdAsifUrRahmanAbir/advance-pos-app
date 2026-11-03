@@ -8,7 +8,8 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
 import '../../../../core/utils/widget_animation_extension.dart';
 import '../../../../core/widgets/common/app_header_bar.dart';
-import '../../../../core/widgets/common/search_field.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
+import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
@@ -21,7 +22,7 @@ import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_quick_filter_tabs.dart';
-import 'sales_bill_preview_launcher.dart';
+import '../../../bill_preview/presentation/screens/sales_bill_preview_launcher.dart';
 
 class InvoicesMobileView extends ConsumerStatefulWidget {
   const InvoicesMobileView({super.key});
@@ -58,6 +59,28 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
     context.push(RouteNames.invoiceDetail, extra: invoice.salesBillNo);
   }
 
+  /// Scans a bill barcode, searches for it, and opens that invoice's
+  /// detail when the bill number matches exactly.
+  Future<void> _handleScanBarcode() async {
+    final code = await BarcodeScannerScreen.scan(context);
+    if (code == null || code.trim().isEmpty || !mounted) return;
+
+    final match = await ref
+        .read(invoicesControllerProvider.notifier)
+        .handleScannedCode(code);
+    if (!mounted) return;
+
+    if (match != null) {
+      _openDetail(context, match);
+    } else {
+      CustomSnackbar.show(
+        context,
+        AppStrings.invoiceScanNotFound(code.trim()),
+        error: true,
+      );
+    }
+  }
+
   /// Opens Edit Sale for this invoice. Edit Sale pops with `true` once the
   /// update is saved — then the list refreshes to show the new totals.
   Future<void> _openEdit(ResultDatum invoice) async {
@@ -70,10 +93,10 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
   }
 
   void _viewTechnicalDetails(
-    BuildContext context,
-    InvoicesState state,
-    InvoicesController controller,
-  ) {
+      BuildContext context,
+      InvoicesState state,
+      InvoicesController controller,
+      ) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => TechnicalErrorScreen(
@@ -117,125 +140,126 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         const SizedBox(height: AppSizes.md),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: SearchField(
+          child: ScanSearchBar(
             hintText: AppStrings.invoiceSearchHint,
             controller: controller.searchController,
             onChanged: controller.updateSearchQuery,
+            onScanTap: _handleScanBarcode,
           ),
         ),
         const SizedBox(height: AppSizes.sm),
         isInitialLoading
             ? SizedBox.shrink()
             : Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-                child: InvoiceQuickFilterTabs(
-                  selectedStatus: state.selectedStatus,
-                  selectedDatePreset: state.selectedDatePreset,
-                  onStatusSelected: controller.selectStatus,
-                  onDatePresetSelected: controller.selectDatePreset,
-                ),
-              ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: InvoiceQuickFilterTabs(
+            selectedStatus: state.selectedStatus,
+            selectedDatePreset: state.selectedDatePreset,
+            onStatusSelected: controller.selectStatus,
+            onDatePresetSelected: controller.selectDatePreset,
+          ),
+        ),
         const SizedBox(height: AppSizes.sm),
         Expanded(
           child: hasError
               ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: AppSizes.bottomNavBarHeight * 2),
-                    Expanded(
-                      child: ErrorState(
-                        message: state.errorMessage ?? AppStrings.errorOccurred,
-                        onRetry: () => controller.getInvoices(reset: true),
-                      ),
-                    ),
-                    if (state.technicalDetails != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AppSizes.md),
-                        child: TextButton(
-                          onPressed: () =>
-                              _viewTechnicalDetails(context, state, controller),
-                          child: const Text('View technical details'),
-                        ),
-                      ),
-                    SizedBox(height: AppSizes.bottomNavBarHeight * 3),
-                  ],
-                )
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: AppSizes.bottomNavBarHeight * 2),
+              Expanded(
+                child: ErrorState(
+                  message: state.errorMessage ?? AppStrings.errorOccurred,
+                  onRetry: () => controller.getInvoices(reset: true),
+                ),
+              ),
+              if (state.technicalDetails != null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSizes.md),
+                  child: TextButton(
+                    onPressed: () =>
+                        _viewTechnicalDetails(context, state, controller),
+                    child: const Text('View technical details'),
+                  ),
+                ),
+              SizedBox(height: AppSizes.bottomNavBarHeight * 3),
+            ],
+          )
               : (!isInitialLoading && invoices.isEmpty)
               ? EmptyState(
-                  title: AppStrings.invoicesTitle,
-                  message: AppStrings.invoicesEmptyMessage,
-                  icon: Icons.receipt_long_outlined,
-                )
+            title: AppStrings.invoicesTitle,
+            message: AppStrings.invoicesEmptyMessage,
+            icon: Icons.receipt_long_outlined,
+          )
               : CustomRefreshWrapper(
-                  onRefresh: controller.refresh,
-                  child: isInitialLoading
-                      ? ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSizes.md,
-                            0,
-                            AppSizes.md,
-                            AppSizes.md,
-                          ),
-                          itemCount: 6,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: AppSizes.sm + AppSizes.xs),
-                          itemBuilder: (context, index) => _placeholderCard()
-                              .fadeSlideIn(delay: (index * 60).ms),
-                        ).skeletonizer(enabled: true)
-                      : ListView(
-                          controller: _scrollController,
-                          shrinkWrap: true,
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.fromLTRB(
-                                AppSizes.md,
-                                0,
-                                AppSizes.md,
-                                AppSizes.md,
-                              ),
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount:
-                                  invoices.length + (state.hasMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index >= invoices.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: AppSizes.md,
-                                    ),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                final invoice = invoices[index];
-                                final staggerIndex = index % _staggerResetAt;
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                    bottom: AppSizes.sm + AppSizes.xs,
-                                  ),
-                                  child: InvoiceCardItem(
-                                    invoice: invoice,
-                                    onTap: () => _openDetail(context, invoice),
-                                    onEdit: () => _openEdit(invoice),
-                                    onBillPreview: () => _openBillPreview(invoice),
-
-                                    onDelete: () {
-                                      _confirmDeleteInvoice(context, ref, invoice.salesBillNo);
-                                    },
-                                    onReturnSale: () {
-                                      // Navigate to return sale
-                                    },
-                                  ).fadeSlideIn(delay: (staggerIndex * 40).ms),
-                                );
-                              },
-                            ),
-                            SizedBox(height: AppSizes.bottomNavBarHeight / 2),
-                          ],
+            onRefresh: controller.refresh,
+            child: isInitialLoading
+                ? ListView.separated(
+              padding: const EdgeInsets.fromLTRB(
+                AppSizes.md,
+                0,
+                AppSizes.md,
+                AppSizes.md,
+              ),
+              itemCount: 6,
+              separatorBuilder: (_, _) =>
+              const SizedBox(height: AppSizes.sm + AppSizes.xs),
+              itemBuilder: (context, index) => _placeholderCard()
+                  .fadeSlideIn(delay: (index * 60).ms),
+            ).skeletonizer(enabled: true)
+                : ListView(
+              controller: _scrollController,
+              shrinkWrap: true,
+              children: [
+                ListView.builder(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSizes.md,
+                    0,
+                    AppSizes.md,
+                    AppSizes.md,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount:
+                  invoices.length + (state.hasMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index >= invoices.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppSizes.md,
                         ),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      );
+                    }
+                    final invoice = invoices[index];
+                    final staggerIndex = index % _staggerResetAt;
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: AppSizes.sm + AppSizes.xs,
+                      ),
+                      child: InvoiceCardItem(
+                        invoice: invoice,
+                        onTap: () => _openDetail(context, invoice),
+                        onEdit: () => _openEdit(invoice),
+                        onBillPreview: () => _openBillPreview(invoice),
+
+                        onDelete: () {
+                          _confirmDeleteInvoice(context, ref, invoice.salesBillNo);
+                        },
+                        onReturnSale: () {
+                          // Navigate to return sale
+                        },
+                      ).fadeSlideIn(delay: (staggerIndex * 40).ms),
+                    );
+                  },
                 ),
+                SizedBox(height: AppSizes.bottomNavBarHeight / 2),
+              ],
+            ),
+          ),
         ),
       ],
     );
