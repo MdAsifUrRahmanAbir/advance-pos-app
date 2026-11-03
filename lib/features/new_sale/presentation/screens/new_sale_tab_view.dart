@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/technical_error_screen.dart';
+import '../../../../core/widgets/common/scan_search_bar.dart';
 import '../../../../core/widgets/utility/barcode_scanner_screen.dart';
 import '../../../../core/widgets/utility/custom_bottom_sheet.dart';
 import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
@@ -23,7 +24,6 @@ import '../widgets/category_filter_bar.dart';
 import '../widgets/new_sale_top_bar.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/product_grid_skeleton.dart';
-import '../widgets/product_search_bar.dart';
 
 class NewSaleTabView extends ConsumerStatefulWidget {
   const NewSaleTabView({super.key});
@@ -106,10 +106,7 @@ class _NewSaleTabViewState extends ConsumerState<NewSaleTabView> {
 
     return Column(
       children: [
-        NewSaleTopBar(
-          onBack: () => context.pop(),
-          onScanBarcode: () => _handleScanBarcode(context, ref),
-        ),
+        NewSaleTopBar(onBack: () => context.pop()),
         Expanded(
           child: Container(
             color: AppColors.background,
@@ -122,9 +119,11 @@ class _NewSaleTabViewState extends ConsumerState<NewSaleTabView> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(AppSizes.lg, AppSizes.lg, AppSizes.lg, 0),
-                          child: ProductSearchBar(
+                          child: ScanSearchBar(
+                            hintText: AppStrings.searchProductHint,
                             controller: controller.searchController,
                             onChanged: controller.updateSearchQuery,
+                            onScanTap: () => _handleScanBarcode(context, ref),
                           ),
                         ),
                         const SizedBox(height: AppSizes.sm),

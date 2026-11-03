@@ -44,7 +44,7 @@ class StockController extends Notifier<StockState> {
     state = state.copyWith(selectedStatus: statusKey);
   }
 
-  /// Called on every keystroke in [StockSearchBar]. Updates the field's
+  /// Called on every keystroke in [ScanSearchBar]. Updates the field's
   /// displayed text immediately, but only actually hits the API once
   /// the user has typed at least [_minSearchLength] characters (or
   /// cleared the field back to empty, which resets to the unfiltered
