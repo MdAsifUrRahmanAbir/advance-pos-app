@@ -860,4 +860,7 @@ class AppStrings {
 
   // ---- Invoices: barcode scan (append only) ----
   static String invoiceScanNotFound(String code) => 'No invoice found for $code';
+
+  // ---- Common: pagination (append only) ----
+  static const String paginationLoadMoreFailed = "Couldn't load more.";
 }

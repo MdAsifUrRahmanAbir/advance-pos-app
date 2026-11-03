@@ -8,11 +8,11 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/search_field.dart';
 import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
+import '../../../../core/widgets/utility/app_date_range_picker.dart';
 import '../../../../routes/route_names.dart';
 import '../../data/model/expense_model.dart' show ResultDatum;
 import '../controllers/expense_controller.dart';
 import '../states/expense_state.dart';
-import '../widgets/expense_date_range_picker.dart';
 import '../widgets/expense_detail_sheet.dart';
 import '../widgets/expense_header.dart';
 import '../widgets/expense_list_section.dart';
@@ -44,7 +44,7 @@ class ExpenseTabView extends ConsumerWidget {
     }
 
     Future<void> pickCustomRange() async {
-      final range = await showExpenseDateRangePicker(
+      final range = await showAppDateRangePicker(
         context: context,
         current: state.fromDate != null && state.toDate != null
             ? DateTimeRange(start: state.fromDate!, end: state.toDate!)

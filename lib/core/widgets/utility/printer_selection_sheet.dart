@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_sizes.dart';
-import '../../../../core/constants/app_strings.dart';
-import '../../../../core/utils/permission_service.dart';
-import '../../../../core/utils/thermal_printer_service.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_sizes.dart';
+import '../../constants/app_strings.dart';
+import '../../utils/permission_service.dart';
+import '../../utils/thermal_printer_service.dart';
 
 /// One-time paired-printer picker. No dedicated printer-setup screen
 /// exists yet in Settings — this is a stopgap so printing is usable now.

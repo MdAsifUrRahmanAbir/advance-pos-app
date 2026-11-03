@@ -4,7 +4,7 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
-import '../../../payment/presentation/widgets/printer_selection_sheet.dart';
+import '../../../../core/widgets/utility/printer_selection_sheet.dart';
 import '../controllers/sales_bill_preview_controller.dart';
 import '../widgets/sales_bill_preview_sheet.dart';
 

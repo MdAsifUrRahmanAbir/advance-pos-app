@@ -15,13 +15,13 @@ import '../../../../core/widgets/utility/custom_refresh_wrapper.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/empty_state.dart';
 import '../../../../core/widgets/utility/error_state.dart';
+import '../../../../core/widgets/utility/app_date_range_picker.dart';
+import '../../../../core/widgets/utility/pagination_footer.dart';
 import '../../../../routes/route_names.dart';
 import '../../data/models/sales_return_model.dart' show ResultDatum;
 import '../controllers/sales_return_controller.dart';
 import '../states/sales_return_state.dart';
 import '../widgets/sales_return_card_tile.dart';
-import '../widgets/sales_return_date_range_picker.dart';
-import '../widgets/sales_return_list_footer.dart';
 import '../widgets/sales_return_list_skeleton.dart';
 import '../widgets/sales_return_quick_filter_tabs.dart';
 
@@ -54,7 +54,7 @@ class SalesReturnMobileView extends ConsumerWidget {
     }
 
     Future<void> pickCustomRange() async {
-      final range = await showSalesReturnDateRangePicker(
+      final range = await showAppDateRangePicker(
         context: context,
         current: state.fromDate != null && state.toDate != null
             ? DateTimeRange(start: state.fromDate!, end: state.toDate!)
@@ -164,7 +164,7 @@ class SalesReturnMobileView extends ConsumerWidget {
               const SizedBox(height: AppSizes.sm + AppSizes.xs),
           itemBuilder: (context, index) {
             if (index >= items.length) {
-              return SalesReturnListFooter(
+              return PaginationFooter(
                 isLoading: state.isLoadingMore,
                 onRetry: controller.loadMore,
               );
