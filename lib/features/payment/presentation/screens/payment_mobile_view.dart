@@ -12,7 +12,7 @@ import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
-import '../../../invoices/presentation/screens/sale_complete_launcher.dart';
+import '../../../bill_preview/presentation/screens/sale_complete_launcher.dart';
 import '../controllers/payment_controller.dart';
 import '../widgets/change_due_banner.dart';
 import '../widgets/complete_sale_button.dart';

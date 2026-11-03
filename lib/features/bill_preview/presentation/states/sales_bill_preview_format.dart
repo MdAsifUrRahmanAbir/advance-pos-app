@@ -1,5 +1,5 @@
 import '../../../../core/utils/currency_formatter.dart';
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 
 /// Pure formatting for the Bill Preview receipt (no state, no UI).
 /// "Present" means not null, not blank and not the literal "null" — rows

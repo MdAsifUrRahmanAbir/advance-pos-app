@@ -5,7 +5,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../core/widgets/utility/shimmer_extension.dart';
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_placeholder.dart';
 import 'sale_complete_actions.dart';
 import 'sale_complete_header.dart';

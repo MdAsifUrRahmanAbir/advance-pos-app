@@ -4,7 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 import 'sales_bill_receipt.dart';
 
 /// Card showing the top of the thermal receipt with a fade, tappable to

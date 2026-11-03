@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 
 /// Bill Preview has independent operations (loading the bill, printing,
 /// sharing), so it keeps one flag per operation.

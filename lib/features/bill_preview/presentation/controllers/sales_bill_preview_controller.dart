@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
-import '../../data/repositories/invoices_repository.dart';
+import '../../data/repositories/bill_preview_repository.dart';
 import '../states/sales_bill_preview_state.dart';
 
 /// Family arg: the sales bill number to preview.
@@ -31,7 +31,8 @@ class SalesBillPreviewController extends Notifier<SalesBillPreviewState> {
   /// Only the latest load (first load or retry) may write state.
   int _requestSeq = 0;
 
-  InvoicesRepository get _repository => ref.read(invoicesRepositoryProvider);
+  BillPreviewRepository get _repository =>
+      ref.read(billPreviewRepositoryProvider);
 
   @override
   SalesBillPreviewState build() {

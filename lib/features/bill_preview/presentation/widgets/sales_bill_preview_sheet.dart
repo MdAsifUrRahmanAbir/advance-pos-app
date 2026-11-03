@@ -4,13 +4,14 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/common/primary_button.dart';
+import '../../../../core/widgets/common/secondary_button.dart';
 import '../../../../core/widgets/utility/error_state.dart';
 import '../../../../core/widgets/utility/shimmer_extension.dart';
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_placeholder.dart';
 import 'sales_bill_receipt.dart';
 
-/// Bottom sheet holding only the thermal receipt and a Print button.
+/// Bottom sheet holding the thermal receipt with Share and Print buttons.
 /// Skeleton while [bill] is null and loading; ErrorState when it failed.
 class SalesBillPreviewSheet extends StatelessWidget {
   final SalesBillPreviewModel? bill;
@@ -18,9 +19,11 @@ class SalesBillPreviewSheet extends StatelessWidget {
   final GlobalKey receiptKey;
   final bool isLoading;
   final bool isPrinting;
+  final bool isSharing;
   final String? errorMessage;
   final VoidCallback onRetry;
   final VoidCallback onPrint;
+  final VoidCallback onShare;
 
   const SalesBillPreviewSheet({
     super.key,
@@ -29,9 +32,11 @@ class SalesBillPreviewSheet extends StatelessWidget {
     required this.receiptKey,
     required this.isLoading,
     required this.isPrinting,
+    required this.isSharing,
     required this.errorMessage,
     required this.onRetry,
     required this.onPrint,
+    required this.onShare,
   });
 
   /// Sheet may use up to this share of the screen height — flagged.
@@ -92,11 +97,25 @@ class SalesBillPreviewSheet extends StatelessWidget {
                 AppSizes.md,
                 AppSizes.md,
               ),
-              child: PrimaryButton(
-                label: AppStrings.billPrintAction,
-                icon: Icons.print_outlined,
-                loading: isPrinting,
-                onPressed: bill == null ? null : onPrint,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SecondaryButton(
+                      label: AppStrings.invoiceShareAction,
+                      icon: Icons.ios_share_rounded,
+                      onPressed: bill == null || isSharing ? null : onShare,
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.sm),
+                  Expanded(
+                    child: PrimaryButton(
+                      label: AppStrings.billPrintAction,
+                      icon: Icons.print_outlined,
+                      loading: isPrinting,
+                      onPressed: bill == null ? null : onPrint,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

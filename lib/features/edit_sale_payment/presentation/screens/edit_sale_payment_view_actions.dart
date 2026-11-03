@@ -8,7 +8,7 @@ import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
-import '../../../invoices/presentation/screens/sale_complete_launcher.dart';
+import '../../../bill_preview/presentation/screens/sale_complete_launcher.dart';
 import '../controllers/edit_sale_payment_controller.dart';
 
 /// View-layer wiring shared by [EditSalePaymentMobileView] and

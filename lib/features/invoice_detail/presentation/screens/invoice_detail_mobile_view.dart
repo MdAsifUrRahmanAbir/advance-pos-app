@@ -11,6 +11,7 @@ import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_loader.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../core/widgets/utility/error_state.dart';
+import '../../../bill_preview/presentation/screens/sales_bill_preview_launcher.dart';
 import '../../data/models/sale_amounts.dart';
 import '../controllers/invoice_detail_controller.dart';
 import '../states/invoice_detail_state.dart';
@@ -134,6 +135,8 @@ class _InvoiceDetailMobileViewState
         if (invoice != null)
           InvoiceDetailActions(
             sale: invoice.sale,
+            onBillPreview: () =>
+                showSalesBillPreview(context, invoice.sale.salesBillNo),
             onPayDues: () => _handlePayDues(
               invoice.sale.amountDue,
               invoice.sale.salesBillNo,

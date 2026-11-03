@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/model/sales_bill_preview_model.dart';
+import '../../data/models/sales_bill_preview_model.dart';
 import 'sales_bill_customer_section.dart';
 import 'sales_bill_footer_section.dart';
 import 'sales_bill_header_section.dart';

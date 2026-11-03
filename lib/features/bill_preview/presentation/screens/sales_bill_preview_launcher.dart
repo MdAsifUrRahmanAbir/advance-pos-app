@@ -11,10 +11,10 @@ import '../widgets/sales_bill_preview_sheet.dart';
 /// Sheet width cap on tablets (within the 480–960 range).
 const double _sheetMaxWidth = 560;
 
-/// View-layer wiring shared by the Invoices, Payment and Edit Sale views:
-/// opens the Bill Preview receipt in a bottom sheet and runs the Print
-/// flow. The controller is autoDispose, so closing the last sheet that
-/// watches it disposes it.
+/// Common entry point for any screen that shows a sales bill (Invoices,
+/// Invoice Detail, Payment, Edit Sale): opens the Bill Preview receipt in
+/// a bottom sheet and runs the Share / Print flows. The controller is
+/// autoDispose, so closing the last sheet that watches it disposes it.
 void showSalesBillPreview(BuildContext context, String billNo) {
   showModalBottomSheet<void>(
     context: context,
@@ -33,9 +33,20 @@ void showSalesBillPreview(BuildContext context, String billNo) {
           receiptKey: controller.receiptKey,
           isLoading: state.isLoading,
           isPrinting: state.isPrinting,
+          isSharing: state.isSharing,
           errorMessage: state.errorMessage,
           onRetry: controller.load,
           onPrint: () => printSalesBill(context, controller),
+          onShare: () async {
+            final ok = await controller.shareBill();
+            if (!ok && context.mounted) {
+              CustomSnackbar.show(
+                context,
+                AppStrings.shareFailedMessage,
+                error: true,
+              );
+            }
+          },
         );
       },
     ),

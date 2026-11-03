@@ -18,7 +18,7 @@ import '../controllers/invoices_controller.dart';
 import '../states/invoices_state.dart';
 import '../widgets/invoice_card_item.dart';
 import '../widgets/invoice_quick_filter_tabs.dart';
-import 'sales_bill_preview_launcher.dart';
+import '../../../bill_preview/presentation/screens/sales_bill_preview_launcher.dart';
 
 /// Same content as [InvoicesMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
