@@ -20,6 +20,7 @@ class SecureStorageService {
   static const _keySessionProfile = 'auth_session_profile';
   static const _keyCacheEncryptionKey = 'cache_encryption_key';
   static const _keyClientProfile = 'client_profile';
+  static const _keyApiParams = 'auth_api_params';
 
   Future<void> saveAccessToken(String token) =>
       _storage.write(key: _keyAccessToken, value: token);
@@ -36,6 +37,13 @@ class SecureStorageService {
       _storage.read(key: _keySessionProfile);
   Future<void> clearSessionProfile() =>
       _storage.delete(key: _keySessionProfile);
+
+  /// JSON string of the request params (see ApiParams.encode()):
+  /// branch_id, employee_id, sales_type cached after login.
+  Future<void> saveApiParams(String json) =>
+      _storage.write(key: _keyApiParams, value: json);
+  Future<String?> readApiParams() => _storage.read(key: _keyApiParams);
+  Future<void> clearApiParams() => _storage.delete(key: _keyApiParams);
 
   Future<String?> readCacheEncryptionKey() =>
       _storage.read(key: _keyCacheEncryptionKey);
@@ -60,6 +68,7 @@ class SecureStorageService {
   Future<void> clearAll({bool includeCacheKey = false}) async {
     await clearAuthTokens();
     await clearSessionProfile();
+    await clearApiParams();
     if (includeCacheKey) {
       await _storage.delete(key: _keyCacheEncryptionKey);
     }

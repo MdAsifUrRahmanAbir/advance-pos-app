@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
@@ -148,7 +147,6 @@ class SalesReplacementController extends Notifier<SalesReplacementState> {
       final result = await _repository.getSalesReplacements(
         start: reset ? 0 : state.items.length,
         length: _pageSize,
-        branchId: ref.read(sessionBranchIdProvider),
         search: state.searchQuery,
         dateRange: SalesReplacementFormat.dateRange(state.fromDate, state.toDate),
       );

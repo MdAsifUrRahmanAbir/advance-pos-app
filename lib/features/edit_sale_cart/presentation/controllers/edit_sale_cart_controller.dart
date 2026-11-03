@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/session/auth_session_controller.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../cart/data/models/customers_model.dart' as cust;
@@ -44,9 +44,10 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
       ref.read(editSaleCartRepositoryProvider);
   CartRepository get _cartRepository => ref.read(cartRepositoryProvider);
 
-  /// Throws [StateError] when nobody is signed in — always read inside a
-  /// try block so it surfaces as a normal error message.
-  int get _branchId => ref.read(sessionBranchIdProvider);
+  /// Branch used to read the per-branch stock out of search results (not
+  /// sent by this controller — ApiEndpoints adds it to the URL). Throws
+  /// [StateError] when nobody is signed in — read inside a try block.
+  int get _branchId => ref.read(apiParamsProvider).branchId;
 
   static const int _customerPageLength = 20;
   static const int _minCustomerSearchLength = 4;
@@ -241,7 +242,6 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
         lookupKeys.entries.map((entry) async {
           try {
             final result = await _repository.searchProducts(
-              branchId: branchId,
               search: entry.value,
               length: 5,
             );
@@ -302,7 +302,6 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
     try {
       final branchId = _branchId;
       final result = await _repository.searchProducts(
-        branchId: branchId,
         search: query,
         length: _productPageLength,
       );
@@ -366,7 +365,6 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
     try {
       final branchId = _branchId;
       final result = await _repository.searchProducts(
-        branchId: branchId,
         search: code,
         length: 10,
       );
@@ -548,7 +546,6 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
         customerMobile: mobile,
         customerEmail: email,
         address: address,
-        branchId: _branchId,
       );
       final lookup = await _cartRepository.getCustomers(
         start: 0,
@@ -687,7 +684,6 @@ class EditSaleCartController extends Notifier<EditSaleCartState> {
         productIds: [for (final i in items) i.id],
         quantities: [for (final i in items) i.quantity],
         discountType: before.bothChoice ? before.discountBasis.name : null,
-        branchId: _branchId,
         salesDate: _saleDate,
       );
       if (!ref.mounted || requestId != _discountRequestId) return false;

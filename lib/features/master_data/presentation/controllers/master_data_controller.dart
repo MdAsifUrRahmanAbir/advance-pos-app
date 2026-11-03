@@ -18,19 +18,32 @@ NotifierProvider<MasterDataController, MasterDataState>(
   MasterDataController.new,
 );
 
+/// Result of loading one master-data set.
+typedef _KindResult = ({
+MasterDataKind kind,
+MasterDataSource? source,
+int count,
+String? error,
+});
+
 class MasterDataController extends Notifier<MasterDataState> {
   static const _ttl = Duration(days: 1);
-  static const _groupsKey = 'master_data_groups';
-  static const _categoriesKey = 'master_data_categories';
-  static const _subcategoriesKey = 'master_data_subcategories';
-  static const _brandsKey = 'master_data_brands';
-  static const _paymentSystemsKey = 'master_data_payment_systems';
-  static const _paymentAccountsKey = 'master_data_payment_accounts';
-  static const _accountHeadsKey = 'master_data_account_heads';
+  static const _keys = {
+    MasterDataKind.groups: 'master_data_groups',
+    MasterDataKind.categories: 'master_data_categories',
+    MasterDataKind.subcategories: 'master_data_subcategories',
+    MasterDataKind.brands: 'master_data_brands',
+    MasterDataKind.paymentSystems: 'master_data_payment_systems',
+    MasterDataKind.paymentAccounts: 'master_data_payment_accounts',
+    MasterDataKind.accountHeads: 'master_data_account_heads',
+  };
 
   MasterDataRepository get _repository =>
       ref.read(masterDataRepositoryProvider);
   LocalCacheService get _cache => ref.read(localCacheServiceProvider);
+
+  /// The load in progress, shared by callers that arrive while it runs.
+  Future<bool>? _inFlight;
 
   @override
   MasterDataState build() {
@@ -38,256 +51,194 @@ class MasterDataController extends Notifier<MasterDataState> {
     return MasterDataState.initial();
   }
 
-  Future<void> loadAll({bool forceRefresh = true}) async {
+  /// Loads every set. True only when ALL sets arrived and none failed —
+  /// check [MasterDataState.missing] / [MasterDataState.failures] for which.
+  Future<bool> loadAll({bool forceRefresh = true}) =>
+      _run(MasterDataKind.values.toSet(), forceRefresh: forceRefresh);
+
+  Future<bool> refresh() => loadAll(forceRefresh: true);
+
+  /// Reloads only the sets that are missing or failed last time.
+  Future<bool> retryFailed() {
+    final kinds = {...state.missing, ...state.failures.keys};
+    if (kinds.isEmpty) return Future.value(true);
+    return _run(kinds, forceRefresh: true);
+  }
+
+  Future<bool> _run(Set<MasterDataKind> kinds, {required bool forceRefresh}) {
+    final running = _inFlight;
+    if (running != null) return running;
+    final future = _load(kinds, forceRefresh: forceRefresh);
+    _inFlight = future;
+    return future.whenComplete(() => _inFlight = null);
+  }
+
+  Future<bool> _load(
+      Set<MasterDataKind> kinds, {
+        required bool forceRefresh,
+      }) async {
+    state = state.copyWith(isLoading: true);
+
+    final results = await Future.wait([
+      for (final kind in kinds) _loadSafely(kind, forceRefresh: forceRefresh),
+    ]);
+    if (!ref.mounted) return false;
+
+    final loaded = {...state.loaded};
+    final failures = {...state.failures};
+    final empty = {...state.empty};
+    for (final r in results) {
+      final error = r.error;
+      if (error != null) {
+        failures[r.kind] = error;
+        continue;
+      }
+      loaded[r.kind] = r.source!;
+      failures.remove(r.kind);
+      r.count == 0 ? empty.add(r.kind) : empty.remove(r.kind);
+    }
+
+    final allGood =
+        loaded.length == MasterDataKind.values.length && failures.isEmpty;
     state = state.copyWith(
-      isLoading: true,
-      errorMessage: null,
+      isLoading: false,
+      loaded: loaded,
+      failures: failures,
+      empty: empty,
+      errorMessage: failures.isEmpty
+          ? null
+          : failures.entries.map((e) => '${e.key.name}: ${e.value}').join('\n'),
+      lastSyncedAt: allGood ? DateTime.now() : null,
     );
 
-    final errors = <String>[];
+    _report(results);
+    return allGood;
+  }
 
-    Future<void> safeLoad(
-        String name,
-        Future<void> Function() task,
-        ) async {
-      try {
-        await task();
-      } catch (error, stackTrace) {
-        AppLogger.controllerFailed(
-          'MasterDataController.$name',
-          error,
-        );
-
-        errors.add(
-          '$name: ${getErrorMessage(error, stackTrace)}',
-        );
-      }
-    }
-
+  Future<_KindResult> _loadSafely(
+      MasterDataKind kind, {
+        required bool forceRefresh,
+      }) async {
     try {
-      await Future.wait([
-        safeLoad('groups', () async {
-          final result = await _loadGroups(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(groups: result.data);
-        }),
+      final r = await _loadKind(kind, forceRefresh: forceRefresh);
+      return (kind: kind, source: r.source, count: r.count, error: null);
+    } catch (error, stackTrace) {
+      AppLogger.controllerFailed('MasterDataController.${kind.name}', error);
+      return (
+      kind: kind,
+      source: null,
+      count: 0,
+      error: getErrorMessage(error, stackTrace),
+      );
+    }
+  }
 
-        safeLoad('categories', () async {
-          final result = await _loadCategories(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(
-            categoryData: result.data,
-          );
-        }),
-
-        safeLoad('subcategories', () async {
-          final result = await _loadSubcategories(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(
-            subcategories: result.data,
-          );
-        }),
-
-        safeLoad('brands', () async {
-          final result = await _loadBrands(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(brands: result.data);
-        }),
-
-        safeLoad('paymentSystems', () async {
-          final result = await _loadPaymentSystems(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(
-            paymentSystems: result.data,
-          );
-        }),
-
-        safeLoad('paymentAccounts', () async {
-          final result = await _loadPaymentAccounts(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(
-            paymentAccounts: result.data,
-          );
-        }),
-
-        safeLoad('accountHeads', () async {
-          final result = await _loadAccountHeads(
-            forceRefresh: forceRefresh,
-          );
-          state = state.copyWith(
-            accountHeads: result.data,
-          );
-        }),
-      ]);
-
-      if (errors.isNotEmpty) {
-        state = state.copyWith(
-          errorMessage: errors.join('\n'),
+  /// Fetches one set, writes it to state and returns where it came from and
+  /// how many rows it has.
+  Future<({MasterDataSource source, int count})> _loadKind(
+      MasterDataKind kind, {
+        required bool forceRefresh,
+      }) async {
+    switch (kind) {
+      case MasterDataKind.groups:
+        final r = await _fetch<GroupModel>(
+          kind, forceRefresh, GroupModel.fromJson, (m) => m.toJson(),
+          _repository.getGroups,
         );
-      }
+        if (ref.mounted) state = state.copyWith(groups: r.model.resultData);
+        return (source: r.source, count: r.model.resultData.length);
 
-      state = state.copyWith(
-        lastSyncedAt: DateTime.now(),
-      );
-    } finally {
-      state = state.copyWith(isLoading: false);
+      case MasterDataKind.categories:
+        final r = await _fetch<CategoryModel>(
+          kind, forceRefresh, CategoryModel.fromJson, (m) => m.toJson(),
+          _repository.getCategories,
+        );
+        if (ref.mounted) state = state.copyWith(categoryData: r.model.resultData);
+        return (source: r.source, count: r.model.resultData.categories.length);
+
+      case MasterDataKind.subcategories:
+        final r = await _fetch<SubcategoryModel>(
+          kind, forceRefresh, SubcategoryModel.fromJson, (m) => m.toJson(),
+          _repository.getSubcategories,
+        );
+        if (ref.mounted) {
+          state = state.copyWith(subcategories: r.model.resultData);
+        }
+        return (source: r.source, count: r.model.resultData.length);
+
+      case MasterDataKind.brands:
+        final r = await _fetch<BrandModel>(
+          kind, forceRefresh, BrandModel.fromJson, (m) => m.toJson(),
+          _repository.getBrands,
+        );
+        if (ref.mounted) state = state.copyWith(brands: r.model.resultData);
+        return (source: r.source, count: r.model.resultData.length);
+
+      case MasterDataKind.paymentSystems:
+        final r = await _fetch<ps.PaymentSystemModel>(
+          kind, forceRefresh, ps.PaymentSystemModel.fromJson, (m) => m.toJson(),
+          _repository.getPaymentSystems,
+        );
+        if (ref.mounted) {
+          state = state.copyWith(paymentSystems: r.model.resultData);
+        }
+        return (source: r.source, count: r.model.resultData.length);
+
+      case MasterDataKind.paymentAccounts:
+        final r = await _fetch<pa.PaymentAccountsModel>(
+          kind, forceRefresh, pa.PaymentAccountsModel.fromJson, (m) => m.toJson(),
+          _repository.getPaymentAccounts,
+        );
+        if (ref.mounted) {
+          state = state.copyWith(paymentAccounts: r.model.resultData);
+        }
+        return (source: r.source, count: r.model.resultData.length);
+
+      case MasterDataKind.accountHeads:
+        final r = await _fetch<HeadModel>(
+          kind, forceRefresh, HeadModel.fromJson, (m) => m.toJson(),
+          _repository.getAccountHead,
+        );
+        if (ref.mounted) state = state.copyWith(accountHeads: r.model.headData);
+        return (source: r.source, count: r.model.headData.length);
     }
   }
 
-
-  Future<void> refresh() => loadAll(forceRefresh: true);
-
-  Future<({List<GroupItem> data, bool fromCache})> _loadGroups({
-    required bool forceRefresh,
-  }) async {
+  /// Cache-or-API for one set. With [forceRefresh] the cache is skipped;
+  /// a fresh response is always written back to the cache.
+  Future<({M model, MasterDataSource source})> _fetch<M>(
+      MasterDataKind kind,
+      bool forceRefresh,
+      M Function(Map<String, dynamic>) fromJson,
+      Map<String, dynamic> Function(M) toJson,
+      Future<M> Function() request,
+      ) async {
+    final key = _keys[kind]!;
     if (!forceRefresh) {
-      final cached = _cache.read<GroupModel>(
-        _groupsKey,
-        CacheSensitivity.standard,
-        GroupModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
+      final cached = _cache.read<M>(key, CacheSensitivity.standard, fromJson);
+      if (cached != null) return (model: cached, source: MasterDataSource.cache);
     }
-    final fresh = await _repository.getGroups();
-    await _cache.write<GroupModel>(
-      _groupsKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.resultData, fromCache: false);
+    final fresh = await request();
+    await _cache.write<M>(key, fresh, CachePolicy.standard(ttl: _ttl), toJson);
+    return (model: fresh, source: MasterDataSource.api);
   }
 
-  Future<({CategoryResultData data, bool fromCache})> _loadCategories({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<CategoryModel>(
-        _categoriesKey,
-        CacheSensitivity.standard,
-        CategoryModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
+  /// Console summary: which sets arrived, from where, how many rows, and
+  /// which failed or came back empty.
+  void _report(List<_KindResult> results) {
+    String describe(_KindResult r) {
+      final error = r.error;
+      if (error != null) return 'FAILED  $error';
+      final source = r.source?.name.toUpperCase() ?? '';
+      return r.count == 0 ? 'EMPTY   ($source)' : '${r.count}  ($source)';
     }
-    final fresh = await _repository.getCategories();
-    await _cache.write<CategoryModel>(
-      _categoriesKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.resultData, fromCache: false);
-  }
 
-  Future<({List<SubcategoryItem> data, bool fromCache})> _loadSubcategories({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<SubcategoryModel>(
-        _subcategoriesKey,
-        CacheSensitivity.standard,
-        SubcategoryModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
-    }
-    final fresh = await _repository.getSubcategories();
-    await _cache.write<SubcategoryModel>(
-      _subcategoriesKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
+    final lines = [
+      for (final r in results) '${r.kind.name.padRight(16)}: ${describe(r)}',
+    ];
+    AppLogger.masterDataReport(
+      lines.join('\n'),
+      complete: state.isComplete && !state.hasFailures,
     );
-    return (data: fresh.resultData, fromCache: false);
   }
-
-  Future<({List<BrandItem> data, bool fromCache})> _loadBrands({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<BrandModel>(
-        _brandsKey,
-        CacheSensitivity.standard,
-        BrandModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
-    }
-    final fresh = await _repository.getBrands();
-    await _cache.write<BrandModel>(
-      _brandsKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.resultData, fromCache: false);
-  }
-
-  Future<({List<ps.ResultDatum> data, bool fromCache})> _loadPaymentSystems({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<ps.PaymentSystemModel>(
-        _paymentSystemsKey,
-        CacheSensitivity.standard,
-        ps.PaymentSystemModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
-    }
-    final fresh = await _repository.getPaymentSystems();
-    await _cache.write<ps.PaymentSystemModel>(
-      _paymentSystemsKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.resultData, fromCache: false);
-  }
-
-  Future<({List<pa.ResultDatum> data, bool fromCache})> _loadPaymentAccounts({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<pa.PaymentAccountsModel>(
-        _paymentAccountsKey,
-        CacheSensitivity.standard,
-        pa.PaymentAccountsModel.fromJson,
-      );
-      if (cached != null) return (data: cached.resultData, fromCache: true);
-    }
-    final fresh = await _repository.getPaymentAccounts();
-    await _cache.write<pa.PaymentAccountsModel>(
-      _paymentAccountsKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.resultData, fromCache: false);
-  }
-
-  Future<({List<HeadDatum> data, bool fromCache})> _loadAccountHeads({
-    required bool forceRefresh,
-  }) async {
-    if (!forceRefresh) {
-      final cached = _cache.read<HeadModel>(
-        _accountHeadsKey,
-        CacheSensitivity.standard,
-        HeadModel.fromJson,
-      );
-      if (cached != null) return (data: cached.headData, fromCache: true);
-    }
-    final fresh = await _repository.getAccountHead();
-    await _cache.write<HeadModel>(
-      _accountHeadsKey,
-      fresh,
-      CachePolicy.standard(ttl: _ttl),
-          (m) => m.toJson(),
-    );
-    return (data: fresh.headData, fromCache: false);
-  }
-
 }

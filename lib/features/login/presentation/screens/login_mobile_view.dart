@@ -10,6 +10,7 @@ import '../../../../core/widgets/utility/custom_alert_dialog.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../routes/route_names.dart';
 import '../controllers/login_controller.dart';
+import '../widgets/login_client_brand.dart';
 import '../widgets/login_company_footer.dart';
 import '../widgets/login_form.dart';
 import '../widgets/login_header.dart';
@@ -53,6 +54,10 @@ class LoginMobileView extends ConsumerWidget {
       child: Column(
         children: [
           const CustomAppBar(title: AppStrings.signIn, showBack: false),
+          const SizedBox(height: AppSizes.lg),
+
+          LoginClientBrand(name: '', logoUrl: client!.logo),
+
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(AppSizes.lg),

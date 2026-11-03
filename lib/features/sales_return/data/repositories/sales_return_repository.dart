@@ -16,7 +16,6 @@ class SalesReturnRepository {
   Future<SalesReturnModel> getSalesReturns({
     required int start,
     required int length,
-    required int branchId,
     String? search,
     String? dateRange,
   }) async {
@@ -25,7 +24,6 @@ class SalesReturnRepository {
       queryParameters: {
         'start': start,
         'length': length,
-        'branchId': branchId,
         if (search != null && search.isNotEmpty) 'search[value]': search,
         'dateRange': ?dateRange,
       },

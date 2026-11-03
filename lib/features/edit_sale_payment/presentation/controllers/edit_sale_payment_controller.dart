@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/session/auth_session_controller.dart';
-import '../../../../core/session/session_profile.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
@@ -37,8 +36,6 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
 
   final String billNo;
 
-  /// Retail sales — the Invoices list and detail endpoints use the same.
-  static const String _salesType = '1';
   static const String _deliveryCharge = '0';
 
   bool _prefillDone = false;
@@ -219,15 +216,14 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
   // ───────────────────────────────────────────────
   Future<bool> updateSale() async {
     if (!state.canSubmit) return false;
-    final profile = ref.read(sessionProfileProvider);
-    if (profile == null) {
+    if (ref.read(apiParamsControllerProvider) == null) {
       state = state.copyWith(errorMessage: AppStrings.editSaleNotSignedIn);
       return false;
     }
 
     state = state.copyWith(isUpdating: true, clearError: true);
     try {
-      final payload = _buildPayload(profile);
+      final payload = _buildPayload();
       final result = await _repository.updateSale(billNo, payload);
       if (!ref.mounted) return true;
       state = state.copyWith(
@@ -248,7 +244,7 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     }
   }
 
-  Map<String, dynamic> _buildPayload(SessionProfile profile) {
+  Map<String, dynamic> _buildPayload() {
     final CartState cart = ref.read(editSaleCartControllerProvider(billNo)).cart;
     final items = cart.items;
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
@@ -256,11 +252,9 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     final cashReturn = state.cashReturn;
 
     return {
-      'sales_type': _salesType,
-      'branch_id': '${profile.branchId}',
+      // sales_type / branch_id / employee_id: set by EditSalePaymentRepository.
       if (cart.selectedCustomer != null)
         'customer_id': cart.selectedCustomer!.customerNo,
-      'employee_id': '${profile.employeeId}',
       'total_payable_amount': _money(state.payableAmount),
       'given_amount': _money(state.netCollected),
       'total_quantity': items.fold<int>(0, (sum, l) => sum + l.quantity).toString(),

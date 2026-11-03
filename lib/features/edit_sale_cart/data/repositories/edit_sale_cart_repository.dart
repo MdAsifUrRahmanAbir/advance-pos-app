@@ -28,16 +28,14 @@ class EditSaleCartRepository {
   }
 
   /// Product search for the "add product" bar and the barcode scanner.
-  /// Same `product_stock` endpoint New Sale uses, but with the signed-in
-  /// user's branch instead of a hardcoded one.
+  /// Same `product_stock` endpoint New Sale uses (branch from ApiEndpoints).
   Future<StocksModel> searchProducts({
-    required int branchId,
     required String search,
     int start = 0,
     int length = 20,
   }) async {
     final response = await _apiClient.get(
-      ApiEndpoints.stocks(branchId: branchId),
+      ApiEndpoints.stocks,
       queryParameters: {
         'start': start,
         'length': length,

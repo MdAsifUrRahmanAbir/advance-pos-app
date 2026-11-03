@@ -29,7 +29,8 @@ class ExpenseFormState {
   /// Internal id of the expense being edited (from the loaded detail);
   /// null when adding or before the detail has loaded.
   final int? expenseId;
-  final int branchId;
+  /// The edited record's branch; null on add (repository uses the cached one).
+  final int? branchId;
   final List<ExpenseFormLine> lines;
   final int? draftHeadId;
 
@@ -43,7 +44,7 @@ class ExpenseFormState {
     this.errorMessage,
     this.entryError,
     this.expenseId,
-    required this.branchId,
+    this.branchId,
     this.lines = const [],
     this.draftHeadId,
     this.draftPaymentAccId,

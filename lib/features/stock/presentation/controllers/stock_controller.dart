@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/models/stocks_model.dart';
 import '../../data/repositories/stock_repository.dart';
@@ -134,7 +135,7 @@ class StockController extends Notifier<StockState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.stocks(branchId: 2),
+          endpoint: ApiEndpoints.stocksPath,
         ),
       );
     }
@@ -213,7 +214,7 @@ class StockController extends Notifier<StockState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.stocks(branchId: 2),
+          endpoint: ApiEndpoints.stocksPath,
         ),
       );
       return false;
@@ -221,7 +222,8 @@ class StockController extends Notifier<StockState> {
   }
 
   List<StockItem> _mapToStockItems(StocksModel stocks) {
-    const int branchId = 2; // matches ApiEndpoints.stocks(branchId: 2)
+    // Same branch the list was requested for.
+    final branchId = ref.read(apiParamsProvider).branchId;
 
     return stocks.resultData.map((result) {
       final product = result.product.product;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/session/session_profile.dart';
 import '../../../../core/utils/error_mapper.dart';
@@ -9,10 +10,6 @@ import '../../data/repositories/login_repository.dart';
 import '../states/login_state.dart';
 
 class LoginController extends Notifier<LoginState> {
-  /// FLAG: login returns `emp_id: null` for users without an employee
-  /// record; 0 is sent as employee_id until the backend defines this.
-  static const int _unknownEmployeeId = 0;
-
   /// FLAG: login response has no seller type yet.
   static const String _unknownSellerType = '';
 
@@ -80,10 +77,18 @@ class LoginController extends Notifier<LoginState> {
       }
 
       final config = data.userConfig;
+
+      // Cache branch_id / employee_id / sales_type for every API call.
+      // Done before the session turns authenticated so the params exist
+      // as soon as any screen can make a request.
+      await ref.read(apiParamsControllerProvider.notifier).cacheFromLogin(
+        branchId: config.branchId,
+        employeeId: config.empId,
+      );
+      if (!ref.mounted) return false;
+
       await ref.read(authSessionControllerProvider.notifier).onLoginSuccess(
         profile: SessionProfile(
-          branchId: config.branchId,
-          employeeId: config.empId ?? _unknownEmployeeId,
           sellerType: _unknownSellerType,
           userName: config.fullName,
           userId: config.userId,

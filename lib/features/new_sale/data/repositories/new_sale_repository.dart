@@ -14,7 +14,7 @@ class NewSaleRepository {
   /// New Sale now sources its product list from the same
   /// product_stock endpoint Stock uses (`ApiEndpoints.stocks`) — same
   /// underlying catalog, so a product picked in New Sale reflects
-  /// current stock levels for branch 2.
+  /// current stock levels for the signed-in user's branch.
   Future<StocksModel> getProducts({
     required int start,
     required int length,
@@ -22,7 +22,7 @@ class NewSaleRepository {
     int? categoryId,
   }) async {
     final response = await _apiClient.get(
-      ApiEndpoints.stocks(branchId: 2),
+      ApiEndpoints.stocks,
       queryParameters: {
         'start': start,
         'length': length,

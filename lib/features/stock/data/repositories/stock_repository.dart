@@ -22,7 +22,7 @@ class StockRepository {
     int? brandId,
   }) async {
     final response = await _apiClient.get(
-      ApiEndpoints.stocks(branchId: 2),
+      ApiEndpoints.stocks,
       queryParameters: {
         'start': start,
         'length': length,

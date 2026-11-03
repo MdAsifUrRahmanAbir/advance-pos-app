@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../network/api_client.dart';
 import '../storage/secure_storage_service.dart';
 import '../storage/local_cache_service.dart';
+import 'api_params.dart';
 import 'auth_session_state.dart';
 import 'session_profile.dart';
 
@@ -21,16 +22,20 @@ class AuthSessionController extends Notifier<AuthSessionState> {
   @override
   AuthSessionState build() => const AuthSessionState();
 
-  /// Call once at startup. A missing or unreadable profile means signed
-  /// out (it is the only place the branch and user come from).
+  /// Call once at startup. Restores the profile and the cached request
+  /// params (branch, employee, sales type). Either one missing means
+  /// signed out: no API call can be made without the params.
   Future<void> restoreSession() async {
     final profile = SessionProfile.tryDecode(
       await _secureStorage.readSessionProfile(),
     );
+    final params =
+        await ref.read(apiParamsControllerProvider.notifier).restore();
 
-    if (profile == null) {
+    if (profile == null || params == null) {
       await _secureStorage.clearAuthTokens();
       await _secureStorage.clearSessionProfile();
+      await ref.read(apiParamsControllerProvider.notifier).clear();
       _apiClient.setAuthToken(null);
       state = state.copyWith(status: AuthStatus.unauthenticated);
       return;
@@ -70,8 +75,8 @@ class AuthSessionController extends Notifier<AuthSessionState> {
     );
   }
 
-  /// Persists a change to the signed-in user's profile (e.g. a future
-  /// branch switch). No-op when signed out.
+  /// Persists a change to the signed-in user's profile. No-op when
+  /// signed out. (A branch switch goes through `apiParamsControllerProvider`.)
   Future<void> updateProfile(SessionProfile profile) async {
     if (!state.isLoggedIn) return;
     await _secureStorage.saveSessionProfile(profile.encode());
@@ -81,6 +86,7 @@ class AuthSessionController extends Notifier<AuthSessionState> {
   Future<void> logout() async {
     await _secureStorage.clearAuthTokens();
     await _secureStorage.clearSessionProfile();
+    await ref.read(apiParamsControllerProvider.notifier).clear();
     _apiClient.setAuthToken(null);
     await ref.read(localCacheServiceProvider).clearOnLogout();
     state = const AuthSessionState(status: AuthStatus.unauthenticated);
@@ -97,13 +103,4 @@ final sessionProfileProvider = Provider<SessionProfile?>(
       (ref) => ref.watch(authSessionControllerProvider.select((s) => s.profile)),
 );
 
-/// Branch of the signed-in user. Throws when there is no session so a
-/// missing login fails loudly instead of silently using a wrong branch.
-/// Read it with `ref.read(...)` in controllers, never `ref.watch`.
-final sessionBranchIdProvider = Provider<int>((ref) {
-  final profile = ref.watch(sessionProfileProvider);
-  if (profile == null) {
-    throw StateError('No session profile: the user is not signed in.');
-  }
-  return profile.branchId;
-});
+// Branch / employee / sales type: use `apiParamsProvider` in api_params.dart.

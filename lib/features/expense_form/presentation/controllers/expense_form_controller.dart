@@ -20,7 +20,6 @@ class ExpenseFormController extends Notifier<ExpenseFormState> {
 
   final String? expenseNo;
 
-  static const int _defaultBranchId = 2; // TODO: take from session / branch picker
   // TODO: confirm with backend that account 1 is the main (Cash) account.
   static const int _mainPaymentAccId = 1;
 
@@ -60,10 +59,9 @@ class ExpenseFormController extends Notifier<ExpenseFormState> {
       globalNarrationController.dispose();
     });
     if (isEdit) Future.microtask(loadDetail);
-    return ExpenseFormState(
-      isLoadingDetail: isEdit,
-      branchId: _defaultBranchId,
-    );
+    // branchId stays null on add: the repository sends the cached branch.
+    // Edit fills it from the loaded record.
+    return ExpenseFormState(isLoadingDetail: isEdit);
   }
 
   // ───────────────────────────────────────────────

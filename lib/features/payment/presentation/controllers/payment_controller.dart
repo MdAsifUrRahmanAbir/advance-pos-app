@@ -133,11 +133,6 @@ class PaymentController extends Notifier<PaymentState> {
     );
   }
 
-  // TODO: replace these statics once branch / employee come from the
-  // logged-in session instead of being fixed.
-  static const _salesType = '1';
-  static const _branchId = '2';
-  static const _employeeId = '2';
   static const _deliveryCharge = '0';
 
   PaymentRepository get _repository => ref.read(paymentRepositoryProvider);
@@ -181,11 +176,9 @@ class PaymentController extends Notifier<PaymentState> {
     final cashReturn = state.cashReturn;
 
     return {
-      'sales_type': _salesType,
-      'branch_id': _branchId,
+      // sales_type / branch_id / employee_id: set by PaymentRepository.
       if (cart.selectedCustomer != null)
         'customer_id': cart.selectedCustomer!.customerNo,
-      'employee_id': _employeeId,
       'total_payable_amount': payable,
       'given_amount': payable,
       'total_quantity':

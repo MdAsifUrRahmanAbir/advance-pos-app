@@ -14,12 +14,12 @@ class ExpenseRepository {
   final ApiClient _apiClient;
   ExpenseRepository(this._apiClient);
 
-  /// GET /daily_expense?start=&length=&branch_id=&search=&from_date=&to_date=
+  /// GET /daily_expense?branch_id=&start=&length=&search=&dateRange=
+  /// (branch_id comes from ApiEndpoints.expense).
   /// Dates are 'YYYY-MM-DD'. Optional params are omitted when empty.
   Future<ExpenseModel> getExpenses({
     required int start,
     required int length,
-    required int branchId,
     String? search,
     String? fromDate,
     String? toDate,
@@ -29,7 +29,6 @@ class ExpenseRepository {
       queryParameters: {
         'start': start,
         'length': length,
-        'branch_id': branchId,
         if (search != null && search.isNotEmpty) 'search': search,
         if (fromDate != null && toDate != null)
           'dateRange': "$fromDate to $toDate",

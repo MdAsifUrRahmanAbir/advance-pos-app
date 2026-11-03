@@ -18,7 +18,6 @@ class SalesReplacementRepository {
   Future<SalesReplacementModel> getSalesReplacements({
     required int start,
     required int length,
-    required int branchId,
     String? search,
     String? dateRange,
   }) async {
@@ -27,7 +26,6 @@ class SalesReplacementRepository {
       queryParameters: {
         'start': start,
         'length': length,
-        'branchId': branchId,
         if (search != null && search.isNotEmpty) 'search[value]': search,
         'dateRange': ?dateRange,
       },

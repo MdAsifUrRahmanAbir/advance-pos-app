@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/session/auth_session_controller.dart';
-import '../../../../core/session/session_profile.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/utils/currency_formatter.dart' show parseAmount;
 import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
@@ -44,9 +43,6 @@ class SalesReplacementReplaceController
     extends Notifier<SalesReplacementReplaceState> {
   static const Duration _debounceDelay = Duration(milliseconds: 400);
   static const int _productPageLength = 20;
-
-  /// Retail sales — same value the other sale endpoints send.
-  static const String _salesType = '1';
 
   late TextEditingController productSearchController;
   late TextEditingController reasonController;
@@ -130,9 +126,8 @@ class SalesReplacementReplaceController
     final seq = ++_productSeq;
     state = state.copyWith(isProductSearching: true, clearProductSearchError: true);
     try {
-      final branchId = ref.read(sessionBranchIdProvider);
+      final branchId = ref.read(apiParamsProvider).branchId;
       final result = await _repository.searchProducts(
-        branchId: branchId,
         search: query,
         length: _productPageLength,
       );
@@ -167,9 +162,8 @@ class SalesReplacementReplaceController
   /// null when the lookup itself failed.
   Future<ScanResult?> handleScannedCode(String code) async {
     try {
-      final branchId = ref.read(sessionBranchIdProvider);
+      final branchId = ref.read(apiParamsProvider).branchId;
       final result = await _repository.searchProducts(
-        branchId: branchId,
         search: code,
         length: 10,
       );
@@ -374,8 +368,7 @@ class SalesReplacementReplaceController
   // ───────────────────────────────────────────────
   Future<bool> submit() async {
     if (!state.canSubmit) return false;
-    final profile = ref.read(sessionProfileProvider);
-    if (profile == null) {
+    if (ref.read(apiParamsControllerProvider) == null) {
       state = state.copyWith(errorMessage: AppStrings.editSaleNotSignedIn);
       return false;
     }
@@ -387,7 +380,7 @@ class SalesReplacementReplaceController
     state = state.copyWith(isSubmitting: true, clearError: true);
     try {
       final created = await _repository.createSalesReplacement(
-        _buildPayload(profile, add, invoice, billNo),
+        _buildPayload(add, invoice, billNo),
       );
       if (!ref.mounted) return true;
       state = state.copyWith(
@@ -497,7 +490,6 @@ class SalesReplacementReplaceController
 
   /// Field names follow the raw request sample of `POST /s_return/add`.
   Map<String, dynamic> _buildPayload(
-      SessionProfile profile,
       SalesReplacementAddState add,
       InvoiceDetailModel invoice,
       String billNo,
@@ -509,9 +501,6 @@ class SalesReplacementReplaceController
     final customerNo = invoice.resultData.customerNo;
 
     return {
-      'sales_type': _salesType,
-      'branch_id': '${profile.branchId}',
-      'employee_id': '${profile.employeeId}',
       if (customerNo.isNotEmpty) 'customer_id': customerNo,
       'sales_bill_no': billNo,
       // Returned products

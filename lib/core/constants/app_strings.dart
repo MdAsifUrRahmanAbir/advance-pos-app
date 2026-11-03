@@ -431,7 +431,8 @@ class AppStrings {
   static String stockPcsLabel(int stock) => '$stock pcs';
   static String productAddedMessage(String name) => 'Added: $name';
   static String productOutOfStockMessage(String name) => 'Out of stock: $name';
-  static String productNotFoundMessage(String code) => 'No product found for code $code';
+  static String productNotFoundMessage(String code) =>
+      'No product found for code $code';
 
   // ---- Cart: customer picker ----
   static const String selectCustomerTitle = 'Select Customer';
@@ -452,7 +453,8 @@ class AppStrings {
   static const String customerEmailHint = 'e.g. name@example.com';
   static const String customerAddressLabel = 'Address (optional)';
   static const String customerAddressHint = 'e.g. House 12, Road 4, Dhaka';
-  static String customerAddedSuccessMessage(String name) => 'Customer "$name" added successfully';
+  static String customerAddedSuccessMessage(String name) =>
+      'Customer "$name" added successfully';
 
   // ---- Customers screen ----
   static const String customersTitle = 'Customers';
@@ -461,11 +463,15 @@ class AppStrings {
   static const String customerBranchLabel = 'Branch';
 
   // ---- Payment: dynamic payment methods (payment_system/payment_account) ----
-  static const String selectPaymentMethodsHint = 'Select up to 2 payment methods';
+  static const String selectPaymentMethodsHint =
+      'Select up to 2 payment methods';
   static const String selectAccountLabel = 'Select account';
-  static const String noAccountsAvailableForSystem = 'No accounts configured for this method';
-  static const String selectPaymentMethodToContinue = 'Select a payment method to continue';
-  static const String paymentMethodsLoadError = 'Could not load payment methods.';
+  static const String noAccountsAvailableForSystem =
+      'No accounts configured for this method';
+  static const String selectPaymentMethodToContinue =
+      'Select a payment method to continue';
+  static const String paymentMethodsLoadError =
+      'Could not load payment methods.';
   static const String paymentAmountLabel = 'AMOUNT';
 
   // ---- Cart: manual discount / VAT ----
@@ -477,7 +483,8 @@ class AppStrings {
 
   static const String remainingAmountLabel = 'Remaining Amount';
   static const String returnToCustomerLabel = 'Return to Customer';
-  static const String returnFromCashNote = 'Return this amount from the cash received';
+  static const String returnFromCashNote =
+      'Return this amount from the cash received';
 
   // ---- Cart: server discounts ----
   static const String discountTypeChoiceLabel = 'DISCOUNT TYPE';
@@ -521,9 +528,11 @@ class AppStrings {
   static const String dashCharges = 'Charges';
   static const String dashReceived = 'Received';
   static const String dashHighest = 'Highest';
-  static String dashPeakValue(String label, String amount) => '$label · $amount';
+  static String dashPeakValue(String label, String amount) =>
+      '$label · $amount';
   static String dashQtySold(int qty) => '$qty sold';
-  static String dashReturnMeta(int orders, int items) => '$orders orders · $items items';
+  static String dashReturnMeta(int orders, int items) =>
+      '$orders orders · $items items';
 
   // ── Expense ──
   static const String expDetailTitle = 'Expense Details';
@@ -531,7 +540,8 @@ class AppStrings {
   static const String expAllDates = 'All dates';
   static const String expDateCustomRange = 'Custom Range';
   static const String expEmptyTitle = 'No expenses found';
-  static const String expEmptySubtitle = 'Try a different search or date range.';
+  static const String expEmptySubtitle =
+      'Try a different search or date range.';
   static const String expLoadFailed = "Couldn't load expenses";
   static const String expDetailLoadFailed = "Couldn't load expense details";
   static const String expLoadMoreFailed = "Couldn't load more";
@@ -543,7 +553,8 @@ class AppStrings {
   static const String expEntryDateTime = 'Entry Date & Time';
   static const String expGlobalNarration = 'Global Narration';
   static const String expExpenseHeads = 'Expense Heads';
-  static String expRecordsCount(int shown, int total) => 'Showing $shown of $total';
+  static String expRecordsCount(int shown, int total) =>
+      'Showing $shown of $total';
   static String expHeadsCount(int n) => n == 1 ? '1 head' : '$n heads';
   static String expPaymentAccountFallback(int id) => 'Account #$id';
   static String expShareSubject(String no) => 'Expense $no';
@@ -567,7 +578,8 @@ class AppStrings {
   static const String expFormAmountLabel = 'Amount *';
   static const String expFormAddLine = 'Add line';
   static const String expFormRemoveLine = 'Remove line';
-  static const String expFormLinesEmpty = 'No lines yet. Fill in the row above and tap Add line.';
+  static const String expFormLinesEmpty =
+      'No lines yet. Fill in the row above and tap Add line.';
   static const String expFormGlobalNarration = 'Global Narration Details';
   static const String expFormGlobalNarrationHint = 'Enter global narration';
   static const String expFormSave = 'Save';
@@ -579,12 +591,14 @@ class AppStrings {
   static const String expFormCreated = 'Expense created';
   static const String expFormUpdated = 'Expense updated';
   static const String expFormSaveFailed = "Couldn't save expense";
-  static const String expFormMasterMissing = "Heads and payment accounts aren't loaded yet";
+  static const String expFormMasterMissing =
+      "Heads and payment accounts aren't loaded yet";
   static String expFormLinesTitle(int count) => 'Expense lines ($count)';
 
   // ---- Sales return (append only) ----
   static const String srSearchHint = 'Search sales returns';
-  static const String srEmptyMessage = 'No sales returns found for these filters.';
+  static const String srEmptyMessage =
+      'No sales returns found for these filters.';
   static const String srStatusActive = 'Active';
   static const String srStatusInactive = 'Inactive';
   static const String srSalesBillPrefix = 'Sales bill: ';
@@ -628,23 +642,29 @@ class AppStrings {
   // ───────────────────────────────────────────────
   static const String editSaleTitle = 'Edit Sale';
   static const String editSalePaymentTitle = 'Update Payment';
-  static const String editSaleLoadFailed = "Couldn't load this invoice for editing";
+  static const String editSaleLoadFailed =
+      "Couldn't load this invoice for editing";
   static const String editSaleEditingLabel = 'EDITING INVOICE';
   static const String editSaleOriginalTotalLabel = 'Original total';
   static const String editSaleWalkInCustomer = 'Walk-in Customer';
   static const String editSaleNoItemsTitle = 'No products in this sale';
-  static const String editSaleNoItemsMessage = 'Search or scan a product to add it.';
+  static const String editSaleNoItemsMessage =
+      'Search or scan a product to add it.';
   static const String editSaleSearchResultsTitle = 'Search results';
   static const String editSaleNoProductsFound = 'No matching products';
   static const String editSaleSearchFailed = "Couldn't search products";
   static const String editSaleCloseResults = 'Close';
   static String editSaleAvailableLabel(int count) => '$count available';
-  static String editSaleNoMoreStock(String name) => 'No more stock available for $name';
+  static String editSaleNoMoreStock(String name) =>
+      'No more stock available for $name';
   static const String editSaleProceedAction = 'Continue to Payment';
-  static const String editSaleCartEmptyError = 'Add at least one product before continuing.';
-  static const String editSaleDiscountPendingError = 'Please wait — checking discounts.';
+  static const String editSaleCartEmptyError =
+      'Add at least one product before continuing.';
+  static const String editSaleDiscountPendingError =
+      'Please wait — checking discounts.';
   static const String editSaleDiscardTitle = 'Discard changes?';
-  static const String editSaleDiscardMessage = 'Your changes to this invoice will be lost.';
+  static const String editSaleDiscardMessage =
+      'Your changes to this invoice will be lost.';
   static const String editSaleDiscardConfirm = 'Discard';
   static const String editSaleKeepEditing = 'Keep editing';
   static const String editSaleCustomerNotMatched =
@@ -657,19 +677,23 @@ class AppStrings {
   static String editSaleConfirmMessage(String billNo, String amount) =>
       'Invoice $billNo will be saved with a new total of $amount.';
   static const String editSaleUpdatedTitle = 'Sale Updated';
-  static String editSaleUpdatedSubtitle(String billNo) => 'Invoice $billNo has been updated.';
-  static String editSaleUpdatedMessage(String billNo) => 'Invoice $billNo updated';
+  static String editSaleUpdatedSubtitle(String billNo) =>
+      'Invoice $billNo has been updated.';
+  static String editSaleUpdatedMessage(String billNo) =>
+      'Invoice $billNo updated';
   static const String editSaleUpdateFailed = "Couldn't update the sale";
-  static const String editSaleNotSignedIn = 'Your session has expired. Please sign in again.';
-
+  static const String editSaleNotSignedIn =
+      'Your session has expired. Please sign in again.';
 
   // ---- Sales replacement (append only) ----
   static const String repTitle = 'Sales Replacement';
   static const String repSubtitle = 'Track replaced items and exchange history';
   static const String repSearchHint = 'Search sales replacements';
-  static const String repEmptyMessage = 'No sales replacements found for these filters.';
+  static const String repEmptyMessage =
+      'No sales replacements found for these filters.';
   static const String repLoadFailed = "Couldn't load sales replacements";
-  static const String repEditComingSoon = 'Sales replacement editing is coming soon';
+  static const String repEditComingSoon =
+      'Sales replacement editing is coming soon';
   static const String repDeleteTitle = 'Delete sales replacement';
   static String repDeleteMessage(String no) =>
       'Sales replacement $no will be permanently deleted. This cannot be undone.';
@@ -692,7 +716,6 @@ class AppStrings {
   static const String repdPayableAfterReturnLabel = 'Payable After Return';
   static const String repdGivenAmountLabel = 'Given Amount';
 
-
   // ---- Sales replacement detail: sections (append only) ----
   static const String repdSalesInfoSectionTitle = 'Sales Information';
   static const String repdReturnSectionTitle = 'Return Information';
@@ -709,10 +732,12 @@ class AppStrings {
   static const String repaSelectBillTitle = 'Select Sales Bill';
   static const String repaSearchBillHint = 'Search sales bill...';
   static const String repaNoBillsTitle = 'No sales bills found';
-  static const String repaPickBillHint = 'Choose a sales bill to see its products.';
+  static const String repaPickBillHint =
+      'Choose a sales bill to see its products.';
   static const String repaLoadInvoiceFailed = "Couldn't load this sale";
   static const String repaSaleLinesTitle = 'Products in this sale';
-  static const String repaSelectReturnHint = 'Select the products being returned';
+  static const String repaSelectReturnHint =
+      'Select the products being returned';
   static String repaSoldQtyLabel(int qty) => 'Sold: $qty';
   static String repaReturnSummaryLabel(int items, String amount) =>
       '$items returned · Credit $amount';
@@ -722,7 +747,8 @@ class AppStrings {
   static const String repaNetPayableLabel = 'Net Payable';
   static const String repaNewLessThanReturn =
       'The new items must cost at least as much as the returned ones.';
-  static const String repaNoPaymentNeeded = 'No payment needed — the exchange is even.';
+  static const String repaNoPaymentNeeded =
+      'No payment needed — the exchange is even.';
   static const String repaReturnReasonLabel = 'Return Reason';
   static const String repaReturnReasonHint = 'Enter description';
   static const String repaSubmitAction = 'Create Replacement';
@@ -742,7 +768,6 @@ class AppStrings {
   static const String repNotAvailable = 'N/A';
   static const String repSendAction = 'Send';
   static const String repBillPreviewAction = 'Bill Preview';
-
 
   // ---- Invoices: Bill Preview (append only) ----
   static const String billPreviewTitle = 'Bill Preview';
@@ -790,13 +815,15 @@ class AppStrings {
   static const String billSystemBy = 'System By: TARA TECH LTD. | AdvancePOS';
 
   // ---- Invoices: Bill Preview terms (append only) ----
-  static String billReturnWithinDays(String days) => 'Exchange within $days day(s)';
+  static String billReturnWithinDays(String days) =>
+      'Exchange within $days day(s)';
 
   // ---- Onboarding: company verification (append only) ----
   static const String companyCodeLabel = 'Company Code';
   static const String companyCodeHint = 'Enter your company code';
   static const String companyCodeRequired = 'Company code is required';
-  static const String companyCodeInvalid = 'Company code not found. Please check and try again.';
+  static const String companyCodeInvalid =
+      'Company code not found. Please check and try again.';
   static const String companyVerifyAction = 'Verify Company';
   static const String companyChangeAction = 'Change company';
 
@@ -805,17 +832,22 @@ class AppStrings {
 
   // ---- Login: connected company footer (append only) ----
   static const String companyConnectedLabel = 'Connected company';
-  static String companyNameWithCode(String name, String code) => '$name · Code $code';
+  static String companyNameWithCode(String name, String code) =>
+      '$name · Code $code';
   static const String companySwitchAction = 'Switch';
   static const String companySwitchTitle = 'Switch company?';
   static String companySwitchMessage(String name) =>
       "You'll need to enter a company code again. "
-          "Data saved for ${name.isEmpty ? 'this company' : name} on this device will be cleared.";
+      "Data saved for ${name.isEmpty ? 'this company' : name} on this device will be cleared.";
 
   // ---- Login: username sign-in (append only) ----
   static const String loginUsernameLabel = 'Username';
   static const String loginUsernameHint = 'Enter your username';
   static const String loginUsernameRequired = 'Username is required';
-  static const String loginFailed = 'Sign in failed. Please check your username and password.';
+  static const String loginFailed =
+      'Sign in failed. Please check your username and password.';
 
+  // ---- Master data: load status (append only) ----
+  static const String masterDataIncomplete =
+      "Some setup data didn't load. Lists and payment options may be incomplete.";
 }

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/session/api_params.dart';
 import '../models/client_info_model.dart';
 
 final clientRepositoryProvider = Provider<ClientRepository>((ref) {
@@ -20,7 +21,7 @@ class ClientRepository {
       ApiEndpoints.clientInfo,
       queryParameters: {
         'comp_code': compCode,
-        'app': ApiEndpoints.clientApp,
+        'app': ApiParamDefaults.clientApp,
         'system_token': "2nMDQU2TodIJH9Y8oycSUKNDVcHh5KZKCbLAmamU",
       },
     );

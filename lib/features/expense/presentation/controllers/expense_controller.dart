@@ -15,7 +15,6 @@ NotifierProvider.autoDispose<ExpenseController, ExpenseState>(
 
 class ExpenseController extends Notifier<ExpenseState> {
   static const int _pageSize = 20;
-  static const int _branchId = 2; // TODO: take from session / branch picker
   static const double _loadMoreThreshold = 240;
   static const Duration _searchDebounce = Duration(milliseconds: 400);
 
@@ -130,7 +129,6 @@ class ExpenseController extends Notifier<ExpenseState> {
       final result = await _repository.getExpenses(
         start: reset ? 0 : state.expenses.length,
         length: _pageSize,
-        branchId: _branchId,
         search: state.searchQuery,
         fromDate: state.fromDate == null
             ? null

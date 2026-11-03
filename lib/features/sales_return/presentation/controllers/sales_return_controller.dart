@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
-import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/repositories/sales_return_repository.dart';
 import '../states/sales_return_format.dart';
@@ -136,7 +135,6 @@ class SalesReturnController extends Notifier<SalesReturnState> {
       final result = await _repository.getSalesReturns(
         start: reset ? 0 : state.items.length,
         length: _pageSize,
-        branchId: ref.read(sessionBranchIdProvider),
         search: state.searchQuery,
         dateRange: SalesReturnFormat.dateRange(state.fromDate, state.toDate),
       );

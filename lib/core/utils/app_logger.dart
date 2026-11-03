@@ -165,5 +165,14 @@ class AppLogger {
           'Brands       : $brands  (${source(brandsFromCache)})',
     );
   }
+
+  /// One line per master-data set (count + source, EMPTY or FAILED).
+  static void masterDataReport(String body, {required bool complete}) {
+    _box(
+      complete ? '📦' : '⚠️',
+      complete ? 'MASTER DATA: ALL LOADED' : 'MASTER DATA: INCOMPLETE',
+      body,
+    );
+  }
 }
 

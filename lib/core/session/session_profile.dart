@@ -1,11 +1,10 @@
 import 'dart:convert';
 
-/// Who is signed in and where they work. Saved with the session and
-/// restored at startup. To add a field later, add it here and in
-/// [toJson]/[fromJson]; a new nullable field keeps old sessions valid.
+/// Who is signed in. Saved with the session and restored at startup.
+/// Request params (branch, employee, sales type) live in `api_params.dart`,
+/// not here. To add a field later, add it here and in [toJson]/[fromJson];
+/// a new nullable field keeps old sessions valid.
 class SessionProfile {
-  final int branchId;
-  final int employeeId;
   final String sellerType;
   final String userName;
 
@@ -17,8 +16,6 @@ class SessionProfile {
   final int? historyId;
 
   const SessionProfile({
-    required this.branchId,
-    required this.employeeId,
     required this.sellerType,
     required this.userName,
     this.userId,
@@ -28,8 +25,6 @@ class SessionProfile {
   });
 
   SessionProfile copyWith({
-    int? branchId,
-    int? employeeId,
     String? sellerType,
     String? userName,
     int? userId,
@@ -38,8 +33,6 @@ class SessionProfile {
     int? historyId,
   }) {
     return SessionProfile(
-      branchId: branchId ?? this.branchId,
-      employeeId: employeeId ?? this.employeeId,
       sellerType: sellerType ?? this.sellerType,
       userName: userName ?? this.userName,
       userId: userId ?? this.userId,
@@ -50,8 +43,6 @@ class SessionProfile {
   }
 
   factory SessionProfile.fromJson(Map<String, dynamic> json) => SessionProfile(
-    branchId: json['branchId'] as int,
-    employeeId: json['employeeId'] as int,
     sellerType: json['sellerType'] as String,
     userName: json['userName'] as String,
     userId: json['userId'] as int?,
@@ -61,8 +52,6 @@ class SessionProfile {
   );
 
   Map<String, dynamic> toJson() => {
-    'branchId': branchId,
-    'employeeId': employeeId,
     'sellerType': sellerType,
     'userName': userName,
     'userId': userId,

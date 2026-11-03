@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../master_data/data/models/common_success_model.dart';
 import '../models/expense_form_detail_model.dart';
 
@@ -25,7 +26,8 @@ class ExpenseFormRepository {
   Future<CommonSuccessModel> saveExpense({
     int? expenseId,
     String? expenseNo,
-    required int branchId,
+    /// Edit: the record's own branch. Add: null -> cached [ApiParams] branch.
+    int? branchId,
     required String expenseDate,
     required int mainPaymentAccId,
     required List<int> headIds,
@@ -39,7 +41,7 @@ class ExpenseFormRepository {
 
     final body = {
       if (isUpdate) 'expense_no': expenseNo,
-      'branch_id': branchId,
+      'branch_id': branchId ?? ApiParams.current.branchId,
       'expense_date': expenseDate,
       'payment_acc_id_0': mainPaymentAccId,
       'head_id_arr': headIds,

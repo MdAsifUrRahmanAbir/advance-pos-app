@@ -23,7 +23,9 @@ class MasterDataRepository {
   }
 
   Future<CategoryModel> getCategories({int topSaleCategoryLimit = 10}) async {
-    final response = await _apiClient.get(ApiEndpoints.categories(topSaleCategoryLimit: topSaleCategoryLimit));
+    final response = await _apiClient.get(
+      ApiEndpoints.categories(topSaleCategoryLimit: topSaleCategoryLimit),
+    );
     return CategoryModel.fromJson(response.data);
   }
 

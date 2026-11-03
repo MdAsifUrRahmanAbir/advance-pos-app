@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:advance_pos_app/core/network/api_client.dart';
-import 'package:advance_pos_app/core/constants/api_endpoints.dart';
+import '../../../../core/constants/api_endpoints.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/session/api_params.dart';
 import '../models/customers_model.dart';
 import '../models/add_customer_model.dart';
 import '../models/get_discount.dart';
@@ -34,21 +35,20 @@ class CartRepository {
   }
 
   /// POST /customer/add — creates a new customer from [AddCustomerSheet].
-  /// `branchId`/`customerType` are static for now per current scope
-  /// (branch 2, type "1" = Retail Sales) — wire these to real selectors
-  /// once multi-branch / type-choice is needed on this form.
+  /// `branch_id` is set here from the cached [ApiParams].
+  /// `customerType` "1" = Retail Sales — wire to a selector once
+  /// type-choice is needed on this form.
   Future<AddCustomerModel> createCustomer({
     required String customerName,
     required String customerMobile,
     String customerEmail = '',
     String address = '',
-    int branchId = 2,
     String customerType = '1',
   }) async {
     final response = await _apiClient.post(
       ApiEndpoints.customerAdd,
       data: {
-        'branch_id': branchId,
+        'branch_id': ApiParams.current.branchId,
         'customer_name': customerName,
         'customer_mobile': customerMobile,
         'customer_email': customerEmail,
@@ -72,12 +72,11 @@ class CartRepository {
     required List<String> productIds,
     required List<int> quantities,
     String? discountType, // 'product' | 'bill' — only when scope is "both"
-    int branchId = 2,
-    int salesType = 1,
     DateTime? salesDate,
   }) async {
     final d = salesDate ?? DateTime.now();
     String two(int n) => n.toString().padLeft(2, '0');
+    final params = ApiParams.current;
 
     final response = await _apiClient.get(
       ApiEndpoints.getDiscount,
@@ -87,9 +86,9 @@ class CartRepository {
         'amount': amounts,
         'Product': [for (final id in productIds) int.tryParse(id) ?? id],
         'Qnt': quantities,
-        'sales_type': salesType,
+        'sales_type': params.salesType,
         'sales_date': '${d.year}-${two(d.month)}-${two(d.day)}',
-        'branch_id': branchId,
+        'branch_id': params.branchId,
         'discountType': ?discountType,
       },
     );

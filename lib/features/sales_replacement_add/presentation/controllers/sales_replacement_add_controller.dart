@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
-import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../customers/data/models/customers_model.dart' as cust;
 import '../../data/models/bills_model.dart' as bill;
@@ -149,7 +148,6 @@ class SalesReplacementAddController extends Notifier<SalesReplacementAddState> {
     );
     try {
       final result = await _repository.getSalesBills(
-        branchId: ref.read(sessionBranchIdProvider),
         customerNo: state.selectedCustomer?.customerNo,
         page: page,
       );

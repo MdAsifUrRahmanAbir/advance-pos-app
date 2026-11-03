@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/network/api_client.dart';
 import '../../../../core/network/api_exception.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../customers/data/models/customers_model.dart';
 import '../../../invoice_detail/data/models/invoice_detail_model.dart';
 import '../../../new_sale/data/models/stocks_model.dart';
@@ -38,7 +39,6 @@ class SalesReplacementAddRepository {
   /// numbers; request the next page while `hasMore` is true.
   /// Cache policy: never.
   Future<BillsModel> getSalesBills({
-    required int branchId,
     String? customerNo,
     int page = 1,
   }) async {
@@ -46,7 +46,6 @@ class SalesReplacementAddRepository {
       ApiEndpoints.salesReplacementBills,
       queryParameters: {
         'context': 'getSalesBills',
-        'branch_id': branchId,
         'page': page,
         if (customerNo != null && customerNo.isNotEmpty) 'customer_no': customerNo,
       },
@@ -64,13 +63,12 @@ class SalesReplacementAddRepository {
   /// GET /product_stock — product search for the replacement items.
   /// Cache policy: never.
   Future<StocksModel> searchProducts({
-    required int branchId,
     required String search,
     int start = 0,
     int length = 20,
   }) async {
     final response = await _apiClient.get(
-      ApiEndpoints.stocks(branchId: branchId),
+      ApiEndpoints.stocks,
       queryParameters: {
         'start': start,
         'length': length,
@@ -81,13 +79,21 @@ class SalesReplacementAddRepository {
   }
 
   /// POST /s_return/add — returns the new replacement's bill number.
+  /// `sales_type`, `branch_id` and `employee_id` are set here from the
+  /// cached [ApiParams].
   /// A 200 response whose `status` isn't "success" is raised as
   /// [ApiException] so it never shows up as a success.
   /// Cache policy: never.
   Future<String> createSalesReplacement(Map<String, dynamic> payload) async {
+    final params = ApiParams.current;
     final response = await _apiClient.post(
       ApiEndpoints.salesReplacementAdd,
-      data: payload,
+      data: {
+        'sales_type': '${params.salesType}',
+        'branch_id': '${params.branchId}',
+        'employee_id': '${params.employeeId}',
+        ...payload,
+      },
     );
     final data = response.data;
     final map = data is Map ? data : const {};

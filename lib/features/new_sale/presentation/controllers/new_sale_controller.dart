@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/api_endpoints.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/session/api_params.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/repositories/new_sale_repository.dart';
@@ -189,7 +190,7 @@ class NewSaleController extends Notifier<NewSaleState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.stocks(branchId: 2),
+          endpoint: ApiEndpoints.stocksPath,
         ),
       );
     }
@@ -229,7 +230,7 @@ class NewSaleController extends Notifier<NewSaleState> {
         technicalDetails: buildTechnicalErrorDetails(
           error,
           stackTrace,
-          endpoint: ApiEndpoints.stocks(branchId: 2),
+          endpoint: ApiEndpoints.stocksPath,
         ),
       );
       return false;
@@ -239,7 +240,7 @@ class NewSaleController extends Notifier<NewSaleState> {
   ProductItem _mapItem(ResultDatum r) {
     final product = r.product.product;
     final stock = r.product.stock;
-    final quantity = resolveBranchStock(stock, 2);
+    final quantity = resolveBranchStock(stock, ref.read(apiParamsProvider).branchId);
 
     return ProductItem(
       id: r.product.id.toString(),

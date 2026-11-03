@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/constants/app_strings.dart';
+import '../../../../core/widgets/utility/custom_snackbar.dart';
 import '../../../../routes/route_names.dart';
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../controllers/main_shell_controller.dart';
 import '../widgets/main_shell_bottom_nav.dart';
 import '../widgets/pos_fab_button.dart';
@@ -13,6 +16,21 @@ class MainShellMobileView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(mainShellControllerProvider);
+
+    // Tell the user when some master data didn't arrive, with a retry that
+    // reloads only the missing / failed sets.
+    ref.listen(masterDataControllerProvider, (previous, next) {
+      final finished = (previous?.isLoading ?? false) && !next.isLoading;
+      if (!finished || !next.hasFailures) return;
+      CustomSnackbar.show(
+        context,
+        AppStrings.masterDataIncomplete,
+        error: true,
+        actionLabel: AppStrings.retry,
+        onAction: () =>
+            ref.read(masterDataControllerProvider.notifier).retryFailed(),
+      );
+    });
 
     return Scaffold(
       extendBody: true,
