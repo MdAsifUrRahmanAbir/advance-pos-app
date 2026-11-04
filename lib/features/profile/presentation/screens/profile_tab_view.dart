@@ -3,9 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
-import '../widgets/profile_company_section.dart';
-import '../widgets/profile_employee_section.dart';
-import '../widgets/profile_header.dart';
+import '../widgets/profile_employee_card.dart';
+import '../widgets/profile_hero_header.dart';
 import '../widgets/profile_logout_button.dart';
 import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
@@ -13,9 +12,15 @@ import 'profile_logout_action.dart';
 import 'profile_session_info.dart';
 
 /// Same content as [ProfileMobileView], centered in a fixed-width
-/// column for wider (tablet/web) viewports.
+/// column for wider (tablet/web) viewports; the hero is a rounded card.
 class ProfileTabView extends ConsumerWidget {
   const ProfileTabView({super.key});
+
+  /// Centered content width (within the 480–960 range) — flagged.
+  static const double _maxWidth = 640;
+
+  /// How far the employee card overlaps the hero.
+  static const double _cardOverlap = AppSizes.xl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,49 +29,43 @@ class ProfileTabView extends ConsumerWidget {
     return SingleChildScrollView(
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
+          constraints: const BoxConstraints(maxWidth: _maxWidth),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(
               AppSizes.xl,
-              0,
+              AppSizes.lg,
               AppSizes.xl,
               AppSizes.xl,
             ),
             child: Column(
               children: [
-                ProfileHeader(
-                  name: info.headerTitle,
-                  role: info.employee?.employeeNo,
-                  avatarUrl: info.logoUrl,
-                ),
-                // const SizedBox(height: AppSizes.xl),
-                // const ProfileStatsRow(
-                //   projects: '24',
-                //   tasks: '156',
-                //   rating: '4.8',
-                // ),
-                const SizedBox(height: AppSizes.xl),
-                ProfileEmployeeSection(
-                  name: info.employee?.userName,
-                  employeeId: info.employeeId,
-                  employeeNo: info.employee?.employeeNo,
-                ),
-                const SizedBox(height: AppSizes.xl),
-                ProfileCompanySection(
+                ProfileHeroHeader(
+                  title: info.headerTitle,
                   companyName: info.company?.name,
                   product: info.company?.product,
-                  logoUrl: info.company?.logo,
+                  logoUrl: info.logoUrl,
                   companyCode: info.company?.compCode,
-                  branchName: info.employee?.branchName,
-                  branchId: info.branchId,
+                  extraBottomSpace: _cardOverlap,
+                  fullBleed: false,
                 ),
-                const SizedBox(height: AppSizes.xl),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
+                  child: Transform.translate(
+                    offset: const Offset(0, -_cardOverlap),
+                    child: ProfileEmployeeCard(
+                      name: info.employee?.userName,
+                      employeeId: info.employeeId,
+                      employeeNo: info.employee?.employeeNo,
+                    ),
+                  ),
+                ),
                 ProfileReportsSection(
                   onCustomerTap: () => context.push(RouteNames.customers),
                   onStockReportTap: () => context.push(RouteNames.error),
                   onSalesReturnTap: () => context.push(RouteNames.salesReturn),
                   onExpenseTap: () => context.push(RouteNames.expense),
-                  onSalesReplacementTap: () => context.push(RouteNames.salesReplacement),
+                  onSalesReplacementTap: () =>
+                      context.push(RouteNames.salesReplacement),
                 ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileSettingsSections(

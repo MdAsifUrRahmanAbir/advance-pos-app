@@ -894,4 +894,9 @@ class AppStrings {
 
   // ---- Profile: branch name (append only) ----
   static const String profileBranchLabel = 'Branch';
+
+  // ---- Profile: redesigned header (append only) ----
+  static const String profileInfoSeparator = ' · ';
+  static String profileCompanyCodeChip(String code) => 'Code $code';
+  static const String profileSignedInCaption = 'Signed-in employee';
 }
