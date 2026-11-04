@@ -32,15 +32,20 @@ class ClientSessionController extends Notifier<ClientProfile?> {
     state = profile;
   }
 
-  /// After a successful company-code verification.
+  /// After a successful company-code verification. Whatever a previously
+  /// bound company left behind (its saved profile and all cached data) is
+  /// removed first, then the new company is saved.
   Future<void> save(ClientProfile profile) async {
+    await _secureStorage.clearClientProfile();
+    await ref.read(localCacheServiceProvider).clearOnLogout();
     await _secureStorage.saveClientProfile(profile.encode());
     _apiClient.setBaseUrl(profile.apiBaseUrl);
     state = profile;
   }
 
-  /// "Change company": forgets the company and drops cached data that
-  /// belonged to it (master data etc. differ per company).
+  /// "Switch company" on Login: forgets the company and drops cached data
+  /// that belonged to it (master data etc. differ per company). This is
+  /// the only place the saved company info is removed.
   Future<void> clear() async {
     await _secureStorage.clearClientProfile();
     await ref.read(localCacheServiceProvider).clearOnLogout();

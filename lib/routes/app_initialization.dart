@@ -1,13 +1,11 @@
+import '../core/theme/app_system_ui.dart';
+
 class AppInitialization {
   AppInitialization();
 
-  static void init() async {
-    // SystemChrome.setSystemUIOverlayStyle(
-    //   const SystemUiOverlayStyle(
-    //     statusBarColor: Colors.transparent, // স্ট্যাটাস বারের ব্যাকগ্রাউন্ড ট্রান্সপারেন্ট
-    //     statusBarIconBrightness: Brightness.dark, // Android-এর জন্য (Battery, WiFi আইকন ডার্ক করবে)
-    //     statusBarBrightness: Brightness.light, // iOS-এর জন্য (Status bar text/icons ডার্ক করবে)
-    //   ),
-    // );
+  /// Call after `WidgetsFlutterBinding.ensureInitialized()`.
+  static void init() {
+    // Transparent status bar with black icons everywhere.
+    AppSystemUi.applyDefaults();
   }
 }

@@ -52,6 +52,7 @@ class UserConfig {
   final int companyId;
   final int companyType;
   final int branchId;
+  final String? branchName;
   final String? employeeNo;
   final int? empId;
 
@@ -61,6 +62,7 @@ class UserConfig {
     required this.companyId,
     required this.companyType,
     required this.branchId,
+    this.branchName,
     this.employeeNo,
     this.empId,
   });
@@ -71,6 +73,7 @@ class UserConfig {
     companyId: json["company_id"],
     companyType: json["company_type"],
     branchId: json["branch_id"],
+    branchName: json["branch_name"]?.toString(),
     employeeNo: json["employee_no"]?.toString(),
     empId: json["emp_id"],
   );
@@ -81,6 +84,7 @@ class UserConfig {
     "company_id": companyId,
     "company_type": companyType,
     "branch_id": branchId,
+    "branch_name": branchName,
     "employee_no": employeeNo,
     "emp_id": empId,
   };

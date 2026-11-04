@@ -750,8 +750,6 @@ class AppStrings {
   static const String billDateLabel = 'DATE: ';
   static const String billPrintLabel = 'PRINT: ';
   static const String billDuplicateCopy = 'DUPLICATE-BILL-COPY';
-  static const String billCounterLabel = 'COUNTER: ';
-  static const String billVatChalanLabel = 'VAT CHALAN: ';
   static const String billColSl = 'SL';
   static const String billColItem = 'ITEM';
   static const String billColRate = 'RATE';
@@ -768,7 +766,6 @@ class AppStrings {
   static String billVatRate(String rate) => ' ($rate %)';
   static const String billAdjustPoint = 'ADJUST POINT (+/-)';
   static const String billDeliveryCharge = 'DELIVERY CHARGE (+)';
-  static const String billProcessingFee = 'PROCESSING FEE (+)';
   static const String billGrandTotal = 'GRAND TOTAL';
   static const String billInWords = 'In Words: ';
   static const String billPaidBy = 'PAID BY: ';
@@ -778,7 +775,6 @@ class AppStrings {
   static const String billCustomerLabel = 'CUSTOMER: ';
   static const String billRewardPoints = 'REWARD POINT REMAINING: ';
   static const String billSalesBy = 'SALES BY: ';
-  static const String billThankYou = 'Thank You For Shopping.';
   static const String billSystemBy = 'System By: TARA TECH LTD. | AdvancePOS';
 
   // ---- Invoices: Bill Preview terms (append only) ----
@@ -842,4 +838,23 @@ class AppStrings {
   static String billShareSubject(String billNo) => 'Receipt $billNo';
   static String billShareText(String billNo) =>
       'Receipt $billNo. Thank you for shopping.';
+
+  // ---- Profile: log out (append only) ----
+  static const String profileLogoutConfirmTitle = 'Log out?';
+  static const String profileLogoutConfirmMessage =
+      "You'll need to sign in again to use the app.";
+
+  // ---- Profile: company & employee info (append only) ----
+  static const String profileCompanySection = 'COMPANY';
+  static const String profileEmployeeSection = 'EMPLOYEE';
+  static const String profileBranchIdLabel = 'Branch ID';
+  static const String profileEmployeeNameLabel = 'Employee Name';
+  static const String profileEmployeeIdLabel = 'Employee ID';
+  static const String profileEmployeeNoLabel = 'Employee No';
+  // ---- Profile: branch name (append only) ----
+  static const String profileBranchLabel = 'Branch';
+  // ---- Profile: redesigned header (append only) ----
+  static const String profileInfoSeparator = ' · ';
+  static String profileCompanyCodeChip(String code) => 'Code $code';
+  static const String profileSignedInCaption = 'Signed-in employee';
 }
