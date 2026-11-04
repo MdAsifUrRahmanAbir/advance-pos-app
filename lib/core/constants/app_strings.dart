@@ -883,4 +883,12 @@ class AppStrings {
   static const String profileLogoutConfirmTitle = 'Log out?';
   static const String profileLogoutConfirmMessage =
       "You'll need to sign in again to use the app.";
+
+  // ---- Profile: company & employee info (append only) ----
+  static const String profileCompanySection = 'COMPANY';
+  static const String profileEmployeeSection = 'EMPLOYEE';
+  static const String profileBranchIdLabel = 'Branch ID';
+  static const String profileEmployeeNameLabel = 'Employee Name';
+  static const String profileEmployeeIdLabel = 'Employee ID';
+  static const String profileEmployeeNoLabel = 'Employee No';
 }

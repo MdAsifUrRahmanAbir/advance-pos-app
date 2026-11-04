@@ -6,18 +6,18 @@ import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/status_badge.dart';
 import '../../../../core/widgets/common/gradient_cover_header.dart';
 
-/// Cover gradient + avatar, name, and role badge at the top of the
-/// profile screen.
+/// Cover gradient + avatar, name, and an optional role badge (hidden when
+/// [role] is null or empty) at the top of the profile screen.
 class ProfileHeader extends StatelessWidget {
   final String name;
-  final String role;
+  final String? role;
   final String? avatarUrl;
   final VoidCallback? onAvatarEditTap;
 
   const ProfileHeader({
     super.key,
     required this.name,
-    required this.role,
+    this.role,
     this.avatarUrl,
     this.onAvatarEditTap,
   });
@@ -41,8 +41,10 @@ class ProfileHeader extends StatelessWidget {
             color: context.appColors.textPrimary,
           ),
         ),
-        const SizedBox(height: AppSizes.xs),
-        StatusBadge(text: role, type: StatusBadgeType.primary, compact: true),
+        if (role case final role? when role.isNotEmpty) ...[
+          const SizedBox(height: AppSizes.xs),
+          StatusBadge(text: role, type: StatusBadgeType.primary, compact: true),
+        ],
       ],
     );
   }
