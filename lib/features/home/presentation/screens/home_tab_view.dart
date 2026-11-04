@@ -99,71 +99,76 @@ class HomeTabView extends ConsumerWidget {
       onToggleShowAll: controller.toggleShowAllProducts,
     );
 
-    return Column(
-      children: [
-        DashboardTopBar(
-          isOnline: state.isOnline,
-          onNotificationsTap: () => context.push(RouteNames.notifications),
-          title: title,
-          subtitle: firstName.isEmpty
-              ? greeting
-              : AppStrings.dashGreetingWithName(greeting, firstName),
-          logoUrl: session.logoUrl,
-        ),
-        Expanded(
-          child: showError
-              ? DashboardErrorView(
-                  message: state.errorMessage ?? AppStrings.dashLoadFailed,
-                  onRetry: controller.getDashboard,
-                )
-              : RefreshIndicator(
-                  color: AppColors.primary,
-                  onRefresh: refresh,
-                  child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: _maxContentWidth),
-                child: ListView(
-              physics: isFirstLoad
-                  ? const NeverScrollableScrollPhysics()
-                  : const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(AppSizes.lg),
-              children: [
-                overviewHeader,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          hero,
-                          const SizedBox(height: AppSizes.md),
-                          kpis,
-                        ],
+    return ColoredBox(
+      color: AppColors.background,
+      child: Column(
+        children: [
+          DashboardTopBar(
+            isOnline: state.isOnline,
+            onNotificationsTap: () => context.push(RouteNames.notifications),
+            title: title,
+            subtitle: firstName.isEmpty
+                ? greeting
+                : AppStrings.dashGreetingWithName(greeting, firstName),
+            logoUrl: session.logoUrl,
+          ),
+          Expanded(
+            child: showError
+                ? DashboardErrorView(
+                    message: state.errorMessage ?? AppStrings.dashLoadFailed,
+                    onRetry: controller.getDashboard,
+                  )
+                : RefreshIndicator(
+                    color: AppColors.primary,
+                    onRefresh: refresh,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: _maxContentWidth,
+                        ),
+                        child: ListView(
+                          physics: isFirstLoad
+                              ? const NeverScrollableScrollPhysics()
+                              : const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(AppSizes.lg),
+                          children: [
+                            overviewHeader,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      hero,
+                                      const SizedBox(height: AppSizes.md),
+                                      kpis,
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: AppSizes.md),
+                                Expanded(child: collection),
+                              ],
+                            ),
+                            const SizedBox(height: AppSizes.lg),
+                            trend,
+                            const SizedBox(height: AppSizes.lg),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: categories),
+                                const SizedBox(width: AppSizes.md),
+                                Expanded(child: products),
+                              ],
+                            ),
+                            const SizedBox(height: AppSizes.lg),
+                          ],
+                        ).skeletonizer(enabled: isSkeleton),
                       ),
                     ),
-                    const SizedBox(width: AppSizes.md),
-                    Expanded(child: collection),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.lg),
-                trend,
-                const SizedBox(height: AppSizes.lg),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(child: categories),
-                    const SizedBox(width: AppSizes.md),
-                    Expanded(child: products),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.lg),
-              ],
-            ).skeletonizer(enabled: isSkeleton),
-              ),
-            ),
-                ),
-        ),
-      ],
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
