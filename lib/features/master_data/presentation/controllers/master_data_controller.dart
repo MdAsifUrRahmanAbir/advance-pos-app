@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/storage/cache_policy.dart';
 import '../../../../core/storage/local_cache_service.dart';
 import '../../../../core/utils/app_logger.dart';
@@ -45,9 +46,15 @@ class MasterDataController extends Notifier<MasterDataState> {
   /// The load in progress, shared by callers that arrive while it runs.
   Future<bool>? _inFlight;
 
+  /// Rebuilt whenever the user logs in or out, so the in-memory sets never
+  /// outlive a session: signed out = empty, signed in = load fresh.
   @override
   MasterDataState build() {
-    Future.microtask(loadAll);
+    final loggedIn = ref.watch(
+      authSessionControllerProvider.select((s) => s.isLoggedIn),
+    );
+    _inFlight = null;
+    if (loggedIn) Future.microtask(loadAll);
     return MasterDataState.initial();
   }
 

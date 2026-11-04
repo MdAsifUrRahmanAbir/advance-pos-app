@@ -83,6 +83,10 @@ class AuthSessionController extends Notifier<AuthSessionState> {
     state = state.copyWith(profile: profile);
   }
 
+  /// Removes everything created after login — tokens, session profile,
+  /// request params and all cached data (master data, dashboard…). The
+  /// verified company (ClientProfile) is kept, so Login opens for the
+  /// same company; it is only removed by "Switch company".
   Future<void> logout() async {
     await _secureStorage.clearAuthTokens();
     await _secureStorage.clearSessionProfile();
