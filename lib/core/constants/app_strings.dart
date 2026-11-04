@@ -863,4 +863,10 @@ class AppStrings {
 
   // ---- Common: pagination (append only) ----
   static const String paginationLoadMoreFailed = "Couldn't load more.";
+
+  // ---- Bill preview: web bill parity (append only) ----
+  static const String billOtherCharge = 'OTHER CHARGE (+)';
+  static const String billThankYouShopping = 'Thank you for shopping.';
+  static String billBranchWithCounter(String branch, String counter) =>
+      '$branch [$counter]';
 }
