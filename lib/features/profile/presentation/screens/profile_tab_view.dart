@@ -34,7 +34,11 @@ class ProfileTabView extends ConsumerWidget {
             ),
             child: Column(
               children: [
-                ProfileHeader(name: info.employee?.userName ?? ''),
+                ProfileHeader(
+                  name: info.headerTitle,
+                  role: info.employee?.employeeNo,
+                  avatarUrl: info.logoUrl,
+                ),
                 // const SizedBox(height: AppSizes.xl),
                 // const ProfileStatsRow(
                 //   projects: '24',
@@ -53,6 +57,7 @@ class ProfileTabView extends ConsumerWidget {
                   product: info.company?.product,
                   logoUrl: info.company?.logo,
                   companyCode: info.company?.compCode,
+                  branchName: info.employee?.branchName,
                   branchId: info.branchId,
                 ),
                 const SizedBox(height: AppSizes.xl),

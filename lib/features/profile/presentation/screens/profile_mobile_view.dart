@@ -25,7 +25,11 @@ class ProfileMobileView extends ConsumerWidget {
         padding: const EdgeInsets.fromLTRB(0, 0, 0, AppSizes.xl),
         child: Column(
           children: [
-            ProfileHeader(name: info.employee?.userName ?? ''),
+            ProfileHeader(
+              name: info.headerTitle,
+              role: info.employee?.employeeNo,
+              avatarUrl: info.logoUrl,
+            ),
             const SizedBox(height: AppSizes.lg),
             Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -53,6 +57,7 @@ class ProfileMobileView extends ConsumerWidget {
                     product: info.company?.product,
                     logoUrl: info.company?.logo,
                     companyCode: info.company?.compCode,
+                    branchName: info.employee?.branchName,
                     branchId: info.branchId,
                   ),
                   const SizedBox(height: AppSizes.lg),

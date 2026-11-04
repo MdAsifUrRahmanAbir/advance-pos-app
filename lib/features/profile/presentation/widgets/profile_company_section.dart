@@ -9,12 +9,13 @@ import '../../../../core/widgets/utility/custom_network_image.dart';
 import 'profile_info_row.dart';
 
 /// COMPANY group: logo with company name (and product), then company code
-/// and branch.
+/// and branch (name, or its ID when the session has no name).
 class ProfileCompanySection extends StatelessWidget {
   final String? companyName;
   final String? product;
   final String? logoUrl;
   final String? companyCode;
+  final String? branchName;
   final int? branchId;
 
   const ProfileCompanySection({
@@ -23,8 +24,16 @@ class ProfileCompanySection extends StatelessWidget {
     required this.product,
     required this.logoUrl,
     required this.companyCode,
+    required this.branchName,
     required this.branchId,
   });
+
+  /// Branch name; sessions saved before login sent it fall back to the ID.
+  String? get _branchText {
+    final name = branchName?.trim();
+    if (name != null && name.isNotEmpty) return name;
+    return branchId?.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +46,10 @@ class ProfileCompanySection extends StatelessWidget {
           label: AppStrings.companyCodeLabel,
           value: companyCode,
         ),
-        // TODO: show the branch name once login (or another API) sends it —
-        // login only returns branch_id.
         ProfileInfoRow(
           icon: Icons.store_mall_directory_outlined,
-          label: AppStrings.profileBranchIdLabel,
-          value: branchId?.toString(),
+          label: AppStrings.profileBranchLabel,
+          value: _branchText,
         ),
       ],
     );

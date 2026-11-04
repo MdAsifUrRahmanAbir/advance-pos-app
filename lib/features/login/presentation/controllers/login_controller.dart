@@ -97,6 +97,7 @@ class LoginController extends Notifier<LoginState> {
           historyId: data.historysId,
           employeeId: config.empId,
           employeeNo: config.employeeNo,
+          branchName: config.branchName,
         ),
       );
       if (!ref.mounted) return true;

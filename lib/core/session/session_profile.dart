@@ -15,10 +15,12 @@ class SessionProfile {
   final int? companyType;
   final int? historyId;
 
-  /// From login `user_config.emp_id` / `employee_no`, shown on Profile.
-  /// Null for users without an employee record and for older sessions.
+  /// From login `user_config.emp_id` / `employee_no` / `branch_name`,
+  /// shown on Profile. Null when the server leaves them out and for
+  /// sessions saved by older builds.
   final int? employeeId;
   final String? employeeNo;
+  final String? branchName;
 
   const SessionProfile({
     required this.sellerType,
@@ -29,6 +31,7 @@ class SessionProfile {
     this.historyId,
     this.employeeId,
     this.employeeNo,
+    this.branchName,
   });
 
   SessionProfile copyWith({
@@ -40,6 +43,7 @@ class SessionProfile {
     int? historyId,
     int? employeeId,
     String? employeeNo,
+    String? branchName,
   }) {
     return SessionProfile(
       sellerType: sellerType ?? this.sellerType,
@@ -50,6 +54,7 @@ class SessionProfile {
       historyId: historyId ?? this.historyId,
       employeeId: employeeId ?? this.employeeId,
       employeeNo: employeeNo ?? this.employeeNo,
+      branchName: branchName ?? this.branchName,
     );
   }
 
@@ -62,6 +67,7 @@ class SessionProfile {
     historyId: json['historyId'] as int?,
     employeeId: json['employeeId'] as int?,
     employeeNo: json['employeeNo'] as String?,
+    branchName: json['branchName'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -73,6 +79,7 @@ class SessionProfile {
     'historyId': historyId,
     'employeeId': employeeId,
     'employeeNo': employeeNo,
+    'branchName': branchName,
   };
 
   String encode() => jsonEncode(toJson());

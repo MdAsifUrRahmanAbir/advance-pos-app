@@ -891,4 +891,7 @@ class AppStrings {
   static const String profileEmployeeNameLabel = 'Employee Name';
   static const String profileEmployeeIdLabel = 'Employee ID';
   static const String profileEmployeeNoLabel = 'Employee No';
+
+  // ---- Profile: branch name (append only) ----
+  static const String profileBranchLabel = 'Branch';
 }
