@@ -77,7 +77,11 @@ class MasterDataController extends Notifier<MasterDataState> {
     if (running != null) return running;
     final future = _load(kinds, forceRefresh: forceRefresh);
     _inFlight = future;
-    return future.whenComplete(() => _inFlight = null);
+    // Only clear our own run: a login/logout rebuild may have started a
+    // newer one meanwhile.
+    return future.whenComplete(() {
+      if (identical(_inFlight, future)) _inFlight = null;
+    });
   }
 
   Future<bool> _load(
