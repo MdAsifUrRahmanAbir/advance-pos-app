@@ -11,7 +11,8 @@ import '../../data/models/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_placeholder.dart';
 import 'sales_bill_receipt.dart';
 
-/// Bottom sheet holding the thermal receipt with Share and Print buttons.
+/// Bottom sheet holding the thermal receipt with Save, Share and Print.
+/// Save and Share use the receipt as a PNG image.
 /// Skeleton while [bill] is null and loading; ErrorState when it failed.
 class SalesBillPreviewSheet extends StatelessWidget {
   final SalesBillPreviewModel? bill;
@@ -20,10 +21,12 @@ class SalesBillPreviewSheet extends StatelessWidget {
   final bool isLoading;
   final bool isPrinting;
   final bool isSharing;
+  final bool isSaving;
   final String? errorMessage;
   final VoidCallback onRetry;
   final VoidCallback onPrint;
   final VoidCallback onShare;
+  final VoidCallback onSave;
 
   const SalesBillPreviewSheet({
     super.key,
@@ -33,10 +36,12 @@ class SalesBillPreviewSheet extends StatelessWidget {
     required this.isLoading,
     required this.isPrinting,
     required this.isSharing,
+    required this.isSaving,
     required this.errorMessage,
     required this.onRetry,
     required this.onPrint,
     required this.onShare,
+    required this.onSave,
   });
 
   /// Sheet may use up to this share of the screen height — flagged.
@@ -99,6 +104,14 @@ class SalesBillPreviewSheet extends StatelessWidget {
               ),
               child: Row(
                 children: [
+                  Expanded(
+                    child: SecondaryButton(
+                      label: AppStrings.billSaveAction,
+                      icon: Icons.download_rounded,
+                      onPressed: bill == null || isSaving ? null : onSave,
+                    ),
+                  ),
+                  const SizedBox(width: AppSizes.sm),
                   Expanded(
                     child: SecondaryButton(
                       label: AppStrings.invoiceShareAction,

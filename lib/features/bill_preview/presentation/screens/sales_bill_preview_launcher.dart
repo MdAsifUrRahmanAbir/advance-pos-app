@@ -4,6 +4,7 @@ import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/utility/custom_snackbar.dart';
+import '../../../../core/widgets/utility/fly_to_target.dart' show globalRectOf;
 import '../../../../core/widgets/utility/printer_selection_sheet.dart';
 import '../controllers/sales_bill_preview_controller.dart';
 import '../widgets/sales_bill_preview_sheet.dart';
@@ -34,11 +35,13 @@ void showSalesBillPreview(BuildContext context, String billNo) {
           isLoading: state.isLoading,
           isPrinting: state.isPrinting,
           isSharing: state.isSharing,
+          isSaving: state.isSaving,
           errorMessage: state.errorMessage,
           onRetry: controller.load,
           onPrint: () => printSalesBill(context, controller),
           onShare: () async {
-            final ok = await controller.shareBill();
+            final ok =
+                await controller.shareBill(origin: globalRectOf(context));
             if (!ok && context.mounted) {
               CustomSnackbar.show(
                 context,
@@ -46,6 +49,15 @@ void showSalesBillPreview(BuildContext context, String billNo) {
                 error: true,
               );
             }
+          },
+          onSave: () async {
+            final ok = await controller.saveBill();
+            if (!context.mounted) return;
+            CustomSnackbar.show(
+              context,
+              ok ? AppStrings.billSavedMessage : AppStrings.billSaveFailed,
+              error: !ok,
+            );
           },
         );
       },
