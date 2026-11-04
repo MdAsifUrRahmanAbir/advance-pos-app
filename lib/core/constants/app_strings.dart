@@ -878,4 +878,9 @@ class AppStrings {
   static String billShareSubject(String billNo) => 'Receipt $billNo';
   static String billShareText(String billNo) =>
       'Receipt $billNo. Thank you for shopping.';
+
+  // ---- Profile: log out (append only) ----
+  static const String profileLogoutConfirmTitle = 'Log out?';
+  static const String profileLogoutConfirmMessage =
+      "You'll need to sign in again to use the app.";
 }

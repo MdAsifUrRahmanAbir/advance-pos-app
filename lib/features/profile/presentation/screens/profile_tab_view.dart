@@ -4,8 +4,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
+import '../widgets/profile_logout_button.dart';
 import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
+import 'profile_logout_action.dart';
 
 /// Same content as [ProfileMobileView], centered in a fixed-width
 /// column for wider (tablet/web) viewports.
@@ -47,8 +49,13 @@ class ProfileTabView extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSizes.xl),
                 ProfileSettingsSections(
+                  showAccountSection: false,
                   onPersonalInfoTap: () => context.go(RouteNames.editProfile),
                   onSettingsTap: () => context.push(RouteNames.settings),
+                ),
+                const SizedBox(height: AppSizes.xl),
+                ProfileLogoutButton(
+                  onTap: () => confirmAndLogout(context, ref),
                 ),
                 const SizedBox(height: AppSizes.bottomNavBarHeight),
               ],

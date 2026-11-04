@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../routes/route_names.dart';
 import '../widgets/profile_header.dart';
+import '../widgets/profile_logout_button.dart';
 // import '../widgets/profile_stats_row.dart';
 import '../widgets/profile_reports_section.dart';
 import '../widgets/profile_settings_sections.dart';
+import 'profile_logout_action.dart';
 
 class ProfileMobileView extends ConsumerWidget {
   const ProfileMobileView({super.key});
@@ -46,11 +48,16 @@ class ProfileMobileView extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSizes.lg),
                   ProfileSettingsSections(
+                    showAccountSection: false,
                     onPersonalInfoTap: () =>
                         context.push(RouteNames.editProfile),
                     onSettingsTap: () => context.push(RouteNames.settings),
                     onPrivacyTap: () => context.push(RouteNames.termsPrivacy),
                     onHelpCenterTap: () => context.push(RouteNames.helpSupport),
+                  ),
+                  const SizedBox(height: AppSizes.lg),
+                  ProfileLogoutButton(
+                    onTap: () => confirmAndLogout(context, ref),
                   ),
 
                   const SizedBox(height: AppSizes.bottomNavBarHeight),
