@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../../../core/utils/receipt_share_service.dart';
 import '../../../../core/utils/thermal_printer_service.dart';
@@ -83,19 +84,41 @@ class SalesBillPreviewController extends Notifier<SalesBillPreviewState> {
   }
 
   /// Shares the receipt under [boundaryKey] (defaults to [receiptKey]) as
-  /// a PNG image.
-  Future<bool> shareBill({GlobalKey? boundaryKey}) async {
+  /// a PNG image through the system share sheet (email, social apps…).
+  /// [origin] anchors the share popover on iPad.
+  Future<bool> shareBill({GlobalKey? boundaryKey, Rect? origin}) async {
     if (state.isSharing || state.bill == null) return false;
     state = state.copyWith(isSharing: true);
     try {
       await ReceiptShareService.shareReceiptImage(
         boundaryKey: boundaryKey ?? receiptKey,
         saleId: billNo,
+        subject: AppStrings.billShareSubject(billNo),
+        text: AppStrings.billShareText(billNo),
+        sharePositionOrigin: origin,
       );
       if (ref.mounted) state = state.copyWith(isSharing: false);
       return true;
     } catch (_) {
       if (ref.mounted) state = state.copyWith(isSharing: false);
+      return false;
+    }
+  }
+
+  /// Saves the receipt under [boundaryKey] (defaults to [receiptKey]) as a
+  /// PNG to the gallery. False when photo access is denied or it fails.
+  Future<bool> saveBill({GlobalKey? boundaryKey}) async {
+    if (state.isSaving || state.bill == null) return false;
+    state = state.copyWith(isSaving: true);
+    try {
+      final saved = await ReceiptShareService.saveReceiptImage(
+        boundaryKey: boundaryKey ?? receiptKey,
+        saleId: billNo,
+      );
+      if (ref.mounted) state = state.copyWith(isSaving: false);
+      return saved;
+    } catch (_) {
+      if (ref.mounted) state = state.copyWith(isSaving: false);
       return false;
     }
   }

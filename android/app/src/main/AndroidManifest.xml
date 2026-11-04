@@ -6,6 +6,9 @@
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Saving receipt images to the gallery on Android 10 and older (gal). -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
 
     <!-- Bluetooth — required for thermal printer discovery/connection -->
     <!-- Android 12+ (API 31+) runtime-permission model -->
@@ -34,6 +37,7 @@
     <application
         android:label="Advance POS"
         android:name="${applicationName}"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

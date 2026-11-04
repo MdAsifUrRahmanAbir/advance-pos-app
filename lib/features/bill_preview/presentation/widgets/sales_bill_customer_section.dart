@@ -5,8 +5,9 @@ import '../../data/models/sales_bill_preview_model.dart';
 import '../states/sales_bill_preview_format.dart';
 import 'sales_bill_dashed_divider.dart';
 
-/// "CUSTOMER: NAME (mobile)", reward points, then "SALES BY: NAME [code]".
-/// Each block is hidden when its name is not present.
+/// "CUSTOMER: NAME (mobile)", reward points (not for the walk-in
+/// customer), then "SALES BY: NAME [code]". Each block is hidden when its
+/// name is not present.
 class SalesBillCustomerSection extends StatelessWidget {
   final Customer customer;
   final Employee employee;
@@ -20,10 +21,16 @@ class SalesBillCustomerSection extends StatelessWidget {
   /// Smaller than AppSizes.fontXs, like the printed bill — flagged.
   static const double _fontTiny = 8;
 
+  /// Default walk-in customer: the web bill shows no reward points for it.
+  // TODO: also hide when reward calculation is off, once the API sends it.
+  static const String _walkInCustomerNo = 'CUS000000001';
+
   @override
   Widget build(BuildContext context) {
     final customerName = SalesBillPreviewFormat.text(customer.customerName);
     final employeeName = SalesBillPreviewFormat.text(employee.empName);
+    final showReward =
+        SalesBillPreviewFormat.text(customer.customerNo) != _walkInCustomerNo;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,7 +40,8 @@ class SalesBillCustomerSection extends StatelessWidget {
             '${AppStrings.billCustomerLabel}'
                 '${SalesBillPreviewFormat.withDetail(customerName.toUpperCase(), customer.customerMobile)}',
           ),
-          _SmallLine('${AppStrings.billRewardPoints}${customer.rewardPoints}'),
+          if (showReward)
+            _SmallLine('${AppStrings.billRewardPoints}${customer.rewardPoints}'),
           const SalesBillDashedDivider(),
         ],
         if (employeeName != null) ...[

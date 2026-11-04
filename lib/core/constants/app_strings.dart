@@ -827,4 +827,19 @@ class AppStrings {
   static String invoiceScanNotFound(String code) => 'No invoice found for $code';
 
   static const String paginationLoadMoreFailed = "Couldn't load more.";
+
+  // ---- Bill preview: web bill parity (append only) ----
+  static const String billOtherCharge = 'OTHER CHARGE (+)';
+  static const String billThankYouShopping = 'Thank you for shopping.';
+  static String billBranchWithCounter(String branch, String counter) =>
+      '$branch [$counter]';
+
+  // ---- Bill preview: save / share image (append only) ----
+  static const String billSaveAction = 'Save';
+  static const String billSavedMessage = 'Receipt saved to your gallery.';
+  static const String billSaveFailed =
+      "Couldn't save the receipt. Allow photo access and try again.";
+  static String billShareSubject(String billNo) => 'Receipt $billNo';
+  static String billShareText(String billNo) =>
+      'Receipt $billNo. Thank you for shopping.';
 }

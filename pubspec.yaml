@@ -30,6 +30,7 @@ dependencies:
   flutter_animate:
   image: ^3.3.0
   barcode_widget: ^2.0.4
+  gal: ^2.3.1
 
 dev_dependencies:
   flutter_test:

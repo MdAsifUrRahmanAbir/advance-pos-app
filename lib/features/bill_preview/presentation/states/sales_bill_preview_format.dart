@@ -74,13 +74,13 @@ class SalesBillPreviewFormat {
     return square ? '$name [$extra]' : '$name ($extra)';
   }
 
-  /// One method: its name. Split payment: "Cash (1,000.00), Nagad (966.00)".
+  /// Payment method names, each once, comma separated — like the web
+  /// bill: "Cash, bKash". Null when none is named.
   static String? paidBy(List<Payment> payments) {
-    final named = payments.where((p) => isPresent(p.paymentName)).toList();
-    if (named.isEmpty) return null;
-    if (named.length == 1) return text(named.first.paymentName);
-    return named
-        .map((p) => withDetail(text(p.paymentName)!, amount(p.collectionAmount)))
-        .join(', ');
+    final names = <String>{
+      for (final p in payments)
+        ?text(p.paymentName),
+    };
+    return names.isEmpty ? null : names.join(', ');
   }
 }
