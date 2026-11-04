@@ -24,13 +24,16 @@ class MultiLineChart extends StatelessWidget {
   final double height;
   final double? minValue; // NEW — pass 0 for a zero-based axis
 
+  /// Fills the area under each line with a soft gradient of its colour.
+  final bool fillArea;
+
   const MultiLineChart({
     super.key,
     required this.series,
     required this.yAxisLabels,
     required this.xAxisLabels,
     this.minValue, // NEW
-
+    this.fillArea = false,
     this.height = 200,
   });
 
@@ -70,6 +73,7 @@ class MultiLineChart extends StatelessWidget {
                       series: series,
                       gridLines: yAxisLabels.length,
                       minValue: minValue,
+                      fillArea: fillArea,
                     ),
                   ),
                 ),
@@ -100,12 +104,18 @@ class _MultiLinePainter extends CustomPainter {
   final List<ChartSeries> series;
   final int gridLines;
   final double? minValue;
+  final bool fillArea;
 
   _MultiLinePainter({
     required this.series,
     required this.gridLines,
     this.minValue,
+    this.fillArea = false,
   });
+
+  /// Top / bottom opacity of the area fill — no token, flagged.
+  static const double _fillTopAlpha = 0.25;
+  static const double _fillBottomAlpha = 0.0;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -135,6 +145,24 @@ class _MultiLinePainter extends CustomPainter {
           path.lineTo(x, y);
         }
       }
+      if (fillArea) {
+        final area = Path.from(path)
+          ..lineTo(size.width, size.height)
+          ..lineTo(0, size.height)
+          ..close();
+        canvas.drawPath(
+          area,
+          Paint()
+            ..shader = LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                s.color.withValues(alpha: _fillTopAlpha),
+                s.color.withValues(alpha: _fillBottomAlpha),
+              ],
+            ).createShader(Offset.zero & size),
+        );
+      }
       canvas.drawPath(
         path,
         Paint()
@@ -149,5 +177,5 @@ class _MultiLinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _MultiLinePainter oldDelegate) =>
-      oldDelegate.series != series;
+      oldDelegate.series != series || oldDelegate.fillArea != fillArea;
 }

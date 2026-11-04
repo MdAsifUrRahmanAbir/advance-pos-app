@@ -899,4 +899,13 @@ class AppStrings {
   static const String profileInfoSeparator = ' · ';
   static String profileCompanyCodeChip(String code) => 'Code $code';
   static const String profileSignedInCaption = 'Signed-in employee';
+
+  // ---- Home: redesigned dashboard (append only) ----
+  static const String dashGreetingMorning = 'Good morning';
+  static const String dashGreetingAfternoon = 'Good afternoon';
+  static const String dashGreetingEvening = 'Good evening';
+  static String dashGreetingWithName(String greeting, String name) =>
+      '$greeting, $name';
+  static String dashViewAll(int count) => 'View all ($count)';
+  static const String dashShowLess = 'Show less';
 }

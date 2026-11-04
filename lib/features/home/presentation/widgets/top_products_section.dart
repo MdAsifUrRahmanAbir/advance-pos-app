@@ -1,48 +1,73 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/widgets/common/custom_card.dart';
 import '../../data/models/dashboard_model.dart';
 import '../states/dashboard_format.dart';
 import 'dashboard_rank_badge.dart';
 import 'dashboard_section_header.dart';
+import 'dashboard_view_all_button.dart';
 
-/// All top products: rank, name, barcode · units sold, revenue.
+/// Top products: rank, name, barcode · units sold, revenue. Shows the first
+/// [previewCount] until "View all" is tapped.
 class TopProductsSection extends StatelessWidget {
   final List<Product> products;
+  final bool showAll;
+  final VoidCallback onToggleShowAll;
 
-  const TopProductsSection({super.key, required this.products});
+  const TopProductsSection({
+    super.key,
+    required this.products,
+    required this.showAll,
+    required this.onToggleShowAll,
+  });
+
+  static const int previewCount = 5;
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
+    final visible = showAll || products.length <= previewCount
+        ? products
+        : products.take(previewCount).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const DashboardSectionHeader(title: AppStrings.dashTopProducts),
+        DashboardSectionHeader(
+          title: AppStrings.dashTopProducts,
+          trailing: products.length > previewCount
+              ? DashboardViewAllButton(
+                  total: products.length,
+                  expanded: showAll,
+                  onTap: onToggleShowAll,
+                )
+              : null,
+        ),
         CustomCard(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
           child: products.isEmpty
-              ? const Padding(
-            padding: EdgeInsets.all(AppSizes.md),
-            child: Text(
-              AppStrings.dashNoData,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: AppSizes.fontSm,
-              ),
-            ),
-          )
+              ? Padding(
+                  padding: const EdgeInsets.all(AppSizes.md),
+                  child: Text(
+                    AppStrings.dashNoData,
+                    style: TextStyle(
+                      color: colors.textSecondary,
+                      fontSize: AppSizes.fontSm,
+                    ),
+                  ),
+                )
               : Column(
-            children: [
-              for (var i = 0; i < products.length; i++) ...[
-                _ProductRow(rank: i + 1, data: products[i]),
-                if (i != products.length - 1)
-                  const Divider(height: 1, color: AppColors.border),
-              ],
-            ],
-          ),
+                  children: [
+                    for (var i = 0; i < visible.length; i++) ...[
+                      _ProductRow(rank: i + 1, data: visible[i]),
+                      if (i != visible.length - 1)
+                        Divider(height: 1, color: colors.border),
+                    ],
+                  ],
+                ),
         ),
       ],
     );
@@ -57,12 +82,13 @@ class _ProductRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.appColors;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm + 2),
+      padding: const EdgeInsets.symmetric(vertical: AppSizes.sm + AppSizes.xs),
       child: Row(
         children: [
           DashboardRankBadge(rank: rank),
-          const SizedBox(width: AppSizes.sm),
+          const SizedBox(width: AppSizes.sm + AppSizes.xs),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,21 +97,18 @@ class _ProductRow extends StatelessWidget {
                   data.productName,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
+                  style: TextStyle(
+                    color: colors.textPrimary,
                     fontSize: AppSizes.fontSm,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSizes.xs / 2),
                 Text(
                   '${data.prodBarcode} · ${AppStrings.dashQtySold(data.totalQuantity)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: AppSizes.fontXs,
-                  ),
+                  style: TextStyle(color: colors.textSecondary, fontSize: AppSizes.fontXs),
                 ),
               ],
             ),
@@ -93,8 +116,8 @@ class _ProductRow extends StatelessWidget {
           const SizedBox(width: AppSizes.sm),
           Text(
             DashboardFormat.money(data.totalAmount),
-            style: const TextStyle(
-              color: AppColors.textPrimary,
+            style: TextStyle(
+              color: colors.textPrimary,
               fontSize: AppSizes.fontSm,
               fontWeight: FontWeight.w700,
             ),

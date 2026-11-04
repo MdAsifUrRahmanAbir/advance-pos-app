@@ -51,6 +51,16 @@ class HomeController extends Notifier<HomeState> {
     state = state.copyWith(selectedChartRange: range);
   }
 
+  /// "View all" / "Show less" on Top Categories.
+  void toggleShowAllCategories() {
+    state = state.copyWith(showAllCategories: !state.showAllCategories);
+  }
+
+  /// "View all" / "Show less" on Top Products.
+  void toggleShowAllProducts() {
+    state = state.copyWith(showAllProducts: !state.showAllProducts);
+  }
+
   // ───────────────────────────────────────────────
   // GET
   // ───────────────────────────────────────────────

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/theme/app_color_scheme.dart';
 
-/// Section title with an optional trailing control (e.g. a toggle).
+/// Section title with an optional trailing control (e.g. a toggle or a
+/// "View all" link).
 class DashboardSectionHeader extends StatelessWidget {
   final String title;
   final Widget? trailing;
@@ -13,16 +14,19 @@ class DashboardSectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSizes.sm),
+      padding: const EdgeInsets.only(bottom: AppSizes.sm + AppSizes.xs),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: AppSizes.fontMd,
-              fontWeight: FontWeight.w700,
+          Expanded(
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: context.appColors.textPrimary,
+                fontSize: AppSizes.fontLg,
+                fontWeight: FontWeight.w800,
+              ),
             ),
           ),
           ?trailing,
