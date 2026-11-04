@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Native launch screen colour: same as the Flutter splash
+         (AppColors.primary), so there is no white flash. -->
+    <color name="splash_background">#6C63FF</color>
+</resources>

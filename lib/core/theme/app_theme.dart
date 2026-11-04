@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_sizes.dart';
 import 'app_color_scheme.dart';
+import 'app_system_ui.dart';
 
 class AppTheme {
   AppTheme._();
@@ -21,6 +22,7 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.background,
       appBarTheme: const AppBarTheme(
+        systemOverlayStyle: AppSystemUi.darkIcons,
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
@@ -90,6 +92,7 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.backgroundDark,
       appBarTheme: const AppBarTheme(
+        systemOverlayStyle: AppSystemUi.darkIcons,
         backgroundColor: AppColors.surfaceDarkMode,
         foregroundColor: AppColors.textPrimaryDark,
         elevation: 0,
