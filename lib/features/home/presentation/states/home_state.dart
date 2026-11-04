@@ -57,6 +57,10 @@ class HomeState {
   final DashboardModel? dashboardModel;
   final bool isDashboardLoading;
 
+  /// Top lists show the first few rows until "View all" is tapped.
+  final bool showAllCategories;
+  final bool showAllProducts;
+
   const HomeState({
     this.errorMessage,
     this.isOnline = true,
@@ -64,6 +68,8 @@ class HomeState {
     this.selectedChartRange = '7days',
     this.dashboardModel,
     this.isDashboardLoading = false,
+    this.showAllCategories = false,
+    this.showAllProducts = false,
   });
 
   factory HomeState.initial() => const HomeState();
@@ -75,6 +81,8 @@ class HomeState {
     String? selectedChartRange,
     DashboardModel? dashboardModel,
     bool? isDashboardLoading,
+    bool? showAllCategories,
+    bool? showAllProducts,
   }) {
     return HomeState(
       errorMessage: errorMessage,
@@ -83,6 +91,8 @@ class HomeState {
       selectedChartRange: selectedChartRange ?? this.selectedChartRange,
       dashboardModel: dashboardModel ?? this.dashboardModel,
       isDashboardLoading: isDashboardLoading ?? this.isDashboardLoading,
+      showAllCategories: showAllCategories ?? this.showAllCategories,
+      showAllProducts: showAllProducts ?? this.showAllProducts,
     );
   }
 }
