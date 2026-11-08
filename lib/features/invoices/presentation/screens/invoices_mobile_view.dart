@@ -121,6 +121,38 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
   }
   static const int _staggerResetAt = 15;
 
+  /// Failed first load: centered, and scrollable so Retry stays reachable
+  /// on short screens. The bottom gap clears the floating nav bar.
+  Widget _errorView(
+      BuildContext context,
+      InvoicesState state,
+      InvoicesController controller,
+      ) {
+    return LayoutBuilder(
+      builder: (context, constraints) => SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ErrorState(
+                message: state.errorMessage ?? AppStrings.errorOccurred,
+                onRetry: () => controller.getInvoices(reset: true),
+              ),
+              if (state.technicalDetails != null)
+                TextButton(
+                  onPressed: () =>
+                      _viewTechnicalDetails(context, state, controller),
+                  child: const Text('View technical details'),
+                ),
+              const SizedBox(height: AppSizes.bottomNavBarHeight),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(invoicesControllerProvider);
@@ -162,28 +194,7 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         const SizedBox(height: AppSizes.sm),
         Expanded(
           child: hasError
-              ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: AppSizes.bottomNavBarHeight * 2),
-              Expanded(
-                child: ErrorState(
-                  message: state.errorMessage ?? AppStrings.errorOccurred,
-                  onRetry: () => controller.getInvoices(reset: true),
-                ),
-              ),
-              if (state.technicalDetails != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSizes.md),
-                  child: TextButton(
-                    onPressed: () =>
-                        _viewTechnicalDetails(context, state, controller),
-                    child: const Text('View technical details'),
-                  ),
-                ),
-              SizedBox(height: AppSizes.bottomNavBarHeight * 3),
-            ],
-          )
+              ? _errorView(context, state, controller)
               : (!isInitialLoading && invoices.isEmpty)
               ? EmptyState(
             title: AppStrings.invoicesTitle,
@@ -298,6 +309,8 @@ class _InvoicesMobileViewState extends ConsumerState<InvoicesMobileView> {
         customerName: 'Customer name',
         customerMobile: '',
         salesBy: '',
+        blockedActions: const [],
+        blockedReason: "",
       ),
     );
   }

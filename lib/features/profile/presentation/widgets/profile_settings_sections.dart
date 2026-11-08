@@ -41,12 +41,12 @@ class ProfileSettingsSections extends StatelessWidget {
           SettingsGroup(
             label: AppStrings.accountSection,
             children: [
-              SettingsTile(
-                icon: Icons.person_outline_rounded,
-                title: AppStrings.personalInfoTitle,
-                subtitle: AppStrings.personalInfoSubtitle,
-                onTap: onPersonalInfoTap,
-              ),
+              // SettingsTile(
+              //   icon: Icons.person_outline_rounded,
+              //   title: AppStrings.personalInfoTitle,
+              //   subtitle: AppStrings.personalInfoSubtitle,
+              //   onTap: onPersonalInfoTap,
+              // ),
               // SettingsTile(
               //   icon: Icons.notifications_outlined,
               //   title: AppStrings.notificationSettingsTitle,

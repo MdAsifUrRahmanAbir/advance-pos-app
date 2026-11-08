@@ -62,6 +62,8 @@ class ResultDatum {
   final String customerName;
   final String customerMobile;
   final String salesBy;
+  final List<String> blockedActions;
+  final String blockedReason;
 
   ResultDatum({
     required this.sl,
@@ -85,6 +87,8 @@ class ResultDatum {
     required this.customerName,
     required this.customerMobile,
     required this.salesBy,
+    required this.blockedActions,
+    required this.blockedReason,
   });
 
   factory ResultDatum.fromJson(Map<String, dynamic> json) => ResultDatum(
@@ -113,6 +117,8 @@ class ResultDatum {
     customerName: json["customer_name"],
     customerMobile: json["customer_mobile"],
     salesBy: json["sales_by"],
+    blockedActions: List<String>.from(json["blocked_actions"].map((x) => x)),
+    blockedReason: json["blocked_reason"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -141,6 +147,8 @@ class ResultDatum {
     "customer_name": customerName,
     "customer_mobile": customerMobile,
     "sales_by": salesBy,
+    "blocked_actions": List<dynamic>.from(blockedActions.map((x) => x)),
+    "blocked_reason": blockedReason,
   };
 }
 

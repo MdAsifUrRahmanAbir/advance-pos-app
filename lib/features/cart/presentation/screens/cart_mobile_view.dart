@@ -44,7 +44,9 @@ class CartMobileView extends ConsumerWidget {
           onClearAll: controller.clearAll,
         ),
         Expanded(
-          child: Container(
+          // Material (not a colored Container) so taps inside — stepper,
+          // customer row, discount radios — show their ink ripple.
+          child: Material(
             color: AppColors.background,
             child: ListView(
               padding: const EdgeInsets.all(AppSizes.md),

@@ -81,7 +81,10 @@ class PaymentController extends Notifier<PaymentState> {
 
   /// - 1 entry selected -> defaults to the full payable amount (locked
   ///   in the UI afterward if that entry is non-cash).
-  /// - 2 entries selected -> starting 50/50 split, both editable.
+  /// - 2 entries selected -> starting 50/50 split, both editable. The
+  ///   first half is rounded to 2 decimals and the second takes the
+  ///   rest, so the two always add up to the payable exactly (an
+  ///   unrounded half like 512.325 would send 512.33 + 512.33).
   List<SelectedPaymentEntry> _recalculateAmounts(
       List<SelectedPaymentEntry> entries,
       ) {
@@ -89,8 +92,11 @@ class PaymentController extends Notifier<PaymentState> {
     if (entries.length == 1) {
       return [entries.first.copyWith(amount: state.payableAmount)];
     }
-    final half = state.payableAmount / 2;
-    return entries.map((e) => e.copyWith(amount: half)).toList();
+    final half = _round2(state.payableAmount / 2);
+    return [
+      entries[0].copyWith(amount: half),
+      entries[1].copyWith(amount: _round2(state.payableAmount - half)),
+    ];
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {

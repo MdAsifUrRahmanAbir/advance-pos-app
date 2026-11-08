@@ -100,7 +100,7 @@ class HomeMobileView extends ConsumerWidget {
       children: [
         DashboardTopBar(
           isOnline: state.isOnline,
-          onNotificationsTap: () => context.push(RouteNames.notifications),
+          onNotificationsTap: (){},
           title: title,
           subtitle: firstName.isEmpty
               ? greeting
