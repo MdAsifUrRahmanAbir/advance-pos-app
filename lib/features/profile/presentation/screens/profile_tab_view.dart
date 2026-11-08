@@ -70,7 +70,7 @@ class ProfileTabView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.xl),
                 ProfileSettingsSections(
                   showAccountSection: false,
-                  onPersonalInfoTap: () => context.go(RouteNames.editProfile),
+                  // onPersonalInfoTap: () => context.go(RouteNames.editProfile),
                   onSettingsTap: () => context.push(RouteNames.settings),
                 ),
                 const SizedBox(height: AppSizes.xl),

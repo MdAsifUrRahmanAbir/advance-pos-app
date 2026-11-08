@@ -21,7 +21,6 @@ class RouteNames {
   static const String otpVerification = '/otp-verification';
   static const String helpSupport = '/help-support';
   static const String cart = '/cart';
-  static const String editProfile = '/edit_profile';
 
   static const String dashboard = '/dashboard';
   static const String termsPrivacy = '/terms_privacy';

@@ -55,8 +55,8 @@ class ProfileMobileView extends ConsumerWidget {
                 const SizedBox(height: AppSizes.lg),
                 ProfileSettingsSections(
                   showAccountSection: false,
-                  onPersonalInfoTap: () =>
-                      context.push(RouteNames.editProfile),
+                  // onPersonalInfoTap: () =>
+                  //     context.push(RouteNames.editProfile),
                   onSettingsTap: () => context.push(RouteNames.settings),
                   onPrivacyTap: () => context.push(RouteNames.termsPrivacy),
                   onHelpCenterTap: () => context.push(RouteNames.helpSupport),

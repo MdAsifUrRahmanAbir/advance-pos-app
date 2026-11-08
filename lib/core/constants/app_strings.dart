@@ -866,4 +866,7 @@ class AppStrings {
       '$greeting, $name';
   static String dashViewAll(int count) => 'View all ($count)';
   static const String dashShowLess = 'Show less';
+
+  static const String invoiceActionsLockedFallback =
+      'Edit and delete are unavailable for this invoice.';
 }

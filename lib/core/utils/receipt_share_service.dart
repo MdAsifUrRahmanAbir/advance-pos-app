@@ -43,15 +43,19 @@ class ReceiptShareService {
     Rect? sharePositionOrigin,
   }) async {
     final bytes = await _captureAsPng(boundaryKey);
+    final fileName = '${_fileName(saleId)}.png';
     await SharePlus.instance.share(
       ShareParams(
         files: [
           XFile.fromData(
             bytes,
-            name: '${_fileName(saleId)}.png',
+            name: fileName,
             mimeType: 'image/png',
           ),
         ],
+        // cross_file ignores XFile.fromData's `name` on Android/iOS, so the
+        // shared file would get a random name. share_plus uses this instead.
+        fileNameOverrides: [fileName],
         subject: subject ?? 'Receipt $saleId',
         text: text,
         sharePositionOrigin: sharePositionOrigin,

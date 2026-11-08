@@ -6,12 +6,17 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/custom_card.dart';
+import '../../../../core/widgets/utility/info_tip_banner.dart';
 import '../../data/model/invoices_model.dart';
+import '../states/invoice_blocked_action.dart';
 import 'invoice_item_menu.dart';
 import 'invoice_status_badge.dart';
 
 /// Single invoice card: bill no, customer, status and a ⋮ menu (Edit /
 /// Delete) on top; date, items and total; then a "Bill Preview" action.
+///
+/// Edit / Delete are hidden when the server lists them in
+/// `blocked_actions`; the server's `blocked_reason` is shown instead.
 class InvoiceCardItem extends StatelessWidget {
   final ResultDatum invoice;
   final VoidCallback? onTap;
@@ -31,11 +36,28 @@ class InvoiceCardItem extends StatelessWidget {
     this.onBillPreview,
   });
 
+  bool get _isEditBlocked =>
+      invoice.blockedActions.contains(InvoiceBlockedAction.edit);
+
+  bool get _isDeleteBlocked =>
+      invoice.blockedActions.contains(InvoiceBlockedAction.delete);
+
+  /// Reason shown when any action is blocked; falls back to a generic
+  /// line if the server sends none.
+  String? get _blockedNotice {
+    if (invoice.blockedActions.isEmpty) return null;
+    final reason = invoice.blockedReason?.trim();
+    return (reason == null || reason.isEmpty)
+        ? AppStrings.invoiceActionsLockedFallback
+        : reason;
+  }
+
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
     final total = parseAmount(invoice.totalPayableAmount);
     final qty = parseQuantity(invoice.totalQuantity);
+    final blockedNotice = _blockedNotice;
 
     return CustomCard(
       onTap: onTap,
@@ -75,7 +97,10 @@ class InvoiceCardItem extends StatelessWidget {
               ),
               const SizedBox(width: AppSizes.sm),
               InvoiceStatusBadge(invoice: invoice),
-              InvoiceItemMenu(onEdit: onEdit, onDelete: onDelete),
+              InvoiceItemMenu(
+                onEdit: _isEditBlocked ? null : onEdit,
+                onDelete: _isDeleteBlocked ? null : onDelete,
+              ),
             ],
           ),
 
@@ -132,6 +157,15 @@ class InvoiceCardItem extends StatelessWidget {
               ),
             ],
           ),
+
+          // Why Edit / Delete are unavailable
+          if (blockedNotice != null) ...[
+            const SizedBox(height: AppSizes.sm),
+            InfoTipBanner(
+              text: blockedNotice,
+              icon: Icons.lock_outline_rounded,
+            ),
+          ],
 
           const SizedBox(height: AppSizes.md),
 

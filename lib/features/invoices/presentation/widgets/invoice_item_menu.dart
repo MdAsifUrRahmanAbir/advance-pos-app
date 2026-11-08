@@ -8,6 +8,9 @@ import '../../../../core/theme/app_color_scheme.dart';
 enum InvoiceMenuAction { edit, delete }
 
 /// Vertical three-dot menu on an invoice card: Edit and Delete.
+///
+/// An item whose callback is null is hidden. When both are null the
+/// menu renders nothing.
 class InvoiceItemMenu extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
@@ -16,6 +19,8 @@ class InvoiceItemMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (onEdit == null && onDelete == null) return const SizedBox.shrink();
+
     final colors = context.appColors;
 
     return PopupMenuButton<InvoiceMenuAction>(
@@ -39,24 +44,24 @@ class InvoiceItemMenu extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
-        PopupMenuItem(
-          value: InvoiceMenuAction.edit,
-          enabled: onEdit != null,
-          child: _MenuRow(
-            icon: Icons.edit_outlined,
-            label: AppStrings.edit,
-            color: colors.textPrimary,
+        if (onEdit != null)
+          PopupMenuItem(
+            value: InvoiceMenuAction.edit,
+            child: _MenuRow(
+              icon: Icons.edit_outlined,
+              label: AppStrings.edit,
+              color: colors.textPrimary,
+            ),
           ),
-        ),
-        PopupMenuItem(
-          value: InvoiceMenuAction.delete,
-          enabled: onDelete != null,
-          child: const _MenuRow(
-            icon: Icons.delete_outline_rounded,
-            label: AppStrings.delete,
-            color: AppColors.error,
+        if (onDelete != null)
+          const PopupMenuItem(
+            value: InvoiceMenuAction.delete,
+            child: _MenuRow(
+              icon: Icons.delete_outline_rounded,
+              label: AppStrings.delete,
+              color: AppColors.error,
+            ),
           ),
-        ),
       ],
     );
   }

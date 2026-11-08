@@ -38,7 +38,6 @@ import '../features/system/presentation/screens/maintenance_screen.dart';
 import '../features/otp_verification/presentation/screens/otp_verification_screen.dart';
 import '../features/help_support/presentation/screens/help_support_screen.dart';
 import '../features/cart/presentation/screens/cart_screen.dart';
-import '../features/edit_profile/presentation/screens/edit_profile_screen.dart';
 import '../features/expense_form/presentation/screens/expense_form_screen.dart';
 import '../features/new_sale/presentation/screens/new_sale_screen.dart';
 import '../features/payment/presentation/screens/payment_screen.dart';
@@ -221,7 +220,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-
       GoRoute(
         path: RouteNames.otpVerification,
         pageBuilder: (context, state) => buildPageWithTransition(
@@ -237,15 +235,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: const SettingsScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.editProfile,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const EditProfileScreen(),
         ),
       ),
 
