@@ -17,25 +17,19 @@ import '../features/expense/presentation/screens/expense_screen.dart';
 import '../features/customers/presentation/screens/customers_screen.dart';
 import '../features/invoice_detail/presentation/screens/invoice_detail_screen.dart';
 import '../features/invoices/presentation/screens/invoices_screen.dart';
-import '../features/order_list/presentation/screens/order_list_screen.dart';
 import '../features/terms_privacy/presentation/screens/terms_privacy_screen.dart';
 import '../features/onboarding/presentation/screens/splash_screen.dart';
 import '../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../features/onboarding/presentation/screens/welcome_screen.dart';
 import '../features/login/presentation/screens/login_screen.dart';
-import '../features/forgot_password/presentation/screens/forgot_password_screen.dart';
-import '../features/reset_password/presentation/screens/reset_password_screen.dart';
 import '../features/main_shell/presentation/screens/main_shell_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
-import '../features/search/presentation/screens/search_screen.dart';
-import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/system/presentation/screens/not_found_screen.dart';
 import '../features/system/presentation/screens/error_screen.dart';
 import '../features/system/presentation/screens/no_internet_screen.dart';
 import '../features/system/presentation/screens/maintenance_screen.dart';
-import '../features/otp_verification/presentation/screens/otp_verification_screen.dart';
 import '../features/help_support/presentation/screens/help_support_screen.dart';
 import '../features/cart/presentation/screens/cart_screen.dart';
 import '../features/expense_form/presentation/screens/expense_form_screen.dart';
@@ -122,24 +116,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        path: RouteNames.forgotPassword,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const ForgotPasswordScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.resetPassword,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const ResetPasswordScreen(),
-        ),
-      ),
-
-      GoRoute(
         path: RouteNames.mainShell,
         pageBuilder: (context, state) => buildPageWithTransition(
           context: context,
@@ -154,24 +130,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: const HomeScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.search,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const SearchScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.notifications,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const NotificationsScreen(),
         ),
       ),
 
@@ -221,15 +179,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       GoRoute(
-        path: RouteNames.otpVerification,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const OtpVerificationScreen(),
-        ),
-      ),
-
-      GoRoute(
         path: RouteNames.settings,
         pageBuilder: (context, state) => buildPageWithTransition(
           context: context,
@@ -263,15 +212,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           context: context,
           state: state,
           child: const TermsPrivacyScreen(),
-        ),
-      ),
-
-      GoRoute(
-        path: RouteNames.orderList,
-        pageBuilder: (context, state) => buildPageWithTransition(
-          context: context,
-          state: state,
-          child: const OrderListScreen(),
         ),
       ),
 

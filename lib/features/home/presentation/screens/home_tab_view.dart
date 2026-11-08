@@ -38,7 +38,8 @@ class HomeTabView extends ConsumerWidget {
     final period = state.selectedPeriod;
     final range = state.selectedChartRange;
 
-    final isFirstLoad = state.dashboardModel == null && state.isDashboardLoading;
+    final isFirstLoad =
+        state.dashboardModel == null && state.isDashboardLoading;
     final isSkeleton = state.isDashboardLoading; // first load AND refresh
     final showError = state.dashboardModel == null && !state.isDashboardLoading;
     final model = state.dashboardModel ?? DashboardSkeletonData.model;
@@ -105,7 +106,7 @@ class HomeTabView extends ConsumerWidget {
         children: [
           DashboardTopBar(
             isOnline: state.isOnline,
-            onNotificationsTap: () => context.push(RouteNames.notifications),
+            onNotificationsTap: () {},
             title: title,
             subtitle: firstName.isEmpty
                 ? greeting
@@ -115,57 +116,57 @@ class HomeTabView extends ConsumerWidget {
           Expanded(
             child: showError
                 ? DashboardErrorView(
-              message: state.errorMessage ?? AppStrings.dashLoadFailed,
-              onRetry: controller.getDashboard,
-            )
+                    message: state.errorMessage ?? AppStrings.dashLoadFailed,
+                    onRetry: controller.getDashboard,
+                  )
                 : RefreshIndicator(
-              color: AppColors.primary,
-              onRefresh: refresh,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: _maxContentWidth,
-                  ),
-                  child: ListView(
-                    physics: isFirstLoad
-                        ? const NeverScrollableScrollPhysics()
-                        : const AlwaysScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(AppSizes.lg),
-                    children: [
-                      overviewHeader,
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
+                    color: AppColors.primary,
+                    onRefresh: refresh,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          maxWidth: _maxContentWidth,
+                        ),
+                        child: ListView(
+                          physics: isFirstLoad
+                              ? const NeverScrollableScrollPhysics()
+                              : const AlwaysScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(AppSizes.lg),
+                          children: [
+                            overviewHeader,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                hero,
-                                const SizedBox(height: AppSizes.md),
-                                kpis,
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      hero,
+                                      const SizedBox(height: AppSizes.md),
+                                      kpis,
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: AppSizes.md),
+                                Expanded(child: collection),
                               ],
                             ),
-                          ),
-                          const SizedBox(width: AppSizes.md),
-                          Expanded(child: collection),
-                        ],
+                            const SizedBox(height: AppSizes.lg),
+                            trend,
+                            const SizedBox(height: AppSizes.lg),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: categories),
+                                const SizedBox(width: AppSizes.md),
+                                Expanded(child: products),
+                              ],
+                            ),
+                            const SizedBox(height: AppSizes.lg),
+                          ],
+                        ).skeletonizer(enabled: isSkeleton),
                       ),
-                      const SizedBox(height: AppSizes.lg),
-                      trend,
-                      const SizedBox(height: AppSizes.lg),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(child: categories),
-                          const SizedBox(width: AppSizes.md),
-                          Expanded(child: products),
-                        ],
-                      ),
-                      const SizedBox(height: AppSizes.lg),
-                    ],
-                  ).skeletonizer(enabled: isSkeleton),
-                ),
-              ),
-            ),
+                    ),
+                  ),
           ),
         ],
       ),

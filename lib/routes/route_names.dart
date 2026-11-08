@@ -4,12 +4,8 @@ class RouteNames {
   static const String onboarding = '/onboarding';
   static const String welcome = '/welcome';
   static const String login = '/login';
-  static const String forgotPassword = '/forgot-password';
-  static const String resetPassword = '/reset-password';
   static const String mainShell = '/main';
   static const String home = '/home';
-  static const String search = '/search';
-  static const String notifications = '/notifications';
   static const String profile = '/profile';
   static const String settings = '/settings';
   static const String notFound = '/not-found';
@@ -18,13 +14,12 @@ class RouteNames {
   static const String maintenance = '/maintenance';
 
   // Added: routes for the newly added basic screens
-  static const String otpVerification = '/otp-verification';
   static const String helpSupport = '/help-support';
   static const String cart = '/cart';
 
   static const String dashboard = '/dashboard';
   static const String termsPrivacy = '/terms_privacy';
-  static const String orderList = '/order_list';
+  // static const String orderList = '/order_list';
   // static const String product = '/product';
   static const String stock = '/stock_screen';
   static const String newSale = '/new_sale';
