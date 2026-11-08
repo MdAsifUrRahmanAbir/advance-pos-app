@@ -43,7 +43,6 @@ class DashboardTopBar extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: colors.surface,
-        // border: Border(bottom: BorderSide(color: colors.border)),
       ),
       child: Row(
         children: [
