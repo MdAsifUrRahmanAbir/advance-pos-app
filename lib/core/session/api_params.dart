@@ -12,6 +12,7 @@ abstract final class ApiParamDefaults {
   /// add, edit, discount, replacement).
   static const int salesType = 1;
   static const String clientApp = "pos";
+  static const String systemToken = "2nMDQU2TodIJH9Y8oycSUKNDVcHh5KZKCbLAmamU";
 
   /// FLAG: login returns `emp_id: null` for users without an employee
   /// record; 0 is sent as `employee_id` until the backend defines this.

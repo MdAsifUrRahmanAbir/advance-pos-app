@@ -22,7 +22,7 @@ class ClientRepository {
       queryParameters: {
         'comp_code': compCode,
         'app': ApiParamDefaults.clientApp,
-        'system_token': "2nMDQU2TodIJH9Y8oycSUKNDVcHh5KZKCbLAmamU",
+        'system_token': ApiParamDefaults.systemToken,
       },
     );
     return ClientInfoModel.fromJson(response.data);

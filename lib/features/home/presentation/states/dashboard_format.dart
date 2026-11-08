@@ -16,6 +16,17 @@ class DashboardFormat {
     return '$sign${AppStrings.dashCurrencySymbol}$digits';
   }
 
+  /// Hour-based greeting: morning before 12, afternoon before 17, then
+  /// evening.
+  static String greeting(DateTime now) {
+    if (now.hour < _afternoonStartsAt) return AppStrings.dashGreetingMorning;
+    if (now.hour < _eveningStartsAt) return AppStrings.dashGreetingAfternoon;
+    return AppStrings.dashGreetingEvening;
+  }
+
+  static const int _afternoonStartsAt = 12;
+  static const int _eveningStartsAt = 17;
+
   /// 542168.95 -> 542.2k · 1371954 -> 1.4M · 800 -> 800 (chart axis labels)
   static String compact(double value) {
     String trim(double v) =>
