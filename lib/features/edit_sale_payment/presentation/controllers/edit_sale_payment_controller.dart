@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +11,7 @@ import '../../../edit_sale_cart/presentation/controllers/edit_sale_cart_controll
 import '../../../invoice_detail/data/models/sale_amounts.dart';
 import '../../../master_data/data/models/payment_accounts_model.dart' as pa;
 import '../../../master_data/presentation/controllers/master_data_controller.dart';
+import '../../../payment/presentation/controllers/payment_split_rules.dart';
 import '../../../payment/presentation/states/payment_state.dart'
     show ReceiptLineItem, SelectedPaymentEntry;
 import '../../../payment/presentation/states/payment_systems_from_accounts.dart';
@@ -27,16 +26,19 @@ final editSalePaymentControllerProvider = NotifierProvider.autoDispose
 
 /// Payment step of Edit Sale. Reads the finished cart from
 /// [editSaleCartControllerProvider] (same bill no), pre-fills the
-/// invoice's original payment methods, and sends `PUT /sales/edit/:billNo`.
+/// invoice's previous payments exactly as they were, and sends
+/// `PUT /sales/edit/:billNo`.
 ///
-/// Selection/split rules are the same as the regular Payment screen;
-/// the payment feature itself is not touched.
+/// A higher total is collected on top of the previous payments through
+/// any method ([addDueTo]); a lower total and any change are returned
+/// from Cash.
 class EditSalePaymentController extends Notifier<EditSalePaymentState> {
   EditSalePaymentController(this.billNo);
 
   final String billNo;
 
   static const String _deliveryCharge = '0';
+  static const double _eps = 0.005;
 
   bool _prefillDone = false;
 
@@ -52,10 +54,10 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     // Master data may still be loading when this page opens — pre-fill
     // as soon as payment accounts arrive.
     ref.listen(masterDataControllerProvider, (_, next) {
-      if (next.paymentAccounts.isNotEmpty) _prefillFromInvoice();
+      if (next.paymentAccounts.isNotEmpty) _onAccountsReady();
     });
     Future.microtask(() {
-      if (ref.mounted) _prefillFromInvoice();
+      if (ref.mounted) _onAccountsReady();
     });
 
     return EditSalePaymentState(
@@ -81,9 +83,28 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
   double _round2(double v) => (v * 100).round() / 100;
   String _money(double v) => v.toStringAsFixed(2);
 
+  void _onAccountsReady() {
+    _syncCashAccount();
+    _prefillFromInvoice();
+  }
+
+  /// The Cash account change and returns are paid out of.
+  void _syncCashAccount() {
+    if (state.cashAccount != null) return;
+    final cash = ref
+        .read(masterDataControllerProvider)
+        .paymentAccounts
+        .where((a) => SelectedPaymentEntry(system: a.paymentSystem).isCash)
+        .firstOrNull;
+    if (cash != null) state = state.copyWith(cashAccount: cash);
+  }
+
   // ───────────────────────────────────────────────
   // Pre-fill from the original invoice
   // ───────────────────────────────────────────────
+  /// Previous payments keep their exact amounts (marked as typed, so no
+  /// rule recalculates them). The difference to the new total is shown
+  /// separately and settled with [addDueTo] or returned from Cash.
   void _prefillFromInvoice() {
     if (_prefillDone || state.selectedEntries.isNotEmpty) return;
     final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
@@ -93,19 +114,39 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     final invoice = ref.read(editSaleCartControllerProvider(billNo)).invoice;
     if (invoice == null) return;
 
+    final previous = [
+      for (final c in invoice.payment.collection)
+        if (c.amount.abs() > _eps)
+          PreviousPayment(
+            systemId: c.paymentSystemId,
+            systemName: c.paymentSystemName,
+            amount: _round2(c.amount),
+          ),
+    ];
+
     final systems = paymentSystemsFrom(accounts);
     final usedAccountIds =
     invoice.payment.paymentAccounts.map((a) => a.id.trim()).toSet();
 
     final entries = <SelectedPaymentEntry>[];
-    final originalAmounts = <double>[];
-    for (final collected in invoice.payment.collection) {
-      if (entries.length >= EditSalePaymentState.maxSelectable) break;
-      final system =
-          systems.where((s) => s.id == collected.paymentSystemId).firstOrNull;
-      if (system == null || entries.any((e) => e.system.id == system.id)) continue;
+    for (final p in previous) {
+      final system = systems.where((s) => s.id == p.systemId).firstOrNull;
+      if (system == null) continue;
 
-      var entry = SelectedPaymentEntry(system: system);
+      final index = entries.indexWhere((e) => e.system.id == system.id);
+      if (index != -1) {
+        // Same method listed twice: one entry with the sum.
+        entries[index] = entries[index]
+            .copyWith(amount: _round2(entries[index].amount + p.amount));
+        continue;
+      }
+      if (entries.length >= EditSalePaymentState.maxSelectable) continue;
+
+      var entry = SelectedPaymentEntry(
+        system: system,
+        amount: p.amount,
+        amountTouched: true,
+      );
       final candidates = accountsForSystem(system);
       final account = candidates
           .where((a) => usedAccountIds.contains(a.id.toString()))
@@ -115,34 +156,26 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
               : null);
       if (account != null) entry = entry.copyWith(account: account);
       entries.add(entry);
-      originalAmounts.add(collected.amount);
     }
-    if (entries.isEmpty) return;
 
-    final payable = state.payableAmount;
-    final List<SelectedPaymentEntry> withAmounts;
-    if (entries.length == 1) {
-      withAmounts = [entries.first.copyWith(amount: payable)];
-    } else {
-      // Keep the original first-method amount where it still fits; the
-      // second method covers the rest of the new total.
-      final first = _round2(math.min(originalAmounts.first, payable));
-      withAmounts = [
-        entries[0].copyWith(amount: first),
-        entries[1].copyWith(amount: _round2(math.max(payable - first, 0))),
-      ];
-    }
-    state = state.copyWith(selectedEntries: withAmounts, prefilledFromInvoice: true);
+    state = state.copyWith(
+      previousPayments: previous,
+      selectedEntries: entries,
+      prefilledFromInvoice: entries.isNotEmpty,
+    );
   }
 
   // ───────────────────────────────────────────────
-  // Payment selection (same rules as PaymentController)
+  // Payment selection
   // ───────────────────────────────────────────────
   List<pa.ResultDatum> accountsForSystem(pa.PaymentSystem system) {
     final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
     return accounts.where((a) => a.paymentSystem.id == system.id).toList();
   }
 
+  /// Adding a method keeps every other amount (previous payments are not
+  /// redistributed); the new method starts at 0 — or at the full payable
+  /// when it is the only one.
   void toggleSystem(pa.PaymentSystem system) {
     _prefillDone = true; // the salesman took over — never overwrite
     final current = List<SelectedPaymentEntry>.from(state.selectedEntries);
@@ -158,22 +191,10 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
         final accounts = accountsForSystem(system);
         if (accounts.isNotEmpty) entry = entry.copyWith(account: accounts.first);
       }
+      if (current.isEmpty) entry = entry.copyWith(amount: state.payableAmount);
       current.add(entry);
     }
-    state = state.copyWith(selectedEntries: _recalculateAmounts(current), clearError: true);
-  }
-
-  /// 1 entry → full payable; 2 entries → 50/50 starting split.
-  List<SelectedPaymentEntry> _recalculateAmounts(List<SelectedPaymentEntry> entries) {
-    if (entries.isEmpty) return entries;
-    if (entries.length == 1) {
-      return [entries.first.copyWith(amount: state.payableAmount)];
-    }
-    final half = _round2(state.payableAmount / 2);
-    return [
-      entries[0].copyWith(amount: half),
-      entries[1].copyWith(amount: _round2(state.payableAmount - half)),
-    ];
+    state = state.copyWith(selectedEntries: current, clearError: true);
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {
@@ -185,26 +206,29 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     );
   }
 
-  /// Editing one amount auto-fills the other with `payable - edited`
-  /// (never below 0). Non-cash is capped at payable; cash may exceed it
-  /// (the difference is change).
+  /// Same Cash/non-cash rules as Payment, but typed and previous amounts
+  /// are never recalculated.
   void updateAmountForSystem(int systemId, double amount) {
-    final payable = state.payableAmount;
-    final entries = state.selectedEntries;
-    final edited = entries.where((e) => e.system.id == systemId).firstOrNull;
-    if (edited == null) return;
+    state = state.copyWith(
+      selectedEntries: PaymentSplitRules.onAmountEdited(
+        state.selectedEntries,
+        systemId: systemId,
+        amount: amount,
+        payable: state.payableAmount,
+        keepTypedAmounts: true,
+      ),
+    );
+  }
 
-    var value = amount < 0 ? 0.0 : amount;
-    if (!edited.isCash) value = math.min(value, payable);
-    final complement = _round2(math.max(payable - value, 0));
-
+  /// Adds what is still missing to the method the customer pays it with.
+  void addDueTo(int systemId) {
+    final due = state.shortfall;
+    if (due <= 0) return;
     state = state.copyWith(
       selectedEntries: [
-        for (final e in entries)
+        for (final e in state.selectedEntries)
           if (e.system.id == systemId)
-            e.copyWith(amount: value)
-          else if (entries.length == 2)
-            e.copyWith(amount: complement)
+            e.copyWith(amount: _round2(e.amount + due), amountTouched: true)
           else
             e,
       ],
@@ -244,12 +268,29 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     }
   }
 
+  /// Account + amount per method. Non-cash as collected; Cash is net
+  /// (given − returned) and goes negative when more is returned than was
+  /// taken in cash. FLAG: backend must accept a negative cash amount.
+  List<({pa.ResultDatum account, double amount})> _paymentLines() {
+    final lines = <({pa.ResultDatum account, double amount})>[];
+    for (final e in state.selectedEntries) {
+      final account = e.account;
+      if (e.isCash || account == null || e.amount <= _eps) continue;
+      lines.add((account: account, amount: e.amount));
+    }
+    final cashAccount = state.cashEntry?.account ?? state.cashAccount;
+    final cash = state.netCashAmount;
+    if (cashAccount != null && cash.abs() > _eps) {
+      lines.add((account: cashAccount, amount: cash));
+    }
+    return lines;
+  }
+
   Map<String, dynamic> _buildPayload() {
     final CartState cart = ref.read(editSaleCartControllerProvider(billNo)).cart;
     final items = cart.items;
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
-    final payments = state.selectedEntries.where((e) => e.amount > 0.005).toList();
-    final cashReturn = state.cashReturn;
+    final lines = _paymentLines();
 
     return {
       // sales_type / branch_id / employee_id: set by EditSalePaymentRepository.
@@ -273,12 +314,12 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
         for (var i = 0; i < items.length; i++) '$i': vatRate,
       },
       'payment_acc_id_arr': {
-        for (final e in payments)
-          if (e.account != null) '${e.system.id}': '${e.account!.id}',
+        for (final l in lines)
+          '${l.account.paymentSystem.id}': '${l.account.id}',
       },
       'given_amount_arr': {
-        for (final e in payments)
-          '${e.system.id}': _money(e.isCash ? e.amount - cashReturn : e.amount),
+        for (final l in lines)
+          '${l.account.paymentSystem.id}': _money(l.amount),
       },
     };
   }

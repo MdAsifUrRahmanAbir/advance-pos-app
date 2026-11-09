@@ -62,7 +62,8 @@ class LoginTabView extends ConsumerWidget {
 
           const SizedBox(height: AppSizes.lg),
 
-          LoginClientBrand(name: '', logoUrl: client!.logo),
+          // client is null for a frame after "Switch company" clears it.
+          LoginClientBrand(name: '', logoUrl: client?.logo ?? ''),
 
           Expanded(
             child: Center(

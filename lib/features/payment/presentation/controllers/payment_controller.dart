@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +12,7 @@ import '../../../master_data/presentation/controllers/master_data_controller.dar
 import '../../../new_sale/presentation/controllers/new_sale_controller.dart';
 import '../../data/repositories/payment_repository.dart';
 import '../states/payment_state.dart';
+import 'payment_split_rules.dart';
 
 final paymentControllerProvider =
 NotifierProvider.autoDispose<PaymentController, PaymentState>(
@@ -51,8 +50,8 @@ class PaymentController extends Notifier<PaymentState> {
   ];
 
   /// Selects/deselects a payment system, capped at
-  /// [PaymentState.maxSelectable]. Re-derives every selected entry's
-  /// amount afterward (see [_recalculateAmounts]).
+  /// [PaymentState.maxSelectable]. Amounts are re-derived by
+  /// [PaymentSplitRules.onSelectionChanged].
   void toggleSystem(pa.PaymentSystem system) {
     final current = List<SelectedPaymentEntry>.from(state.selectedEntries);
     final existingIndex = current.indexWhere((e) => e.system.id == system.id);
@@ -71,32 +70,15 @@ class PaymentController extends Notifier<PaymentState> {
       current.add(entry);
     }
 
-    state = state.copyWith(selectedEntries: _recalculateAmounts(current));
+    state = state.copyWith(
+      selectedEntries:
+      PaymentSplitRules.onSelectionChanged(current, state.payableAmount),
+    );
   }
 
   List<pa.ResultDatum> accountsForSystem(pa.PaymentSystem system) {
     final accounts = ref.read(masterDataControllerProvider).paymentAccounts;
     return accounts.where((a) => a.paymentSystem.id == system.id).toList();
-  }
-
-  /// - 1 entry selected -> defaults to the full payable amount (locked
-  ///   in the UI afterward if that entry is non-cash).
-  /// - 2 entries selected -> starting 50/50 split, both editable. The
-  ///   first half is rounded to 2 decimals and the second takes the
-  ///   rest, so the two always add up to the payable exactly (an
-  ///   unrounded half like 512.325 would send 512.33 + 512.33).
-  List<SelectedPaymentEntry> _recalculateAmounts(
-      List<SelectedPaymentEntry> entries,
-      ) {
-    if (entries.isEmpty) return entries;
-    if (entries.length == 1) {
-      return [entries.first.copyWith(amount: state.payableAmount)];
-    }
-    final half = _round2(state.payableAmount / 2);
-    return [
-      entries[0].copyWith(amount: half),
-      entries[1].copyWith(amount: _round2(state.payableAmount - half)),
-    ];
   }
 
   void selectAccountForSystem(int systemId, pa.ResultDatum account) {
@@ -108,34 +90,16 @@ class PaymentController extends Notifier<PaymentState> {
     );
   }
 
-  /// Editing one amount auto-fills the other (when two methods are
-  /// selected) with `payable - edited`, never below 0. Non-cash amounts
-  /// are capped at the payable amount; cash may exceed it (that's the
-  /// "given" amount, and the difference is returned as change).
+  /// See [PaymentSplitRules.onAmountEdited]: cash fills an untouched
+  /// non-cash side; non-cash never fills cash; change comes from cash.
   void updateAmountForSystem(int systemId, double amount) {
-    final payable = state.payableAmount;
-    final entries = state.selectedEntries;
-    final edited = entries.where((e) => e.system.id == systemId).firstOrNull;
-    if (edited == null) return;
-
-    var value = amount < 0 ? 0.0 : amount;
-    if (!edited.isCash) value = math.min(value, payable);
-
-    final other = entries.length == 2
-        ? entries.firstWhere((e) => e.system.id != systemId)
-        : null;
-    final complement = _round2(math.max(payable - value, 0));
-
     state = state.copyWith(
-      selectedEntries: [
-        for (final e in entries)
-          if (e.system.id == systemId)
-            e.copyWith(amount: value)
-          else if (other != null && e.system.id == other.system.id)
-            e.copyWith(amount: complement)
-          else
-            e,
-      ],
+      selectedEntries: PaymentSplitRules.onAmountEdited(
+        state.selectedEntries,
+        systemId: systemId,
+        amount: amount,
+        payable: state.payableAmount,
+      ),
     );
   }
 
@@ -177,9 +141,11 @@ class PaymentController extends Notifier<PaymentState> {
 
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
 
-    final payments =
-    state.selectedEntries.where((e) => e.amount > 0.005).toList();
     final cashReturn = state.cashReturn;
+    // Net 0 (e.g. all the cash was returned as change) is not a payment.
+    final payments = state.selectedEntries
+        .where((e) => PaymentSplitRules.netAmount(e, cashReturn) > 0.005)
+        .toList();
 
     return {
       // sales_type / branch_id / employee_id: set by PaymentRepository.
@@ -209,7 +175,7 @@ class PaymentController extends Notifier<PaymentState> {
       },
       'given_amount_arr': {
         for (final e in payments)
-          '${e.system.id}': _money(e.isCash ? e.amount - cashReturn : e.amount),
+          '${e.system.id}': _money(PaymentSplitRules.netAmount(e, cashReturn)),
       },
     };
   }

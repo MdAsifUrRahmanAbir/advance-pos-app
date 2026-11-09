@@ -21,6 +21,11 @@ class SecureStorageService {
   static const _keyCacheEncryptionKey = 'cache_encryption_key';
   static const _keyClientProfile = 'client_profile';
   static const _keyApiParams = 'auth_api_params';
+  static const _keyRememberedUsername = 'login_remembered_username';
+  static const _keyRememberSession = 'auth_remember_session';
+
+  /// Stored value meaning "yes"; anything else (or nothing) means no.
+  static const _flagOn = '1';
 
   Future<void> saveAccessToken(String token) =>
       _storage.write(key: _keyAccessToken, value: token);
@@ -57,7 +62,28 @@ class SecureStorageService {
       _storage.write(key: _keyClientProfile, value: json);
   Future<String?> readClientProfile() => _storage.read(key: _keyClientProfile);
   Future<void> clearClientProfile() => _storage.delete(key: _keyClientProfile);
-  
+
+  /// Username saved by "Remember me" on Login (never the password).
+  /// Kept across logout — that is the point. Removed when Remember me is
+  /// unticked at a successful sign-in, or when the device switches company.
+  Future<void> saveRememberedUsername(String username) =>
+      _storage.write(key: _keyRememberedUsername, value: username);
+  Future<String?> readRememberedUsername() =>
+      _storage.read(key: _keyRememberedUsername);
+  Future<void> clearRememberedUsername() =>
+      _storage.delete(key: _keyRememberedUsername);
+
+  /// "Remember me" at sign-in: whether the session may be restored on the
+  /// next cold start. False (or never saved) means the next app start
+  /// opens Login.
+  Future<void> saveRememberSession(bool remember) => remember
+      ? _storage.write(key: _keyRememberSession, value: _flagOn)
+      : clearRememberSession();
+  Future<bool> readRememberSession() async =>
+      await _storage.read(key: _keyRememberSession) == _flagOn;
+  Future<void> clearRememberSession() =>
+      _storage.delete(key: _keyRememberSession);
+
   /// Called on logout. Wipes tokens only (the session profile is cleared
   /// separately via [clearSessionProfile]).
   Future<void> clearAuthTokens() async {
@@ -69,6 +95,7 @@ class SecureStorageService {
     await clearAuthTokens();
     await clearSessionProfile();
     await clearApiParams();
+    await clearRememberSession();
     if (includeCacheKey) {
       await _storage.delete(key: _keyCacheEncryptionKey);
     }

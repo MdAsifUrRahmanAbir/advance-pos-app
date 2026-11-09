@@ -10,9 +10,10 @@ import '../../../master_data/presentation/controllers/master_data_controller.dar
 import '../../../payment/presentation/states/payment_systems_from_accounts.dart';
 import '../../../payment/presentation/widgets/payable_amount_card.dart';
 import '../controllers/edit_sale_payment_controller.dart';
-import '../widgets/edit_sale_amount_comparison.dart';
+import '../widgets/edit_sale_payment_changes_list.dart';
 import '../widgets/edit_sale_payment_methods_section.dart';
 import '../widgets/edit_sale_payment_top_bar.dart';
+import '../widgets/edit_sale_previous_payment_card.dart';
 import 'edit_sale_payment_view_actions.dart';
 
 /// Same content as [EditSalePaymentMobileView], centered in a constrained
@@ -52,10 +53,11 @@ class _EditSalePaymentTabViewState extends ConsumerState<EditSalePaymentTabView>
                       padding: const EdgeInsets.all(AppSizes.lg),
                       children: [
                         PayableAmountCard(amount: state.payableAmount, saleDate: state.saleDate),
-                        const SizedBox(height: AppSizes.sm),
-                        EditSaleAmountComparison(
+                        const SizedBox(height: AppSizes.md),
+                        EditSalePreviousPaymentCard(
+                          previousPayments: state.previousPayments,
+                          previousTotal: state.previousTotal,
                           originalPayable: state.originalPayable,
-                          originalPaid: state.originalPaid,
                           newPayable: state.payableAmount,
                         ),
                         const SizedBox(height: AppSizes.lg),
@@ -69,7 +71,10 @@ class _EditSalePaymentTabViewState extends ConsumerState<EditSalePaymentTabView>
                           onToggle: controller.toggleSystem,
                           onAccountChanged: controller.selectAccountForSystem,
                           onAmountChanged: controller.updateAmountForSystem,
+                          onAddDue: controller.addDueTo,
                         ),
+                        const SizedBox(height: AppSizes.md),
+                        EditSalePaymentChangesList(changes: state.methodChanges),
                         const SizedBox(height: AppSizes.xl),
                       ],
                     ),

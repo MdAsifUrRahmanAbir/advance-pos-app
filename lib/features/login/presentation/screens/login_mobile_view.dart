@@ -56,7 +56,8 @@ class LoginMobileView extends ConsumerWidget {
           const CustomAppBar(title: AppStrings.signIn, showBack: false),
           const SizedBox(height: AppSizes.lg),
 
-          LoginClientBrand(name: '', logoUrl: client!.logo),
+          // client is null for a frame after "Switch company" clears it.
+          LoginClientBrand(name: '', logoUrl: client?.logo ?? ''),
 
           Expanded(
             child: SingleChildScrollView(

@@ -21,10 +21,15 @@ class SelectedPaymentEntry {
   final pa.ResultDatum? account;
   final double amount;
 
+  /// True once the user typed this amount (not auto-filled). A typed
+  /// non-cash amount is no longer recalculated when cash changes.
+  final bool amountTouched;
+
   const SelectedPaymentEntry({
     required this.system,
     this.account,
     this.amount = 0,
+    this.amountTouched = false,
   });
 
   bool get isCash => system.shortName.trim().toUpperCase() == 'CAS';
@@ -41,11 +46,16 @@ class SelectedPaymentEntry {
   /// auto-assigned when the system is selected.
   bool get needsAccountPicker => !isCash && !isReward;
 
-  SelectedPaymentEntry copyWith({pa.ResultDatum? account, double? amount}) {
+  SelectedPaymentEntry copyWith({
+    pa.ResultDatum? account,
+    double? amount,
+    bool? amountTouched,
+  }) {
     return SelectedPaymentEntry(
       system: system,
       account: account ?? this.account,
       amount: amount ?? this.amount,
+      amountTouched: amountTouched ?? this.amountTouched,
     );
   }
 }

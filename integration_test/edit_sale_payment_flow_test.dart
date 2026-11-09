@@ -7,6 +7,9 @@ import 'package:advance_pos_app/core/network/api_exception.dart';
 import 'package:advance_pos_app/core/widgets/common/primary_button.dart';
 import 'package:advance_pos_app/features/bill_preview/presentation/widgets/sale_complete_sheet.dart';
 import 'package:advance_pos_app/features/edit_sale_payment/presentation/screens/edit_sale_payment_screen.dart';
+import 'package:advance_pos_app/features/edit_sale_payment/presentation/widgets/edit_sale_add_due_bar.dart';
+import 'package:advance_pos_app/features/edit_sale_payment/presentation/widgets/edit_sale_payment_changes_list.dart';
+import 'package:advance_pos_app/features/edit_sale_payment/presentation/widgets/edit_sale_previous_payment_card.dart';
 import 'package:advance_pos_app/features/payment/presentation/widgets/change_due_banner.dart';
 import 'package:advance_pos_app/features/payment/presentation/widgets/payment_entry_card.dart';
 
@@ -43,7 +46,8 @@ void main() {
     billRepo = FakeBillPreviewRepository(bill: billJson(billNo: editBillNo));
   });
 
-  /// Opens Edit Sale. [editCart] runs on the cart before Proceed.
+  /// Opens Edit Sale (invoice paid 1039.50 in Cash). [editCart] runs on
+  /// the cart before Proceed.
   Future<void> openPayment(
       WidgetTester tester, {
         bool signedIn = true,
@@ -64,6 +68,26 @@ void main() {
     await goToPayment(tester);
   }
 
+  /// Scrolls [finder] to the middle of the list and lets the frame land,
+  /// so a tap can't hit the bottom Update bar or miss off-screen.
+  Future<void> revealCenter(WidgetTester tester, Finder finder) async {
+    await Scrollable.ensureVisible(tester.element(finder), alignment: 0.5);
+    await pumpFor(tester);
+  }
+
+  /// Opens [system]'s account dropdown and picks [label].
+  Future<void> pickAccount(
+      WidgetTester tester,
+      String system,
+      String label,
+      ) async {
+    await revealCenter(tester, accountDropdown(system));
+    await tester.tap(accountDropdown(system));
+    await pumpFor(tester);
+    await tester.tap(find.text(label).last);
+    await pumpFor(tester);
+  }
+
   bool updateEnabled(WidgetTester tester) => tester
       .widget<PrimaryButton>(
     find.ancestor(of: updateButton, matching: find.byType(PrimaryButton)),
@@ -78,6 +102,15 @@ void main() {
     await pumpFor(tester);
   }
 
+  /// Adds bKash with bKash Merchant (id 21).
+  Future<void> addBkash(WidgetTester tester) async {
+    await revealCenter(tester, systemChip('bKash'));
+    await tester.tap(systemChip('bKash'));
+    await pumpFor(tester);
+    await pickAccount(
+        tester, 'bKash', accountLabel('bKash Merchant', '01700000001'));
+  }
+
   /// The error snackbar sits on top of the bottom Update button, so a
   /// retry tap would land on the snackbar (flagged as a UX issue).
   Future<void> dismissSnackBar(WidgetTester tester) async {
@@ -88,17 +121,20 @@ void main() {
 
   // ─────────────────────────────── Opening
   group('opening', () {
-    testWidgets('cart totals and the invoice\'s original method',
+    testWidgets('cart totals, previous payment and its method',
             (tester) async {
           await openPayment(tester); // 990 + 5 % VAT
 
           expect(find.byType(EditSalePaymentScreen), findsOneWidget);
           expect(find.text('1039.50'), findsWidgets); // payable card
-          expect(find.textContaining(AppStrings.editSaleOriginalTotalLabel),
-              findsOneWidget);
+          expect(find.byType(EditSalePreviousPaymentCard), findsOneWidget);
+          expect(find.text(AppStrings.editSalePreviousPaymentTitle), findsOneWidget);
+          expect(find.text(AppStrings.editSaleOriginalTotalLabel), findsOneWidget);
+          expect(find.text(AppStrings.editSaleNoDifferenceLabel), findsOneWidget);
 
           final state = paymentState(tester);
           expect(state.payableAmount, 1039.5);
+          expect(state.previousPayments.single.amount, 1039.5);
           expect(state.prefilledFromInvoice, isTrue);
           expect(state.selectedEntries.single.system.id, cashSystemId);
           expect(state.selectedEntries.single.amount, 1039.5);
@@ -115,6 +151,7 @@ void main() {
 
           expect(paymentState(tester).payableAmount, 1512); // 1440 × 1.05
           expect(find.text('+472.50'), findsOneWidget);
+          expect(find.text(AppStrings.editSaleCollectMoreLabel), findsOneWidget);
         });
 
     testWidgets('methods failed to load: Retry loads and pre-fills',
@@ -124,6 +161,7 @@ void main() {
           expect(find.text(AppStrings.paymentMethodsLoadError), findsOneWidget);
           expect(updateEnabled(tester), isFalse);
 
+          await revealCenter(tester, find.text(AppStrings.retry));
           await tester.tap(find.text(AppStrings.retry));
           await pumpFor(tester);
 
@@ -185,18 +223,16 @@ void main() {
             (tester) async {
           await openPayment(tester);
 
+          await revealCenter(tester, systemChip('bKash'));
           await tester.tap(systemChip('bKash'));
           await pumpFor(tester);
+          // The previous cash payment stays; bKash starts empty.
           expect(paymentState(tester).selectedEntries.map((e) => e.amount),
-              [519.75, 519.75]);
+              [1039.5, 0]);
           expect(updateEnabled(tester), isFalse); // bKash has no account yet
 
-          await tester.ensureVisible(accountDropdown('bKash'));
-          await tester.tap(accountDropdown('bKash'));
-          await pumpFor(tester);
-          await tester
-              .tap(find.text(accountLabel('bKash Merchant', '01700000001')).last);
-          await pumpFor(tester);
+          await pickAccount(
+              tester, 'bKash', accountLabel('bKash Merchant', '01700000001'));
 
           await tester.enterText(amountField('Cash'), '600');
           await pumpFor(tester);
@@ -211,9 +247,80 @@ void main() {
               {'$cashSystemId': '600.00', '$bkashSystemId': '439.50'});
         });
 
+    testWidgets('bKash typed: cash kept, extra returned from cash',
+            (tester) async {
+          await openPayment(tester);
+          await addBkash(tester);
+
+          await tester.enterText(amountField('bKash'), '500');
+          await pumpFor(tester);
+          final s = paymentState(tester);
+          expect(s.selectedEntries.map((e) => e.amount), [1039.5, 500]);
+          expect(s.cashReturn, 500);
+          expect(find.byType(EditSalePaymentChangesList), findsOneWidget);
+
+          await tapUpdateAndConfirm(tester);
+          final payload = paymentRepo.lastPayload;
+          expect(payload['given_amount'], '1039.50');
+          expect(payload['given_amount_arr'],
+              {'$cashSystemId': '539.50', '$bkashSystemId': '500.00'});
+        });
+
+    testWidgets('more to pay: Add to bKash collects the rest there',
+            (tester) async {
+          await openPayment(tester, editCart: () async {
+            await tester.tap(stepButton('Rice 5kg', Icons.add)); // 1512
+            await pumpFor(tester, afterDebounce);
+          });
+          expect(paymentState(tester).shortfall, closeTo(472.5, 0.001));
+          expect(updateEnabled(tester), isFalse);
+
+          await addBkash(tester);
+          final addBkashChip = find.descendant(
+            of: find.byType(EditSaleAddDueBar),
+            matching: find.byType(ActionChip),
+          ).last; // chips follow the entry order: Cash, bKash
+          await revealCenter(tester, addBkashChip);
+          await tester.tap(addBkashChip);
+          await pumpFor(tester);
+
+          final s = paymentState(tester);
+          expect(s.selectedEntries.map((e) => e.amount), [1039.5, 472.5]);
+          expect(s.shortfall, 0);
+          expect(find.byType(EditSaleAddDueBar), findsNothing);
+          expect(updateEnabled(tester), isTrue);
+
+          await tapUpdateAndConfirm(tester);
+          final payload = paymentRepo.lastPayload;
+          expect(payload['given_amount'], '1512.00');
+          expect(payload['given_amount_arr'],
+              {'$cashSystemId': '1039.50', '$bkashSystemId': '472.50'});
+        });
+
+    testWidgets('less to pay: difference returned from Cash',
+            (tester) async {
+          await openPayment(tester, editCart: () async {
+            await tester.tap(stepButton('Rice 5kg', Icons.remove)); // 567
+            await pumpFor(tester, afterDebounce);
+          });
+
+          final s = paymentState(tester);
+          expect(s.payableAmount, 567);
+          expect(s.cashReturn, closeTo(472.5, 0.001));
+          expect(find.text('-472.50'), findsWidgets); // pill + changes row
+          expect(find.text(AppStrings.editSaleReturnFromCashNote), findsOneWidget);
+          expect(updateEnabled(tester), isTrue);
+
+          await tapUpdateAndConfirm(tester);
+          final payload = paymentRepo.lastPayload;
+          expect(payload['given_amount'], '567.00');
+          expect(payload['given_amount_arr'], {'$cashSystemId': '567.00'});
+        });
+
     testWidgets('at most two methods', (tester) async {
       await openPayment(tester);
 
+      await revealCenter(tester, systemChip('bKash'));
       await tester.tap(systemChip('bKash'));
       await pumpFor(tester);
       await tester.tap(systemChip('Card'), warnIfMissed: false);
@@ -227,6 +334,7 @@ void main() {
             (tester) async {
           await openPayment(tester);
 
+          await revealCenter(tester, systemChip('Cash'));
           await tester.tap(systemChip('Cash')); // deselect
           await pumpFor(tester);
           expect(find.text(AppStrings.selectPaymentMethodToContinue),
@@ -240,10 +348,7 @@ void main() {
           expect(amountField('Card'), findsNothing); // read-only
           expect(updateEnabled(tester), isFalse); // account not chosen yet
 
-          await tester.tap(accountDropdown('Card'));
-          await pumpFor(tester);
-          await tester.tap(find.text(accountLabel('City Bank', '4111')).last);
-          await pumpFor(tester);
+          await pickAccount(tester, 'Card', accountLabel('City Bank', '4111'));
           expect(updateEnabled(tester), isTrue);
         });
   });

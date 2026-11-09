@@ -5,6 +5,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/session/api_params.dart';
 import '../../../../core/session/auth_session_controller.dart';
 import '../../../../core/session/session_profile.dart';
+import '../../../../core/storage/secure_storage_service.dart';
 import '../../../../core/utils/error_mapper.dart';
 import '../../data/repositories/login_repository.dart';
 import '../states/login_state.dart';
@@ -19,6 +20,7 @@ class LoginController extends Notifier<LoginState> {
   late final TextEditingController passwordController;
 
   LoginRepository get _repository => ref.read(loginRepositoryProvider);
+  SecureStorageService get _storage => ref.read(secureStorageServiceProvider);
 
   @override
   LoginState build() {
@@ -30,7 +32,38 @@ class LoginController extends Notifier<LoginState> {
       passwordController.dispose();
     });
 
+    Future.microtask(_restoreRememberedUsername);
     return const LoginState();
+  }
+
+  /// "Remember me" from the last sign-in: prefill the username and keep
+  /// the box ticked. Best-effort — a storage error just leaves the form
+  /// empty.
+  Future<void> _restoreRememberedUsername() async {
+    String? saved;
+    try {
+      saved = await _storage.readRememberedUsername();
+    } catch (_) {
+      return;
+    }
+    if (!ref.mounted || saved == null || saved.isEmpty) return;
+    // Never overwrite something the user already started typing.
+    if (usernameController.text.isEmpty) usernameController.text = saved;
+    state = state.copyWith(rememberMe: true);
+  }
+
+  /// Saves the username when Remember me is ticked, forgets it when not.
+  /// Best-effort: a storage error must not fail a sign-in that succeeded.
+  Future<void> _applyRememberedUsername(String username) async {
+    try {
+      if (state.rememberMe) {
+        await _storage.saveRememberedUsername(username);
+      } else {
+        await _storage.clearRememberedUsername();
+      }
+    } catch (_) {
+      // Remembering the username is a convenience; ignore storage failures.
+    }
   }
 
   void setRememberMe(bool value) {
@@ -60,9 +93,10 @@ class LoginController extends Notifier<LoginState> {
     if (!(formKey.currentState?.validate() ?? false)) return false;
 
     state = state.copyWith(isSubmitting: true);
+    final username = usernameController.text.trim();
     try {
       final result = await _repository.login(
-        username: usernameController.text.trim(),
+        username: username,
         password: passwordController.text,
       );
       if (!ref.mounted) return false;
@@ -76,6 +110,10 @@ class LoginController extends Notifier<LoginState> {
         return false;
       }
 
+      // Only a successful sign-in updates what is remembered.
+      await _applyRememberedUsername(username);
+      if (!ref.mounted) return false;
+
       final config = data.userConfig;
 
       // Cache branch_id / employee_id / sales_type for every API call.
@@ -88,6 +126,8 @@ class LoginController extends Notifier<LoginState> {
       if (!ref.mounted) return false;
 
       await ref.read(authSessionControllerProvider.notifier).onLoginSuccess(
+        // Unticked: signed in until the app is closed, then Login again.
+        rememberSession: state.rememberMe,
         profile: SessionProfile(
           sellerType: _unknownSellerType,
           userName: config.fullName,

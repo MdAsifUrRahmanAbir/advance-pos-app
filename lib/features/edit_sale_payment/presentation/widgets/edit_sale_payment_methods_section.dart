@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
@@ -9,11 +10,12 @@ import '../../../payment/presentation/widgets/change_due_banner.dart';
 import '../../../payment/presentation/widgets/payment_entry_card.dart';
 import '../../../payment/presentation/widgets/payment_system_selector.dart';
 import '../states/edit_sale_payment_state.dart';
+import 'edit_sale_add_due_bar.dart';
 
 /// "PAYMENT METHOD" block: system chips, one card per selected method
-/// (account + amount), and the change/short banner. Built from the
-/// payment feature's read-only widgets — the payment feature itself is
-/// not modified.
+/// (account + amount), the change/short banner and — while something is
+/// still missing — "Add X to [method]". Built from the payment feature's
+/// read-only widgets.
 class EditSalePaymentMethodsSection extends StatelessWidget {
   final EditSalePaymentState state;
   final List<pa.PaymentSystem> systems;
@@ -24,6 +26,9 @@ class EditSalePaymentMethodsSection extends StatelessWidget {
   final ValueChanged<pa.PaymentSystem> onToggle;
   final void Function(int systemId, pa.ResultDatum account) onAccountChanged;
   final void Function(int systemId, double amount) onAmountChanged;
+
+  /// Adds the missing amount to that method. Null hides the Add bar.
+  final ValueChanged<int>? onAddDue;
 
   const EditSalePaymentMethodsSection({
     super.key,
@@ -36,11 +41,13 @@ class EditSalePaymentMethodsSection extends StatelessWidget {
     required this.onToggle,
     required this.onAccountChanged,
     required this.onAmountChanged,
+    this.onAddDue,
   });
 
   @override
   Widget build(BuildContext context) {
     final colors = context.appColors;
+    final addDue = onAddDue;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -100,6 +107,21 @@ class EditSalePaymentMethodsSection extends StatelessWidget {
             const SizedBox(height: AppSizes.sm + AppSizes.xs),
           ],
           if (state.changeDue.abs() >= 0.005) ChangeDueBanner(amount: state.changeDue),
+          if (addDue != null && state.shortfall > 0) ...[
+            const SizedBox(height: AppSizes.sm),
+            EditSaleAddDueBar(
+              amount: state.shortfall,
+              entries: state.selectedEntries,
+              onAdd: addDue,
+            ),
+          ],
+          if (!state.canReturnCash) ...[
+            const SizedBox(height: AppSizes.sm),
+            Text(
+              AppStrings.editSaleNoCashAccount,
+              style: const TextStyle(color: AppColors.error, fontSize: AppSizes.fontXs),
+            ),
+          ],
         ],
       ],
     );

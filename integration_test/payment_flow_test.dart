@@ -73,6 +73,21 @@ void main() {
     await pumpFor(tester);
   }
 
+  /// Cash + bKash selected, bKash Personal (id 22) chosen.
+  Future<void> selectCashAndBkash(WidgetTester tester) async {
+    await tester.tap(systemChip('Cash'));
+    await pumpFor(tester);
+    await tester.tap(systemChip('bKash'));
+    await pumpFor(tester);
+    await pickAccount(
+        tester, 'bKash', accountLabel('bKash Personal', '01700000002'));
+  }
+
+  Future<void> typeAmount(WidgetTester tester, String system, String value) async {
+    await tester.enterText(amountField(system), value);
+    await pumpFor(tester);
+  }
+
   Future<void> complete(WidgetTester tester) async {
     await tester.tap(completeButton);
     await pumpFor(tester);
@@ -155,8 +170,7 @@ void main() {
           await tester.tap(systemChip('Cash'));
           await pumpFor(tester);
 
-          await tester.enterText(amountField('Cash'), '1000');
-          await pumpFor(tester);
+          await typeAmount(tester, 'Cash', '1000');
 
           expect(find.text(AppStrings.returnToCustomerLabel), findsOneWidget);
           expect(
@@ -178,8 +192,7 @@ void main() {
           await tester.tap(systemChip('Cash'));
           await pumpFor(tester);
 
-          await tester.enterText(amountField('Cash'), '900');
-          await pumpFor(tester);
+          await typeAmount(tester, 'Cash', '900');
 
           expect(find.text(AppStrings.remainingAmountLabel), findsOneWidget);
           expect(completeEnabled(tester), isFalse);
@@ -208,12 +221,11 @@ void main() {
           await pumpFor(tester);
 
           expect(paymentScreenState(tester).selectedEntries.map((e) => e.amount),
-              [495, 495]);
+              [0, 0]); // cash is never pre-filled
           await pickAccount(
               tester, 'bKash', accountLabel('bKash Personal', '01700000002'));
 
-          await tester.enterText(amountField('Cash'), '600');
-          await pumpFor(tester);
+          await typeAmount(tester, 'Cash', '600');
           expect(paymentScreenState(tester).selectedEntries.last.amount, 390);
 
           await complete(tester);
@@ -222,6 +234,74 @@ void main() {
               {'$cashSystemId': '11', '$bkashSystemId': '22'});
           expect(p['given_amount_arr'],
               {'$cashSystemId': '600.00', '$bkashSystemId': '390.00'});
+        });
+
+    testWidgets('Cash + bKash: bKash first never fills cash; change from cash',
+            (tester) async {
+          await openPayment(tester);
+          await selectCashAndBkash(tester);
+
+          await typeAmount(tester, 'bKash', '500');
+          var s = paymentScreenState(tester);
+          expect(s.selectedEntries.map((e) => e.amount), [0, 500]);
+          expect(s.shortfall, 490);
+          expect(completeEnabled(tester), isFalse);
+
+          await typeAmount(tester, 'Cash', '1000');
+          s = paymentScreenState(tester);
+          expect(s.selectedEntries.map((e) => e.amount), [1000, 500]);
+          expect(s.cashReturn, 510);
+          expect(find.text(AppStrings.returnToCustomerLabel), findsOneWidget);
+
+          await complete(tester);
+          expect(paymentRepo.lastPayload['given_amount_arr'],
+              {'$cashSystemId': '490.00', '$bkashSystemId': '500.00'});
+        });
+
+    testWidgets('Cash first fills bKash; typing bKash then shows change',
+            (tester) async {
+          await openPayment(tester);
+          await selectCashAndBkash(tester);
+
+          await typeAmount(tester, 'Cash', '600');
+          expect(paymentScreenState(tester).selectedEntries.last.amount, 390);
+
+          await typeAmount(tester, 'bKash', '500');
+          final s = paymentScreenState(tester);
+          expect(s.selectedEntries.map((e) => e.amount), [600, 500]);
+          expect(s.cashReturn, 110);
+
+          await complete(tester);
+          expect(paymentRepo.lastPayload['given_amount_arr'],
+              {'$cashSystemId': '490.00', '$bkashSystemId': '500.00'});
+        });
+
+    testWidgets('typed bKash is kept when cash changes again',
+            (tester) async {
+          await openPayment(tester);
+          await selectCashAndBkash(tester);
+
+          await typeAmount(tester, 'bKash', '500');
+          await typeAmount(tester, 'Cash', '700');
+
+          expect(paymentScreenState(tester).selectedEntries.map((e) => e.amount),
+              [700, 500]);
+          expect(paymentScreenState(tester).cashReturn, 210);
+        });
+
+    testWidgets('bKash covers all: cash fully returned and not sent',
+            (tester) async {
+          await openPayment(tester);
+          await selectCashAndBkash(tester);
+
+          await typeAmount(tester, 'bKash', '990');
+          await typeAmount(tester, 'Cash', '200');
+          expect(paymentScreenState(tester).cashReturn, 200);
+
+          await complete(tester);
+          final p = paymentRepo.lastPayload;
+          expect(p['payment_acc_id_arr'], {'$bkashSystemId': '22'});
+          expect(p['given_amount_arr'], {'$bkashSystemId': '990.00'});
         });
 
     testWidgets('at most two methods; removing one gives full payable',
@@ -246,7 +326,6 @@ void main() {
           expect(entries.single.amount, 990);
         });
 
-    // KNOWN BUG — fails until the 50/50 split is rounded (see flag 1).
     testWidgets('split amounts add up exactly to the payable',
             (tester) async {
           await openPayment(tester, editCart: () async {
@@ -261,6 +340,8 @@ void main() {
           await pumpFor(tester);
           await pickAccount(
               tester, 'bKash', accountLabel('bKash Merchant', '01700000001'));
+
+          await typeAmount(tester, 'Cash', '500'); // bKash fills 524.65
 
           await complete(tester);
           final p = paymentRepo.lastPayload;

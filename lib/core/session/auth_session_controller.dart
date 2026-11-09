@@ -23,9 +23,16 @@ class AuthSessionController extends Notifier<AuthSessionState> {
   AuthSessionState build() => const AuthSessionState();
 
   /// Call once at startup. Restores the profile and the cached request
-  /// params (branch, employee, sales type). Either one missing means
-  /// signed out: no API call can be made without the params.
+  /// params (branch, employee, sales type). Signed out when "Remember me"
+  /// was not ticked at the last sign-in, or when either one is missing
+  /// (no API call can be made without the params).
   Future<void> restoreSession() async {
+    // Not remembered: the session lived only until the app was closed.
+    if (!await _secureStorage.readRememberSession()) {
+      await logout();
+      return;
+    }
+
     final profile = SessionProfile.tryDecode(
       await _secureStorage.readSessionProfile(),
     );
@@ -35,6 +42,7 @@ class AuthSessionController extends Notifier<AuthSessionState> {
     if (profile == null || params == null) {
       await _secureStorage.clearAuthTokens();
       await _secureStorage.clearSessionProfile();
+      await _secureStorage.clearRememberSession();
       await ref.read(apiParamsControllerProvider.notifier).clear();
       _apiClient.setAuthToken(null);
       state = state.copyWith(status: AuthStatus.unauthenticated);
@@ -51,10 +59,13 @@ class AuthSessionController extends Notifier<AuthSessionState> {
     );
   }
 
+  /// [rememberSession] is the Login "Remember me" box: when false the
+  /// session works normally but is not restored on the next app start.
   Future<void> onLoginSuccess({
     String? accessToken,
     String? refreshToken,
     required SessionProfile profile,
+    bool rememberSession = true,
   }) async {
     final hasToken = accessToken != null && accessToken.isNotEmpty;
 
@@ -67,6 +78,7 @@ class AuthSessionController extends Notifier<AuthSessionState> {
       }
     }
     await _secureStorage.saveSessionProfile(profile.encode());
+    await _secureStorage.saveRememberSession(rememberSession);
     _apiClient.setAuthToken(hasToken ? accessToken : null);
     state = AuthSessionState(
       status: AuthStatus.authenticated,
@@ -84,12 +96,14 @@ class AuthSessionController extends Notifier<AuthSessionState> {
   }
 
   /// Removes everything created after login — tokens, session profile,
-  /// request params and all cached data (master data, dashboard…). The
-  /// verified company (ClientProfile) is kept, so Login opens for the
-  /// same company; it is only removed by "Switch company".
+  /// the remember-session flag, request params and all cached data
+  /// (master data, dashboard…). The verified company (ClientProfile) and
+  /// the remembered username are kept, so Login opens for the same
+  /// company with the username filled in.
   Future<void> logout() async {
     await _secureStorage.clearAuthTokens();
     await _secureStorage.clearSessionProfile();
+    await _secureStorage.clearRememberSession();
     await ref.read(apiParamsControllerProvider.notifier).clear();
     _apiClient.setAuthToken(null);
     await ref.read(localCacheServiceProvider).clearOnLogout();

@@ -869,4 +869,20 @@ class AppStrings {
 
   static const String invoiceActionsLockedFallback =
       'Edit and delete are unavailable for this invoice.';
+
+  static const String editSalePreviousPaymentTitle = 'PREVIOUS PAYMENT';
+  static const String editSaleNoPreviousPayment =
+      'No payment was recorded on this invoice.';
+  static const String editSaleNewTotalLabel = 'New total';
+  static const String editSaleCollectMoreLabel = 'Customer pays more';
+  static const String editSaleCollectMoreNote =
+      'Add it to the payment method the customer uses.';
+  static const String editSaleReturnFromCashNote = 'Always returned from Cash.';
+  static const String editSaleNoDifferenceLabel =
+      'Total unchanged — nothing to add or return';
+  static const String editSaleChangesTitle = 'PAYMENT CHANGES';
+  static String editSaleChangeValue(String from, String to) => '$from → $to';
+  static String editSaleAddDueLabel(String amount) => 'Add $amount to:';
+  static const String editSaleNoCashAccount =
+      'No Cash account found to return the money from.';
 }
