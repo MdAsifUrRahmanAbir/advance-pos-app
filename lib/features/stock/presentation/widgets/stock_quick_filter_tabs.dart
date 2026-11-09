@@ -13,7 +13,7 @@ import '../../../master_data/data/models/category_model.dart';
 ///
 /// Selecting a category clears the active status back to "All" (since
 /// a category filter narrows the server-side result set the status
-/// tabs then act on); selecting a status clears any active category.
+/// tabs then act on); selecting a status clears an active category.
 /// Only one chip in the whole row is ever selected at a time.
 class StockQuickFilterTabs extends StatelessWidget {
   final String selectedStatus;
@@ -63,7 +63,10 @@ class StockQuickFilterTabs extends StatelessWidget {
       },
       onSelected: (key) {
         if (_statusKeys.contains(key)) {
-          onCategorySelected(null);
+          // Clearing a category reloads from the API — only do it when
+          // one is actually selected. A status tab alone just filters
+          // the items already loaded.
+          if (selectedCategoryId != null) onCategorySelected(null);
           onStatusSelected(key);
         } else {
           final id = int.parse(key.split(':').last);
