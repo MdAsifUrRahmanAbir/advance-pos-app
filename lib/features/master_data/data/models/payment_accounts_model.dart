@@ -36,7 +36,7 @@ class ResultDatum {
   final String providerName;
   final String accHolderName;
   final String accountNo;
-  final int ledgerId;
+  // final int ledgerId;
   final int paymentSystemId;
   final String ledger;
   final PaymentSystem paymentSystem;
@@ -47,7 +47,7 @@ class ResultDatum {
     required this.providerName,
     required this.accHolderName,
     required this.accountNo,
-    required this.ledgerId,
+    // required this.ledgerId,
     required this.paymentSystemId,
     required this.ledger,
     required this.paymentSystem,
@@ -59,7 +59,7 @@ class ResultDatum {
     providerName: json["provider_name"],
     accHolderName: json["acc_holder_name"] ?? "",
     accountNo: json["account_no"] ?? "",
-    ledgerId: json["ledger_id"],
+    // ledgerId: json["ledger_id"],
     paymentSystemId: json["payment_system_id"],
     ledger: json["ledger"],
     paymentSystem: PaymentSystem.fromJson(json["payment_system"]),
@@ -71,7 +71,7 @@ class ResultDatum {
     "provider_name": providerName,
     "acc_holder_name": accHolderName,
     "account_no": accountNo,
-    "ledger_id": ledgerId,
+    // "ledger_id": ledgerId,
     "payment_system_id": paymentSystemId,
     "ledger": ledger,
     "payment_system": paymentSystem.toJson(),

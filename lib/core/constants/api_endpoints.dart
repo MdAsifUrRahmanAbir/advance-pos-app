@@ -6,7 +6,7 @@ class ApiEndpoints {
   // static const String baseUrl = "https://test.advanceposbd.com/api";
 
   static const String baseUrl =
-      "http://192.168.68.76/ttl-products/erp/testing_api/public/api";
+      "";
 
   static const String clientInfo =
       "http://192.168.68.76/ttl-products/ttl_admin_web/public/api/v1/client/info";
