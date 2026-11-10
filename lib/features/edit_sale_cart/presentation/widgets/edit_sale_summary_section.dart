@@ -8,6 +8,9 @@ import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../../../cart/presentation/states/cart_state.dart';
 
+/// Below this, the round-off is float noise and the row stays hidden.
+const double _roundOffEps = 0.005;
+
 /// Totals + "Continue to Payment" for Edit Sale.
 ///
 /// Not the cart's `CartSummarySection`, because that one's button is
@@ -45,6 +48,13 @@ class EditSaleSummarySection extends StatelessWidget {
           label: AppStrings.vatTaxPercentLabel(trimDecimal(cart.taxPercent)),
           value: '+ ${CurrencyFormatter.format(cart.taxAmount)}',
         ),
+        if (cart.roundOff.abs() >= _roundOffEps)
+          _Row(
+            label: AppStrings.roundingLabel,
+            value: '${cart.roundOff < 0 ? '- ' : '+ '}'
+                '${CurrencyFormatter.format(cart.roundOff.abs())}',
+            valueColor: colors.textSecondary,
+          ),
         Divider(height: AppSizes.lg, color: colors.border),
         Row(
           children: [

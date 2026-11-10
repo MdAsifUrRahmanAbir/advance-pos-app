@@ -7,6 +7,9 @@ import '../../../../core/utils/currency_formatter.dart';
 import '../../../../core/widgets/common/primary_button.dart';
 import '../states/cart_state.dart';
 
+/// Below this, the round-off is float noise and the row stays hidden.
+const double _roundOffEps = 0.005;
+
 class CartSummarySection extends StatelessWidget {
   final CartState state;
   final VoidCallback onProceedToPayment;
@@ -35,10 +38,11 @@ class CartSummarySection extends StatelessWidget {
           label: AppStrings.vatTaxPercentLabel(trimDecimal(state.taxPercent)),
           value: '+ ${CurrencyFormatter.format(state.taxAmount)}',
         ),
-        if (state.rounding != 0)
+        if (state.roundOff.abs() >= _roundOffEps)
           _SummaryRow(
             label: AppStrings.roundingLabel,
-            value: '${state.rounding < 0 ? '-' : '+'}${CurrencyFormatter.format(state.rounding.abs())}',
+            value: '${state.roundOff < 0 ? '- ' : '+ '}'
+                '${CurrencyFormatter.format(state.roundOff.abs())}',
             muted: true,
           ),
         const Divider(height: AppSizes.lg, color: AppColors.border),

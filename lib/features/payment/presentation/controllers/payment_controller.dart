@@ -20,11 +20,14 @@ NotifierProvider.autoDispose<PaymentController, PaymentState>(
 );
 
 class PaymentController extends Notifier<PaymentState> {
+  static const double _eps = 0.005;
+
   @override
   PaymentState build() {
     final cart = ref.read(cartControllerProvider);
     return PaymentState().copyWith(
-      payableAmount: _round2(cart.totalPayable),
+      // Already whole units (CartState rounds the payable down).
+      payableAmount: cart.totalPayable,
       subtotal: _round2(cart.subtotal),
       discountAmount: _round2(cart.discountAmount),
       vatAmount: _round2(cart.taxAmount),
@@ -134,25 +137,24 @@ class PaymentController extends Notifier<PaymentState> {
 
   String _money(double v) => v.toStringAsFixed(2);
 
+  /// `given_amount_arr`: what was entered per method (cash before change).
+  /// `given_amount`: their total. The server derives the change as
+  /// `given_amount − total_payable_amount`.
   Map<String, dynamic> _buildSalePayload() {
     final cart = ref.read(cartControllerProvider);
     final items = cart.items;
-    final payable = _money(state.payableAmount);
 
     final vatRate = cart.taxPercent.clamp(0.0, 100.0).toStringAsFixed(2);
 
-    final cashReturn = state.cashReturn;
-    // Net 0 (e.g. all the cash was returned as change) is not a payment.
-    final payments = state.selectedEntries
-        .where((e) => PaymentSplitRules.netAmount(e, cashReturn) > 0.005)
-        .toList();
+    final payments =
+    state.selectedEntries.where((e) => e.amount > _eps).toList();
 
     return {
       // sales_type / branch_id / employee_id: set by PaymentRepository.
       if (cart.selectedCustomer != null)
         'customer_id': cart.selectedCustomer!.customerNo,
-      'total_payable_amount': payable,
-      'given_amount': payable,
+      'total_payable_amount': _money(state.payableAmount),
+      'given_amount': _money(state.totalCollected),
       'total_quantity':
       items.fold<int>(0, (sum, l) => sum + l.quantity).toString(),
       'delivery_charge': _deliveryCharge,
@@ -174,8 +176,7 @@ class PaymentController extends Notifier<PaymentState> {
           if (e.account != null) '${e.system.id}': '${e.account!.id}',
       },
       'given_amount_arr': {
-        for (final e in payments)
-          '${e.system.id}': _money(PaymentSplitRules.netAmount(e, cashReturn)),
+        for (final e in payments) '${e.system.id}': _money(e.amount),
       },
     };
   }

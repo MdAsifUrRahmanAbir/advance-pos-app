@@ -31,7 +31,7 @@ final editSalePaymentControllerProvider = NotifierProvider.autoDispose
 ///
 /// A higher total is collected on top of the previous payments through
 /// any method ([addDueTo]); a lower total and any change are returned
-/// from Cash.
+/// from Cash (the server derives it as given − payable).
 class EditSalePaymentController extends Notifier<EditSalePaymentState> {
   EditSalePaymentController(this.billNo);
 
@@ -62,7 +62,8 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
 
     return EditSalePaymentState(
       billNo: billNo,
-      payableAmount: _round2(cart.totalPayable),
+      // Already whole units (CartState rounds the payable down).
+      payableAmount: cart.totalPayable,
       subtotal: _round2(cart.subtotal),
       discountAmount: _round2(cart.discountAmount),
       vatAmount: _round2(cart.taxAmount),
@@ -268,23 +269,13 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
     }
   }
 
-  /// Account + amount per method. Non-cash as collected; Cash is net
-  /// (given − returned) and goes negative when more is returned than was
-  /// taken in cash. FLAG: backend must accept a negative cash amount.
-  List<({pa.ResultDatum account, double amount})> _paymentLines() {
-    final lines = <({pa.ResultDatum account, double amount})>[];
-    for (final e in state.selectedEntries) {
-      final account = e.account;
-      if (e.isCash || account == null || e.amount <= _eps) continue;
-      lines.add((account: account, amount: e.amount));
-    }
-    final cashAccount = state.cashEntry?.account ?? state.cashAccount;
-    final cash = state.netCashAmount;
-    if (cashAccount != null && cash.abs() > _eps) {
-      lines.add((account: cashAccount, amount: cash));
-    }
-    return lines;
-  }
+  /// Account + amount per method, exactly as entered (cash before
+  /// change). The server derives change/return as given − payable.
+  List<({pa.ResultDatum account, double amount})> _paymentLines() => [
+    for (final e in state.selectedEntries)
+      if (e.account != null && e.amount > _eps)
+        (account: e.account!, amount: e.amount),
+  ];
 
   Map<String, dynamic> _buildPayload() {
     final CartState cart = ref.read(editSaleCartControllerProvider(billNo)).cart;
@@ -297,7 +288,7 @@ class EditSalePaymentController extends Notifier<EditSalePaymentState> {
       if (cart.selectedCustomer != null)
         'customer_id': cart.selectedCustomer!.customerNo,
       'total_payable_amount': _money(state.payableAmount),
-      'given_amount': _money(state.netCollected),
+      'given_amount': _money(state.totalCollected),
       'total_quantity': items.fold<int>(0, (sum, l) => sum + l.quantity).toString(),
       'delivery_charge': _deliveryCharge,
       'product_id_arr': {

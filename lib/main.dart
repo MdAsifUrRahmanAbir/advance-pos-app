@@ -44,8 +44,9 @@ class PosApp extends ConsumerWidget {
       title: 'POS',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: themeMode,
+      // darkTheme: AppTheme.darkTheme,
+      // themeMode: themeMode,
+      themeMode: ThemeMode.light,
       routerConfig: router,
       // Black status bar icons on every screen; a screen can still set its
       // own AnnotatedRegion (the deeper one wins).

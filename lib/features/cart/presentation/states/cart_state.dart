@@ -62,6 +62,8 @@ class CartState {
   final int discountFieldRevision;
 
   final double taxPercent;
+
+  /// Manual adjustment added before rounding (unused so far, kept 0).
   final double rounding;
 
   // --- Server discount (GET /get_discount) ---
@@ -249,7 +251,21 @@ class CartState {
     return (subtotal - discountAmount) * (pct / 100);
   }
 
-  double get totalPayable => subtotal - discountAmount + taxAmount + rounding;
+  /// Subtotal − discount + VAT (+ manual adjustment), before rounding.
+  double get payableBeforeRounding =>
+      subtotal - discountAmount + taxAmount + rounding;
+
+  /// What the customer pays: whole currency units, decimals dropped
+  /// (100.50 → 100, 100.99 → 100). Rounded to cents first so float noise
+  /// like 99.9999999 can't lose a whole unit.
+  double get totalPayable {
+    final cents = (payableBeforeRounding * 100).round();
+    if (cents <= 0) return 0;
+    return (cents ~/ 100).toDouble();
+  }
+
+  /// [totalPayable] − [payableBeforeRounding]: 0 or a small negative.
+  double get roundOff => totalPayable - payableBeforeRounding;
 
   CartState copyWith({
     bool? isLoading,
