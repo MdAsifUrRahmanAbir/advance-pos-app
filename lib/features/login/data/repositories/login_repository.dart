@@ -24,4 +24,26 @@ class LoginRepository {
     );
     return LoginModel.fromJson(response.data);
   }
+
+  /// POST /login on the verified client's server (base URL set by
+  /// ClientSessionController), with the `client_token` from Client Info
+  /// plus the app / system token pair.
+  /// Cache policy: never (credentials, per-user response).
+  Future<LoginModel> loginWithClientToken({
+    required String username,
+    required String password,
+    required String clientToken,
+  }) async {
+    final response = await _apiClient.post(
+      ApiEndpoints.login,
+      data: {
+        'username': username,
+        'password': password,
+        'client_token': clientToken,
+        // 'app': ApiParamDefaults.clientApp,
+        // 'system_token': ApiParamDefaults.systemToken,
+      },
+    );
+    return LoginModel.fromJson(response.data);
+  }
 }

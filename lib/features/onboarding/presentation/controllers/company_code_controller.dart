@@ -14,7 +14,7 @@ NotifierProvider.autoDispose<CompanyCodeController, CompanyCodeState>(
 );
 
 /// Welcome screen: verifies the company code and, on success, binds the
-/// device to that company (name, logo, API base URL).
+/// device to that company (name, logo, API base URL, client token).
 class CompanyCodeController extends Notifier<CompanyCodeState> {
   final formKey = GlobalKey<FormState>();
   late final TextEditingController codeController;
@@ -53,9 +53,11 @@ class CompanyCodeController extends Notifier<CompanyCodeState> {
       if (!ref.mounted) return false;
 
       final data = response.data;
+      // Without a client token no one could sign in to this company.
       final verified = response.status.toLowerCase() == 'success' &&
           data != null &&
-          data.baseUrl.isNotEmpty;
+          data.baseUrl.isNotEmpty &&
+          data.clientToken.isNotEmpty;
       if (!verified) {
         state = state.copyWith(
           isVerifying: false,
@@ -74,6 +76,7 @@ class CompanyCodeController extends Notifier<CompanyCodeState> {
           product: data.product,
           baseUrl: data.baseUrl,
         ),
+        clientToken: data.clientToken,
       );
       if (!ref.mounted) return true;
       state = state.copyWith(isVerifying: false);

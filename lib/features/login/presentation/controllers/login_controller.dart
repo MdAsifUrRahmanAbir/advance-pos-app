@@ -66,6 +66,17 @@ class LoginController extends Notifier<LoginState> {
     }
   }
 
+  /// The verified company's client token, or null when it is missing
+  /// (company verified before tokens existed) or unreadable.
+  Future<String?> _readClientToken() async {
+    try {
+      final token = await _storage.readClientToken();
+      return (token == null || token.isEmpty) ? null : token;
+    } catch (_) {
+      return null;
+    }
+  }
+
   void setRememberMe(bool value) {
     state = state.copyWith(rememberMe: value);
   }
@@ -94,10 +105,23 @@ class LoginController extends Notifier<LoginState> {
 
     state = state.copyWith(isSubmitting: true);
     final username = usernameController.text.trim();
+
+    final clientToken = await _readClientToken();
+    if (!ref.mounted) return false;
+    if (clientToken == null) {
+      // Fixed by "Switch company" → verifying the code again.
+      state = state.copyWith(
+        isSubmitting: false,
+        errorMessage: AppStrings.loginClientTokenMissing,
+      );
+      return false;
+    }
+
     try {
-      final result = await _repository.login(
+      final result = await _repository.loginWithClientToken(
         username: username,
         password: passwordController.text,
+        clientToken: clientToken,
       );
       if (!ref.mounted) return false;
 

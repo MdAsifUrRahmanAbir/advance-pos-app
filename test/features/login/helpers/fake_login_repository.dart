@@ -11,7 +11,8 @@ const loginBranchId = 3;
 /// POST /login against one known user. [gate] holds the next call;
 /// [nextError] throws on the next call only.
 class FakeLoginRepository implements LoginRepository {
-  final List<({String username, String password})> calls = [];
+  final List<({String username, String password, String? clientToken})>
+  calls = [];
   Object? nextError;
   Completer<void>? gate;
 
@@ -19,8 +20,27 @@ class FakeLoginRepository implements LoginRepository {
   Future<LoginModel> login({
     required String username,
     required String password,
-  }) async {
-    calls.add((username: username, password: password));
+  }) =>
+      _respond(username, password, null);
+
+  @override
+  Future<LoginModel> loginWithClientToken({
+    required String username,
+    required String password,
+    required String clientToken,
+  }) =>
+      _respond(username, password, clientToken);
+
+  Future<LoginModel> _respond(
+      String username,
+      String password,
+      String? clientToken,
+      ) async {
+    calls.add((
+    username: username,
+    password: password,
+    clientToken: clientToken,
+    ));
     final g = gate;
     if (g != null) {
       gate = null;

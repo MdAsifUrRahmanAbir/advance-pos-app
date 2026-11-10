@@ -31,6 +31,7 @@ class ClientInfoData {
   final String product;
   final String app;
   final String baseUrl;
+  final String clientToken;
 
   ClientInfoData({
     required this.name,
@@ -39,6 +40,7 @@ class ClientInfoData {
     required this.product,
     required this.app,
     required this.baseUrl,
+    required this.clientToken,
   });
 
   factory ClientInfoData.fromJson(Map<String, dynamic> json) => ClientInfoData(
@@ -48,6 +50,7 @@ class ClientInfoData {
     product: json["product"]?.toString() ?? '',
     app: json["app"]?.toString() ?? '',
     baseUrl: json["base_url"]?.toString() ?? '',
+    clientToken: json["client_token"]?.toString() ?? '',
   );
 
   Map<String, dynamic> toJson() => {

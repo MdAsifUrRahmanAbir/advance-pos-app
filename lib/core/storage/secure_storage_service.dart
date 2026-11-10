@@ -20,6 +20,7 @@ class SecureStorageService {
   static const _keySessionProfile = 'auth_session_profile';
   static const _keyCacheEncryptionKey = 'cache_encryption_key';
   static const _keyClientProfile = 'client_profile';
+  static const _keyClientToken = 'client_token';
   static const _keyApiParams = 'auth_api_params';
   static const _keyRememberedUsername = 'login_remembered_username';
   static const _keyRememberSession = 'auth_remember_session';
@@ -62,6 +63,14 @@ class SecureStorageService {
       _storage.write(key: _keyClientProfile, value: json);
   Future<String?> readClientProfile() => _storage.read(key: _keyClientProfile);
   Future<void> clearClientProfile() => _storage.delete(key: _keyClientProfile);
+
+  /// `client_token` from Client Info, sent with every login. Stored on its
+  /// own (not inside the client profile JSON) so it never travels with
+  /// the profile. Kept across logout, removed with the company.
+  Future<void> saveClientToken(String token) =>
+      _storage.write(key: _keyClientToken, value: token);
+  Future<String?> readClientToken() => _storage.read(key: _keyClientToken);
+  Future<void> clearClientToken() => _storage.delete(key: _keyClientToken);
 
   /// Username saved by "Remember me" on Login (never the password).
   /// Kept across logout — that is the point. Removed when Remember me is

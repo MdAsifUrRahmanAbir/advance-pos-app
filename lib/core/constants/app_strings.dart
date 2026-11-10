@@ -9,6 +9,8 @@ class AppStrings {
   static const String splashStatusSecure = 'Securing your connection...';
   static const String splashStatusSync = 'Syncing your data...';
   static const String splashStatusReady = 'Almost ready...';
+  static const String loginClientTokenMissing =
+      'Company verification has expired. Tap "Switch company" and enter your company code again.';
 
   // ---- Shared strings (merged duplicates — use these everywhere) ----
   static const String cancel = 'Cancel';

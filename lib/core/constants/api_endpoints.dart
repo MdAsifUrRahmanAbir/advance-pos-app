@@ -12,7 +12,7 @@ class ApiEndpoints {
       "http://192.168.68.76/ttl-products/ttl_admin_web/public/api/v1/client/info";
 
   /// Appended to the verified client's `base_url` to reach its API.
-  static const String apiPathSuffix = "public/api";
+  static const String apiPathSuffix = "api";
 
   // Auth
   static const String login = "/login";

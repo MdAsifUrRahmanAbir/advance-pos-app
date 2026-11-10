@@ -24,6 +24,7 @@ class ClientSessionController extends Notifier<ClientProfile?> {
     );
     if (profile == null) {
       await _secureStorage.clearClientProfile();
+      await _secureStorage.clearClientToken();
       _apiClient.setBaseUrl(ApiEndpoints.baseUrl);
       state = null;
       return;
@@ -33,23 +34,27 @@ class ClientSessionController extends Notifier<ClientProfile?> {
   }
 
   /// After a successful company-code verification. Whatever a previously
-  /// bound company left behind (its saved profile, remembered username and
-  /// all cached data) is removed first, then the new company is saved.
-  Future<void> save(ClientProfile profile) async {
+  /// bound company left behind (its saved profile, client token,
+  /// remembered username and all cached data) is removed first, then the
+  /// new company and its [clientToken] (sent with every login) are saved.
+  Future<void> save(ClientProfile profile, {required String clientToken}) async {
     await _secureStorage.clearClientProfile();
+    await _secureStorage.clearClientToken();
     await _secureStorage.clearRememberedUsername();
     await ref.read(localCacheServiceProvider).clearOnLogout();
     await _secureStorage.saveClientProfile(profile.encode());
+    await _secureStorage.saveClientToken(clientToken);
     _apiClient.setBaseUrl(profile.apiBaseUrl);
     state = profile;
   }
 
-  /// "Switch company" on Login: forgets the company and drops cached data
-  /// that belonged to it (master data etc. differ per company), including
-  /// the username remembered for it. This is the only place the saved
-  /// company info is removed.
+  /// "Switch company" on Login: forgets the company, its client token and
+  /// the cached data that belonged to it (master data etc. differ per
+  /// company), including the username remembered for it. This is the
+  /// only place the saved company info is removed.
   Future<void> clear() async {
     await _secureStorage.clearClientProfile();
+    await _secureStorage.clearClientToken();
     await _secureStorage.clearRememberedUsername();
     await ref.read(localCacheServiceProvider).clearOnLogout();
     _apiClient.setBaseUrl(ApiEndpoints.baseUrl);
