@@ -6,6 +6,9 @@ import '../../../master_data/data/models/category_model.dart';
 /// Category quick-filter — "All" plus top-selling categories sourced
 /// from master data's `categoryData.topCategories` (same source as
 /// Stock's quick-category chips), applied server-side via `category_id`.
+///
+/// Renders nothing when there are no categories: "All" alone filters
+/// nothing (the grid already shows every product by default).
 class CategoryFilterBar extends StatelessWidget {
   final int? selectedCategoryId; // null = All
   final List<TopCategory> topCategories;
@@ -22,6 +25,8 @@ class CategoryFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (topCategories.isEmpty) return const SizedBox.shrink();
+
     final allKeys = ['all', for (final c in topCategories) 'category:${c.categoryId}'];
     final selectedKey = _key(selectedCategoryId);
 

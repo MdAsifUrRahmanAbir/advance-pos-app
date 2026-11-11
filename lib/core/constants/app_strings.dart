@@ -896,4 +896,33 @@ class AppStrings {
   static const String timePm = 'PM';
   static String dateAtTime(String date, String time) => '$date at $time';
 
+
+  static String homeGreetingWave(String greeting) => '$greeting 👋';
+  static const String homeBranchLabel = 'Branch';
+  static const String homeEmployeeIdLabel = 'Employee ID';
+  static const String homeTodaySales = "Today's Sales";
+  static String homeSalesMeta(int orders, int items) =>
+      '$orders orders · $items items';
+  static String homeMonthYear(String month, int year) => '$month $year';
+  static const String homeCashFlowTitle = "Today's Cash Flow";
+  static const String homeCashFlowSubtitle = 'Money in and out today';
+  static const String homeInProfit = 'In profit';
+  static const String homeInLoss = 'In loss';
+  static const String homeMoneyIn = 'Money in';
+  static const String homeMoneyOut = 'Money out';
+  static const String homeInMinusOut = 'In − out';
+  static String homeMonthOverview(String month) => '$month Overview';
+  static const String homeViewInvoices = 'View invoices';
+  static const String homePaymentsTitle = 'Payments';
+  static const List<String> weekdayShortNames = [
+    'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN',
+  ];
+  static const String homeLast7Days = 'Last 7 days';
+  static const String homeLast12Months = 'Last 12 months';
+  static const String homeAvgPerOrder = 'Avg / order';
+  static String homeHighest(String value) => 'Highest $value';
+  static String homeSharePercent(int percent) => '$percent%';
+  static const String homeBestSeller = 'BEST SELLER';
+  static String homeMetaJoin(String a, String b) => '$a · $b';
+
 }

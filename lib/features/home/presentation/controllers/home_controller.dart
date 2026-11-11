@@ -4,6 +4,7 @@ import '../../../../core/session/api_params.dart';
 import '../../../../core/storage/cache_policy.dart';
 import '../../../../core/storage/local_cache_service.dart';
 import '../../../../core/utils/error_mapper.dart';
+import '../../../master_data/presentation/controllers/master_data_controller.dart';
 import '../../data/models/dashboard_model.dart';
 import '../../data/repositories/home_repository.dart';
 import '../states/home_state.dart';
@@ -59,6 +60,21 @@ class HomeController extends Notifier<HomeState> {
   /// "View all" / "Show less" on Top Products.
   void toggleShowAllProducts() {
     state = state.copyWith(showAllProducts: !state.showAllProducts);
+  }
+
+  // ───────────────────────────────────────────────
+  // Pull-to-refresh
+  // ───────────────────────────────────────────────
+  /// Reloads the dashboard and, at the same time, every master-data set
+  /// (groups, categories, payment accounts…) from the API. Returns the
+  /// dashboard result only: master-data failures are already reported by
+  /// the main shell, with a retry.
+  Future<bool> refreshAll() async {
+    final results = await Future.wait([
+      getDashboard(),
+      ref.read(masterDataControllerProvider.notifier).refresh(),
+    ]);
+    return results.first;
   }
 
   // ───────────────────────────────────────────────
