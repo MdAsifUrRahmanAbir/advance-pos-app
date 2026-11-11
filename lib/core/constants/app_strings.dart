@@ -887,4 +887,13 @@ class AppStrings {
   static String editSaleAddDueLabel(String amount) => 'Add $amount to:';
   static const String editSaleNoCashAccount =
       'No Cash account found to return the money from.';
+  static String invoiceBillNoTag(String billNo) => '#$billNo';
+  static const List<String> monthShortNames = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+  static const String timeAm = 'AM';
+  static const String timePm = 'PM';
+  static String dateAtTime(String date, String time) => '$date at $time';
+
 }

@@ -5,21 +5,30 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_color_scheme.dart';
 
-enum InvoiceMenuAction { edit, delete }
+enum InvoiceMenuAction { billPreview, edit, delete }
 
-/// Vertical three-dot menu on an invoice card: Edit and Delete.
+/// Vertical three-dot menu on an invoice card: Bill Preview, Edit and
+/// Delete.
 ///
-/// An item whose callback is null is hidden. When both are null the
-/// menu renders nothing.
+/// An item whose callback is null is hidden. When all are null the menu
+/// renders nothing.
 class InvoiceItemMenu extends StatelessWidget {
+  final VoidCallback? onBillPreview;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
-  const InvoiceItemMenu({super.key, this.onEdit, this.onDelete});
+  const InvoiceItemMenu({
+    super.key,
+    this.onBillPreview,
+    this.onEdit,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (onEdit == null && onDelete == null) return const SizedBox.shrink();
+    if (onBillPreview == null && onEdit == null && onDelete == null) {
+      return const SizedBox.shrink();
+    }
 
     final colors = context.appColors;
 
@@ -37,6 +46,8 @@ class InvoiceItemMenu extends StatelessWidget {
       ),
       onSelected: (action) {
         switch (action) {
+          case InvoiceMenuAction.billPreview:
+            onBillPreview?.call();
           case InvoiceMenuAction.edit:
             onEdit?.call();
           case InvoiceMenuAction.delete:
@@ -44,6 +55,15 @@ class InvoiceItemMenu extends StatelessWidget {
         }
       },
       itemBuilder: (context) => [
+        if (onBillPreview != null)
+          const PopupMenuItem(
+            value: InvoiceMenuAction.billPreview,
+            child: _MenuRow(
+              icon: Icons.receipt_long_outlined,
+              label: AppStrings.billPreviewTitle,
+              color: AppColors.primary,
+            ),
+          ),
         if (onEdit != null)
           PopupMenuItem(
             value: InvoiceMenuAction.edit,
