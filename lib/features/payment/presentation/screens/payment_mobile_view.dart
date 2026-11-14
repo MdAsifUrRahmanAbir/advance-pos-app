@@ -21,6 +21,7 @@ import '../widgets/payment_entry_card.dart';
 import '../widgets/payment_system_selector.dart';
 import '../widgets/payment_top_bar.dart';
 import '../states/payment_systems_from_accounts.dart';
+import '../../../main_shell/presentation/screens/main_shell_navigation.dart';
 
 class PaymentMobileView extends ConsumerWidget {
   const PaymentMobileView({super.key});
@@ -167,6 +168,7 @@ class PaymentMobileView extends ConsumerWidget {
       onGoToDashboard: (sheetContext) {
         Navigator.of(sheetContext).pop();
         context.go(RouteNames.mainShell);
+        context.goToDashboard();
       },
     );
   }

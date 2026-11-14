@@ -10,6 +10,7 @@ import '../../../../core/widgets/utility/nav_extension.dart';
 import '../../../../routes/route_names.dart';
 import '../../../bill_preview/presentation/screens/sale_complete_launcher.dart';
 import '../controllers/edit_sale_payment_controller.dart';
+import '../../../main_shell/presentation/screens/main_shell_navigation.dart';
 
 /// View-layer wiring shared by [EditSalePaymentMobileView] and
 /// [EditSalePaymentTabView]: confirm dialog, the sale-complete sheet
@@ -69,6 +70,7 @@ mixin EditSalePaymentViewActions<T extends ConsumerStatefulWidget> on ConsumerSt
       onGoToDashboard: (sheetContext) {
         Navigator.of(sheetContext).pop();
         if (mounted) context.go(RouteNames.mainShell);
+        if (mounted) context.goToDashboard();
       },
     );
   }
