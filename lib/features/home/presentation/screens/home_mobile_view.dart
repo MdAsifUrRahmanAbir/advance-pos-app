@@ -92,23 +92,23 @@ class HomeMobileView extends ConsumerWidget {
             logoUrl: session.logoUrl,
             isOnline: state.isOnline,
           ),
-          const SizedBox(height: AppSizes.md),
-          HomeInfoStrip(
-            items: [
-              HomeInfoItem(
-                icon: Icons.store_mall_directory_outlined,
-                label: AppStrings.homeBranchLabel,
-                value: session.headerTitle.isNotEmpty
-                    ? session.headerTitle
-                    : AppStrings.emptyValue,
-              ),
-              HomeInfoItem(
-                icon: Icons.badge_outlined,
-                label: AppStrings.homeEmployeeIdLabel,
-                value: employeeLabel,
-              ),
-            ],
-          ),
+          // const SizedBox(height: AppSizes.md),
+          // HomeInfoStrip(
+          //   items: [
+          //     HomeInfoItem(
+          //       icon: Icons.store_mall_directory_outlined,
+          //       label: AppStrings.homeBranchLabel,
+          //       value: session.headerTitle.isNotEmpty
+          //           ? session.headerTitle
+          //           : AppStrings.emptyValue,
+          //     ),
+          //     HomeInfoItem(
+          //       icon: Icons.badge_outlined,
+          //       label: AppStrings.homeEmployeeIdLabel,
+          //       value: employeeLabel,
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
